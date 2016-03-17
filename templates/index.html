@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Nemendalisti</h1>
+<div ><table id="student_list" class="table table-hover">
+<thead><th>Kennitala</th><th>nafn</th></thead>
+{% for student in students %}
+<tr href="{% url 'students:detail' student.id %}">
+		<td>{{student.socialsecurity}}</td><td>{{student.name}}</td>
+</tr>
+{% endfor %}
+
+</table>
+</div>
+{% endblock %}
+

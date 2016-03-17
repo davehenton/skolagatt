@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% load crispy_forms_tags %}
+
+
+{% block content %}
+<h1>{{ title }}</h1>
+
+
+	<form action="" method="POST" enctype="multipart/form-data" id="csv_commit">{% csrf_token %}
+		{{ uploadform|crispy }}
+		<input id="submitbutton" type="submit" name="pic" accept="image/*" class="upload_btn" value="submit"/>
+	</form>
+
+
+
+{% endblock %}
+

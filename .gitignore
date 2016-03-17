@@ -1,0 +1,8 @@
+/bin
+/include
+/lib
+/lib64
+db.sqlite3
+env.sh
+pyvenv.cfg
+*.pyc

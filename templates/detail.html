@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% load crispy_forms_tags %}
+
+
+{% block content %}
+<h1>Dell</h1>
+<div ><table class="table table-hover">
+<thead><th>Kennitala</th><th>nafn</th></thead>
+{% for student in students %}
+<tr >
+		<td>{{student.socialsecurity}}</td><td>{{student.name}}</td>
+</tr>
+{% endfor %}
+</table>
+</div>
+{% endblock %}
