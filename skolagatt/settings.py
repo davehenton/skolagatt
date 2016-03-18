@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'students',
+    'schools',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -101,6 +101,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTHENTICATION_BACKENDS = ['skolagatt.backends.IceKeyAuth', 'django.contrib.auth.backends.ModelBackend']
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.9/topics/i18n/
@@ -115,11 +116,14 @@ USE_L10N = True
 
 USE_TZ = True
 
+LOGIN_URL = 'https://innskraning.island.is/?id=mms.is'
+LOGIN_REDIRECT_URL = '/'
+
 SUBDIRECTORY = ''
 
 STATIC_URL = '/'+SUBDIRECTORY+'static/' #remove leading / to enable multi subdirectory deployent
 STATIC_ROOT = '/home/projects/projects/skolagatt/static' #set per deployment
 STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'students/static'),
+    os.path.join(BASE_DIR, 'schools/static'),
     os.path.join(BASE_DIR, 'skolagatt/static'),
 )
