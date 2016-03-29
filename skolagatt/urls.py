@@ -11,5 +11,5 @@ urlpatterns = [
     url(r'^'+settings.SUBDIRECTORY+'admin/', admin.site.urls, name='admin'),
     url(r'^'+settings.SUBDIRECTORY+'login', views.login, name='auth_login'),
     url(r'^'+settings.SUBDIRECTORY+'logout', views.logout, name='auth_logout'),
-    url(r'^'+settings.SUBDIRECTORY+'nemendur/', include('students.urls')),
+    url(r'^'+settings.SUBDIRECTORY+'skolar/', include('schools.urls')),
 ]

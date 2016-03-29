@@ -1,4 +1,4 @@
-<!-- Static navbar -->
+{% load staticfiles %}
     <nav class="navbar navbar-default navbar-static-top">
       <div class="container">
         <div class="navbar-header">
@@ -8,13 +8,19 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="">Skólagátt</a>
+          <a class="navbar-brand" href="">
+            <span><img src="{% static 'img/logo.png'%}" /></span>
+            <span>Skólagátt</span>
+          </a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="/">Bekkir</a></li>
-            <li><a href="">Nemendur</a></li>
-            <li><a href="">Kennarar</a></li>
+            {% if request.user.is_superuser %}
+            <li><a href="/skolar">Skólar</a></li>
+            {% endif %}
+            <li><a href="/bekkir">Bekkir</a></li>
+            <li><a href="/nemendur">Nemendur</a></li>
+            <li><a href="/kennarar">Kennarar</a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
             <li><a href="https://innskraning.island.is/?id=mms.is&login=skolagatt"><span class="glyphicon glyphicon-user">Innskráning</span></a></li>
