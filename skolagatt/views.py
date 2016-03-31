@@ -1,3 +1,6 @@
+import xml.etree.ElementTree as ET
+from signxml import xmldsig
+
 from django.apps import apps
 from django.shortcuts import render, render_to_response, redirect
 from django.conf import settings
@@ -5,26 +8,28 @@ from django.contrib.auth import authenticate, login as auth_login, logout as aut
 
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 
-import requests
+import requests, json
+
+def verify_token(token):
+	url = 'https://innskraning.mms.is/verify_login/'
+	payload = {'token': token}
+	r = requests.post(url, data=payload)
+	return r.json()['verified']
 
 @csrf_exempt
 def index(request):
-	if(request.method == "POST"):
-		for k,v in request.POST.items():
-			print(k,v)
-	return render(request, 'index.html')
-
-@csrf_exempt
-@login_required
-def login(request):
-	if(request.method == "POST"):
+	if(request.method == "POST" and verify_token(request.POST.get('token'))):
 		user = authenticate(username=request.POST['user_ssn'], password=request.POST['user_name'])
-	if user is not None:
-		if user.is_active:
-			auth_login(request, user)
-			return redirect('index')
-	return redirect('denied')
+		if user == None:
+			User.objects.create_user(username=request.POST['user_ssn'], password=request.POST['user_name'])
+			user = authenticate(username=request.POST['user_ssn'], password=request.POST['user_name'])
+		auth_login(request, user)
+
+	else:
+		print('token verification failed')
+	return render(request, 'index.html')
 
 def logout(request):
 	auth_logout(request)
