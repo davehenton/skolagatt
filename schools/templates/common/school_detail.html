@@ -2,4 +2,11 @@
 
 {% block content %}
 <h1>{{school.name}}</h1>
+<div class="row">
+	<div class="col-md-12">
+		<a href="{% url 'schools:manager_create' school.id %}" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span>Bæta við skólastjóra</a>
+		<a href="{% url 'schools:teacher_create' school.id %}" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span>Bæta við kennara</a>
+		<a href="{% url 'schools:student_create' school.id %}" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span>Bæta við nemanda</a>
+	</div>
+</div>
 {% endblock %}

@@ -8,13 +8,13 @@ from django.views.generic import ListView, CreateView, DetailView, UpdateView, D
 from django.core.urlresolvers import reverse_lazy
 from django.contrib.auth.mixins import UserPassesTestMixin
 
-from common.models import School, Student, StudentClass
-from common.models import SchoolForm, StudentForm, StudentClassForm
+from common.models import School, Student, StudentGroup, Manager, Teacher
+from common.models import SchoolForm, StudentForm, StudentGroupForm, ManagerForm, TeacherForm
 
 class SchoolListing(ListView):
   model = School
 
-class SchoolDetail(ListView):
+class SchoolDetail(DetailView):
   model = School
 
   def get_context_data(self, **kwargs):
@@ -53,10 +53,94 @@ class SchoolDelete(UserPassesTestMixin, DeleteView):
   def test_func(self):
     return not self.request.user.is_anonymous()
 
+class ManagerListing(ListView):
+  model = Manager
+
+class ManagerDetail(DetailView):
+  model = Manager
+
+  def get_context_data(self, **kwargs):
+    context = super(ManagerDetail, self).get_context_data(**kwargs)
+    context['is_teacher'] = not self.request.user.is_anonymous()
+    return context
+
+class ManagerCreate(UserPassesTestMixin, CreateView):
+  model = Manager
+  form_class = ManagerForm
+  success_url = reverse_lazy('schools:school_listing')
+  login_url = reverse_lazy('denied')
+
+  def test_func(self):
+    return not self.request.user.is_anonymous()
+
+class ManagerUpdate(UserPassesTestMixin, UpdateView):
+  model = Manager
+  form_class = ManagerForm
+  login_url = reverse_lazy('denied')
+
+  def test_func(self):
+    return not self.request.user.is_anonymous()
+
+  def get_success_url(self):
+    return reverse('students:school_detail', kwargs={
+      'pk': self.object.pk
+    })
+
+class ManagerDelete(UserPassesTestMixin, DeleteView):
+  model = Manager
+  success_url = reverse_lazy('schools:school_listing')
+  login_url = reverse_lazy('denied')
+  template_name = "schools/confirm_delete.html"
+
+  def test_func(self):
+    return not self.request.user.is_anonymous()
+
+class TeacherListing(ListView):
+  model = Teacher
+
+class TeacherDetail(DetailView):
+  model = Teacher
+
+  def get_context_data(self, **kwargs):
+    context = super(TeacherDetail, self).get_context_data(**kwargs)
+    context['is_teacher'] = not self.request.user.is_anonymous()
+    return context
+
+class TeacherCreate(UserPassesTestMixin, CreateView):
+  model = Teacher
+  form_class = TeacherForm
+  success_url = reverse_lazy('schools:school_listing')
+  login_url = reverse_lazy('denied')
+
+  def test_func(self):
+    return not self.request.user.is_anonymous()
+
+class TeacherUpdate(UserPassesTestMixin, UpdateView):
+  model = Teacher
+  form_class = TeacherForm
+  login_url = reverse_lazy('denied')
+
+  def test_func(self):
+    return not self.request.user.is_anonymous()
+
+  def get_success_url(self):
+    return reverse('students:school_detail', kwargs={
+      'pk': self.object.pk
+    })
+
+class TeacherDelete(UserPassesTestMixin, DeleteView):
+  model = Teacher
+  success_url = reverse_lazy('schools:school_listing')
+  login_url = reverse_lazy('denied')
+  template_name = "schools/confirm_delete.html"
+
+  def test_func(self):
+    return not self.request.user.is_anonymous()
+
 class StudentListing(ListView):
   model = Student
 
-class StudentDetail(ListView):
+class StudentDetail(DetailView):
   model = Student
 
   def get_context_data(self, **kwargs):
