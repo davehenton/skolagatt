@@ -3,10 +3,21 @@
 {% block content %}
 <h1>{{school.name}}</h1>
 <div class="row">
-	<div class="col-md-12">
-		<a href="{% url 'schools:manager_create' school.id %}" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span>Bæta við skólastjóra</a>
+	<div class="col-md-3">
+		<a href="{% url 'schools:manager_create' school.id %}" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span>Bæta við skólastjórnanda</a>
+		{% include 'common/_manager_list.html' %}
+	</div>
+	<div class="col-md-3">
 		<a href="{% url 'schools:teacher_create' school.id %}" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span>Bæta við kennara</a>
+		{% include 'common/_teacher_list.html' %}
+	</div>
+	<div class="col-md-3">
 		<a href="{% url 'schools:student_create' school.id %}" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span>Bæta við nemanda</a>
+		{% include 'common/_student_list.html' %}
+	</div>
+	<div class="col-md-3">
+		<a href="{% url 'schools:group_create' school.id %}" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span>Bæta við hóp</a>
+		{% include 'common/_group_list.html' %}
 	</div>
 </div>
 {% endblock %}

@@ -1,0 +1,15 @@
+<h3>Nemendur</h3>
+<div>
+	<div id="student_list" class="table table-hover">
+		<div class="row">
+			<div class="col-md-4"><h4>Kennitala</h4></div>
+			<div class="col-md-8"><h4>Nafn</h4></div>
+		</div>
+		{% for student in student_list %}
+		<div class="row">
+			<div class="col-md-4">{{student.ssn}}</div>
+			<div class="col-md-8"><a href="{% url 'schools:student_detail' school.id student.id %}">{{student.name}}</a></div>
+		</div>
+		{% endfor %}
+	</div>
+</div>

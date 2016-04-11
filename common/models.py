@@ -52,8 +52,9 @@ class TeacherForm(forms.ModelForm):
 		fields = '__all__'
 
 class StudentGroup(models.Model):
-	group_name = models.CharField(max_length = 128)
-	student_year = models.CharField(max_length = 2)
+	name = models.CharField(max_length = 128)
+	student_year = models.CharField(max_length = 2, null=True, blank=True)
+	group_managers = models.ManyToManyField(Teacher)
 	school = models.ForeignKey('School')
 
 	def __str__(self):
@@ -69,7 +70,7 @@ class Student(models.Model):
 	name = models.CharField(max_length = 128)
 	# many to many school = models.ForeignKey('School')
 	schools = models.ManyToManyField(School)
-	student_groups = models.ManyToManyField(StudentGroup)
+	student_groups = models.ManyToManyField(StudentGroup, blank=True)
 
 	class Meta:
 		ordering = ["-name"]

@@ -15,11 +15,11 @@
 		</div>
 		{% for school in school_list %}
 		<div class="row">
-			<div class="col-md-3">{{school.social_security}}</div>
+			<div class="col-md-3">{{school.ssn}}</div>
 			<div class="col-md-6"><a href="{% url 'schools:school_detail' school.id %}">{{school.name}}</a></div>
 			<div class="col-md-3"></div>
 		</div>
 		{% endfor %}
-	</table>
+	</div>
 </div>
 {% endblock %}
