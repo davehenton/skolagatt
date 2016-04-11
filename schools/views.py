@@ -8,8 +8,8 @@ from django.views.generic import ListView, CreateView, DetailView, UpdateView, D
 from django.core.urlresolvers import reverse_lazy
 from django.contrib.auth.mixins import UserPassesTestMixin
 
-from .models import School, Student, StudentClass, Teacher
-from .models import SchoolForm, StudentForm, StudentClassForm, TeacherForm
+from common.models import School, Student, StudentClass
+from common.models import SchoolForm, StudentForm, StudentClassForm
 
 class SchoolListing(ListView):
   model = School
@@ -18,9 +18,7 @@ class SchoolDetail(ListView):
   model = School
 
   def get_context_data(self, **kwargs):
-    # xxx will be available in the template as the related objects
     context = super(SchoolDetail, self).get_context_data(**kwargs)
-    #context['contact_list'] = Contact.objects.filter(school=self.get_object())
     context['is_teacher'] = not self.request.user.is_anonymous()
     return context
 
