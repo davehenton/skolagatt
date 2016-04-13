@@ -1,0 +1,10 @@
+{% extends 'common/index.html' %}
+
+{% block content %}
+
+<form id="delete_confirm" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="submit" value="Staðfesta eyðingu?" />
+</form>
+
+{% endblock %}

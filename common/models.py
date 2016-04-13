@@ -6,10 +6,16 @@ from django import forms
 from django.contrib.auth.models import User
 
 class UserMethods(User):
-	def get_schools(self):
-		schools = Manager.objects.filter(ssn=self.username)
-		schools.append(Teacher.objects.filter(ssn=self.username))
-		return schools
+	def is_manager(self, school):
+		if School.objects.filter(pk=school.id).filter(manager__ssn=self.username):
+			return True
+		else:
+			return False
+	def is_teacher(self, school):
+		if School.objects.filter(pk=school.id).filter(teacher__ssn=self.username):
+			return True
+		else:
+			return False
 	class Meta:
 		proxy=True
 

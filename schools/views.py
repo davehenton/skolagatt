@@ -10,12 +10,19 @@ from django.contrib.auth.mixins import UserPassesTestMixin
 
 from common.models import School, Student, StudentGroup, Manager, Teacher
 from common.models import SchoolForm, StudentForm, StudentGroupForm, ManagerForm, TeacherForm
+from common.models import UserMethods
 
-class SchoolListing(ListView):
+class SchoolListing(UserPassesTestMixin, ListView):
   model = School
 
-class SchoolDetail(DetailView):
+  def test_func(self):
+    return UserMethods(self.request.user).is_manager #or self.request.user.is_teacher
+
+class SchoolDetail(UserPassesTestMixin, DetailView):
   model = School
+
+  def test_func(self, **kwargs):
+    return UserMethods.objects.get(pk=self.request.user.pk).is_manager(self.get_object()) or UserMethods.objects.get(pk=self.request.user.pk).is_teacher(self.get_object())
 
   def get_context_data(self, **kwargs):
     context = super(SchoolDetail, self).get_context_data(**kwargs)
@@ -62,6 +69,7 @@ class ManagerDetail(DetailView):
   def get_context_data(self, **kwargs):
     context = super(ManagerDetail, self).get_context_data(**kwargs)
     context['is_teacher'] = not self.request.user.is_anonymous()
+    context['school'] = School.objects.get(pk=self.kwargs['school_id'])
     return context
 
 class ManagerCreate(UserPassesTestMixin, CreateView):
