@@ -1,4 +1,5 @@
 {% load staticfiles %}
+{% load common_helpers %}
     <nav class="navbar navbar-default navbar-static-top">
       <div class="container">
         <div class="navbar-header">
@@ -15,9 +16,9 @@
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-            {% if request.user.is_superuser %}
-            <li><a href="/skoli">Skólar</a></li>
-            {% endif %}
+          	<li class="dropdown">
+            		{% get_schools %}
+            	</li>
             <li><a href="/bekkir">Bekkir</a></li>
             <li><a href="/nemendur">Nemendur</a></li>
             <li><a href="/kennarar">Kennarar</a></li>

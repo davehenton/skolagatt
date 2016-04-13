@@ -188,12 +188,11 @@ class StudentGroupCreate(UserPassesTestMixin, CreateView):
   success_url = reverse_lazy('schools:school_listing')
   login_url = reverse_lazy('denied')
 
-
   def test_func(self):
     return not self.request.user.is_anonymous()
 
 class StudentGroupUpdate(UserPassesTestMixin, UpdateView):
-  model = StudentGroupDetail
+  model = StudentGroup
   form_class = StudentGroupForm
   success_url = reverse_lazy('schools:school_listing')
   login_url = reverse_lazy('denied')
@@ -201,8 +200,15 @@ class StudentGroupUpdate(UserPassesTestMixin, UpdateView):
   def test_func(self):
     return not self.request.user.is_anonymous()
 
+  def get_context_data(self, **kwargs):
+    # xxx will be available in the template as the related objects
+    context = super(StudentGroupUpdate, self).get_context_data(**kwargs)
+    #context['contact_list'] = Contact.objects.filter(school=self.get_object())
+    context['is_teacher'] = not self.request.user.is_anonymous()
+    return context
+
 class StudentGroupDelete(UserPassesTestMixin, DeleteView):
-  model = Student
+  model = StudentGroup
   success_url = reverse_lazy('schools:school_listing')
   login_url = reverse_lazy('denied')
   template_name = "schools/confirm_delete.html"

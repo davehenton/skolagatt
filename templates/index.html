@@ -1,26 +1,6 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Nemendalisti</h1>
-<div>
-	<div id="student_list" class="table table-hover">
-		<div class="row">
-			<div class="col-md-3"><h3>Kennitala</h3></div>
-			<div class="col-md-6"><h3>Nafn</h3></div>
-			<div class="col-md-3">
-				<a href="{% url 'schools:student_create'%}" class="btn btn-default">
-					<span class="glyphicon glyphicon-plus"></span>Bæta við nemanda
-				</a>
-			</div>
-		</div>
-		{% for student in students %}
-		<div class="row" href="{% url 'schools:student_detail' student.id %}">
-			<div class="col-md-3">{{student.socialsecurity}}</div>
-			<div class="col-md-6">{{student.name}}</div>
-			<div class="col-md-3"></div>
-		</div>
-		{% endfor %}
-	</table>
-</div>
+
 {% endblock %}
 

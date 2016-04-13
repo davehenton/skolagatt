@@ -1,0 +1,14 @@
+{% load common_helpers %}
+{% if schools %}
+	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+		{% get_school_name %}
+		<span class="caret"></span>
+	</a>
+	<ul class="dropdown-menu">
+	{% for school in schools %}
+		<li><a href="/skoli/{{school.id}}">{{ school.name }}</a></li>
+	{% endfor %}
+	</ul>
+{% else %}
+	Enginn skóli
+{% endif %}

@@ -1,0 +1,18 @@
+{% extends 'common/index.html'%}
+
+{% block content %}
+<h1>{{studentgroup.name}}</h1>
+<a href="{% url 'schools:group_update' studentgroup.school.id studentgroup.id%}" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span>&nbsp;Breyta</a>
+<a href="{% url 'schools:group_delete' studentgroup.school.id studentgroup.id%}" class="btn btn-default"><span class="glyphicon glyphicon-trash"></span>&nbsp;Eyða</a>
+<ul>
+	<li>Árgangur: {{studentgroup.student_year}}</li>
+	<li>Umsjónarmenn:
+		<ul>
+			{% for manager in studentgroup.group_managers.all %}
+				<li>{{manager}}</li>
+			{% endfor %}
+		</ul>
+	</li>
+</ul>
+
+{% endblock %}

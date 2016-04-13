@@ -5,6 +5,14 @@ from django.db import models
 from django import forms
 from django.contrib.auth.models import User
 
+class UserMethods(User):
+	def get_schools(self):
+		schools = Manager.objects.filter(ssn=self.username)
+		schools.append(Teacher.objects.filter(ssn=self.username))
+		return schools
+	class Meta:
+		proxy=True
+
 class School(models.Model):
 	name = models.CharField(max_length = 128)
 	ssn = models.CharField(max_length = 10)
@@ -58,7 +66,7 @@ class StudentGroup(models.Model):
 	school = models.ForeignKey('School')
 
 	def __str__(self):
-		return self.group_name
+		return self.name
 
 class StudentGroupForm(forms.ModelForm):
 	class Meta:
