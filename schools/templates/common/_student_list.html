@@ -5,7 +5,7 @@
 			<div class="col-md-4"><h4>Kennitala</h4></div>
 			<div class="col-md-8"><h4>Nafn</h4></div>
 		</div>
-		{% for student in student_list %}
+		{% for student in students %}
 		<div class="row">
 			<div class="col-md-4">{{student.ssn}}</div>
 			<div class="col-md-8"><a href="{% url 'schools:student_detail' school.id student.id %}">{{student.name}}</a></div>

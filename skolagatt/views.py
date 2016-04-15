@@ -10,6 +10,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 
+from common.models import School
+
 import requests, json
 
 def verify_token(token):
@@ -26,10 +28,12 @@ def index(request):
 			User.objects.create_user(username=request.POST['user_ssn'], password=request.POST['user_name'])
 			user = authenticate(username=request.POST['user_ssn'], password=request.POST['user_name'])
 		auth_login(request, user)
-
+		return render(request, 'index.html')
 	else:
-		print('token verification failed')
-	return render(request, 'index.html')
+		#list schools
+		school_list = School.objects.all()
+		return render(request, 'common/school_list.html', {'school_list': school_list})
+
 
 def logout(request):
 	auth_logout(request)

@@ -6,7 +6,6 @@ from .views import StudentGroupListing, StudentGroupDetail, StudentGroupCreate, 
 from .views import ManagerListing, ManagerDetail, ManagerCreate, ManagerUpdate, ManagerDelete
 from .views import TeacherListing, TeacherDetail, TeacherCreate, TeacherUpdate, TeacherDelete
 
-
 app_name = 'schools'
 urlpatterns = [
     url(r'^$', SchoolListing.as_view(), name='school_listing'),

@@ -5,7 +5,7 @@
 			<div class="col-md-4"><h4>Kennitala</h4></div>
 			<div class="col-md-8"><h4>Nafn</h4></div>
 		</div>
-		{% for manager in manager_list %}
+		{% for manager in managers %}
 		<div class="row">
 			<div class="col-md-4">{{manager.ssn}}</div>
 			<div class="col-md-8"><a href="{% url 'schools:manager_detail' school.id manager.id %}">{{manager.name}}</a></div>

@@ -1,7 +1,15 @@
 {% extends 'common/index.html'%}
 
 {% block content %}
-<h1>{{school.name}}</h1>
+<div class="row">
+	<div class="col-md-9">
+		<h1>{{school.name}}</h1>
+	</div>
+	<div class="col-md-3">
+		<a href="{% url 'schools:school_update' school.id %}" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span>&nbsp;Breyta</a>
+		<a href="{% url 'schools:school_delete' school.id %}" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span>&nbsp;Eyða</a>
+	</div>
+</div>
 <div class="row">
 	<div class="col-md-3">
 		<a href="{% url 'schools:manager_create' school.id %}" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span>Bæta við skólastjórnanda</a>

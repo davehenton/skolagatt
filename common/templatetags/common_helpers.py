@@ -6,10 +6,11 @@ import re
 register = template.Library()
 
 @register.inclusion_tag('common/_school_list.html', takes_context=True)
-def get_schools(context):
+def get_user_schools(context):
 	user = context['request'].user
-	manager_schools = School.objects.filter(manager__ssn=user.username)
-	teacher_schools = School.objects.filter(teacher__ssn=user.username)
+	print(user)
+	manager_schools = School.objects.filter(managers=Manager.objects.filter(ssn=user.username))
+	teacher_schools = School.objects.filter(teachers=Teacher.objects.filter(ssn=user.username))
 	schools = list(set(chain(manager_schools, teacher_schools)))
 	return {'schools': schools}
 

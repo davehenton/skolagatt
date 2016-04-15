@@ -4,38 +4,12 @@ from __future__ import unicode_literals
 from django.db import models
 from django import forms
 from django.contrib.auth.models import User
-
-class UserMethods(User):
-	def is_manager(self, school):
-		if School.objects.filter(pk=school.id).filter(manager__ssn=self.username):
-			return True
-		else:
-			return False
-	def is_teacher(self, school):
-		if School.objects.filter(pk=school.id).filter(teacher__ssn=self.username):
-			return True
-		else:
-			return False
-	class Meta:
-		proxy=True
-
-class School(models.Model):
-	name = models.CharField(max_length = 128)
-	ssn = models.CharField(max_length = 10)
-
-	def __str__(self):
-		return self.name + " (" + self.ssn + ")"
-
-class SchoolForm(forms.ModelForm):
-	class Meta:
-		model = School
-		fields = '__all__'
+from django.contrib.auth.models import Group
 
 class Manager(models.Model):
-	ssn = models.CharField(max_length = 10)
+	ssn = models.CharField(max_length = 10, unique=True)
 	name = models.CharField(max_length = 128)
-	schools = models.ManyToManyField(School)
-	# many to many school = models.ForeignKey('School')
+	user = models.ForeignKey(User)
 
 	class Meta:
 		ordering = ["-name"]
@@ -46,13 +20,13 @@ class Manager(models.Model):
 class ManagerForm(forms.ModelForm):
 	class Meta:
 		model = Manager
-		fields = '__all__'
+		fields = ['ssn', 'name', 'user']
+		widgets = {'user': forms.HiddenInput()}
 
 class Teacher(models.Model):
-	ssn = models.CharField(max_length = 10)
+	ssn = models.CharField(max_length = 10, unique=True)
 	name = models.CharField(max_length = 128)
-	schools = models.ManyToManyField(School)
-	# many to many school = models.ForeignKey('School')
+	user = models.ForeignKey(User)
 
 	class Meta:
 		ordering = ["-name"]
@@ -63,28 +37,12 @@ class Teacher(models.Model):
 class TeacherForm(forms.ModelForm):
 	class Meta:
 		model = Teacher
-		fields = '__all__'
-
-class StudentGroup(models.Model):
-	name = models.CharField(max_length = 128)
-	student_year = models.CharField(max_length = 2, null=True, blank=True)
-	group_managers = models.ManyToManyField(Teacher)
-	school = models.ForeignKey('School')
-
-	def __str__(self):
-		return self.name
-
-class StudentGroupForm(forms.ModelForm):
-	class Meta:
-		model = StudentGroup
-		fields = '__all__'
+		fields =  ['ssn', 'name', 'user']
+		widgets = {'user': forms.HiddenInput()}
 
 class Student(models.Model):
-	ssn = models.CharField(max_length = 10)
+	ssn = models.CharField(max_length = 10, unique=True)
 	name = models.CharField(max_length = 128)
-	# many to many school = models.ForeignKey('School')
-	schools = models.ManyToManyField(School)
-	student_groups = models.ManyToManyField(StudentGroup, blank=True)
 
 	class Meta:
 		ordering = ["-name"]
@@ -95,4 +53,36 @@ class Student(models.Model):
 class StudentForm(forms.ModelForm):
 	class Meta:
 		model = Student
+		fields =  ['ssn', 'name']
+
+class School(models.Model):
+	name = models.CharField(max_length = 128)
+	ssn = models.CharField(max_length = 10)
+	managers = models.ManyToManyField(Manager)
+	teachers = models.ManyToManyField(Teacher)
+	students = models.ManyToManyField(Student)
+
+	def __str__(self):
+		return self.name + " (" + self.ssn + ")"
+
+class SchoolForm(forms.ModelForm):
+	class Meta:
+		model = School
 		fields = '__all__'
+		widgets = {'group': forms.HiddenInput()}
+
+class StudentGroup(models.Model):
+	name = models.CharField(max_length = 128)
+	student_year = models.CharField(max_length = 2, null=True, blank=True)
+	group_managers = models.ManyToManyField(Teacher)
+	school = models.ForeignKey('School')
+	students = models.ManyToManyField(Student, blank=True)
+
+	def __str__(self):
+		return self.name
+
+class StudentGroupForm(forms.ModelForm):
+	class Meta:
+		model = StudentGroup
+		fields =  ['name', 'student_year', 'group_managers', 'school', 'students']
+		widgets = {'school': forms.HiddenInput()}

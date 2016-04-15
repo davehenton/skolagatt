@@ -2,5 +2,10 @@
 
 {% block content %}
 <h1>{{student.name}}</h1>
-
+<div class="row">
+	<div class="col-md-12">
+		<a href="{% url 'schools:student_update' school.id student.id %}" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span>&nbsp;Breyta</a>
+		<a href="{% url 'schools:student_delete' school.id student.id %}" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span>&nbsp;Eyða</a>
+	</div>
+</div>
 {% endblock %}

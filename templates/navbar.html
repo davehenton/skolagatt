@@ -9,7 +9,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="">
+          <a class="navbar-brand" href="/">
             <span><img src="{% static 'img/logo.png'%}" /></span>
             <span>Skólagátt</span>
           </a>
@@ -17,11 +17,11 @@
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
           	<li class="dropdown">
-            		{% get_schools %}
+            		{% get_user_schools %}
             	</li>
-            <li><a href="/bekkir">Bekkir</a></li>
-            <li><a href="/nemendur">Nemendur</a></li>
-            <li><a href="/kennarar">Kennarar</a></li>
+            <li><a href="bekkur/">Bekkir</a></li>
+            <li><a href="nemandi/">Nemendur</a></li>
+            <li><a href="kennari/">Kennarar</a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
             <!-- li><a href="https://innskraning.island.is/?id=mms.is&login=skolagatt"><span class="glyphicon glyphicon-user">Innskráning</span></a></li -->
