@@ -64,6 +64,14 @@ class SchoolDelete(UserPassesTestMixin, DeleteView):
 class ManagerListing(UserPassesTestMixin, ListView):
   model = Manager
 
+  def get_context_data(self, **kwargs):
+    context = super(ManagerListing, self).get_context_data(**kwargs)
+    school = School.objects.get(pk=self.kwargs['school_id'])
+    context['school'] = school
+    context['managers'] = Manager.objects.filter(school=school)
+    return context
+
+
   def test_func(self):
     return True # is_manager(self) or is_teacher(self)
 
@@ -161,6 +169,13 @@ class ManagerDelete(UserPassesTestMixin, DeleteView):
 class TeacherListing(UserPassesTestMixin, ListView):
   model = Teacher
 
+  def get_context_data(self, **kwargs):
+    context = super(TeacherListing, self).get_context_data(**kwargs)
+    school = School.objects.get(pk=self.kwargs['school_id'])
+    context['school'] = school
+    context['teachers'] = Teacher.objects.filter(school=school)
+    return context
+
   def test_func(self):
     return True #is_manager(self) or is_teacher(self)
 
@@ -251,6 +266,13 @@ class TeacherDelete(UserPassesTestMixin, DeleteView):
 
 class StudentListing(UserPassesTestMixin, ListView):
   model = Student
+
+  def get_context_data(self, **kwargs):
+    context = super(StudentListing, self).get_context_data(**kwargs)
+    school = School.objects.get(pk=self.kwargs['school_id'])
+    context['school'] = school
+    context['students'] = Student.objects.filter(school=school)
+    return context
 
   def test_func(self):
     return True# is_manager(self) or is_teacher(self)
@@ -346,6 +368,13 @@ class StudentDelete(UserPassesTestMixin, DeleteView):
 class StudentGroupListing(UserPassesTestMixin, ListView):
   model = StudentGroup
 
+  def get_context_data(self, **kwargs):
+    context = super(StudentGroupListing, self).get_context_data(**kwargs)
+    school = School.objects.get(pk=self.kwargs['school_id'])
+    context['school'] = school
+    context['studentgroups'] = StudentGroup.objects.filter(school=school)
+    return context
+
   def test_func(self):
     return True #is_manager(self) or is_teacher(self)
 
@@ -373,10 +402,16 @@ class StudentGroupCreate(UserPassesTestMixin, CreateView):
     context['school'] = School.objects.get(pk=self.kwargs['school_id'])
     return context
 
-  def form_valid(self, form):
-    student_group = form.save(commit=False)
-    student_group.school = School.objects.get(pk=self.kwargs['school_id'])
-    return super(StudentGroupCreate, self).form_valid(form)
+  def post(self, *args, **kwargs):
+    self.object = None
+    form = self.get_form()
+    #make data mutable
+    form.data = self.request.POST.copy()
+    form.data['school'] = School.objects.get(pk=self.kwargs['school_id']).pk
+    if form.is_valid():
+      return self.form_valid(form)
+    else:
+      return self.form_invalid(form)
 
   def test_func(self):
     return True #is_manager(self) or is_teacher(self)

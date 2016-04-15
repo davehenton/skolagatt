@@ -1,0 +1,24 @@
+{% extends 'common/index.html'%}
+
+{% block content %}
+<h3>Nemendur</h3>
+<div>
+	<div id="student_list" class="table table-hover">
+		<div class="row">
+			<div class="col-md-1"><h4>Kennitala</h4></div>
+			<div class="col-md-3"><h4>Nafn</h4></div>
+			<div class="col-md-1"><h4>Aðgerðir</h4></div>
+		</div>
+		{% for student in students %}
+		<div class="row">
+			<div class="col-md-1"><a href="{% url 'schools:student_detail' school.id student.id %}">{{student.ssn}}</a></div>
+			<div class="col-md-3"><a href="{% url 'schools:student_detail' school.id student.id %}">{{student.name}}</a></div>
+			<div class="col-md-1">
+				<a href="{% url 'schools:student_update' school.id student.id %}" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
+				<a href="{% url 'schools:student_delete' school.id student.id %}" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-trash"></span></a>
+			</div>
+		</div>
+		{% endfor %}
+	</div>
+</div>
+{% endblock %}
