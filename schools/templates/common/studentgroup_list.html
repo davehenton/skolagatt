@@ -3,6 +3,7 @@
 {% block content %}
 <h3>Bekkir og hópar</h3>
 <div>
+	<a href="{% url 'schools:group_create' school.id %}" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span>Bæta við hóp</a>
 	<div id="teacher_list" class="table table-hover">
 		<div class="row">
 			<div class="col-md-3"><h4>Nafn</h4></div>

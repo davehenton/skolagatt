@@ -3,6 +3,7 @@
 {% block content %}
 <h3>Kennarar</h3>
 <div>
+	<a href="{% url 'schools:teacher_create' school.id %}" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span>Bæta við kennara</a>
 	<div id="teacher_list" class="table table-hover">
 		<div class="row">
 			<div class="col-md-1"><h4>Kennitala</h4></div>

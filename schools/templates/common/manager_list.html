@@ -3,6 +3,7 @@
 {% block content %}
 <h3>Skólastjórnendur</h3>
 <div>
+	<a href="{% url 'schools:manager_create' school.id %}" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span>Bæta við skólastjórnanda</a>
 	<div id="manager_list" class="table table-hover">
 		<div class="row">
 			<div class="col-md-1"><h4>Kennitala</h4></div>

@@ -5,6 +5,9 @@ from django.db import models
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.models import Group
+from django.utils import timezone
+
+from datetime import datetime
 
 class Manager(models.Model):
 	ssn = models.CharField(max_length = 10, unique=True)
@@ -74,7 +77,7 @@ class SchoolForm(forms.ModelForm):
 class StudentGroup(models.Model):
 	name = models.CharField(max_length = 128)
 	student_year = models.CharField(max_length = 2, null=True, blank=True)
-	group_managers = models.ManyToManyField(Teacher)
+	group_managers = models.ManyToManyField(Teacher, blank=True)
 	school = models.ForeignKey('School')
 	students = models.ManyToManyField(Student, blank=True)
 
@@ -86,3 +89,11 @@ class StudentGroupForm(forms.ModelForm):
 		model = StudentGroup
 		fields =  ['name', 'student_year', 'group_managers', 'school', 'students']
 		widgets = {'school': forms.HiddenInput()}
+
+class SurveyResult(models.Model):
+	student = models.ForeignKey('Student')
+	created_at = models.DateTimeField(default=timezone.now)
+	completed_at = models.DateTimeField(default=timezone.now)
+	results = models.TextField()
+	reported_by = models.ForeignKey('Teacher')
+	survey = models.CharField(max_length = 1024)

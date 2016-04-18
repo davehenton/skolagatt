@@ -2,7 +2,7 @@
 import csv
 
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render, render_to_response, get_object_or_404
+from django.shortcuts import render, render_to_response, get_object_or_404, redirect
 from django.template import RequestContext, loader
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
 from django.core.urlresolvers import reverse_lazy, reverse
@@ -290,10 +290,33 @@ class StudentDetail(UserPassesTestMixin, DetailView):
     context['is_teacher'] = not self.request.user.is_anonymous()
     return context
 
+class StudentCreateImport(UserPassesTestMixin, CreateView):
+  model = Student
+  form_class = StudentForm
+  login_url = reverse_lazy('denied')
+  template_name = "common/student_form_import.html"
+
+  def post(self, *args, **kwargs):
+    for row in self.request.FILES['file'].readlines():
+      print(row)
+
+    return HttpResponseRedirect(self.get_success_url())
+
+  def test_func(self):
+    return True #is_manager(self) or self.request.user.is_superuser()
+
+  def get_success_url(self):
+    try:
+      school_id = self.kwargs['school_id']
+      School.objects.get(pk=school_id).students.add(self.object)
+      return reverse_lazy('schools:school_detail',
+                              kwargs={'pk': school_id})
+    except:
+      return reverse_lazy('schools:school_listing')
+
 class StudentCreate(UserPassesTestMixin, CreateView):
   model = Student
   form_class = StudentForm
-  success_url = reverse_lazy('schools:school_listing')
   login_url = reverse_lazy('denied')
 
   def test_func(self):
