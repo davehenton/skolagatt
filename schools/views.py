@@ -506,6 +506,7 @@ class SurveyDetail(UserPassesTestMixin, DetailView):
     # xxx will be available in the template as the related objects
     context = super(SurveyDetail, self).get_context_data(**kwargs)
     context['school'] = School.objects.get(pk=self.kwargs['school_id'])
+    context['students'] = self.object.studentgroup.students.all()
     context['is_teacher'] = not self.request.user.is_anonymous()
     return context
 

@@ -11,7 +11,7 @@
 	</div>
 </div>
 <div class="row">
-	<div class="col-md-6">
+	<div class="col-md-4">
 		<ul>
 			<li>Árgangur: {{studentgroup.student_year}}</li>
 			<li><h4>Umsjónarmenn</h4>
@@ -23,12 +23,23 @@
 			</li>
 		</ul>
 	</div>
-	<div class="col-md-6">
+	<div class="col-md-4">
 		<ul>
 			<li><h4>Nemendur</h4>
 				<ul>
 					{% for student in studentgroup.students.all %}
 						<li><a href="{% url 'schools:teacher_detail' school.id student.id %}">{{student}}</a></li>
+					{% endfor %}
+				</ul>
+			</li>
+		</ul>
+	</div>
+	<div class="col-md-4">
+		<ul>
+			<li><h4>Kannanir</h4>
+				<ul>
+					{% for survey in studentgroup.survey_set.all %}
+						<li><a href="{% url 'schools:survey_detail' school.id survey.id %}">{{survey.title}}</a></li>
 					{% endfor %}
 				</ul>
 			</li>
