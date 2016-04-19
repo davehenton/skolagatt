@@ -8,10 +8,12 @@ from django.views.generic import ListView, CreateView, DetailView, UpdateView, D
 from django.core.urlresolvers import reverse_lazy, reverse
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.contrib.auth.models import User, Group
+from django.conf import settings
 from uuid import uuid4
+import requests
 
-from common.models import School, Student, StudentGroup, Manager, Teacher
-from common.models import SchoolForm, StudentForm, StudentGroupForm, ManagerForm, TeacherForm
+from common.models import School, Student, StudentGroup, Manager, Teacher, Survey
+from common.models import SchoolForm, StudentForm, StudentGroupForm, ManagerForm, TeacherForm, SurveyForm
 
 class SchoolListing(UserPassesTestMixin, ListView):
   model = School
@@ -30,6 +32,7 @@ class SchoolDetail(UserPassesTestMixin, DetailView):
     context['studentgroup_list'] = self.object.studentgroup_set.all()
     context['managers'] = self.object.managers.all()
     context['teachers'] = self.object.teachers.all()
+    context['surveys'] = Survey.objects.filter(studentgroup__in=self.object.studentgroup_set.all())
     context['students'] = self.object.students.all()
     context['is_teacher'] = not self.request.user.is_anonymous()
     return context
@@ -473,6 +476,113 @@ class StudentGroupUpdate(UserPassesTestMixin, UpdateView):
 
 class StudentGroupDelete(UserPassesTestMixin, DeleteView):
   model = StudentGroup
+  login_url = reverse_lazy('denied')
+  template_name = "schools/confirm_delete.html"
+
+  def test_func(self):
+    return True #is_manager(self) or is_teacher(self)
+
+  def get_success_url(self):
+    try:
+      school_id = self.kwargs['school_id']
+      return reverse_lazy('schools:school_detail',
+                              kwargs={'pk': school_id})
+    except:
+      return reverse_lazy('schools:school_listing')
+
+class SurveyListing(UserPassesTestMixin, ListView):
+  model = Survey
+
+  def test_func(self):
+    return True #is_manager(self) or is_teacher(self)
+
+class SurveyDetail(UserPassesTestMixin, DetailView):
+  model = Survey
+
+  def test_func(self):
+    return True #is_manager(self) or is_teacher(self)
+
+  def get_context_data(self, **kwargs):
+    # xxx will be available in the template as the related objects
+    context = super(SurveyDetail, self).get_context_data(**kwargs)
+    context['school'] = School.objects.get(pk=self.kwargs['school_id'])
+    context['is_teacher'] = not self.request.user.is_anonymous()
+    return context
+
+class SurveyCreate(UserPassesTestMixin, CreateView):
+  model = Survey
+  form_class = SurveyForm
+  login_url = reverse_lazy('denied')
+
+  def get_survey(self):
+    try:
+        r = requests.get(settings.PROFAGRUNNUR_URL)
+        #data = [{'id': programme['_id'], 'title': programme['title']} for programme in r.json()]
+        #return sorted(data, key=itemgetter('title'))
+        return r.json()
+    except:
+      return []
+
+  def get_form(self):
+    form = super(SurveyCreate, self).get_form(self.form_class)
+    form.fields['studentgroup'].queryset = StudentGroup.objects.filter(school=self.kwargs['school_id'])
+    return form
+
+  def get_context_data(self, **kwargs):
+      # xxx will be available in the template as the related objects
+      context = super(SurveyCreate, self).get_context_data(**kwargs)
+      context['survey_list'] = self.get_survey()
+      return context
+
+  def test_func(self):
+    return True #is_manager(self) or is_teacher(self)
+
+  def get_success_url(self):
+    try:
+      school_id = self.kwargs['school_id']
+      return reverse_lazy('schools:school_detail',
+                              kwargs={'pk': school_id})
+    except:
+      return reverse_lazy('schools:school_listing')
+
+class SurveyUpdate(UserPassesTestMixin, UpdateView):
+  model = Survey
+  form_class = SurveyForm
+  login_url = reverse_lazy('denied')
+
+  def test_func(self):
+    return True #is_manager(self) or is_teacher(self)
+
+  def get_survey(self):
+    try:
+        r = requests.get(settings.PROFAGRUNNUR_URL)
+        #data = [{'id': programme['_id'], 'title': programme['title']} for programme in r.json()]
+        #return sorted(data, key=itemgetter('title'))
+        return r.json()
+    except:
+      return []
+
+  def get_form(self):
+    form = super(SurveyUpdate, self).get_form(self.form_class)
+    form.fields['studentgroup'].queryset = StudentGroup.objects.filter(school=self.kwargs['school_id'])
+    return form
+
+  def get_context_data(self, **kwargs):
+      # xxx will be available in the template as the related objects
+      context = super(SurveyUpdate, self).get_context_data(**kwargs)
+      context['survey_list'] = self.get_survey()
+      return context
+
+  def get_success_url(self):
+    try:
+      school_id = self.kwargs['school_id']
+      return reverse_lazy('schools:school_detail',
+                              kwargs={'pk': school_id})
+    except:
+      return reverse_lazy('schools:school_listing')
+
+class SurveyDelete(UserPassesTestMixin, DeleteView):
+  model = Survey
   login_url = reverse_lazy('denied')
   template_name = "schools/confirm_delete.html"
 

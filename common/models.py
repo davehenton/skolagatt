@@ -90,10 +90,28 @@ class StudentGroupForm(forms.ModelForm):
 		fields =  ['name', 'student_year', 'group_managers', 'school', 'students']
 		widgets = {'school': forms.HiddenInput()}
 
+class Survey(models.Model):
+	studentgroup = models.ForeignKey('StudentGroup')
+	survey = models.CharField(max_length = 1024) #url to profagrunnur
+	title = models.CharField(max_length = 256) #value from profagrunnur
+	active_from = models.DateField(default=timezone.now) #value from profagrunnur
+	active_to = models.DateField(default=timezone.now) #value from profagrunnur
+
+class SurveyForm(forms.ModelForm):
+	class Meta:
+		model = Survey
+		fields =  ['studentgroup', 'survey', 'title', 'active_from', 'active_to']
+		widgets = {
+			'survey': forms.TextInput(attrs={'readonly': True}),
+			'title': forms.TextInput(attrs={'readonly': True}),
+			'active_from': forms.TextInput(attrs={'readonly': True}),
+			'active_to': forms.TextInput(attrs={'readonly': True}),
+		}
+
 class SurveyResult(models.Model):
 	student = models.ForeignKey('Student')
 	created_at = models.DateTimeField(default=timezone.now)
 	completed_at = models.DateTimeField(default=timezone.now)
 	results = models.TextField()
 	reported_by = models.ForeignKey('Teacher')
-	survey = models.CharField(max_length = 1024)
+	survey = models.CharField(max_length = 1024) #url to survey

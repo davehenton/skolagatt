@@ -1,0 +1,15 @@
+{% extends 'common/index.html'%}
+{% include staticfiles%}
+
+{% block content %}
+<script type='text/javascript'>
+	var survey_list = {{ survey_list|safe }};
+	console.log(survey_list);
+</script>
+
+<form action="" method="post">
+	{% csrf_token %}
+	{{ form.as_p }}
+	<input type="submit" value="Save" />
+</form>
+{% endblock %}

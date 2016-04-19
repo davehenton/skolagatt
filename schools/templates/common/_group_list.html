@@ -1,14 +1,14 @@
 <h3>Bekkir og hópar</h3>
 <div>
-	<div id="teacher_list" class="table table-hover">
+	<div id="survey_list" class="table table-hover">
 		<div class="row">
-			<div class="col-md-4"><h4>Nafn</h4></div>
-			<div class="col-md-8"><h4>Árgangur</h4></div>
+			<div class="col-md-10"><h4>Nafn</h4></div>
+			<div class="col-md-2"><h4>#</h4></div>
 		</div>
 		{% for group in studentgroup_list %}
 		<div class="row">
-			<div class="col-md-4"><a href="{% url 'schools:group_detail' school.id group.id %}">{{group.name}}</a></div>
-			<div class="col-md-8">{{group.student_year}}</div>
+			<div class="col-md-10"><a href="{% url 'schools:group_detail' school.id group.id %}">{{group.name}}</a></div>
+			<div class="col-md-2">{{group.student_year}}</div>
 		</div>
 		{% endfor %}
 	</div>

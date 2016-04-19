@@ -1,0 +1,15 @@
+<h3>Bekkir og hópar</h3>
+<div>
+	<div id="survey_list" class="table table-hover">
+		<div class="row">
+			<div class="col-md-6"><h4>Könnun</h4></div>
+			<div class="col-md-6"><h4>#</h4></div>
+		</div>
+		{% for survey in surveys %}
+		<div class="row">
+			<div class="col-md-6"><a href="{% url 'schools:survey_detail' school.id survey.id %}">{{survey.title}}</a></div>
+			<div class="col-md-6">{{survey.studentgroup}}</div>
+		</div>
+		{% endfor %}
+	</div>
+</div>

@@ -5,6 +5,7 @@ from .views import SchoolListing, SchoolDetail, SchoolCreate, SchoolUpdate, Scho
 from .views import StudentGroupListing, StudentGroupDetail, StudentGroupCreate, StudentGroupUpdate, StudentGroupDelete
 from .views import ManagerListing, ManagerDetail, ManagerCreate, ManagerUpdate, ManagerDelete
 from .views import TeacherListing, TeacherDetail, TeacherCreate, TeacherUpdate, TeacherDelete
+from .views import SurveyListing, SurveyDetail, SurveyCreate, SurveyUpdate, SurveyDelete
 
 app_name = 'schools'
 urlpatterns = [
@@ -38,5 +39,12 @@ urlpatterns = [
     url(r'^(?P<school_id>\d+)/kennari/create/$', TeacherCreate.as_view(), name='teacher_create'),
     url(r'^(?P<school_id>\d+)/kennari/(?P<pk>\d+)/update/$', TeacherUpdate.as_view(), name='teacher_update'),
     url(r'^(?P<school_id>\d+)/kennari/(?P<pk>\d+)/delete/$', TeacherDelete.as_view(), name='teacher_delete'),
+
+    url(r'^(?P<school_id>\d+)/könnun/$', SurveyListing.as_view(), name='survey_listing'),
+    url(r'^(?P<school_id>\d+)/könnun/(?P<pk>\d+)/$', SurveyDetail.as_view(), name='survey_detail'),
+    url(r'^(?P<school_id>\d+)/könnun/create/$', SurveyCreate.as_view(), name='survey_create'),
+    url(r'^(?P<school_id>\d+)/könnun/(?P<pk>\d+)/update/$', SurveyUpdate.as_view(), name='survey_update'),
+    url(r'^(?P<school_id>\d+)/könnun/(?P<pk>\d+)/delete/$', SurveyDelete.as_view(), name='survey_delete'),
+
 
 ]
