@@ -606,6 +606,14 @@ class SurveyDelete(UserPassesTestMixin, DeleteView):
   def test_func(self):
     return True #is_manager(self) or is_teacher(self)
 
+  def delete(self, request, *args, **kwargs):
+    self.object = self.get_object()
+    success_url = self.get_success_url()
+    #delete SurveyResults
+    SurveyResult.objects.filter(survey=self.object).delete()
+    self.object.delete()
+    return HttpResponseRedirect(success_url)
+
   def get_success_url(self):
     try:
       school_id = self.kwargs['school_id']
@@ -623,6 +631,7 @@ class SurveyResultCreate(UserPassesTestMixin, CreateView):
     # xxx will be available in the template as the related objects
     context = super(SurveyResultCreate, self).get_context_data(**kwargs)
     context['data_fields'] = json.loads(Survey.objects.get(pk=self.kwargs['survey_id']).data_fields)
+    context['data_result'] = {'error': 'no value'}
     context['student'] = Student.objects.filter(pk=self.kwargs['student_id'])
     context['survey'] = Survey.objects.filter(pk=self.kwargs['survey_id'])
     return context
@@ -674,14 +683,16 @@ class SurveyResultUpdate(UserPassesTestMixin, UpdateView):
   def test_func(self):
     return True #is_manager(self) or is_teacher(self)
 
-  def get_survey(self):
-    try:
-        r = requests.get(settings.PROFAGRUNNUR_URL)
-        #data = [{'id': programme['_id'], 'title': programme['title']} for programme in r.json()]
-        #return sorted(data, key=itemgetter('title'))
-        return r.json()
-    except:
-      return []
+  def form_valid(self, form):
+    survey_results = form.save(commit=False)
+    survey_results.created_at = timezone.now()
+    data_fields = json.loads(Survey.objects.get(pk=self.kwargs['survey_id']).data_fields)
+    data_results = {}
+    for field in data_fields:
+      data_results[field['field_name']] = self.request.POST[field['field_name']]
+    survey_results.results = json.dumps(data_results)
+    #save()  # This is redundant, see comments.
+    return super(SurveyResultUpdate, self).form_valid(form)
 
   def get_context_data(self, **kwargs):
     # xxx will be available in the template as the related objects
@@ -694,9 +705,11 @@ class SurveyResultUpdate(UserPassesTestMixin, UpdateView):
 
   def get_success_url(self):
     try:
-      school_id = self.kwargs['school_id']
-      return reverse_lazy('schools:school_detail',
-                              kwargs={'pk': school_id})
+      return reverse_lazy('schools:survey_detail',
+                              kwargs={
+                                'pk': self.kwargs['survey_id'],
+                                'school_id': self.kwargs['school_id']
+                              })
     except:
       return reverse_lazy('schools:school_listing')
 

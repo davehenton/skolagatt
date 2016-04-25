@@ -11,27 +11,22 @@
 
 {% block script %}
 <script type='text/javascript'>
-	try{
-		var data_fields = {{data_fields|safe}};
-	}
-	catch(err){
-		var data_fields = {}
-	}
-	try{
-		var data_result = {{data_result|safe}};
-	}
-	catch(err){
-		var data_result = {};
-	}
+	var data_fields = {{data_fields|default:""|safe }};
+	var data_result = {{data_result|default:""|safe }};
 
 	try {
 		//add namska select
 		data_input = "";
+		console.log(data_fields);
 		$.each(data_fields, function(key, value){
-			console.log(value);
 			data_input += '<p>';
 			data_input += '<label for="'+value['field_name']+'">'+value['field_label']+': </label>';
-			data_input += '<input id="'+value['field_name']+'" name="'+value['field_name']+'" type="'+value['field_type']+'" />';
+			if(data_result.error === "no value") {
+				data_input += '<input id="'+value['field_name']+'" name="'+value['field_name']+'" type="'+value['field_type']+'"  value="" />';
+			}
+			else {
+				data_input += '<input id="'+value['field_name']+'" name="'+value['field_name']+'" type="'+value['field_type']+'"  value="'+data_result[value['field_name']]+'" />';
+			}
 			data_input += '</p>';
 		});
 		var s = $('#id_student').before(data_input);
