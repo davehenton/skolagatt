@@ -1,4 +1,5 @@
 {% extends 'common/index.html'%}
+{% load common_helpers %}
 
 {% block content %}
 <h1>{{survey.title}}</h1>
@@ -12,20 +13,61 @@
 		</div>
 		<div class="row">
 			<div class="col-md-12">
-				{{survey.active_from}}
+				Próf virkt frá: {{survey.active_from}}
 			</div>
+		</div>
+		<div class="row">
 			<div class="col-md-12">
-				{{survey.active_to}}
+				Próf virkt til: {{survey.active_to}}
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				<h4>Gagnasvæði</h4>
+				<ul>
+				{% for field in survey.data_fields|get_json %}
+					<li >
+						{{ field.field_label }} ({{ field.field_type }})
+					</li>
+				{% endfor %}
+				</ul>
 			</div>
 		</div>
 	</div>
 	<div class="col-md-6">
 		<div class="row">
 		{% for student in students %}
-		<div class="row">
-			<div class="col-md-4">{{student.ssn}}</div>
-			<div class="col-md-8"><a href="{% url 'schools:student_detail' school.id student.id %}">{{student.name}}</a></div>
-		</div>
+			{% get_survey_results student survey as student_result %}
+			<div class="row">
+				<div class="col-md-2">{{student.ssn}}</div>
+				<div class="col-md-6"><a href="{% url 'schools:student_detail' school.id student.id %}">{{student.name}}</a></div>
+				{% if student_result %}
+				<div class="col-md-4">
+					<a href="{% url 'schools:survey_result_update' school.id student.id survey.id student_result.id %}" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span>&nbsp;Breyta</a>
+					<button href="" class="btn btn-default btn-xs" type="button" data-toggle="collapse" data-target="#results-{{student_result.id}}" aria-expanded="false" aria-controls="collapseExample">
+						<span class="caret"></span>
+					</button>
+				</div>
+				{% else %}
+				<div class="col-md-4">
+					<a href="{% url 'schools:survey_result_create' school.id student.id survey.id %}" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span>&nbsp;Skrá</a>
+				</div>
+				{% endif %}
+			</div>
+			{% if student_result %}
+			<div class="collapse row" id="results-{{student_result.id}}">
+				<div class="well col-md-12">
+					{% with results=student_result.results|get_json %}
+					{% for key in results %}
+					<div class='row'>
+						<div class='col-md-2'>{{ key }}</div>
+						<div class='col-md-10'>{{ results|get_item:key }}</div>
+					</div>
+					{% endfor %}
+					{% endwith %}
+				</div>
+			</div>
+			{% endif %}
 		{% endfor %}
 		</div>
 	</div>

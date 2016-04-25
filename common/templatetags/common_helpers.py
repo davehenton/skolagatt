@@ -1,9 +1,20 @@
 from django import template
-from common.models import Manager, Teacher, School
+from common.models import Manager, Teacher, School, SurveyResult
 from itertools import chain
-import re
+import re, json
 
 register = template.Library()
+
+@register.filter
+def get_item(dictionary, key):
+	return dictionary.get(key)
+
+@register.filter
+def get_json(text):
+	try:
+		return json.loads(text)
+	except:
+		return {}
 
 @register.inclusion_tag('common/_school_list.html', takes_context=True)
 def get_user_schools(context):
@@ -21,3 +32,10 @@ def get_school_name(context):
 		return School.objects.get(pk=m.group('school_id')).name
 	except:
 		return "Velja skóla"
+
+@register.assignment_tag
+def get_survey_results(student, survey):
+	sr=SurveyResult.objects.filter(survey=survey, student=student)
+	if sr:
+		return sr.first()
+	return []

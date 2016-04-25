@@ -9,11 +9,12 @@ from django.core.urlresolvers import reverse_lazy, reverse
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.contrib.auth.models import User, Group
 from django.conf import settings
+from django.utils import timezone
 from uuid import uuid4
-import requests
+import requests, json
 
-from common.models import School, Student, StudentGroup, Manager, Teacher, Survey
-from common.models import SchoolForm, StudentForm, StudentGroupForm, ManagerForm, TeacherForm, SurveyForm
+from common.models import School, Student, StudentGroup, Manager, Teacher, Survey, SurveyResult
+from common.models import SchoolForm, StudentForm, StudentGroupForm, ManagerForm, TeacherForm, SurveyForm, SurveyResultForm
 
 class SchoolListing(UserPassesTestMixin, ListView):
   model = School
@@ -299,11 +300,28 @@ class StudentCreateImport(UserPassesTestMixin, CreateView):
   login_url = reverse_lazy('denied')
   template_name = "common/student_form_import.html"
 
-  def post(self, *args, **kwargs):
-    for row in self.request.FILES['file'].readlines():
-      print(row)
+  def get_context_data(self, **kwargs):
+    # xxx will be available in the template as the related objects
+    context = super(StudentCreateImport, self).get_context_data(**kwargs)
+    context['school'] = School.objects.get(pk=self.kwargs['school_id'])
+    return context
 
-    return HttpResponseRedirect(self.get_success_url())
+  def post(self, *args, **kwargs):
+    if(self.request.FILES):
+      ssn = self.request.POST.get('student_ssn')
+      name = self.request.POST.get('student_name')
+      if len(name) == 0 or len(ssn) == 0:
+        return HttpResponse("Verður að velja dálkanúmer")
+      else:
+        data = {}
+        for row in self.request.FILES['file'].readlines():
+          student_ssn = str(str(row).split(',')[int(ssn)]).strip()
+          student_name = str(str(row).split(',')[int(name)]).strip()
+          data[student_ssn] = student_name
+
+      return HttpResponse(str(data))
+    else:
+      return HttpResponse("actually save stuff")
 
   def test_func(self):
     return True #is_manager(self) or self.request.user.is_superuser()
@@ -518,8 +536,6 @@ class SurveyCreate(UserPassesTestMixin, CreateView):
   def get_survey(self):
     try:
         r = requests.get(settings.PROFAGRUNNUR_URL)
-        #data = [{'id': programme['_id'], 'title': programme['title']} for programme in r.json()]
-        #return sorted(data, key=itemgetter('title'))
         return r.json()
     except:
       return []
@@ -584,6 +600,108 @@ class SurveyUpdate(UserPassesTestMixin, UpdateView):
 
 class SurveyDelete(UserPassesTestMixin, DeleteView):
   model = Survey
+  login_url = reverse_lazy('denied')
+  template_name = "schools/confirm_delete.html"
+
+  def test_func(self):
+    return True #is_manager(self) or is_teacher(self)
+
+  def get_success_url(self):
+    try:
+      school_id = self.kwargs['school_id']
+      return reverse_lazy('schools:school_detail',
+                              kwargs={'pk': school_id})
+    except:
+      return reverse_lazy('schools:school_listing')
+
+class SurveyResultCreate(UserPassesTestMixin, CreateView):
+  model = SurveyResult
+  form_class = SurveyResultForm
+  login_url = reverse_lazy('denied')
+
+  def get_context_data(self, **kwargs):
+    # xxx will be available in the template as the related objects
+    context = super(SurveyResultCreate, self).get_context_data(**kwargs)
+    context['data_fields'] = json.loads(Survey.objects.get(pk=self.kwargs['survey_id']).data_fields)
+    context['student'] = Student.objects.filter(pk=self.kwargs['student_id'])
+    context['survey'] = Survey.objects.filter(pk=self.kwargs['survey_id'])
+    return context
+
+  def post(self, *args, **kwargs):
+    self.object = None
+    form = self.get_form()
+    #make data mutable
+    form.data = self.request.POST.copy()
+    form.data['student'] = Student.objects.get(pk=self.kwargs['student_id']).pk
+    form.data['survey'] = Survey.objects.get(pk=self.kwargs['survey_id'])
+    if form.is_valid():
+      return self.form_valid(form)
+    else:
+      return self.form_invalid(form)
+
+  def form_valid(self, form):
+    survey_results = form.save(commit=False)
+    survey_results.reported_by =Teacher.objects.get(pk=self.request.user.pk)
+    survey_results.student = Student.objects.get(pk=self.kwargs['student_id'])
+    survey_results.survey = Survey.objects.get(pk=self.kwargs['survey_id'])
+    survey_results.created_at = timezone.now()
+    data_fields = json.loads(Survey.objects.get(pk=self.kwargs['survey_id']).data_fields)
+    data_results = {}
+    for field in data_fields:
+      data_results[field['field_name']] = self.request.POST[field['field_name']]
+    survey_results.results = json.dumps(data_results)
+    #save()  # This is redundant, see comments.
+    return super(SurveyResultCreate, self).form_valid(form)
+
+  def test_func(self):
+    return True #is_manager(self) or is_teacher(self)
+
+  def get_success_url(self):
+    try:
+      return reverse_lazy('schools:survey_detail',
+                              kwargs={
+                                'pk': self.kwargs['survey_id'],
+                                'school_id': self.kwargs['school_id']
+                              })
+    except:
+      return reverse_lazy('schools:school_listing')
+
+class SurveyResultUpdate(UserPassesTestMixin, UpdateView):
+  model = SurveyResult
+  form_class = SurveyResultForm
+  login_url = reverse_lazy('denied')
+
+  def test_func(self):
+    return True #is_manager(self) or is_teacher(self)
+
+  def get_survey(self):
+    try:
+        r = requests.get(settings.PROFAGRUNNUR_URL)
+        #data = [{'id': programme['_id'], 'title': programme['title']} for programme in r.json()]
+        #return sorted(data, key=itemgetter('title'))
+        return r.json()
+    except:
+      return []
+
+  def get_context_data(self, **kwargs):
+    # xxx will be available in the template as the related objects
+    context = super(SurveyResultUpdate, self).get_context_data(**kwargs)
+    context['data_fields'] = json.loads(Survey.objects.get(pk=self.kwargs['survey_id']).data_fields)
+    context['student'] = Student.objects.filter(pk=self.kwargs['student_id'])
+    context['survey'] = Survey.objects.filter(pk=self.kwargs['survey_id'])
+    context['data_result'] = json.loads(SurveyResult.objects.get(pk=self.kwargs['pk']).results)
+    return context
+
+  def get_success_url(self):
+    try:
+      school_id = self.kwargs['school_id']
+      return reverse_lazy('schools:school_detail',
+                              kwargs={'pk': school_id})
+    except:
+      return reverse_lazy('schools:school_listing')
+
+class SurveyResultDelete(UserPassesTestMixin, DeleteView):
+  model = SurveyResult
   login_url = reverse_lazy('denied')
   template_name = "schools/confirm_delete.html"
 

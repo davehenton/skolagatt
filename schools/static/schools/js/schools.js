@@ -3,6 +3,7 @@ function update_form(data) {
 	$('#id_title').val(data[0]['title']);
 	$('#id_active_from').val(data[0]['active_from']);
 	$('#id_active_to').val(data[0]['active_to']);
+	$('#id_data_fields').val(JSON.stringify(data[0]['data_fields']));
 }
 
 function clear_form() {
@@ -10,6 +11,7 @@ function clear_form() {
 	$('#id_title').val('');
 	$('#id_active_from').val('');
 	$('#id_active_to').val('');
+	$('#id_data_fields').val('');
 }
 
 
@@ -28,8 +30,7 @@ $(function() {
 	try {
 		//add namska select
 		var select = $("<select id=\"survey_select\" name=\"survey_select\" />");
-		console.log(select);
-		var options= '<option value="">Velja könnun</option>';;
+		var options= '<option value="">Velja könnun</option>';
 		$.each(survey_list, function(key, value){
 			options += '<option value=' + value['pk'] + '>' + value['title'] + '</option>';
 		});

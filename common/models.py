@@ -8,6 +8,7 @@ from django.contrib.auth.models import Group
 from django.utils import timezone
 
 from datetime import datetime
+import json
 
 class Manager(models.Model):
 	ssn = models.CharField(max_length = 10, unique=True)
@@ -96,11 +97,12 @@ class Survey(models.Model):
 	title = models.CharField(max_length = 256) #value from profagrunnur
 	active_from = models.DateField(default=timezone.now) #value from profagrunnur
 	active_to = models.DateField(default=timezone.now) #value from profagrunnur
+	data_fields = models.TextField()
 
 class SurveyForm(forms.ModelForm):
 	class Meta:
 		model = Survey
-		fields =  ['studentgroup', 'survey', 'title', 'active_from', 'active_to']
+		fields =  ['studentgroup', 'survey', 'title', 'active_from', 'active_to', 'data_fields']
 		widgets = {
 			'survey': forms.TextInput(attrs={'readonly': True}),
 			'title': forms.TextInput(attrs={'readonly': True}),
@@ -111,7 +113,20 @@ class SurveyForm(forms.ModelForm):
 class SurveyResult(models.Model):
 	student = models.ForeignKey('Student')
 	created_at = models.DateTimeField(default=timezone.now)
-	completed_at = models.DateTimeField(default=timezone.now)
 	results = models.TextField()
 	reported_by = models.ForeignKey('Teacher')
 	survey = models.CharField(max_length = 1024) #url to survey
+
+	@classmethod
+	def get_results(cls, id):
+		print(cls(pk=id))
+		return json.loads(cls(pk=id).results)
+
+class SurveyResultForm(forms.ModelForm):
+	class Meta:
+		model = SurveyResult
+		fields = ['student', 'survey']
+		widgets = {
+			'student': forms.HiddenInput(),
+			'survey': forms.HiddenInput(),
+		}
