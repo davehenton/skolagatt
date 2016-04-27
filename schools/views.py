@@ -311,16 +311,17 @@ class StudentCreateImport(UserPassesTestMixin, CreateView):
       ssn = self.request.POST.get('student_ssn')
       name = self.request.POST.get('student_name')
       if len(name) == 0 or len(ssn) == 0:
-        return HttpResponse("Verður að velja dálkanúmer")
+        return HttpResponse("Það verður að velja dálkanúmer")
       else:
-        data = {}
+        data = []
         for row in self.request.FILES['file'].readlines():
-          student_ssn = str(str(row).split(',')[int(ssn)]).strip()
-          student_name = str(str(row).split(',')[int(name)]).strip()
-          data[student_ssn] = student_name
-
-      return HttpResponse(str(data))
+          row = row.decode('utf-8')
+          student_ssn = row.split(',')[int(ssn)]
+          student_name = row.split(',')[int(name)]
+          data.append({'name': student_name.strip(), 'ssn': student_ssn.strip()})
+      return render(self.request, 'common/student_verify_import.html', {'data': json.dumps(data), 'school': School.objects.get(pk=self.kwargs['school_id'])})
     else:
+      print(self.request.POST)
       return HttpResponse("actually save stuff")
 
   def test_func(self):

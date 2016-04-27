@@ -1,0 +1,43 @@
+{% extends 'common/index.html'%}
+{% include staticfiles%}
+{% block content %}
+
+	<div class="row">
+		<div class="col-md-12"><h3>Eru gögnin rétt?</h3></div>
+	</div>
+	<div class="row">
+		<div class="col-md-2">
+			<h3>Já</h3>
+			<a class="btn btn-default" href="" id="save_data"><span class="glyphicon glyphicon-ok"></span>&nbsp;Vista gögn</a>
+		</div>
+		<div class="col-md-2">
+			<h3>Nei</h3>
+			<a class="btn btn-default" href="{% url 'schools:school_detail' school.id %}"><span class="glyphicon glyphicon-remove"></span>&nbsp;Hætta við</a>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-1"><h4>Kennitala</h4></div>
+		<div class="col-md-11"><h4>Nafn nemanda</h4></div>
+	</div>
+	{% for student in data %}
+		<div class="row">
+			<div class="col-md-1">{{ student.ssn }}</div>
+			<div class="col-md-11">{{ student.name }}</div>
+		</div>
+	{% endfor %}
+{% endblock %}
+{% block script %}
+	<script type='text/javascript'>
+		var data = {{data|safe}};
+		$( document ).on("click", "#save_data", function(){
+			$.ajax({
+				type: "POST",
+				url: '',
+				data: {
+					'csrfmiddlewaretoken': '{{ csrf_token }}',
+					'students': data,
+				},
+			});
+		});
+	</script>
+{% endblock %}
