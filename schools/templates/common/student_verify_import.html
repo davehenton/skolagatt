@@ -35,7 +35,7 @@
 				url: '',
 				data: {
 					'csrfmiddlewaretoken': '{{ csrf_token }}',
-					'students': data,
+					'students': JSON.stringify(data),
 				},
 			});
 		});

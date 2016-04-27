@@ -319,9 +319,10 @@ class StudentCreateImport(UserPassesTestMixin, CreateView):
           student_ssn = row.split(',')[int(ssn)]
           student_name = row.split(',')[int(name)]
           data.append({'name': student_name.strip(), 'ssn': student_ssn.strip()})
-      return render(self.request, 'common/student_verify_import.html', {'data': json.dumps(data), 'school': School.objects.get(pk=self.kwargs['school_id'])})
+      return render(self.request, 'common/student_verify_import.html', {'data': data, 'school': School.objects.get(pk=self.kwargs['school_id'])})
     else:
-      print(self.request.POST)
+      student_data = json.loads(self.request.POST['students'])
+      print(student_data[0])
       return HttpResponse("actually save stuff")
 
   def test_func(self):
