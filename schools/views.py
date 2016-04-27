@@ -322,8 +322,16 @@ class StudentCreateImport(UserPassesTestMixin, CreateView):
       return render(self.request, 'common/student_verify_import.html', {'data': data, 'school': School.objects.get(pk=self.kwargs['school_id'])})
     else:
       student_data = json.loads(self.request.POST['students'])
-      print(student_data[0])
-      return HttpResponse("actually save stuff")
+      school = School.objects.get(pk=self.kwargs['school_id'])
+      #iterate through students, add them if they don't exist then add to school
+      for student in student_data:
+        try:
+          s = Student.objects.create(**student)
+        except:
+          pass #student already exists
+        school.students.add(s)
+
+    return HttpResponseRedirect(self.get_success_url())
 
   def test_func(self):
     return True #is_manager(self) or self.request.user.is_superuser()
