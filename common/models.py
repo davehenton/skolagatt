@@ -49,7 +49,7 @@ class Student(models.Model):
 	name = models.CharField(max_length = 128)
 
 	class Meta:
-		ordering = ["-name"]
+		ordering = ["name"]
 
 	def __str__(self):
 		return self.name
@@ -68,6 +68,9 @@ class School(models.Model):
 
 	def __str__(self):
 		return self.name + " (" + self.ssn + ")"
+
+	class Meta:
+		ordering = ["name"]
 
 class SchoolForm(forms.ModelForm):
 	class Meta:

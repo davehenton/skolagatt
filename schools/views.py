@@ -311,17 +311,27 @@ class StudentCreateImport(UserPassesTestMixin, CreateView):
       ssn = self.request.POST.get('student_ssn')
       name = self.request.POST.get('student_name')
       if len(name) == 0 or len(ssn) == 0:
-        return HttpResponse("Verður að velja dálkanúmer")
+        return HttpResponse("Það verður að velja dálkanúmer")
       else:
-        data = {}
+        data = []
         for row in self.request.FILES['file'].readlines():
-          student_ssn = str(str(row).split(',')[int(ssn)]).strip()
-          student_name = str(str(row).split(',')[int(name)]).strip()
-          data[student_ssn] = student_name
-
-      return HttpResponse(str(data))
+          row = row.decode('utf-8')
+          student_ssn = row.split(',')[int(ssn)]
+          student_name = row.split(',')[int(name)]
+          data.append({'name': student_name.strip(), 'ssn': student_ssn.strip()})
+      return render(self.request, 'common/student_verify_import.html', {'data': data, 'school': School.objects.get(pk=self.kwargs['school_id'])})
     else:
-      return HttpResponse("actually save stuff")
+      student_data = json.loads(self.request.POST['students'])
+      school = School.objects.get(pk=self.kwargs['school_id'])
+      #iterate through students, add them if they don't exist then add to school
+      for student in student_data:
+        try:
+          s = Student.objects.create(**student)
+        except:
+          pass #student already exists
+        school.students.add(s)
+
+    return HttpResponseRedirect(self.get_success_url())
 
   def test_func(self):
     return True #is_manager(self) or self.request.user.is_superuser()
