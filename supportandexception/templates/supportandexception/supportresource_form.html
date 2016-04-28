@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+
+
+
+{% block content %}
+
+
+<script>
+	var reading_assistance = [];
+	var interpretation = [];
+	var return_to_sites = [];
+	var longer_time = [];
+	var pagetype = "supportresource";
+	
+	reading_assistance={{supportresource.reading_assistance}};
+	interpretation={{supportresource.interpretation}};
+	return_to_sites={{supportresource.return_to_sites}};
+	longer_time={{supportresource.longer_time}};
+	
+	
+</script>
+<form action="" method="post">{% csrf_token %}
+	
+	<div class="row">
+		<div class="col-md-4">
+		
+		Nafn:{{student.name}}Kennitala:{{student.ssn}}4. bekk     Bekkur:     Prófstofa:
+		
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-4">
+			<b>Minnispunktar um skráninguna:</b>
+			<textarea rows="5" cols="50" name="notes">{{student.notes}}</textarea>
+		</div>
+	</div>
+	
+
+	<div class="row">
+		<div class="col-md-12">
+			<div class="row">
+				<div class="col-md-4">
+					<b>Stuðningsúrræði</b>
+				</div>
+			</div>
+			Athugið að ef skráð hefur verið beiðni um stuðningsúrræði fyrir nemanda. En síðar er skráð undanþága þá er fyrri beiðnin geymd. Ef ákveðið er síðar að nemandi þreyti prófið og umsókn um undanþágu degin til baka þá gildir umsóknin um stuðningsúrræðin.
+		</div>
+	</div>
+	
+	<table>
+		<tr>
+			<th></th>
+			<th>Íslenska</th>
+			<th>Enska</th>
+			<th>Stærðfræði</th>
+		</tr>
+	{% for value, text in form.support_title.field.choices %}
+		<tr><th>{{text}}</th>
+		{% if 'reading_assistance' == value %}
+		{% for check in form.reading_assistance %}
+		<td>{{check.tag}}</td>
+		{% endfor %}
+		{% endif %}
+		{% if 'interpretation' == value %}
+		{% for check in form.interpretation %}
+		<td>{{check.tag}}</td>
+		{% endfor %}
+		{% endif %}
+		{% if 'return_to_sites' == value %}
+		{% for check in form.return_to_sites %}
+		<td>{{check.tag}}</td>
+		{% endfor %}
+		{% endif %}
+		{% if 'longer_time' == value %}
+		{% for check in form.longer_time %}
+		<td>{{check.tag}}</td>
+		{% endfor %}
+		{% endif %}
+		</tr>
+	{% endfor %}
+	</table>
+	
+	
+	
+	<p></p>
+	Hér fyrir neðan er hægt að rita beiðni um önnur sérúrræði sem send verða Námsmatsstofnun í tölvupósti þegar umsóknin er staðfest
+	<textarea rows="5" cols="50" name="explanation">{{supportresource.explanation}}</textarea>
+
+	{% if supportresource.signature == null %}
+	<div class="row">
+	<div class="col-md-3 col-md-offset-3">
+	Skráð:{{supportresource.signature}}
+	</div>
+	</div>
+	<div class="row">
+	<div class="col-md-3 col-md-offset-3">
+	Skráir:{{supportresource.date}}
+	</div>
+	</div>
+	{% endif %}
+	<button class="btn btn-default" type="submit">Vista beiðni um stuðningsúrræði</button>
+	
+</form>
+{% endblock %}

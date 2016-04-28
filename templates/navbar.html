@@ -24,6 +24,7 @@
             <li><a href="{% url 'schools:teacher_listing' school.id %}">Kennarar</a></li>
             <li><a href="{% url 'schools:group_listing' school.id %}">Bekkir</a></li>
             <li><a href="{% url 'schools:student_listing' school.id %}">Nemendur</a></li>
+            <li><a href="{% url 'supportandexception:examsupport' school.id %}">Stuðningsúræði og undanþágur</a></li>
             {% endif %}
           </ul>
           <ul class="nav navbar-nav navbar-right">

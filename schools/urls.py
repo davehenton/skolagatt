@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from django.conf.urls import url
 
 from .views import StudentListing, StudentDetail, StudentCreate, StudentCreateImport, StudentUpdate, StudentDelete

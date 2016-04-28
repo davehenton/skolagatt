@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+
+
+
+{% block content %}
+
+<form id="target" action="" method="POST">
+	{% csrf_token %}
+	<b>Nemandi:</b> {{student.socialsecurity}} {{student.name}}4. bekk     Bekkur:     Prófstofa:
+<div>
+Minnispunktar um skráninguna:
+<textarea id="student-notes" rows="5" cols="50">{% if student.notes != null%}{{student.notes}}{% endif%}</textarea>
+</div>
+
+
+<a href="{% url 'supportandexception:supportresource' school.id student.id %}" class="btn btn-default" data-action="save_notes">Skrá úrræði</a>
+<a href="{% url 'supportandexception:exception' school.id student.id %}" class="btn btn-default" data-action="save_notes">Skrá Undanþágur</a>
+</form>
+
+{% endblock %}

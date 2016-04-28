@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from django import template
 from common.models import Manager, Teacher, School, SurveyResult
 from itertools import chain

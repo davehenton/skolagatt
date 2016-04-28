@@ -62,9 +62,9 @@ class StudentForm(forms.ModelForm):
 class School(models.Model):
 	name = models.CharField(max_length = 128)
 	ssn = models.CharField(max_length = 10)
-	managers = models.ManyToManyField(Manager)
-	teachers = models.ManyToManyField(Teacher)
-	students = models.ManyToManyField(Student)
+	managers = models.ManyToManyField(Manager, blank=True)
+	teachers = models.ManyToManyField(Teacher, blank=True)
+	students = models.ManyToManyField(Student, blank=True)
 
 	def __str__(self):
 		return self.name + " (" + self.ssn + ")"

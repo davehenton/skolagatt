@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'common',
     'schools',
+    'supportandexception',
 ]
 
 MIDDLEWARE_CLASSES = [
