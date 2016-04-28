@@ -6,6 +6,10 @@
 	<div class="col-md-12">
 		<a href="{% url 'schools:student_update' school.id student.id %}" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span>&nbsp;Breyta</a>
 		<a href="{% url 'schools:student_delete' school.id student.id %}" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span>&nbsp;Eyða</a>
+		<a href="{% url 'supportandexception:exception' school.id student.id %}" class="btn btn-info"><span class="
+glyphicon glyphicon-bookmark"></span>&nbsp;Undanþágur</a>
+		<a href="{% url 'supportandexception:supportresource' school.id student.id %}" class="btn btn-warning"><span class="
+glyphicon glyphicon-bookmark"></span>&nbsp;Sérúrræði</a>
 	</div>
 </div>
 {% endblock %}

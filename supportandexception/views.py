@@ -71,7 +71,6 @@ class SupportreResourceCreate(CreateView):
 	def get_context_data(self, **kwargs):
 		context = super(SupportreResourceCreate, self).get_context_data(**kwargs)
 		context['student'] = Student.objects.filter(pk=self.kwargs.get('student_id')).get
-		
 		context['supportresource'] = SupportResource.objects.filter(student = Student.objects.filter(pk=self.kwargs.get('student_id'))).get
 		context['school'] = School.objects.get(pk=self.kwargs['school_id'])
 		return context

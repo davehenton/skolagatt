@@ -28,7 +28,9 @@
 			<li><h4>Nemendur</h4>
 				<ul>
 					{% for student in studentgroup.students.all %}
-						<li><a href="{% url 'schools:teacher_detail' school.id student.id %}">{{student}}</a></li>
+						<li>
+							<a href="{% url 'schools:student_detail' school.id student.id %}">{{student}}</a>
+						</li>
 					{% endfor %}
 				</ul>
 			</li>
