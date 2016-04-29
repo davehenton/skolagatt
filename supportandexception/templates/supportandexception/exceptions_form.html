@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+
+
+
+{% block content %}
+<script>
+	var exam = [];
+	var reason = [];
+	
+	var pagetype = "exceptions";
+	
+	exam={{exceptions.exam}};
+	reason.push({{exceptions.reason}});
+	
+	
+	
+		
+	
+	
+</script>
+<form action="" method="post" >{% csrf_token %}
+
+
+Nemandi: {{student.socialsecurity}} {{student.name}} 7. bekk     Bekkur: 7. B     Prófstofa:
+
+Minnispunktar um skráninguna:
+	<textarea rows="5" cols="50" id="notes">{{student.notes}}</textarea>
+
+
+Undanþágur
+Athugið að Námsmatsstofnun veitir ekki undanþágur. En ber að skrá ástæðu þess að nemandi er fjarverandi á prófdegi. Hægt er að skrá og afskrá hér samkvæmt mati foreldra og kennara hverju sinni. Skólinn varðveitir umsóknarbeiðnina.
+<table>
+	<tr>
+		{% for exam_text in form.exam %}
+			<th>{{ exam_text.choice_label }}</th>
+		{% endfor %}
+	</tr>
+	<tr id="exam">
+		{% for exam_text in form.exam %}
+			<td>{{ exam_text.tag }}</td>
+		{% endfor %}
+		
+	</tr>
+</table>
+<div>
+<b>
+Ástæða undanþágubeiðnar, merkið við
+</b>
+</div>
+<table id="reason_radio">
+	{% for reason_text in form.reason %}
+	<tr>
+	<td>
+	{{reason_text}}
+	</td>
+	</tr>
+	{% endfor %}
+</table>
+<b>Skýring með umsókn</b>
+
+
+<textarea rows="5" cols="50" id="explanation">{{exceptions.explanation}}</textarea>
+{% if exceptions.signature == null %}
+Netfang sendanda:{{exceptions.signature}}
+
+
+Skráð:{{exceptions.date}}
+{% endif %}
+<a class="btn btn-default" href="{% url 'schools:student_detail' school.id student.id %}" id="save_exception">Vista beiðni um undanþágu</a>
+      
+<a class="btn btn-default" href="{% url 'schools:student_detail' school.id student.id %}" data-action="cancel_exception">Afturkalla beiðni um undanþágu</a>
+</form>
+{% endblock %}
