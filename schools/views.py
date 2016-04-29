@@ -19,6 +19,19 @@ from common.models import SchoolForm, StudentForm, StudentGroupForm, ManagerForm
 class SchoolListing(UserPassesTestMixin, ListView):
   model = School
 
+  def get_context_data(self, **kwargs):
+    context = super(SchoolListing, self).get_context_data(**kwargs)
+    try:
+      if self.request.user.is_superuser:
+        context['school_list'] = School.objects.all()
+      else:
+        manager_schools = School.objects.filter(managers=Manager.objects.filter(user=self.request.user))
+        teacher_schools = School.objects.filter(teachers=Teacher.objects.filter(user=self.request.user))
+        context['school_list'] = manager_schools | teacher_schools
+    except Exception as e:
+      print(e)
+    return context
+
   def test_func(self):
     return True #is_manager(self.request.user, self.get_object()) or is_teacher(self.request.user, self.get_object())
 
@@ -652,7 +665,7 @@ class SurveyResultCreate(UserPassesTestMixin, CreateView):
     #make data mutable
     form.data = self.request.POST.copy()
     form.data['student'] = Student.objects.get(pk=self.kwargs['student_id']).pk
-    form.data['survey'] = Survey.objects.get(pk=self.kwargs['survey_id'])
+    form.data['survey'] = Survey.objects.get(pk=self.kwargs['survey_id']).pk
     if form.is_valid():
       return self.form_valid(form)
     else:

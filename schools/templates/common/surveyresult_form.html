@@ -2,7 +2,7 @@
 {% include staticfiles%}
 
 {% block content %}
-<form action="" method="post">
+<form action="" method="post" id="survey_result_form">
 	{% csrf_token %}
 	{{ form.as_p }}
 	<input type="submit" value="Save" />
@@ -29,7 +29,7 @@
 			}
 			data_input += '</p>';
 		});
-		var s = $('#id_student').before(data_input);
+		var s = $('#survey_result_form').prepend(data_input);
 	}
 	catch(err) {
 		console.log(err);

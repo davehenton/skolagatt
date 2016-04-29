@@ -118,7 +118,7 @@ class SurveyResult(models.Model):
 	created_at = models.DateTimeField(default=timezone.now)
 	results = models.TextField()
 	reported_by = models.ForeignKey('Teacher')
-	survey = models.CharField(max_length = 1024) #url to survey
+	survey = models.ForeignKey('Survey') #url to survey
 
 	@classmethod
 	def get_results(cls, id):
@@ -128,8 +128,4 @@ class SurveyResult(models.Model):
 class SurveyResultForm(forms.ModelForm):
 	class Meta:
 		model = SurveyResult
-		fields = ['student', 'survey']
-		widgets = {
-			'student': forms.HiddenInput(),
-			'survey': forms.HiddenInput(),
-		}
+		fields = []

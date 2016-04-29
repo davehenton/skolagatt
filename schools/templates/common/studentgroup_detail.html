@@ -17,7 +17,7 @@
 			<li><h4>Umsjónarmenn</h4>
 				<ul>
 					{% for teacher in studentgroup.group_managers.all %}
-						<li><a href="{% url 'schools:teacher_detail' school.id teacher.id %}">{{teacher}}</a></li>
+						<li><a href="{% url 'schools:teacher_detail' school.id teacher.id %}">{{ teacher }}</a></li>
 					{% endfor %}
 				</ul>
 			</li>
@@ -28,7 +28,7 @@
 			<li><h4>Nemendur</h4>
 				<ul>
 					{% for student in studentgroup.students.all %}
-						<li><a href="{% url 'schools:teacher_detail' school.id student.id %}">{{student}}</a></li>
+						<li><a href="{% url 'schools:teacher_detail' school.id student.id %}">{{ student }}</a></li>
 					{% endfor %}
 				</ul>
 			</li>
@@ -37,9 +37,10 @@
 	<div class="col-md-4">
 		<ul>
 			<li><h4>Kannanir</h4>
+				<a href="{% url 'schools:survey_create' school.id %}" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span>&nbsp;Bæta við könnun</a>
 				<ul>
 					{% for survey in studentgroup.survey_set.all %}
-						<li><a href="{% url 'schools:survey_detail' school.id survey.id %}">{{survey.title}}</a></li>
+						<li><a href="{% url 'schools:survey_detail' school.id survey.id %}">{{ survey.title }}</a></li>
 					{% endfor %}
 				</ul>
 			</li>

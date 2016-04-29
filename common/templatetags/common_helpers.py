@@ -19,8 +19,8 @@ def get_json(text):
 @register.inclusion_tag('common/_school_list.html', takes_context=True)
 def get_user_schools(context):
 	user = context['request'].user
-	manager_schools = School.objects.filter(managers=Manager.objects.filter(ssn=user.username))
-	teacher_schools = School.objects.filter(teachers=Teacher.objects.filter(ssn=user.username))
+	manager_schools = School.objects.filter(managers=Manager.objects.filter(user=user))
+	teacher_schools = School.objects.filter(teachers=Teacher.objects.filter(user=user))
 	schools = list(set(chain(manager_schools, teacher_schools)))
 	return {'schools': schools}
 
