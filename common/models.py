@@ -102,6 +102,9 @@ class Survey(models.Model):
 	active_to = models.DateField(default=timezone.now) #value from profagrunnur
 	data_fields = models.TextField()
 
+	def results(self):
+		return SurveyResult.objects.filter(survey=self)
+
 class SurveyForm(forms.ModelForm):
 	class Meta:
 		model = Survey

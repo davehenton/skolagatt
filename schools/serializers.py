@@ -11,22 +11,27 @@ class SurveyResultSerializer(serializers.ModelSerializer):
     student = StudentSerializer()
     class Meta:
         model = SurveyResult
-        fields = ('student', 'survey', 'results')
+        fields = ('student', 'results')
 
     def to_representation(self, instance):
         data = super(SurveyResultSerializer, self).to_representation(instance)
         data['results'] = json.loads(data['results'])
         return data
 
+class SurveySerializer(serializers.ModelSerializer):
+    results = SurveyResultSerializer(many=True)
+    class Meta:
+        model = Survey
+        fields = ('survey', 'results')
+
 class SchoolSerializer(serializers.ModelSerializer):
-    survey_results = serializers.SerializerMethodField('school_survey_results')
+    surveys = serializers.SerializerMethodField('school_surveys')
     class Meta:
         model = School
-        fields = ('name', 'ssn', 'survey_results')
+        fields = ('name', 'ssn', 'surveys')
 
-    def school_survey_results(self, container):
+    def school_surveys(self, container):
         school_student_groups = StudentGroup.objects.filter(school=container)
         school_surveys = Survey.objects.filter(studentgroup=school_student_groups)
-        data = SurveyResult.objects.filter(survey=school_surveys)
-        serializer = SurveyResultSerializer(instance=data, many=True)
+        serializer = SurveySerializer(instance=school_surveys, many=True)
         return serializer.data
