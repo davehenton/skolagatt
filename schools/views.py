@@ -16,7 +16,31 @@ import requests, json
 from common.models import School, Student, StudentGroup, Manager, Teacher, Survey, SurveyResult
 from common.models import SchoolForm, StudentForm, StudentGroupForm, ManagerForm, TeacherForm, SurveyForm, SurveyResultForm
 
-class SchoolListing(UserPassesTestMixin, ListView):
+def get_current_school(path_variables):
+  try:
+    return path_variables['school_id']
+  except:
+    return path_variables['pk']
+
+def is_school_manager(context):
+  try:
+    school_id = get_current_school(context.kwargs)
+    if School.objects.filter(pk=school_id).filter(managers=Manager.objects.filter(user=context.request.user)):
+      return True
+  except:
+    pass
+  return False
+
+def is_school_teacher(context):
+  try:
+    school_id = get_current_school(context.kwargs)
+    if School.objects.filter(pk=school_id).filter(teachers=Teacher.objects.filter(user=context.request.user)):
+      return True
+  except:
+    pass
+  return False
+
+class SchoolListing(ListView):
   model = School
 
   def get_context_data(self, **kwargs):
@@ -32,14 +56,11 @@ class SchoolListing(UserPassesTestMixin, ListView):
       print(e)
     return context
 
-  def test_func(self):
-    return True #is_manager(self.request.user, self.get_object()) or is_teacher(self.request.user, self.get_object())
-
 class SchoolDetail(UserPassesTestMixin, DetailView):
   model = School
 
-  def test_func(self, **kwargs):
-    return True #is_manager(self.request.user, self.get_object()) or is_teacher(self.request.user, self.get_object())
+  def test_func(self):
+    return is_school_manager(self) or is_school_teacher(self)
 
   def get_context_data(self, **kwargs):
     context = super(SchoolDetail, self).get_context_data(**kwargs)
@@ -88,15 +109,14 @@ class ManagerListing(UserPassesTestMixin, ListView):
     context['managers'] = Manager.objects.filter(school=school)
     return context
 
-
   def test_func(self):
-    return True # is_manager(self) or is_teacher(self)
+    return is_school_manager(self) or is_school_teacher(self)
 
 class ManagerDetail(UserPassesTestMixin, DetailView):
   model = Manager
 
   def test_func(self):
-    return True #is_manager(self) or is_teacher(self)
+    return is_school_manager(self) or is_school_teacher(self)
 
   def get_context_data(self, **kwargs):
     context = super(ManagerDetail, self).get_context_data(**kwargs)
@@ -109,8 +129,8 @@ class ManagerCreate(UserPassesTestMixin, CreateView):
   form_class = ManagerForm
   login_url = reverse_lazy('denied')
 
-  def test_func(self, **kwargs):
-    return True # is_manager(self) or self.request.user.is_superuser()
+  def test_func(self):
+    return is_school_manager(self)
 
   def post(self, *args, **kwargs):
     self.object = Manager.objects.filter(name=self.request.POST.get('name')).first()
@@ -152,7 +172,7 @@ class ManagerUpdate(UserPassesTestMixin, UpdateView):
   login_url = reverse_lazy('denied')
 
   def test_func(self):
-    return True #is_manager(self) or self.request.user.is_superuser()
+    return is_school_manager(self)
 
   def get_success_url(self):
     try:
@@ -168,7 +188,7 @@ class ManagerDelete(UserPassesTestMixin, DeleteView):
   template_name = "schools/confirm_delete.html"
 
   def test_func(self):
-    return True #is_manager(self) or self.request.user.is_superuser()
+    return is_school_manager(self)
 
   def delete(self, request, *args, **kwargs):
     self.object = self.get_object()
@@ -194,13 +214,13 @@ class TeacherListing(UserPassesTestMixin, ListView):
     return context
 
   def test_func(self):
-    return True #is_manager(self) or is_teacher(self)
+    return is_school_manager(self) or is_school_teacher(self)
 
 class TeacherDetail(UserPassesTestMixin, DetailView):
   model = Teacher
 
   def test_func(self):
-    return True #is_manager(self) or is_teacher(self)
+    return is_school_manager(self) or is_school_teacher(self)
 
   def get_context_data(self, **kwargs):
     context = super(TeacherDetail, self).get_context_data(**kwargs)
@@ -214,7 +234,7 @@ class TeacherCreate(UserPassesTestMixin, CreateView):
   login_url = reverse_lazy('denied')
 
   def test_func(self):
-    return True #is_manager(self) or self.request.user.is_superuser()
+    return is_school_manager(self)
 
   def post(self, *args, **kwargs):
     self.object = Teacher.objects.filter(ssn=self.request.POST.get('ssn')).first()
@@ -250,7 +270,7 @@ class TeacherUpdate(UserPassesTestMixin, UpdateView):
   login_url = reverse_lazy('denied')
 
   def test_func(self):
-    return True #is_manager(self) or self.request.user.is_superuser()
+    return is_school_manager(self)
 
   def get_success_url(self):
     try:
@@ -266,7 +286,7 @@ class TeacherDelete(UserPassesTestMixin, DeleteView):
   template_name = "schools/confirm_delete.html"
 
   def test_func(self):
-    return True #is_manager(self) or self.request.user.is_superuser()
+    return is_school_manager(self)
 
   def delete(self, request, *args, **kwargs):
     self.object = self.get_object()
@@ -292,13 +312,13 @@ class StudentListing(UserPassesTestMixin, ListView):
     return context
 
   def test_func(self):
-    return True# is_manager(self) or is_teacher(self)
+    return is_school_manager(self) or is_school_teacher(self)
 
 class StudentDetail(UserPassesTestMixin, DetailView):
   model = Student
 
   def test_func(self):
-    return True #is_manager(self) or is_teacher(self)
+    return is_school_manager(self) or is_school_teacher(self)
 
   def get_context_data(self, **kwargs):
     # xxx will be available in the template as the related objects
@@ -347,7 +367,7 @@ class StudentCreateImport(UserPassesTestMixin, CreateView):
     return HttpResponseRedirect(self.get_success_url())
 
   def test_func(self):
-    return True #is_manager(self) or self.request.user.is_superuser()
+    return is_school_manager(self)
 
   def get_success_url(self):
     try:
@@ -364,7 +384,7 @@ class StudentCreate(UserPassesTestMixin, CreateView):
   login_url = reverse_lazy('denied')
 
   def test_func(self):
-    return True #is_manager(self) or self.request.user.is_superuser()
+    return is_school_manager(self)
 
   def post(self, *args, **kwargs):
     self.object = Student.objects.filter(ssn=self.request.POST.get('ssn')).first()
@@ -400,7 +420,7 @@ class StudentUpdate(UserPassesTestMixin, UpdateView):
   login_url = reverse_lazy('denied')
 
   def test_func(self):
-    return True #is_manager(self) or self.request.user.is_superuser()
+    return is_school_manager(self)
 
   def get_success_url(self):
     try:
@@ -416,7 +436,7 @@ class StudentDelete(UserPassesTestMixin, DeleteView):
   template_name = "schools/confirm_delete.html"
 
   def test_func(self):
-    return True #is_manager(self) or self.request.user.is_superuser()
+    return is_school_manager(self)
 
   def delete(self, request, *args, **kwargs):
     self.object = self.get_object()
@@ -443,13 +463,13 @@ class StudentGroupListing(UserPassesTestMixin, ListView):
     return context
 
   def test_func(self):
-    return True #is_manager(self) or is_teacher(self)
+    return is_school_manager(self) or is_school_teacher(self)
 
 class StudentGroupDetail(UserPassesTestMixin, DetailView):
   model = StudentGroup
 
   def test_func(self):
-    return True #is_manager(self) or is_teacher(self)
+    return is_school_manager(self) or is_school_teacher(self)
 
   def get_context_data(self, **kwargs):
     # xxx will be available in the template as the related objects
@@ -481,7 +501,7 @@ class StudentGroupCreate(UserPassesTestMixin, CreateView):
       return self.form_invalid(form)
 
   def test_func(self):
-    return True #is_manager(self) or is_teacher(self)
+    return is_school_manager(self) or is_school_teacher(self)
 
   def get_success_url(self):
     try:
@@ -497,7 +517,7 @@ class StudentGroupUpdate(UserPassesTestMixin, UpdateView):
   login_url = reverse_lazy('denied')
 
   def test_func(self):
-    return True #is_manager(self) or is_teacher(self)
+    return is_school_manager(self) or is_school_teacher(self) #TODO: manager or (teacher and group_manager)
 
   def get_success_url(self):
     try:
@@ -521,7 +541,7 @@ class StudentGroupDelete(UserPassesTestMixin, DeleteView):
   template_name = "schools/confirm_delete.html"
 
   def test_func(self):
-    return True #is_manager(self) or is_teacher(self)
+    return is_school_manager(self) or is_school_teacher(self) #TODO: manager or (teacher and group_manager)
 
   def get_success_url(self):
     try:
@@ -535,13 +555,13 @@ class SurveyListing(UserPassesTestMixin, ListView):
   model = Survey
 
   def test_func(self):
-    return True #is_manager(self) or is_teacher(self)
+    return is_school_manager(self) or is_school_teacher(self)
 
 class SurveyDetail(UserPassesTestMixin, DetailView):
   model = Survey
 
   def test_func(self):
-    return True #is_manager(self) or is_teacher(self)
+    return is_school_manager(self) or is_school_teacher(self)
 
   def get_context_data(self, **kwargs):
     # xxx will be available in the template as the related objects
@@ -575,7 +595,7 @@ class SurveyCreate(UserPassesTestMixin, CreateView):
       return context
 
   def test_func(self):
-    return True #is_manager(self) or is_teacher(self)
+    return is_school_manager(self) or is_school_teacher(self) #TODO: manager or (teacher and group_manager)
 
   def get_success_url(self):
     try:
@@ -591,13 +611,11 @@ class SurveyUpdate(UserPassesTestMixin, UpdateView):
   login_url = reverse_lazy('denied')
 
   def test_func(self):
-    return True #is_manager(self) or is_teacher(self)
+    return is_school_manager(self) or is_school_teacher(self) #TODO: manager or (teacher and group_manager)
 
   def get_survey(self):
     try:
         r = requests.get(settings.PROFAGRUNNUR_URL)
-        #data = [{'id': programme['_id'], 'title': programme['title']} for programme in r.json()]
-        #return sorted(data, key=itemgetter('title'))
         return r.json()
     except:
       return []
@@ -627,7 +645,7 @@ class SurveyDelete(UserPassesTestMixin, DeleteView):
   template_name = "schools/confirm_delete.html"
 
   def test_func(self):
-    return True #is_manager(self) or is_teacher(self)
+    return is_school_manager(self) or is_school_teacher(self) #TODO: manager or (teacher and group_manager)
 
   def delete(self, request, *args, **kwargs):
     self.object = self.get_object()
@@ -686,7 +704,7 @@ class SurveyResultCreate(UserPassesTestMixin, CreateView):
     return super(SurveyResultCreate, self).form_valid(form)
 
   def test_func(self):
-    return True #is_manager(self) or is_teacher(self)
+    return is_school_manager(self) or is_school_teacher(self) #TODO: manager or (teacher and group_manager)
 
   def get_success_url(self):
     try:
@@ -704,7 +722,7 @@ class SurveyResultUpdate(UserPassesTestMixin, UpdateView):
   login_url = reverse_lazy('denied')
 
   def test_func(self):
-    return True #is_manager(self) or is_teacher(self)
+    return is_school_manager(self) or is_school_teacher(self) #TODO: manager or (teacher and group_manager)
 
   def form_valid(self, form):
     survey_results = form.save(commit=False)
@@ -742,7 +760,7 @@ class SurveyResultDelete(UserPassesTestMixin, DeleteView):
   template_name = "schools/confirm_delete.html"
 
   def test_func(self):
-    return True #is_manager(self) or is_teacher(self)
+    return is_school_manager(self) or is_school_teacher(self) #TODO: manager or (teacher and group_manager)
 
   def get_success_url(self):
     try:

@@ -110,10 +110,11 @@ class SurveyForm(forms.ModelForm):
 		model = Survey
 		fields =  ['studentgroup', 'survey', 'title', 'active_from', 'active_to', 'data_fields']
 		widgets = {
-			'survey': forms.TextInput(attrs={'readonly': True}),
-			'title': forms.TextInput(attrs={'readonly': True}),
-			'active_from': forms.TextInput(attrs={'readonly': True}),
-			'active_to': forms.TextInput(attrs={'readonly': True}),
+			'survey': forms.HiddenInput(),
+			'title': forms.HiddenInput(),
+			'active_from': forms.HiddenInput(),
+			'active_to': forms.HiddenInput(),
+			'data_fields': forms.HiddenInput(),
 		}
 
 class SurveyResult(models.Model):

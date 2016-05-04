@@ -9,7 +9,8 @@ urlpatterns = [
     url(r'^'+settings.SUBDIRECTORY+'$', views.index, name='index'),
     url(r'^'+settings.SUBDIRECTORY+'denied$', views.denied, name='denied'),
     url(r'^'+settings.SUBDIRECTORY+'admin/', admin.site.urls, name='admin'),
-    url(r'^'+settings.SUBDIRECTORY+'logout', views.logout, name='auth_logout'),
+    url(r'^'+settings.SUBDIRECTORY+'accounts/login', views.login, name='auth_login'),
+    url(r'^'+settings.SUBDIRECTORY+'accounts/logout', views.logout, name='auth_logout'),
     url(r'^'+settings.SUBDIRECTORY+'skoli/', include('schools.urls')),
     url(r'^'+settings.SUBDIRECTORY+'skoli/', include('supportandexception.urls')),
 ]

@@ -17,6 +17,38 @@ def get_json(text):
 	except:
 		return {}
 
+def get_current_school(context):
+	r = 'skoli\/(?P<school_id>[\d]*)'
+	m = re.search(r, context.request.path)
+	return m.group('school_id')
+
+@register.simple_tag(takes_context=True)
+def is_school_manager(context):
+	try:
+		school_id = get_current_school(context)
+		School.objects.filter(pk=school_id).filter(managers=Manager.objects.filter(user=context['request'].user))
+		return True
+	except:
+		return False
+
+@register.simple_tag(takes_context=True)
+def is_school_teacher(context):
+	try:
+		school_id = get_current_school(context)
+		School.objects.filter(pk=school_id).filter(teachers=Teacher.objects.filter(user=context['request'].user))
+		return True
+	except:
+		return False
+
+
+@register.simple_tag(takes_context=True)
+def is_group_manager(context):
+	user = context['request'].user
+	manager_schools = School.objects.filter(managers=Manager.objects.filter(user=user))
+	teacher_schools = School.objects.filter(teachers=Teacher.objects.filter(user=user))
+	schools = list(set(chain(manager_schools, teacher_schools)))
+	return {'schools': schools}
+
 @register.inclusion_tag('common/_school_list.html', takes_context=True)
 def get_user_schools(context):
 	user = context['request'].user

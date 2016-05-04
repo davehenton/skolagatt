@@ -29,6 +29,9 @@ def index(request):
 		auth_login(request, user)
 	return redirect('schools:school_listing')
 
+def login(request):
+	return redirect('denied')
+
 def logout(request):
 	auth_logout(request)
 	return redirect('index')
