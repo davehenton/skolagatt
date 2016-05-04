@@ -22,7 +22,7 @@
 <form action="" method="post" >{% csrf_token %}
 
 
-Nemandi: {{student.socialsecurity}} {{student.name}} 7. bekk     Bekkur: 7. B     Prófstofa:
+Nemandi: {{student.ssn}} {{student.name}}{{studentgroup.student_year}} 7. bekk     Bekkur: 7. B     Prófstofa:
 
 Minnispunktar um skráninguna:
 	<textarea rows="5" cols="50" id="notes">{{student.notes}}</textarea>

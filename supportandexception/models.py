@@ -7,10 +7,14 @@ from django.db import models
 from common.models import *
 
 
+class StudentExceptionSupport(models.Model):
+	student = models.ForeignKey(Student)
+	notes = models.CharField(max_length = 500)
+
 
 # undanþágur
 class Exceptions(models.Model):
-	student = models.ForeignKey(Student)
+	student = models.ForeignKey(StudentExceptionSupport)
 	reason = models.CharField(max_length = 1)
 	exam = models.CharField(max_length = 1)
 	explanation = models.CharField(max_length = 500)
@@ -24,7 +28,7 @@ class Exceptions(models.Model):
 # Stuðningsúrræði
 
 class SupportResource(models.Model):
-	student = models.ForeignKey(Student)
+	student = models.ForeignKey(StudentExceptionSupport)
 	explanation = models.CharField(max_length = 500)
 	signature = models.CharField(max_length = 140)
 	date = models.DateField(auto_now = True, null = True)
