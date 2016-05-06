@@ -46,7 +46,7 @@ def is_school_teacher(context):
     pass
   return False
 
-class SchoolListing(ListView):
+class SchoolListing(UserPassesTestMixin, ListView):
   model = School
 
   def get_context_data(self, **kwargs):
@@ -61,6 +61,9 @@ class SchoolListing(ListView):
     except Exception as e:
       print(e)
     return context
+
+  def test_func(self):
+    return is_school_manager(self) or is_school_teacher(self)
 
 class SchoolDetail(UserPassesTestMixin, DetailView):
   model = School
