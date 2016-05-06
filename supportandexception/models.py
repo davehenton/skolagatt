@@ -14,7 +14,7 @@ class StudentExceptionSupport(models.Model):
 
 # undanþágur
 class Exceptions(models.Model):
-	student = models.ForeignKey(StudentExceptionSupport)
+	student = models.ForeignKey(Student)
 	reason = models.CharField(max_length = 1)
 	exam = models.CharField(max_length = 1)
 	explanation = models.CharField(max_length = 500)
@@ -28,7 +28,7 @@ class Exceptions(models.Model):
 # Stuðningsúrræði
 
 class SupportResource(models.Model):
-	student = models.ForeignKey(StudentExceptionSupport)
+	student = models.ForeignKey(Student)
 	explanation = models.CharField(max_length = 500)
 	signature = models.CharField(max_length = 140)
 	date = models.DateField(auto_now = True, null = True)

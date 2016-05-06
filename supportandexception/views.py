@@ -75,7 +75,7 @@ class SupportreResourceCreate(CreateView):
 		context['student'] = student_info.get
 		context['studentmorinfo'] = student_moreinfo.get
 		context['supportresource'] = SupportResource.objects.filter(student = student_moreinfo).get
-		context['studentgroup'] = StudentGroup.objects.filter(students = student_moreinfo).get
+		context['studentgroup'] = StudentGroup.objects.filter(students = student_info).get
 		context['school'] = School.objects.get(pk=self.kwargs['school_id'])
 		return context
 
@@ -105,15 +105,19 @@ class SupportreResourceCreate(CreateView):
 		if(lt != []):
 			for i in range(len(lt)):
 				longer_time.append(int(lt[i]))
+		s = Student.objects.get(pk = self.kwargs.get('student_id'))
 		
-		Student.objects.filter(pk = self.kwargs.get('student_id')).update(notes = notes)
-		s = Student.objects.get(pk=self.kwargs.get('student_id'))
+		
 		if(SupportResource.objects.filter(student = s).exists()):
+			Student.objects.filter(pk = self.kwargs.get('student_id')).update(notes = notes)
 			print('fyrsti kalli')
 			SupportResource.objects.filter(student = s).update(explanation = expl, signature=self.request.user, reading_assistance = reading_assistance, interpretation = interpretation, return_to_sites = return_to_sites, longer_time = longer_time)
 			return HttpResponseRedirect(reverse('listi:student', args=(int(self.kwargs.get('student_id')),)))
 		else:
 			print('donni')
+			ses = StudentExceptionSupport(notes = notes)
+			ses.student = s
+			print(s)
 			sr = SupportResource(explanation = expl, signature=self.request.user, reading_assistance = reading_assistance, interpretation = interpretation, return_to_sites = return_to_sites, longer_time = longer_time)
 			sr.student = s
 			sr.save()	
