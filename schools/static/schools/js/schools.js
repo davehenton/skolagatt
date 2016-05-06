@@ -1,3 +1,21 @@
+$(document).ready(function() {
+	$("#notes").on('click',function(){
+		if($('#textareaid').val().length)
+		{
+			var r = confirm("Press a button");
+			if (r == true) {
+    			x = "You pressed OK!";
+			}
+		}
+    	$('#notesshow').toggle();
+    	$('#textareashow').toggle();
+    	
+    });
+    $(document).on('click', "a[data-action='save_notes']", function(event){
+    	alert('konn');
+    });
+});
+
 function update_form(data) {
 	$('#id_survey').val(data[0]['pk']);
 	$('#id_title').val(data[0]['title']);

@@ -15,6 +15,7 @@ import requests, json
 
 from common.models import School, Student, StudentGroup, Manager, Teacher, Survey, SurveyResult
 from common.models import SchoolForm, StudentForm, StudentGroupForm, ManagerForm, TeacherForm, SurveyForm, SurveyResultForm
+from supportandexception.models import *
 
 def get_current_school(path_variables):
   try:
@@ -325,6 +326,7 @@ class StudentDetail(UserPassesTestMixin, DetailView):
     context = super(StudentDetail, self).get_context_data(**kwargs)
     context['school'] = School.objects.get(pk=self.kwargs['school_id'])
     context['is_teacher'] = not self.request.user.is_anonymous()
+    context['student_moreinfo'] = StudentExceptionSupport.objects.filter(student=Student.objects.filter(pk=self.kwargs.get('student_id'))).get
     return context
 
 class StudentCreateImport(UserPassesTestMixin, CreateView):
