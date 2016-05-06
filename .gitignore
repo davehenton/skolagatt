@@ -2,6 +2,7 @@
 /include
 /lib
 /lib64
+/share
 db.sqlite3
 env.sh
 pyvenv.cfg

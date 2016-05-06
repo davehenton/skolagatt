@@ -24,6 +24,10 @@ def get_current_school(path_variables):
     return path_variables['pk']
 
 def is_school_manager(context):
+  if context.request.user.is_superuser:
+    return True
+  elif context.request.user.is_anonymous:
+    return False
   try:
     school_id = get_current_school(context.kwargs)
     if School.objects.filter(pk=school_id).filter(managers=Manager.objects.filter(user=context.request.user)):
@@ -33,6 +37,8 @@ def is_school_manager(context):
   return False
 
 def is_school_teacher(context):
+  if context.request.user.is_anonymous:
+    return False
   try:
     school_id = get_current_school(context.kwargs)
     if School.objects.filter(pk=school_id).filter(teachers=Teacher.objects.filter(user=context.request.user)):
@@ -41,7 +47,7 @@ def is_school_teacher(context):
     pass
   return False
 
-class SchoolListing(ListView):
+class SchoolListing(UserPassesTestMixin, ListView):
   model = School
 
   def get_context_data(self, **kwargs):
@@ -56,6 +62,9 @@ class SchoolListing(ListView):
     except Exception as e:
       print(e)
     return context
+
+  def test_func(self):
+    return is_school_manager(self) or is_school_teacher(self)
 
 class SchoolDetail(UserPassesTestMixin, DetailView):
   model = School
