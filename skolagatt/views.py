@@ -16,7 +16,7 @@ import requests, json
 def verify_token(token):
 	url = 'https://innskraning.mms.is/verify_login/'
 	payload = {'token': token}
-	r = requests.post(url, data=payload)
+	r = requests.post(url, data=payload, headers=dict(Referer=url))
 	return r.json()['verified']
 
 @csrf_exempt
