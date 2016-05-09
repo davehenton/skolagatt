@@ -1,6 +1,10 @@
 {% extends 'common/index.html'%}
 
 {% block content %}
+<form action="" method="POST">{% csrf_token %}
+<script type="text/javascript">
+	var studentpk = {{student.pk}};
+</script>
 <h1>{{student.name}}</h1>
 <div class="row">
 	<div class="col-md-12">
@@ -13,17 +17,20 @@ glyphicon glyphicon-bookmark"></span>&nbsp;Sérúrræði</a>
 		<a  id="notes" class="btn btn-warning"><span class="glyphicon glyphicon-bookmark"></span>&nbsp;Skilaboð</a>
 	</div>
 </div>
-
+skilaboð:
 <div>
 <div id="notesshow">
-{% if student_moreinfo %}
+{% if student_moreinfo.notes != null %}
 {{student_moreinfo.notes}}
 {% endif %}
 </div>
 <div id="textareashow" style="display:none;">
-<textarea id="textareaid">{% if student_moreinfo %}
+
+<textarea id="textareaid">{% if student_moreinfo.notes != null %}
 {{student_moreinfo.notes}}
 {% endif %}</textarea>
+
 </div>
 </div>
+</form>
 {% endblock %}

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import csv
 
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, render_to_response, get_object_or_404, redirect
 from django.template import RequestContext, loader
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
@@ -335,8 +335,20 @@ class StudentDetail(UserPassesTestMixin, DetailView):
     context = super(StudentDetail, self).get_context_data(**kwargs)
     context['school'] = School.objects.get(pk=self.kwargs['school_id'])
     context['is_teacher'] = not self.request.user.is_anonymous()
-    context['student_moreinfo'] = StudentExceptionSupport.objects.filter(student=Student.objects.filter(pk=self.kwargs.get('student_id'))).get
+    context['student_moreinfo'] = StudentExceptionSupport.objects.filter(student=self.kwargs.get('pk')).get
     return context
+
+
+def StudentNotes(request, school_id, pk):
+  if request.method == 'POST':
+    notes = request.POST.get('notes')
+    if (StudentExceptionSupport.objects.filter(student = Student.objects.get(pk=int(pk))).exists()):
+      StudentExceptionSupport.objects.filter(student = Student.objects.get(pk=int(pk))).update(notes=notes)
+    else:
+      ses = StudentExceptionSupport(notes=notes)
+      ses.student = Student.objects.get(pk=int(pk))
+      ses.save()
+    return JsonResponse({"message": "success"})
 
 class StudentCreateImport(UserPassesTestMixin, CreateView):
   model = Student

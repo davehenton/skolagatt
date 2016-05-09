@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.conf.urls import url
 
-from .views import StudentListing, StudentDetail, StudentCreate, StudentCreateImport, StudentUpdate, StudentDelete
+from .views import StudentListing, StudentDetail, StudentCreate, StudentCreateImport, StudentUpdate, StudentDelete, StudentNotes
 from .views import SchoolListing, SchoolDetail, SchoolCreate, SchoolUpdate, SchoolDelete
 from .views import StudentGroupListing, StudentGroupDetail, StudentGroupCreate, StudentGroupUpdate, StudentGroupDelete
 from .views import ManagerListing, ManagerDetail, ManagerCreate, ManagerUpdate, ManagerDelete
@@ -22,6 +22,7 @@ urlpatterns = [
 
     url(r'^(?P<school_id>\d+)/nemandi/$', StudentListing.as_view(), name='student_listing'),
     url(r'^(?P<school_id>\d+)/nemandi/(?P<pk>\d+)/$', StudentDetail.as_view(), name='student_detail'),
+    url(r'^(?P<school_id>\d+)/nemandi/(?P<pk>\d+)/notes_save/$', StudentNotes, name='notes_save'),
     url(r'^(?P<school_id>\d+)/nemandi/create/$', StudentCreate.as_view(), name='student_create'),
     url(r'^(?P<school_id>\d+)/nemandi/create/import$', StudentCreateImport.as_view(), name='student_create_import'),
     url(r'^(?P<school_id>\d+)/nemandi/(?P<pk>\d+)/update/$', StudentUpdate.as_view(), name='student_update'),

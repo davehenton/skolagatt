@@ -1,10 +1,13 @@
 $(document).ready(function() {
 	$("#notes").on('click',function(){
-		if($('#textareaid').val().length)
+		if($('#textareaid').is(":visible"))
 		{
-			var r = confirm("Press a button");
+			var r = confirm("Villtu vista skilaboðin?");
 			if (r == true) {
-    			x = "You pressed OK!";
+				
+				$.post("notes_save/",{notes: $("#textareaid").val(), 'csrfmiddlewaretoken': $('input[name="csrfmiddlewaretoken"]').attr("value")},function(result){
+					
+				});
 			}
 		}
     	$('#notesshow').toggle();
@@ -12,7 +15,17 @@ $(document).ready(function() {
     	
     });
     $(document).on('click', "a[data-action='save_notes']", function(event){
-    	alert('konn');
+    	alert('kallis')
+    	if($('#textareaid').is(":visible"))
+		{
+			var r = confirm("Villtu vista skilaboðin?");
+			if (r == true) {
+				
+				$.post("notes_save/",{notes: $("#textareaid").val(), 'csrfmiddlewaretoken': $('input[name="csrfmiddlewaretoken"]').attr("value")},function(result){
+					
+				});
+			}
+		}
     });
 });
 
