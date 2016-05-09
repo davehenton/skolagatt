@@ -43,11 +43,12 @@ def is_school_teacher(context):
 
 @register.simple_tag(takes_context=True)
 def is_group_manager(context):
-	user = context['request'].user
-	manager_schools = School.objects.filter(managers=Manager.objects.filter(user=user))
-	teacher_schools = School.objects.filter(teachers=Teacher.objects.filter(user=user))
-	schools = list(set(chain(manager_schools, teacher_schools)))
-	return {'schools': schools}
+	try:
+		school_id = get_current_school(context)
+		School.objects.filter(pk=school_id).filter(managers=Manager.objects.filter(user=context['request'].user))
+		return True
+	except:
+		return False
 
 @register.inclusion_tag('common/_school_list.html', takes_context=True)
 def get_user_schools(context):
