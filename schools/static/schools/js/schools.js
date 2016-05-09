@@ -15,7 +15,6 @@ $(document).ready(function() {
     	
     });
     $(document).on('click', "a[data-action='save_notes']", function(event){
-    	alert('kallis')
     	if($('#textareaid').is(":visible"))
 		{
 			var r = confirm("Villtu vista skilaboðin?");

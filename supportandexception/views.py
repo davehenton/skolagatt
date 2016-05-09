@@ -74,7 +74,7 @@ class SupportreResourceCreate(CreateView):
 		student_moreinfo = StudentExceptionSupport.objects.filter(student = student_info)
 		context['student'] = student_info.get
 		context['studentmorinfo'] = student_moreinfo.get
-		context['supportresource'] = SupportResource.objects.filter(student = student_moreinfo).get
+		context['supportresource'] = SupportResource.objects.filter(student = student_info).get
 		context['studentgroup'] = StudentGroup.objects.filter(students = student_info).get
 		context['school'] = School.objects.get(pk=self.kwargs['school_id'])
 		return context
@@ -109,19 +109,18 @@ class SupportreResourceCreate(CreateView):
 		
 		
 		if(SupportResource.objects.filter(student = s).exists()):
-			Student.objects.filter(pk = self.kwargs.get('student_id')).update(notes = notes)
+			StudentExceptionSupport.objects.filter(student = s).update(notes = notes)
 			print('fyrsti kalli')
-			SupportResource.objects.filter(student = s).update(explanation = expl, signature=self.request.user, reading_assistance = reading_assistance, interpretation = interpretation, return_to_sites = return_to_sites, longer_time = longer_time)
-			return HttpResponseRedirect(reverse('listi:student', args=(int(self.kwargs.get('student_id')),)))
+			SupportResource.objects.filter(student = s).update(explanation = expl, signature=request.user.username, reading_assistance = reading_assistance, interpretation = interpretation, return_to_sites = return_to_sites, longer_time = longer_time)
+			return HttpResponseRedirect(reverse('schools:student_detail', args=(int(self.kwargs.get('school_id')),int(self.kwargs.get('student_id')),)))
 		else:
 			print('donni')
 			ses = StudentExceptionSupport(notes = notes)
 			ses.student = s
-			print(s)
 			sr = SupportResource(explanation = expl, signature=self.request.user, reading_assistance = reading_assistance, interpretation = interpretation, return_to_sites = return_to_sites, longer_time = longer_time)
 			sr.student = s
 			sr.save()	
-			return HttpResponseRedirect(reverse('listi:student', args=(int(self.kwargs.get('student_id')),)))
+			return HttpResponseRedirect(reverse('schools:student_detail', args=(int(self.kwargs.get('school_id')),int(self.kwargs.get('student_id')),)))
 
 		
 
@@ -140,24 +139,31 @@ class ExceptionCreate(CreateView):
 
 	def get_context_data(self, **kwargs):
 		context = super(ExceptionCreate, self).get_context_data(**kwargs)
-		context['student'] = Student.objects.filter(pk=self.kwargs.get('student_id')).get
-
-		context['exceptions'] = Exceptions.objects.filter(student = Student.objects.filter(pk=self.kwargs.get('student_id'))).get
+		student_info = Student.objects.filter(pk=self.kwargs.get('student_id'))
+		student_moreinfo = StudentExceptionSupport.objects.filter(student = student_info)
+		context['student'] = student_info.get
+		context['studentmorinfo'] = student_moreinfo.get
+		context['studentgroup'] = StudentGroup.objects.filter(students = student_info).get
+		context['exceptions'] = Exceptions.objects.filter(student = student_info).get
 		context['school'] = School.objects.get(pk=self.kwargs['school_id'])
 		return context
 
 	
-def exception_post(request, student_id):
+def exception_post(request, school_id,pk):
 	if request.method == 'POST':
 		expl = request.POST.get('expl')
 		exam = request.POST.getlist("exam")
 		notes = request.POST.get('notes')
 		reason = request.POST.get('reason')
+		print (expl)
+		print(exam)
+		print(notes)
+		print(reason)
 		exam =exam[0]
 		
-		Student.objects.filter(pk = student_id).update(notes = notes)
-		if(Exceptions.objects.filter(student = Student.objects.get(pk=int(student_id))).exists()):
-			Exceptions.objects.filter(student = Student.objects.get(pk=int(student_id))).update(explanation = expl, exam = exam, reason = reason,signature= str(request.user))
+		Student.objects.filter(pk = pk).update(notes = notes)
+		if(Exceptions.objects.filter(student = Student.objects.get(pk=int(pk))).exists()):
+			Exceptions.objects.filter(student = Student.objects.get(pk=int(pk))).update(explanation = expl, exam = exam, reason = reason,signature= str(request.user))
 			return JsonResponse({"message": "Allt í lagi ok bæ"})
 		else:
 			exceptions = Exceptions(explanation = expl, exam = exam, reason = reason,signature= str(request.user))
