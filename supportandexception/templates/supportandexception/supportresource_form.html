@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-
+{% load staticfiles %}
 
 
 {% block content %}
@@ -102,4 +102,7 @@
 	<button class="btn btn-default" type="submit">Vista beiðni um stuðningsúrræði</button>
 	
 </form>
+{% endblock %}
+{% block script %}
+<script src='{% static "supportandexception/js/supportandexception.js" %}'></script>
 {% endblock %}
