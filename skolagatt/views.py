@@ -30,7 +30,7 @@ def index(request):
 	return redirect('schools:school_listing')
 
 def login(request):
-	return HttpResponseRedirect('https://innskraning.mms.is/island_innskraning')
+	return render(request, 'denied.html')
 
 def logout(request):
 	auth_logout(request)
