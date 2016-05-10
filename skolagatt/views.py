@@ -2,7 +2,7 @@ import xml.etree.ElementTree as ET
 from signxml import xmldsig
 
 from django.apps import apps
-from django.shortcuts import render, render_to_response, redirect
+from django.shortcuts import render, render_to_response, redirect, HttpResponseRedirect
 from django.conf import settings
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.views.decorators.csrf import csrf_exempt
@@ -30,7 +30,7 @@ def index(request):
 	return redirect('schools:school_listing')
 
 def login(request):
-	return redirect('denied')
+	return HttpResponseRedirect('https://innskraning.island.is/?id=mms.is')
 
 def logout(request):
 	auth_logout(request)
