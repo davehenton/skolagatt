@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-
+{% load staticfiles %}
 
 
 
@@ -22,10 +22,10 @@
 <form action="" method="post" >{% csrf_token %}
 
 
-Nemandi: {{student.ssn}} {{student.name}}{{studentgroup.student_year}} 7. bekk     Bekkur: 7. B     Prófstofa:
+Nemandi: {{student.ssn}} {{student.name}} {{studentgroup.student_year}}     Bekkur: {{studentgroup.name}}     Prófstofa:
 
 Minnispunktar um skráninguna:
-	<textarea rows="5" cols="50" id="notes">{{student.notes}}</textarea>
+	<textarea rows="5" cols="50" id="notes">{{studentmorinfo.notes}}</textarea>
 
 
 Undanþágur
@@ -71,4 +71,8 @@ Skráð:{{exceptions.date}}
       
 <a class="btn btn-default" href="{% url 'schools:student_detail' school.id student.id %}" data-action="cancel_exception">Afturkalla beiðni um undanþágu</a>
 </form>
+{% endblock %}
+
+{% block script %}
+<script src='{% static "supportandexception/js/supportandexception.js" %}'></script>
 {% endblock %}
