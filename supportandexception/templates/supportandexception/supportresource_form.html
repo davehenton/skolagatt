@@ -32,7 +32,7 @@
 	<div class="row">
 		<div class="col-md-4">
 			<b>Minnispunktar um skráninguna:</b>
-			<textarea rows="5" cols="50" name="notes">{{studentmorinfo.notes}}</textarea>
+			<textarea rows="5" cols="50" name="notes" onsubmit="return supportresource(this)">{{studentmorinfo.notes}}</textarea>
 		</div>
 	</div>
 	
@@ -99,8 +99,8 @@
 	</div>
 	</div>
 	{% endif %}
-	<button class="btn btn-default" type="submit">Vista beiðni um stuðningsúrræði</button>
-	
+	<button class="btn btn-default" type="submit" value="save" name="submit">Vista beiðni um stuðningsúrræði</button>
+	<button class="btn btn-default" type="submit" value="delete" name="submit">Eyða beiðni um stuðningsúrræði</button>
 </form>
 {% endblock %}
 {% block script %}
