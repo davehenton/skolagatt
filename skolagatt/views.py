@@ -21,16 +21,19 @@ def verify_token(token):
 
 @csrf_exempt
 def index(request):
+	return redirect('schools:school_listing')
+
+@csrf_exempt
+def login(request):
 	if(request.method == "POST" and verify_token(request.POST.get('token'))):
 		user = authenticate(username=request.POST['user_ssn'], password=request.POST['user_name'])
 		if user == None:
 			User.objects.create_user(username=request.POST['user_ssn'], password=request.POST['user_name'])
 			user = authenticate(username=request.POST['user_ssn'], password=request.POST['user_name'])
 		auth_login(request, user)
-	return redirect('schools:school_listing')
-
-def login(request):
-	return render(request, 'denied.html')
+		return redirect('schools:school_listing')
+	else:
+		return render(request, 'denied.html')
 
 def logout(request):
 	auth_logout(request)
