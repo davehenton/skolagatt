@@ -16,14 +16,23 @@
 <form action="" method="post" id="exception">{% csrf_token %}
 
 
-Nemandi: {{student.ssn}} {{student.name}} {{studentgroup.student_year}}     Bekkur: {{studentgroup.name}}     Prófstofa:
-
-Minnispunktar um skráninguna:
-	<textarea rows="5" cols="50" id="notes" name="notes">{{studentmorinfo.notes}}</textarea>
-
-
-Undanþágur
-Athugið að Námsmatsstofnun veitir ekki undanþágur. En ber að skrá ástæðu þess að nemandi er fjarverandi á prófdegi. Hægt er að skrá og afskrá hér samkvæmt mati foreldra og kennara hverju sinni. Skólinn varðveitir umsóknarbeiðnina.
+<b>Nemandi:</b> {{student.ssn}} {{student.name}} {{studentgroup.student_year}}     <b>Bekkur:</b> {{studentgroup.name}}     <b>Prófstofa:</b>
+<div class="row">
+	<div class="col-md-4">
+		<b>Minnispunktar um skráninguna:</b>
+		<textarea rows="5" cols="50" id="notes" name="notes">{{studentmorinfo.notes}}</textarea>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-12">
+		<div class="row">
+			<div class="col-md-4">
+				<b>Undanþágur</b>
+			</div>
+		</div>
+		Athugið að Námsmatsstofnun veitir ekki undanþágur. En ber að skrá ástæðu þess að nemandi er fjarverandi á prófdegi. Hægt er að skrá og afskrá hér samkvæmt mati foreldra og kennara hverju sinni. Skólinn varðveitir umsóknarbeiðnina.
+	</div>
+</div>
 <table>
 	<tr>
 		{% for exam_text in form.exam %}
@@ -34,13 +43,12 @@ Athugið að Námsmatsstofnun veitir ekki undanþágur. En ber að skrá ástæ�
 		{% for exam_text in form.exam %}
 			<td>{{ exam_text.tag }}</td>
 		{% endfor %}
-		
 	</tr>
 </table>
 <div>
 <b>
-Ástæða undanþágubeiðnar, merkið við
-</b>
+Ástæða undanþágubeiðnar</b>(<i>merkið við</i>)<b>:</b>
+
 </div>
 <table name="reason_radio" id="reason_radio">
 	{% for reason_text in form.reason %}
@@ -51,20 +59,29 @@ Athugið að Námsmatsstofnun veitir ekki undanþágur. En ber að skrá ástæ�
 	</tr>
 	{% endfor %}
 </table>
-<b>Skýring með umsókn</b>
-
-
-<textarea rows="5" cols="50" name="explanation">{{exceptions.explanation}}</textarea>
-{% if exceptions.signature == null %}
-Netfang sendanda:{{exceptions.signature}}
-
-
-Skráð:{{exceptions.date}}
+<div class="row">
+	<div class="col-md-12">
+		<div class="row">
+			<div class="col-md-4">
+				<b>Skýring með umsókn</b>
+			</div>
+		</div>
+		<textarea rows="5" cols="50" name="explanation">{{exceptions.explanation}}</textarea>
+	</div>
+</div>
+{% if exceptions.student.id == student.id %}
+<div>
+<b>Netfang sendanda:</b> {{exceptions.signature}}
+</div>
+<div>
+<b>Skráð:</b>{{exceptions.date}}
+</div>
 {% endif %}
-
-<button class="btn btn-default" type="submit" value="exceptionsave" name="submit">Vista beiðni um undanþágu</a>
+<div>
+<button class="btn btn-primary" type="submit" value="exceptionsave" name="submit">Vista beiðni um undanþágu</button>
       
-<button class="btn btn-default" type="submit" value="exceptiondelete" name="submit">Eyða beiðni um undanþágu</a>
+<button class="btn btn-primary" type="submit" value="exceptiondelete" name="submit">Eyða beiðni um undanþágu</button>
+</div>
 </form>
 {% endblock %}
 

@@ -11,11 +11,11 @@
 	<div class="col-md-12">
 		<a href="{% url 'schools:student_update' school.id student.id %}" class="btn btn-default" data-action='save_notes'><span class="glyphicon glyphicon-pencil"></span>&nbsp;Breyta</a>
 		<a href="{% url 'schools:student_delete' school.id student.id %}" class="btn btn-danger" data-action='delete'><span class="glyphicon glyphicon-trash"></span>&nbsp;Eyða</a>
-		<a href="{% url 'supportandexception:exception' school.id student.id %}" class="btn btn-info" data-action='save_notes'><span class="
+		<a href="{% url 'supportandexception:exception' school.id student.id %}" class="btn btn-success" data-action='save_notes'><span class="
 glyphicon glyphicon-bookmark"></span>&nbsp;Undanþágur</a>
 		<a href="{% url 'supportandexception:supportresource' school.id student.id %}" class="btn btn-warning" data-action='save_notes'><span class="
-glyphicon glyphicon-bookmark"></span>&nbsp;Sérúrræði</a>
-		<a  id="notes" class="btn btn-warning"><span class="glyphicon glyphicon-bookmark"></span>&nbsp;Skilaboð</a>
+glyphicon glyphicon-bookmark"></span>&nbsp;Stuðningsúrræði</a>
+		<a  id="notes" class="btn btn-info"><span class="glyphicon glyphicon-bookmark"></span>&nbsp;Skilaboð</a>
 	</div>
 </div>
 skilaboð:
@@ -27,7 +27,7 @@ skilaboð:
 </div>
 <div id="textareashow" style="display:none;">
 
-<textarea id="textareaid">{% if student_moreinfo.notes != null %}
+<textarea rows="5" cols="50" id="textareaid">{% if student_moreinfo.notes != null %}
 {{student_moreinfo.notes}}
 {% endif %}</textarea>
 
