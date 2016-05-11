@@ -80,7 +80,7 @@ class SupportreResourceCreate(CreateView):
 		return context
 
 	def post(self, request, *args, **kwargs):
-		if(request.POST.get('submit')== 'save'):
+		if(request.POST.get('submit')== 'supportsave'):
 			print('allo')
 			notes = request.POST['notes']
 			expl = request.POST['explanation']
@@ -116,13 +116,12 @@ class SupportreResourceCreate(CreateView):
 			
 			if(SupportResource.objects.filter(student = s).exists()):
 				SupportResource.objects.filter(student = s).update(explanation = expl, signature=request.user.username, reading_assistance = reading_assistance, interpretation = interpretation, return_to_sites = return_to_sites, longer_time = longer_time)
-			
 			else:
 				sr = SupportResource(explanation = expl, signature=self.request.user, reading_assistance = reading_assistance, interpretation = interpretation, return_to_sites = return_to_sites, longer_time = longer_time)
 				sr.student = s
 				sr.save()	
 			return HttpResponseRedirect(reverse('schools:student_detail', args=(int(self.kwargs.get('school_id')),int(self.kwargs.get('pk')),)))
-		if(request.POST.get('submit')== 'delete'):
+		if(request.POST.get('submit')== 'supportdelete'):
 			print('kalli')
 			s = Student.objects.get(pk = self.kwargs.get('pk'))
 			SupportResource.objects.filter(student = s).delete()

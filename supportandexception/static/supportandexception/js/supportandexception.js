@@ -1,8 +1,8 @@
 $(document).ready(function() {
-    $('table#student_list tr').click(function(){
+    /*$('table#student_list tr').click(function(){
         window.location = $(this).attr('href');
         return false;
-    });
+    });*/
 
     if ( typeof pagetype !== 'undefined' && pagetype == 'exceptions' ) {
         for(i=1; i < 4 ; i++ ){
@@ -38,21 +38,9 @@ $(document).ready(function() {
         }
     }
 
-    $(exception).on('click', function(event){
-    	if($('button[value="exceptionsave"]').val()){
 
-    	};
-        if( !$('input[name="reason"]:checked').val()){
-            alert('Það þarf að velja ástæðu');
-            event.preventDefault();
-            return;
-        };
-        this.submit();
-    });
 
-	$(document).on('click',"button[value='exceptiondelete']", function(event){
-        //event.preventDefault();
-        alert('kalli');
+	$(document).on('click',"button[value='exceptionsave']", function(event){
         if( !$('input[name="reason"]:checked').val()){
             alert('Það þarf að velja ástæðu');
             event.preventDefault();
@@ -60,8 +48,15 @@ $(document).ready(function() {
         }
     });
 
-    $(document).on('click', "a[data-action='cancel_exception']", function(event){
+    $(document).on('click', "button[value='exceptiondelete']", function(event){
         if (confirm("Ertu viss um að þú viljir eyða þessari undanþágu") == false) {
+            event.preventDefault();
+            return;
+        }
+    });
+
+    $(document).on('click', "button[value='supportdelete']", function(event){
+        if (confirm("Ertu viss um að þú viljir eyða þessum stuðningsúrræðum") == false) {
             event.preventDefault();
             return;
         }
