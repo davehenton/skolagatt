@@ -6,7 +6,7 @@ $(document).ready(function() {
 			if (r == true) {
 				
 				$.post("notes_save/",{notes: $("#textareaid").val(), 'csrfmiddlewaretoken': $('input[name="csrfmiddlewaretoken"]').attr("value")},function(result){
-					
+					$('div#notesshow').text($("#textareaid").val());
 				});
 			}
 		}

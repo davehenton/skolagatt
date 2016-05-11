@@ -87,15 +87,15 @@
 	Hér fyrir neðan er hægt að rita beiðni um önnur sérúrræði sem send verða Námsmatsstofnun í tölvupósti þegar umsóknin er staðfest
 	<textarea rows="5" cols="50" name="explanation">{{supportresource.explanation}}</textarea>
 
-	{% if supportresource.signature == null %}
+	{% if supportresource.student.id == student.id %}
 	<div class="row">
 	<div class="col-md-3 col-md-offset-3">
-	Skráð:{{supportresource.signature}}
+	<b>Skráð:</b>{{supportresource.signature}}
 	</div>
 	</div>
 	<div class="row">
 	<div class="col-md-3 col-md-offset-3">
-	Skráir:{{supportresource.date}}
+	<b>Skráir:</b>{{supportresource.date}}
 	</div>
 	</div>
 	{% endif %}

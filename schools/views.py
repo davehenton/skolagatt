@@ -499,6 +499,8 @@ class StudentGroupDetail(UserPassesTestMixin, DetailView):
     context = super(StudentGroupDetail, self).get_context_data(**kwargs)
     context['school'] = School.objects.get(pk=self.kwargs['school_id'])
     context['is_teacher'] = not self.request.user.is_anonymous()
+    context['exceptions'] = Exceptions.objects.all()
+    context['supports'] = SupportResource.objects.all()
     return context
 
 class StudentGroupCreate(UserPassesTestMixin, CreateView):
