@@ -26,6 +26,7 @@ $(document).ready(function() {
 			}
 		}
     });
+    
 });
 
 function update_form(data) {
