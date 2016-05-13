@@ -12,6 +12,8 @@ from django.conf import settings
 from django.utils import timezone
 from uuid import uuid4
 import requests, json
+import zipfile
+from xml.etree.ElementTree import iterparse
 
 from common.models import School, Student, StudentGroup, Manager, Teacher, Survey, SurveyResult
 from common.models import SchoolForm, StudentForm, StudentGroupForm, ManagerForm, TeacherForm, SurveyForm, SurveyResultForm
@@ -364,17 +366,20 @@ class StudentCreateImport(UserPassesTestMixin, CreateView):
 
   def post(self, *args, **kwargs):
     if(self.request.FILES):
+      u_file = self.request.FILES['file'].name
+      extension = u_file.split(".")[-1]
       ssn = self.request.POST.get('student_ssn')
       name = self.request.POST.get('student_name')
-      if len(name) == 0 or len(ssn) == 0:
-        return HttpResponse("Það verður að velja dálkanúmer")
-      else:
+      if extension == 'csv':
         data = []
         for row in self.request.FILES['file'].readlines():
           row = row.decode('utf-8')
-          student_ssn = row.split(',')[int(ssn)]
-          student_name = row.split(',')[int(name)]
+          student_ssn = row.split(' ')[int(ssn)]
+          student_name = row.split('  ')[int(name)]
           data.append({'name': student_name.strip(), 'ssn': student_ssn.strip()})
+      elif extension == 'xlsx':
+        arc = zipfile.ZipFile(self.request.FILES['file'],"r")
+        print(arc)
       return render(self.request, 'common/student_verify_import.html', {'data': data, 'school': School.objects.get(pk=self.kwargs['school_id'])})
     else:
       student_data = json.loads(self.request.POST['students'])
