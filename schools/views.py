@@ -10,6 +10,7 @@ from django.contrib.auth.mixins import UserPassesTestMixin
 from django.contrib.auth.models import User, Group
 from django.conf import settings
 from django.utils import timezone
+from django.utils.text import slugify
 from uuid import uuid4
 import requests, json
 import zipfile
@@ -17,56 +18,61 @@ from xml.etree.ElementTree import iterparse
 
 from common.models import School, Student, StudentGroup, Manager, Teacher, Survey, SurveyResult
 from common.models import SchoolForm, StudentForm, StudentGroupForm, ManagerForm, TeacherForm, SurveyForm, SurveyResultForm
+from common.models import SurveyLogin, SurveyLoginForm
 from supportandexception.models import *
 
 def get_current_school(path_variables):
   try:
-    return path_variables['school_id']
+    try:
+      return path_variables['school_id']
+    except:
+      return path_variables['pk']
   except:
-    return path_variables['pk']
+    return None
 
 def is_school_manager(context):
   if context.request.user.is_superuser:
     return True
-  elif context.request.user.is_anonymous:
+  elif not context.request.user.is_authenticated:
     return False
+
   try:
     school_id = get_current_school(context.kwargs)
-    if School.objects.filter(pk=school_id).filter(managers=Manager.objects.filter(user=context.request.user)):
+    if school_id and School.objects.filter(pk=school_id).filter(managers=Manager.objects.filter(user=context.request.user)):
       return True
   except:
     pass
   return False
 
 def is_school_teacher(context):
-  if context.request.user.is_anonymous:
+  if not context.request.user.is_authenticated:
     return False
   try:
     school_id = get_current_school(context.kwargs)
-    if School.objects.filter(pk=school_id).filter(teachers=Teacher.objects.filter(user=context.request.user)):
+    if school_id and School.objects.filter(pk=school_id).filter(teachers=Teacher.objects.filter(user=context.request.user)):
       return True
   except:
     pass
   return False
 
-class SchoolListing(UserPassesTestMixin, ListView):
+def slug_sort(q, attr):
+  return sorted(q, key=lambda x: slugify(getattr(x,attr)))
+
+class SchoolListing(ListView):
   model = School
 
   def get_context_data(self, **kwargs):
     context = super(SchoolListing, self).get_context_data(**kwargs)
     try:
       if self.request.user.is_superuser:
-        context['school_list'] = School.objects.all()
+        context['school_list'] = slug_sort(School.objects.all(), 'name')
       else:
         manager_schools = School.objects.filter(managers=Manager.objects.filter(user=self.request.user))
         teacher_schools = School.objects.filter(teachers=Teacher.objects.filter(user=self.request.user))
-        context['school_list'] = manager_schools | teacher_schools
+        context['school_list'] = slug_sort(manager_schools | teacher_schools, 'name')
     except Exception as e:
       print(e)
     return context
-
-  def test_func(self):
-    return is_school_manager(self) or is_school_teacher(self)
 
 class SchoolDetail(UserPassesTestMixin, DetailView):
   model = School
@@ -79,9 +85,8 @@ class SchoolDetail(UserPassesTestMixin, DetailView):
     context['studentgroup_list'] = self.object.studentgroup_set.all()
     context['managers'] = self.object.managers.all()
     context['teachers'] = self.object.teachers.all()
-    context['surveys'] = Survey.objects.filter(studentgroup__in=self.object.studentgroup_set.all())
+    context['surveys'] = slug_sort(Survey.objects.filter(studentgroup__in=self.object.studentgroup_set.all()), 'title')
     context['students'] = self.object.students.all()
-    context['is_teacher'] = not self.request.user.is_anonymous()
     return context
 
 class SchoolCreate(UserPassesTestMixin, CreateView):
@@ -92,6 +97,48 @@ class SchoolCreate(UserPassesTestMixin, CreateView):
 
   def test_func(self):
     return self.request.user.is_superuser
+
+class SchoolCreateImport(UserPassesTestMixin, CreateView):
+  model = School
+  form_class = SchoolForm
+  login_url = reverse_lazy('denied')
+  template_name = "common/school_form_import.html"
+
+  def get_context_data(self, **kwargs):
+    # xxx will be available in the template as the related objects
+    context = super(SchoolCreateImport, self).get_context_data(**kwargs)
+    return context
+
+  def post(self, *args, **kwargs):
+    if(self.request.FILES):
+      ssn = self.request.POST.get('school_ssn')
+      name = self.request.POST.get('school_name')
+      if len(name) == 0 or len(ssn) == 0:
+        return HttpResponse("Það verður að velja dálkanúmer")
+      else:
+        data = []
+        for row in self.request.FILES['file'].readlines():
+          row = row.decode('utf-8')
+          school_ssn = row.split(',')[int(ssn)]
+          school_name = row.split(',')[int(name)]
+          data.append({'name': school_name.strip(), 'ssn': school_ssn.strip()})
+      return render(self.request, 'common/school_verify_import.html', {'data': data})
+    else:
+      school_data = json.loads(self.request.POST['schools'])
+      #iterate through students, add them if they don't exist then add to school
+      for school in school_data:
+        try:
+          s = School.objects.create(**school)
+        except:
+          pass #student already exists
+
+    return HttpResponseRedirect(self.get_success_url())
+
+  def test_func(self):
+    return is_school_manager(self)
+
+  def get_success_url(self):
+      return reverse_lazy('schools:school_listing')
 
 class SchoolUpdate(UserPassesTestMixin, UpdateView):
   model = School
@@ -132,7 +179,6 @@ class ManagerDetail(UserPassesTestMixin, DetailView):
 
   def get_context_data(self, **kwargs):
     context = super(ManagerDetail, self).get_context_data(**kwargs)
-    context['is_teacher'] = not self.request.user.is_anonymous()
     context['school'] = School.objects.get(pk=self.kwargs['school_id'])
     return context
 
@@ -237,7 +283,6 @@ class TeacherDetail(UserPassesTestMixin, DetailView):
   def get_context_data(self, **kwargs):
     context = super(TeacherDetail, self).get_context_data(**kwargs)
     context['school'] = School.objects.get(pk=self.kwargs['school_id'])
-    context['is_teacher'] = not self.request.user.is_anonymous()
     return context
 
 class TeacherCreate(UserPassesTestMixin, CreateView):
@@ -320,7 +365,7 @@ class StudentListing(UserPassesTestMixin, ListView):
     context = super(StudentListing, self).get_context_data(**kwargs)
     school = School.objects.get(pk=self.kwargs['school_id'])
     context['school'] = school
-    context['students'] = Student.objects.filter(school=school)
+    context['students'] = slug_sort(Student.objects.filter(school=school), 'name')
     return context
 
   def test_func(self):
@@ -336,7 +381,6 @@ class StudentDetail(UserPassesTestMixin, DetailView):
     # xxx will be available in the template as the related objects
     context = super(StudentDetail, self).get_context_data(**kwargs)
     context['school'] = School.objects.get(pk=self.kwargs['school_id'])
-    context['is_teacher'] = not self.request.user.is_anonymous()
     context['student_moreinfo'] = StudentExceptionSupport.objects.filter(student=self.kwargs.get('pk')).get
     return context
 
@@ -487,7 +531,7 @@ class StudentGroupListing(UserPassesTestMixin, ListView):
     context = super(StudentGroupListing, self).get_context_data(**kwargs)
     school = School.objects.get(pk=self.kwargs['school_id'])
     context['school'] = school
-    context['studentgroups'] = StudentGroup.objects.filter(school=school)
+    context['studentgroups'] = slug_sort(StudentGroup.objects.filter(school=school), 'name')
     return context
 
   def test_func(self):
@@ -503,7 +547,6 @@ class StudentGroupDetail(UserPassesTestMixin, DetailView):
     # xxx will be available in the template as the related objects
     context = super(StudentGroupDetail, self).get_context_data(**kwargs)
     context['school'] = School.objects.get(pk=self.kwargs['school_id'])
-    context['is_teacher'] = not self.request.user.is_anonymous()
     context['exceptions'] = Exceptions.objects.all()
     context['supports'] = SupportResource.objects.all()
     return context
@@ -561,7 +604,6 @@ class StudentGroupUpdate(UserPassesTestMixin, UpdateView):
     # xxx will be available in the template as the related objects
     context = super(StudentGroupUpdate, self).get_context_data(**kwargs)
     #context['contact_list'] = Contact.objects.filter(school=self.get_object())
-    context['is_teacher'] = not self.request.user.is_anonymous()
     context['students'] = School.objects.get(pk=self.kwargs['school_id']).students
     return context
 
@@ -584,6 +626,13 @@ class StudentGroupDelete(UserPassesTestMixin, DeleteView):
 class SurveyListing(UserPassesTestMixin, ListView):
   model = Survey
 
+  def get_context_data(self, **kwargs):
+    # xxx will be available in the template as the related objects
+    context = super(SurveyListing, self).get_context_data(**kwargs)
+    school = School.objects.get(pk=kwargs['school_id'])
+    context['surveylisting_list'] = slug_sort(Survey.objects.filter(studentgroup__in=school.object.studentgroup_set.all()), 'title')
+    return context
+
   def test_func(self):
     return is_school_manager(self) or is_school_teacher(self)
 
@@ -598,7 +647,6 @@ class SurveyDetail(UserPassesTestMixin, DetailView):
     context = super(SurveyDetail, self).get_context_data(**kwargs)
     context['school'] = School.objects.get(pk=self.kwargs['school_id'])
     context['students'] = self.object.studentgroup.students.all()
-    context['is_teacher'] = not self.request.user.is_anonymous()
     return context
 
 class SurveyCreate(UserPassesTestMixin, CreateView):
@@ -721,7 +769,7 @@ class SurveyResultCreate(UserPassesTestMixin, CreateView):
 
   def form_valid(self, form):
     survey_results = form.save(commit=False)
-    survey_results.reported_by =Teacher.objects.get(pk=self.request.user.pk)
+    survey_results.reported_by =Teacher.objects.get(user_id=self.request.user.pk)
     survey_results.student = Student.objects.get(pk=self.kwargs['student_id'])
     survey_results.survey = Survey.objects.get(pk=self.kwargs['survey_id'])
     survey_results.created_at = timezone.now()
@@ -799,3 +847,22 @@ class SurveyResultDelete(UserPassesTestMixin, DeleteView):
                               kwargs={'pk': school_id})
     except:
       return reverse_lazy('schools:school_listing')
+
+class SurveyLoginCreate(UserPassesTestMixin, CreateView):
+  model = SurveyLogin
+  form_class = SurveyLoginForm
+  success_url = reverse_lazy('schools:school_listing')
+  login_url = reverse_lazy('denied')
+
+  def post(self, *args, **kwargs):
+    if(self.request.FILES):
+      data = []
+      for row in self.request.FILES['file'].readlines():
+        row = row.decode('utf-8')
+        student_ssn = row.split(',')[int(ssn)]
+        student_name = row.split(',')[int(name)]
+        data.append({'name': student_name.strip(), 'ssn': student_ssn.strip()})
+    return HttpResponse("sadf")
+
+  def test_func(self):
+    return self.request.user.is_superuser

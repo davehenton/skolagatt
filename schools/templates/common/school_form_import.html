@@ -1,0 +1,22 @@
+{% extends 'common/index.html'%}
+{% include staticfiles%}
+{% block content %}
+<form action="" method="post" enctype="multipart/form-data">
+	{% csrf_token %}
+	<p>
+		<label for="file">Filename:</label>
+		<input type="file" name="file" id="file" />
+	</p>
+	<p>
+		<label for="school_ssn">Númer dálks fyrir kennitölu</label>
+		<input type="number" name="school_ssn" id="school_ssn" />
+	</p>
+	<p>
+		<label for="school_name">Númer dálks fyrir nafn</label>
+		<input type="number" name="school_name" id="school_name" />
+	</p>
+	<p>
+		<input type="submit" value="Vista" />
+	</p>
+</form>
+{% endblock %}

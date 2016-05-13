@@ -3,21 +3,48 @@
 {% block content %}
 <h1>Skólar</h1>
 <div>
-	<a href="{% url 'schools:school_create'%}" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span>Bæta við skóla</a>
+	{% if request.user.is_superuser %}
+	<div class="row">
+		<div class="btn-group" role="group">
+			<a href="{% url 'schools:school_create'%}" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				<span class="caret"></span>&nbsp;Bæta við skóla
+			</a>
+			<ul class="dropdown-menu">
+				<li>
+					<a href="{% url 'schools:school_create'%}">
+						<span class="glyphicon glyphicon-plus"></span>&nbsp;Bæta við einum
+					</a>
+				</li>
+				<li>
+					<a href="{% url 'schools:school_create_import'%}">
+						<span class="glyphicon glyphicon-plus"></span>&nbsp;Bæta við mörgum
+					</a>
+				</li>
+			</ul>
+		</div>
+		<a href="{% url 'schools:survey_login_create'%}" class="btn btn-default">
+			<span class="glyphicon glyphicon-plus"></span>&nbsp;Uppfæra lykilorð
+		</a>
+	</div>
+	{% endif %}
 	<div id="school_list" class="table table-hover">
 		<div class="row">
 			<div class="col-md-1"><h4>Kennitala</h4></div>
 			<div class="col-md-3"><h4>Nafn</h4></div>
+			{% if request.user.is_superuser %}
 			<div class="col-md-1"><h4>Aðgerðir</h4></div>
+			{% endif %}
 		</div>
 		{% for school in school_list %}
 		<div class="row">
 			<div class="col-md-1"><a href="{% url 'schools:school_detail' school.id %}">{{school.ssn}}</a></div>
 			<div class="col-md-3"><a href="{% url 'schools:school_detail' school.id %}">{{school.name}}</a></div>
+			{% if request.user.is_superuser %}
 			<div class="col-md-1">
 				<a href="{% url 'schools:school_update' school.id %}" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
 				<a href="{% url 'schools:school_delete' school.id %}" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-trash"></span></a>
 			</div>
+			{% endif %}
 		</div>
 		{% endfor %}
 	</div>
