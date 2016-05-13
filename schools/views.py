@@ -10,6 +10,7 @@ from django.contrib.auth.mixins import UserPassesTestMixin
 from django.contrib.auth.models import User, Group
 from django.conf import settings
 from django.utils import timezone
+from django.utils.text import slugify
 from uuid import uuid4
 import requests, json
 
@@ -52,6 +53,9 @@ def is_school_teacher(context):
     pass
   return False
 
+def slug_sort(q, attr):
+  return sorted(q, key=lambda x: slugify(getattr(x,attr)))
+
 class SchoolListing(ListView):
   model = School
 
@@ -59,11 +63,11 @@ class SchoolListing(ListView):
     context = super(SchoolListing, self).get_context_data(**kwargs)
     try:
       if self.request.user.is_superuser:
-        context['school_list'] = School.objects.all()
+        context['school_list'] = slug_sort(School.objects.all(), 'name')
       else:
         manager_schools = School.objects.filter(managers=Manager.objects.filter(user=self.request.user))
         teacher_schools = School.objects.filter(teachers=Teacher.objects.filter(user=self.request.user))
-        context['school_list'] = manager_schools | teacher_schools
+        context['school_list'] = slug_sort(manager_schools | teacher_schools, 'name')
     except Exception as e:
       print(e)
     return context
@@ -92,6 +96,48 @@ class SchoolCreate(UserPassesTestMixin, CreateView):
 
   def test_func(self):
     return self.request.user.is_superuser
+
+class SchoolCreateImport(UserPassesTestMixin, CreateView):
+  model = School
+  form_class = SchoolForm
+  login_url = reverse_lazy('denied')
+  template_name = "common/school_form_import.html"
+
+  def get_context_data(self, **kwargs):
+    # xxx will be available in the template as the related objects
+    context = super(SchoolCreateImport, self).get_context_data(**kwargs)
+    return context
+
+  def post(self, *args, **kwargs):
+    if(self.request.FILES):
+      ssn = self.request.POST.get('school_ssn')
+      name = self.request.POST.get('school_name')
+      if len(name) == 0 or len(ssn) == 0:
+        return HttpResponse("Það verður að velja dálkanúmer")
+      else:
+        data = []
+        for row in self.request.FILES['file'].readlines():
+          row = row.decode('utf-8')
+          school_ssn = row.split(',')[int(ssn)]
+          school_name = row.split(',')[int(name)]
+          data.append({'name': school_name.strip(), 'ssn': school_ssn.strip()})
+      return render(self.request, 'common/school_verify_import.html', {'data': data})
+    else:
+      school_data = json.loads(self.request.POST['schools'])
+      #iterate through students, add them if they don't exist then add to school
+      for school in school_data:
+        try:
+          s = School.objects.create(**school)
+        except:
+          pass #student already exists
+
+    return HttpResponseRedirect(self.get_success_url())
+
+  def test_func(self):
+    return is_school_manager(self)
+
+  def get_success_url(self):
+      return reverse_lazy('schools:school_listing')
 
 class SchoolUpdate(UserPassesTestMixin, UpdateView):
   model = School
@@ -320,7 +366,7 @@ class StudentListing(UserPassesTestMixin, ListView):
     context = super(StudentListing, self).get_context_data(**kwargs)
     school = School.objects.get(pk=self.kwargs['school_id'])
     context['school'] = school
-    context['students'] = Student.objects.filter(school=school)
+    context['students'] = slug_sort(Student.objects.filter(school=school), 'name')
     return context
 
   def test_func(self):
