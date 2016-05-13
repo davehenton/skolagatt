@@ -20,36 +20,39 @@ from supportandexception.models import *
 
 def get_current_school(path_variables):
   try:
-    return path_variables['school_id']
+    try:
+      return path_variables['school_id']
+    except:
+      return path_variables['pk']
   except:
-    return path_variables['pk']
+    return None
 
 def is_school_manager(context):
   if context.request.user.is_superuser:
     return True
-  elif context.request.user.is_anonymous:
+  elif not context.request.user.is_authenticated:
     return False
 
   try:
     school_id = get_current_school(context.kwargs)
-    if School.objects.filter(pk=vars().get('school_id', pk)).filter(managers=Manager.objects.filter(user=context.request.user)):
+    if school_id and School.objects.filter(pk=school_id).filter(managers=Manager.objects.filter(user=context.request.user)):
       return True
   except:
     pass
   return False
 
 def is_school_teacher(context):
-  if context.request.user.is_anonymous:
+  if not context.request.user.is_authenticated:
     return False
   try:
     school_id = get_current_school(context.kwargs)
-    if School.objects.filter(pk=vars().get('school_id', pk)).filter(teachers=Teacher.objects.filter(user=context.request.user)):
+    if school_id and School.objects.filter(pk=school_id).filter(teachers=Teacher.objects.filter(user=context.request.user)):
       return True
   except:
     pass
   return False
 
-class SchoolListing(UserPassesTestMixin, ListView):
+class SchoolListing(ListView):
   model = School
 
   def get_context_data(self, **kwargs):
@@ -64,9 +67,6 @@ class SchoolListing(UserPassesTestMixin, ListView):
     except Exception as e:
       print(e)
     return context
-
-  def test_func(self):
-    return is_school_manager(self) or is_school_teacher(self)
 
 class SchoolDetail(UserPassesTestMixin, DetailView):
   model = School
