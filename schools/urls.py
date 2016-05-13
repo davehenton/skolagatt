@@ -8,11 +8,13 @@ from .views import ManagerListing, ManagerDetail, ManagerCreate, ManagerUpdate, 
 from .views import TeacherListing, TeacherDetail, TeacherCreate, TeacherUpdate, TeacherDelete
 from .views import SurveyListing, SurveyDetail, SurveyCreate, SurveyUpdate, SurveyDelete
 from .views import SurveyResultCreate, SurveyResultUpdate, SurveyResultDelete
-
+from .views import SurveyLoginCreate
 from .api import SchoolViewSet
 
 app_name = 'schools'
 urlpatterns = [
+    url(r'^könnun/create$', SurveyLoginCreate.as_view(), name='survey_login_create'),
+
     url(r'^$', SchoolListing.as_view(), name='school_listing'),
     url(r'^api$', SchoolViewSet.as_view({'get': 'list'}), name='api_school_listing'),
     url(r'^(?P<pk>\d+)/$', SchoolDetail.as_view(), name='school_detail'),

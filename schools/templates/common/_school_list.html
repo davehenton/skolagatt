@@ -6,7 +6,7 @@
 	</a>
 	<ul class="dropdown-menu">
 	{% for school in schools %}
-		<li><a href="/skoli/{{school.id}}">{{ school.name }}</a></li>
+		<li><a href="{% url 'schools:school_detail' school.id %}">{{ school.name }}</a></li>
 	{% endfor %}
 	</ul>
 {% else %}

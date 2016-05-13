@@ -126,10 +126,20 @@ class SurveyResult(models.Model):
 
 	@classmethod
 	def get_results(cls, id):
-		print(cls(pk=id))
 		return json.loads(cls(pk=id).results)
 
 class SurveyResultForm(forms.ModelForm):
 	class Meta:
 		model = SurveyResult
+		fields = []
+
+class SurveyLogin(models.Model):
+	student = models.ForeignKey(Student)
+	survey_id = models.CharField(max_length = 256)
+	survey_code = models.CharField(max_length = 16)
+
+class SurveyLoginForm(forms.ModelForm):
+	file = forms.FileField()
+	class Meta:
+		model = SurveyLogin
 		fields = []

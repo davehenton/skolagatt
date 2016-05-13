@@ -15,6 +15,7 @@ import requests, json
 
 from common.models import School, Student, StudentGroup, Manager, Teacher, Survey, SurveyResult
 from common.models import SchoolForm, StudentForm, StudentGroupForm, ManagerForm, TeacherForm, SurveyForm, SurveyResultForm
+from common.models import SurveyLogin, SurveyLoginForm
 from supportandexception.models import *
 
 def get_current_school(path_variables):
@@ -28,9 +29,10 @@ def is_school_manager(context):
     return True
   elif context.request.user.is_anonymous:
     return False
+
   try:
     school_id = get_current_school(context.kwargs)
-    if School.objects.filter(pk=school_id).filter(managers=Manager.objects.filter(user=context.request.user)):
+    if School.objects.filter(pk=vars().get('school_id', pk)).filter(managers=Manager.objects.filter(user=context.request.user)):
       return True
   except:
     pass
@@ -41,7 +43,7 @@ def is_school_teacher(context):
     return False
   try:
     school_id = get_current_school(context.kwargs)
-    if School.objects.filter(pk=school_id).filter(teachers=Teacher.objects.filter(user=context.request.user)):
+    if School.objects.filter(pk=vars().get('school_id', pk)).filter(teachers=Teacher.objects.filter(user=context.request.user)):
       return True
   except:
     pass
@@ -716,7 +718,7 @@ class SurveyResultCreate(UserPassesTestMixin, CreateView):
 
   def form_valid(self, form):
     survey_results = form.save(commit=False)
-    survey_results.reported_by =Teacher.objects.get(pk=self.request.user.pk)
+    survey_results.reported_by =Teacher.objects.get(user_id=self.request.user.pk)
     survey_results.student = Student.objects.get(pk=self.kwargs['student_id'])
     survey_results.survey = Survey.objects.get(pk=self.kwargs['survey_id'])
     survey_results.created_at = timezone.now()
@@ -794,3 +796,22 @@ class SurveyResultDelete(UserPassesTestMixin, DeleteView):
                               kwargs={'pk': school_id})
     except:
       return reverse_lazy('schools:school_listing')
+
+class SurveyLoginCreate(UserPassesTestMixin, CreateView):
+  model = SurveyLogin
+  form_class = SurveyLoginForm
+  success_url = reverse_lazy('schools:school_listing')
+  login_url = reverse_lazy('denied')
+
+  def post(self, *args, **kwargs):
+    if(self.request.FILES):
+      data = []
+      for row in self.request.FILES['file'].readlines():
+        row = row.decode('utf-8')
+        student_ssn = row.split(',')[int(ssn)]
+        student_name = row.split(',')[int(name)]
+        data.append({'name': student_name.strip(), 'ssn': student_ssn.strip()})
+    return HttpResponse("sadf")
+
+  def test_func(self):
+    return self.request.user.is_superuser
