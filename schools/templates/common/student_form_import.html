@@ -4,21 +4,22 @@
 <form action="" method="post" enctype="multipart/form-data">
 	{% csrf_token %}
 	<p>
-	<label for="file">Filename:</label>
-	<input type="file" name="file" id="file" />
+		<label for="file">Filename:</label>
+		<input type="file" name="file" id="file" />
 	</p>
 	<p>
-	<label for="student_ssn">Númer dálks fyrir kennitölu</label>
-	<input type="number" name="student_ssn" id="student_ssn" />
+		<label for="student_ssn">Númer dálks fyrir kennitölu</label>
+		<input type="number" name="student_ssn" id="student_ssn" />
 	</p>
 	<p>
-	<label for="student_name">Númer dálks fyrir nafn</label>
-	<input type="number" name="student_name" id="student_name" />
+		<label for="student_name">Númer dálks fyrir nafn</label>
+		<input type="number" name="student_name" id="student_name" />
 	</p>
 	<div>
 	<label for="title"><input type="checkbox" id="title" name="title" value="first_checkbox"> Er fyrsta línan með titli</label><br>
 	</div>
 	<p>
-	<input type="submit" value="Vista" />
+		<input type="submit" value="Vista" />
+	</p>
 </form>
 {% endblock %}

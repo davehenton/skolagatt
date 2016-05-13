@@ -2,21 +2,24 @@
 from django.conf.urls import url
 
 from .views import StudentListing, StudentDetail, StudentCreate, StudentCreateImport, StudentUpdate, StudentDelete, StudentNotes
-from .views import SchoolListing, SchoolDetail, SchoolCreate, SchoolUpdate, SchoolDelete
+from .views import SchoolListing, SchoolDetail, SchoolCreate, SchoolCreateImport, SchoolUpdate, SchoolDelete
 from .views import StudentGroupListing, StudentGroupDetail, StudentGroupCreate, StudentGroupUpdate, StudentGroupDelete
 from .views import ManagerListing, ManagerDetail, ManagerCreate, ManagerUpdate, ManagerDelete
 from .views import TeacherListing, TeacherDetail, TeacherCreate, TeacherUpdate, TeacherDelete
 from .views import SurveyListing, SurveyDetail, SurveyCreate, SurveyUpdate, SurveyDelete
 from .views import SurveyResultCreate, SurveyResultUpdate, SurveyResultDelete
-
+from .views import SurveyLoginCreate
 from .api import SchoolViewSet
 
 app_name = 'schools'
 urlpatterns = [
+    url(r'^könnun/create$', SurveyLoginCreate.as_view(), name='survey_login_create'),
+
     url(r'^$', SchoolListing.as_view(), name='school_listing'),
     url(r'^api$', SchoolViewSet.as_view({'get': 'list'}), name='api_school_listing'),
     url(r'^(?P<pk>\d+)/$', SchoolDetail.as_view(), name='school_detail'),
     url(r'^create/$', SchoolCreate.as_view(), name='school_create'),
+    url(r'^create/import$', SchoolCreateImport.as_view(), name='school_create_import'),
     url(r'^(?P<pk>\d+)/update/$', SchoolUpdate.as_view(), name='school_update'),
     url(r'^(?P<pk>\d+)/delete/$', SchoolDelete.as_view(), name='school_delete'),
 
