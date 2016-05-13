@@ -83,9 +83,8 @@ class SchoolDetail(UserPassesTestMixin, DetailView):
     context['studentgroup_list'] = self.object.studentgroup_set.all()
     context['managers'] = self.object.managers.all()
     context['teachers'] = self.object.teachers.all()
-    context['surveys'] = Survey.objects.filter(studentgroup__in=self.object.studentgroup_set.all())
+    context['surveys'] = slug_sort(Survey.objects.filter(studentgroup__in=self.object.studentgroup_set.all()), 'title')
     context['students'] = self.object.students.all()
-    context['is_teacher'] = not self.request.user.is_anonymous()
     return context
 
 class SchoolCreate(UserPassesTestMixin, CreateView):
@@ -178,7 +177,6 @@ class ManagerDetail(UserPassesTestMixin, DetailView):
 
   def get_context_data(self, **kwargs):
     context = super(ManagerDetail, self).get_context_data(**kwargs)
-    context['is_teacher'] = not self.request.user.is_anonymous()
     context['school'] = School.objects.get(pk=self.kwargs['school_id'])
     return context
 
@@ -283,7 +281,6 @@ class TeacherDetail(UserPassesTestMixin, DetailView):
   def get_context_data(self, **kwargs):
     context = super(TeacherDetail, self).get_context_data(**kwargs)
     context['school'] = School.objects.get(pk=self.kwargs['school_id'])
-    context['is_teacher'] = not self.request.user.is_anonymous()
     return context
 
 class TeacherCreate(UserPassesTestMixin, CreateView):
@@ -382,7 +379,6 @@ class StudentDetail(UserPassesTestMixin, DetailView):
     # xxx will be available in the template as the related objects
     context = super(StudentDetail, self).get_context_data(**kwargs)
     context['school'] = School.objects.get(pk=self.kwargs['school_id'])
-    context['is_teacher'] = not self.request.user.is_anonymous()
     context['student_moreinfo'] = StudentExceptionSupport.objects.filter(student=self.kwargs.get('pk')).get
     return context
 
@@ -530,7 +526,7 @@ class StudentGroupListing(UserPassesTestMixin, ListView):
     context = super(StudentGroupListing, self).get_context_data(**kwargs)
     school = School.objects.get(pk=self.kwargs['school_id'])
     context['school'] = school
-    context['studentgroups'] = StudentGroup.objects.filter(school=school)
+    context['studentgroups'] = slug_sort(StudentGroup.objects.filter(school=school), 'name')
     return context
 
   def test_func(self):
@@ -546,7 +542,6 @@ class StudentGroupDetail(UserPassesTestMixin, DetailView):
     # xxx will be available in the template as the related objects
     context = super(StudentGroupDetail, self).get_context_data(**kwargs)
     context['school'] = School.objects.get(pk=self.kwargs['school_id'])
-    context['is_teacher'] = not self.request.user.is_anonymous()
     context['exceptions'] = Exceptions.objects.all()
     context['supports'] = SupportResource.objects.all()
     return context
@@ -604,7 +599,6 @@ class StudentGroupUpdate(UserPassesTestMixin, UpdateView):
     # xxx will be available in the template as the related objects
     context = super(StudentGroupUpdate, self).get_context_data(**kwargs)
     #context['contact_list'] = Contact.objects.filter(school=self.get_object())
-    context['is_teacher'] = not self.request.user.is_anonymous()
     context['students'] = School.objects.get(pk=self.kwargs['school_id']).students
     return context
 
@@ -627,6 +621,13 @@ class StudentGroupDelete(UserPassesTestMixin, DeleteView):
 class SurveyListing(UserPassesTestMixin, ListView):
   model = Survey
 
+  def get_context_data(self, **kwargs):
+    # xxx will be available in the template as the related objects
+    context = super(SurveyListing, self).get_context_data(**kwargs)
+    school = School.objects.get(pk=kwargs['school_id'])
+    context['surveylisting_list'] = slug_sort(Survey.objects.filter(studentgroup__in=school.object.studentgroup_set.all()), 'title')
+    return context
+
   def test_func(self):
     return is_school_manager(self) or is_school_teacher(self)
 
@@ -641,7 +642,6 @@ class SurveyDetail(UserPassesTestMixin, DetailView):
     context = super(SurveyDetail, self).get_context_data(**kwargs)
     context['school'] = School.objects.get(pk=self.kwargs['school_id'])
     context['students'] = self.object.studentgroup.students.all()
-    context['is_teacher'] = not self.request.user.is_anonymous()
     return context
 
 class SurveyCreate(UserPassesTestMixin, CreateView):
