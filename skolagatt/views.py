@@ -31,7 +31,7 @@ def login(request):
 		if user.exists():
 			pass #user exists, token is verfied. User will be logged in
 		else:
-			User.objects.create_user(username=request.POST['user_ssn'], password=str(uuid4()))
+			user = User.objects.create_user(username=request.POST['user_ssn'], password=str(uuid4()))
 		auth_login(request, user)
 		return redirect('schools:school_listing')
 	else:
