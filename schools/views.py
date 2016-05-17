@@ -307,7 +307,6 @@ class TeacherCreate(UserPassesTestMixin, CreateView):
       form.data['user'] = user.first().id
     else:
       form.data['user'] = User.objects.create(username=self.request.POST.get('ssn'), password=str(uuid4()))
-      form.data['user'] = new_user.id
 
     if form.is_valid():
       return self.form_valid(form)
