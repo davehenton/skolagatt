@@ -202,7 +202,7 @@ class ManagerCreate(UserPassesTestMixin, CreateView):
     if user:
       form.data['user'] = user.first().id
     else:
-      new_user = User.objects.create(username=self.request.POST.get('ssn'), password=str(uuid4))
+      new_user = User.objects.create(username=self.request.POST.get('ssn'), password=str(uuid4()))
       form.data['user'] = new_user.id
     if form.is_valid():
       return self.form_valid(form)
@@ -306,7 +306,7 @@ class TeacherCreate(UserPassesTestMixin, CreateView):
     if user:
       form.data['user'] = user.first().id
     else:
-      form.data['user'] = User.objects.create(username=self.request.POST.get('ssn'), password=str(uuid4))
+      form.data['user'] = User.objects.create(username=self.request.POST.get('ssn'), password=str(uuid4()))
       form.data['user'] = new_user.id
 
     if form.is_valid():
@@ -472,7 +472,7 @@ class StudentCreate(UserPassesTestMixin, CreateView):
     if user:
       form.data['user'] = user
     else:
-      form.data['user'] = User.objects.create(username=self.request.POST.get('ssn'), password=str(uuid4))
+      form.data['user'] = User.objects.create(username=self.request.POST.get('ssn'), password=str(uuid4()))
 
     if form.is_valid():
       return self.form_valid(form)
