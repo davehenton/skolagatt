@@ -7,3 +7,5 @@ db.sqlite3
 env.sh
 pyvenv.cfg
 *.pyc
+*.sublime-workspace
+*.sublime-project
