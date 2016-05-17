@@ -8,6 +8,7 @@ from django.contrib.auth import authenticate, login as auth_login, logout as aut
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from uuid import uuid4
 
 from common.models import School
 
@@ -26,10 +27,11 @@ def index(request):
 @csrf_exempt
 def login(request):
 	if(request.method == "POST" and verify_token(request.POST.get('token'))):
-		user = authenticate(username=request.POST['user_ssn'], password=request.POST['user_name'])
-		if user == None:
-			User.objects.create_user(username=request.POST['user_ssn'], password=request.POST['user_name'])
-			user = authenticate(username=request.POST['user_ssn'], password=request.POST['user_name'])
+		user = User.objects.filter(username=request.POST['user_ssn'])
+		if user.exists():
+			pass #user exists, token is verfied. User will be logged in
+		else:
+			User.objects.create_user(username=request.POST['user_ssn'], password=str(uuid4()))
 		auth_login(request, user)
 		return redirect('schools:school_listing')
 	else:
