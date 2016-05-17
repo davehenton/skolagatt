@@ -29,7 +29,7 @@ def login(request):
 	if(request.method == "POST" and verify_token(request.POST.get('token'))):
 		user = User.objects.filter(username=request.POST['user_ssn'])
 		if user.exists():
-			pass #user exists, token is verfied. User will be logged in
+			user = user.first()
 		else:
 			user = User.objects.create_user(username=request.POST['user_ssn'], password=str(uuid4()))
 		auth_login(request, user)
