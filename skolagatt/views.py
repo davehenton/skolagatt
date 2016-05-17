@@ -33,7 +33,7 @@ def login(request):
 		else:
 			user = User.objects.create_user(username=request.POST['user_ssn'], password=str(uuid4()))
 		backend = 'django.contrib.auth.backends.ModelBackend'
-		auth_login(request, user, backend)
+		auth_login(request, user, backend=backend)
 		return redirect('schools:school_listing')
 	else:
 		return render(request, 'login.html')
