@@ -28,11 +28,15 @@ def index(request):
 def login(request):
 	if(request.method == "POST" and verify_token(request.POST.get('token'))):
 		user = User.objects.filter(username=request.POST['user_ssn'])
+		#get or create user
 		if user.exists():
 			user = user.first()
 		else:
+			#remove this feature and add no user error. ???
 			user = User.objects.create_user(username=request.POST['user_ssn'], password=str(uuid4()))
-		backend = 'django.contrib.auth.backends.ModelBackend'
+
+		#authenticate user
+		user = authenticate(user.username)
 		auth_login(request, user, backend=backend)
 		return redirect('schools:school_listing')
 	else:
