@@ -37,7 +37,7 @@ def login(request):
 
 		#authenticate user
 		user = authenticate(username=user.username)
-		auth_login(request, user, backend=backend)
+		auth_login(request, user)
 		return redirect('schools:school_listing')
 	else:
 		return render(request, 'login.html')
