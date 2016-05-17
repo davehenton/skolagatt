@@ -36,7 +36,7 @@ def login(request):
 			user = User.objects.create_user(username=request.POST['user_ssn'], password=str(uuid4()))
 
 		#authenticate user
-		user = authenticate(user.username)
+		user = authenticate(username=user.username)
 		auth_login(request, user, backend=backend)
 		return redirect('schools:school_listing')
 	else:
