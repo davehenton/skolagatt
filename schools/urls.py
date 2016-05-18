@@ -55,7 +55,7 @@ urlpatterns = [
 
     url(r'^(?P<school_id>\d+)/könnun/$', SurveyListing.as_view(), name='survey_listing'),
     url(r'^(?P<school_id>\d+)/könnun/(?P<pk>\d+)/$', SurveyDetail.as_view(), name='survey_detail'),
-    url(r'^(?P<school_id>\d+)/könnun/create/$', SurveyCreate.as_view(), name='survey_create'),
+    url(r'^(?P<school_id>\d+)/bekkur/(?P<student_group>\d+)/könnun/create/$', SurveyCreate.as_view(), name='survey_create'),
     url(r'^(?P<school_id>\d+)/könnun/(?P<pk>\d+)/update/$', SurveyUpdate.as_view(), name='survey_update'),
     url(r'^(?P<school_id>\d+)/könnun/(?P<pk>\d+)/delete/$', SurveyDelete.as_view(), name='survey_delete'),
 

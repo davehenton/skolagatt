@@ -109,7 +109,8 @@ class SurveyForm(forms.ModelForm):
 	class Meta:
 		model = Survey
 		fields =  ['studentgroup', 'survey', 'title', 'active_from', 'active_to', 'data_fields']
-		widgets = {
+		widgets= {
+			'studentgroup': forms.HiddenInput(),
 			'survey': forms.HiddenInput(),
 			'title': forms.HiddenInput(),
 			'active_from': forms.HiddenInput(),
