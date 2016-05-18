@@ -24,10 +24,6 @@
 			<a href="{% url 'schools:group_create' school.id %}" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span>&nbsp;Bæta við hóp</a>
 			{% include 'common/_group_list.html' %}
 		</div>
-		<div class="col-md-3">
-			<a href="{% url 'schools:survey_create' school.id %}" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span>&nbsp;Bæta við könnun</a>
-			{% include 'common/_survey_list.html' %}
-		</div>
 	</div>
 </div>
 {% endblock %}
