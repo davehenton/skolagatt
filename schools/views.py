@@ -55,6 +55,16 @@ def is_school_teacher(context):
     pass
   return False
 
+def is_group_manager(context):
+  if not context.request.user.is_authenticated:
+    return False
+  try:
+    if StudentGroup.objects.filter(pk=context.kwargs['student_group']).filter(group_managers=Teacher.objects.filter(user=context.request.user)):# user=context.request.user)):
+      return True
+  except:
+    pass
+  return False
+
 def slug_sort(q, attr):
   return sorted(q, key=lambda x: slugify(getattr(x,attr)))
 
@@ -668,7 +678,6 @@ class SurveyCreate(UserPassesTestMixin, CreateView):
     form = self.get_form()
     #make data mutable
     form.data = self.request.POST.copy()
-    print(form.data)
     form.data['studentgroup'] = StudentGroup.objects.filter(pk=self.kwargs['student_group'])
     if form.is_valid():
       return self.form_valid(form)
@@ -682,7 +691,7 @@ class SurveyCreate(UserPassesTestMixin, CreateView):
       return context
 
   def test_func(self):
-    return is_school_manager(self) or is_school_teacher(self) #TODO: manager or (teacher and group_manager)
+    return is_group_manager(self) or is_school_manager(self) #TODO: manager or (teacher and group_manager)
 
   def get_success_url(self):
     try:
