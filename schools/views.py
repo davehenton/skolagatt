@@ -648,6 +648,7 @@ class SurveyDetail(UserPassesTestMixin, DetailView):
     context = super(SurveyDetail, self).get_context_data(**kwargs)
     context['school'] = School.objects.get(pk=self.kwargs['school_id'])
     context['students'] = self.object.studentgroup.students.all()
+    context['field_types'] = ['text', 'number', 'text-list', 'number-list']
     return context
 
 class SurveyCreate(UserPassesTestMixin, CreateView):
@@ -754,6 +755,7 @@ class SurveyResultCreate(UserPassesTestMixin, CreateView):
     context['data_result'] = {'error': 'no value'}
     context['student'] = Student.objects.filter(pk=self.kwargs['student_id'])
     context['survey'] = Survey.objects.filter(pk=self.kwargs['survey_id'])
+    context['field_types'] = ['text', 'number', 'text-list', 'number-list']
     return context
 
   def post(self, *args, **kwargs):
@@ -777,7 +779,10 @@ class SurveyResultCreate(UserPassesTestMixin, CreateView):
     data_fields = json.loads(Survey.objects.get(pk=self.kwargs['survey_id']).data_fields)
     data_results = {}
     for field in data_fields:
-      data_results[field['field_name']] = self.request.POST[field['field_name']]
+      try:
+        data_results[field['field_name']] = self.request.POST[field['field_name']]
+      except:
+        pass
     survey_results.results = json.dumps(data_results)
     #save()  # This is redundant, see comments.
     return super(SurveyResultCreate, self).form_valid(form)

@@ -13,16 +13,24 @@ class SurveyResultSerializer(serializers.ModelSerializer):
         model = SurveyResult
         fields = ('student', 'results')
 
+    def __init__(self, *args, **kwargs):
+        super(SurveyResultSerializer, self).__init__(*args, **kwargs)
+        print(*args)
+
     def to_representation(self, instance):
         data = super(SurveyResultSerializer, self).to_representation(instance)
         data['results'] = json.loads(data['results'])
         return data
 
 class SurveySerializer(serializers.ModelSerializer):
+    survey_id = serializers.SerializerMethodField()
     results = SurveyResultSerializer(many=True)
     class Meta:
         model = Survey
-        fields = ('survey', 'results')
+        fields = ('survey_id', 'survey', 'results')
+
+    def get_survey_id(self, container):
+        return container.id
 
 class SchoolSerializer(serializers.ModelSerializer):
     surveys = serializers.SerializerMethodField('school_surveys')
@@ -32,6 +40,6 @@ class SchoolSerializer(serializers.ModelSerializer):
 
     def school_surveys(self, container):
         school_student_groups = StudentGroup.objects.filter(school=container)
-        school_surveys = Survey.objects.filter(studentgroup=school_student_groups)
+        school_surveys = Survey.objects.filter(studentgroup__in=school_student_groups)
         serializer = SurveySerializer(instance=school_surveys, many=True)
         return serializer.data
