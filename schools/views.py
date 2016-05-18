@@ -663,10 +663,17 @@ class SurveyCreate(UserPassesTestMixin, CreateView):
     except:
       return []
 
-  def get_form(self):
-    form = super(SurveyCreate, self).get_form(self.form_class)
-    form.fields['studentgroup'].queryset = StudentGroup.objects.filter(school=self.kwargs['school_id'])
-    return form
+  def post(self, *args, **kwargs):
+    self.object = None
+    form = self.get_form()
+    #make data mutable
+    form.data = self.request.POST.copy()
+    print(form.data)
+    form.data['studentgroup'] = StudentGroup.objects.filter(pk=self.kwargs['student_group'])
+    if form.is_valid():
+      return self.form_valid(form)
+    else:
+      return self.form_invalid(form)
 
   def get_context_data(self, **kwargs):
       # xxx will be available in the template as the related objects
@@ -680,8 +687,9 @@ class SurveyCreate(UserPassesTestMixin, CreateView):
   def get_success_url(self):
     try:
       school_id = self.kwargs['school_id']
-      return reverse_lazy('schools:school_detail',
-                              kwargs={'pk': school_id})
+      student_group = self.kwargs['student_group']
+      return reverse_lazy('schools:group_detail',
+                              kwargs={'school_id': school_id, 'pk': student_group})
     except:
       return reverse_lazy('schools:school_listing')
 

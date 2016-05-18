@@ -49,7 +49,7 @@
 	<div class="col-md-4">
 		<ul>
 			<li><h4>Kannanir</h4>
-				<a href="{% url 'schools:survey_create' school.id %}" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span>&nbsp;Bæta við könnun</a>
+				<a href="{% url 'schools:survey_create' school.id studentgroup.id %}" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span>&nbsp;Bæta við könnun</a>
 				<ul>
 					{% for survey in studentgroup.survey_set.all %}
 						<li><a href="{% url 'schools:survey_detail' school.id survey.id %}">{{ survey.title }}</a></li>

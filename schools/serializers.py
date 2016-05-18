@@ -23,14 +23,10 @@ class SurveyResultSerializer(serializers.ModelSerializer):
         return data
 
 class SurveySerializer(serializers.ModelSerializer):
-    survey_id = serializers.SerializerMethodField()
     results = SurveyResultSerializer(many=True)
     class Meta:
         model = Survey
-        fields = ('survey_id', 'survey', 'results')
-
-    def get_survey_id(self, container):
-        return container.id
+        fields = ('survey', 'results')
 
 class SchoolSerializer(serializers.ModelSerializer):
     surveys = serializers.SerializerMethodField('school_surveys')
