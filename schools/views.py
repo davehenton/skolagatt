@@ -13,8 +13,14 @@ from django.utils import timezone
 from django.utils.text import slugify
 from uuid import uuid4
 import requests, json
+<<<<<<< HEAD
 import xlrd
 
+=======
+import zipfile
+from xml.etree.ElementTree import iterparse
+from datetime import datetime
+>>>>>>> 3615e291f042a7975b7e4062da6c46dcb0db66ae
 
 from common.models import School, Student, StudentGroup, Manager, Teacher, Survey, SurveyResult
 from common.models import SchoolForm, StudentForm, StudentGroupForm, ManagerForm, TeacherForm, SurveyForm, SurveyResultForm
@@ -50,6 +56,16 @@ def is_school_teacher(context):
   try:
     school_id = get_current_school(context.kwargs)
     if school_id and School.objects.filter(pk=school_id).filter(teachers=Teacher.objects.filter(user=context.request.user)):
+      return True
+  except:
+    pass
+  return False
+
+def is_group_manager(context):
+  if not context.request.user.is_authenticated:
+    return False
+  try:
+    if StudentGroup.objects.filter(pk=context.kwargs['student_group']).filter(group_managers=Teacher.objects.filter(user=context.request.user)):# user=context.request.user)):
       return True
   except:
     pass
@@ -320,7 +336,6 @@ class TeacherCreate(UserPassesTestMixin, CreateView):
       form.data['user'] = user.first().id
     else:
       form.data['user'] = User.objects.create(username=self.request.POST.get('ssn'), password=str(uuid4()))
-      form.data['user'] = new_user.id
 
     if form.is_valid():
       return self.form_valid(form)
@@ -572,6 +587,7 @@ class StudentGroupDetail(UserPassesTestMixin, DetailView):
     context['school'] = School.objects.get(pk=self.kwargs['school_id'])
     context['exceptions'] = Exceptions.objects.all()
     context['supports'] = SupportResource.objects.all()
+    context['surveys'] = self.object.survey_set.filter(active_to__gte=datetime.now())
     return context
 
 class StudentGroupCreate(UserPassesTestMixin, CreateView):
@@ -670,6 +686,7 @@ class SurveyDetail(UserPassesTestMixin, DetailView):
     context = super(SurveyDetail, self).get_context_data(**kwargs)
     context['school'] = School.objects.get(pk=self.kwargs['school_id'])
     context['students'] = self.object.studentgroup.students.all()
+    context['field_types'] = ['text', 'number', 'text-list', 'number-list']
     return context
 
 class SurveyCreate(UserPassesTestMixin, CreateView):
@@ -684,10 +701,16 @@ class SurveyCreate(UserPassesTestMixin, CreateView):
     except:
       return []
 
-  def get_form(self):
-    form = super(SurveyCreate, self).get_form(self.form_class)
-    form.fields['studentgroup'].queryset = StudentGroup.objects.filter(school=self.kwargs['school_id'])
-    return form
+  def post(self, *args, **kwargs):
+    self.object = None
+    form = self.get_form()
+    #make data mutable
+    form.data = self.request.POST.copy()
+    form.data['studentgroup'] = StudentGroup.objects.filter(pk=self.kwargs['student_group'])
+    if form.is_valid():
+      return self.form_valid(form)
+    else:
+      return self.form_invalid(form)
 
   def get_context_data(self, **kwargs):
       # xxx will be available in the template as the related objects
@@ -696,13 +719,14 @@ class SurveyCreate(UserPassesTestMixin, CreateView):
       return context
 
   def test_func(self):
-    return is_school_manager(self) or is_school_teacher(self) #TODO: manager or (teacher and group_manager)
+    return is_group_manager(self) or is_school_manager(self) #TODO: manager or (teacher and group_manager)
 
   def get_success_url(self):
     try:
       school_id = self.kwargs['school_id']
-      return reverse_lazy('schools:school_detail',
-                              kwargs={'pk': school_id})
+      student_group = self.kwargs['student_group']
+      return reverse_lazy('schools:group_detail',
+                              kwargs={'school_id': school_id, 'pk': student_group})
     except:
       return reverse_lazy('schools:school_listing')
 
@@ -776,6 +800,7 @@ class SurveyResultCreate(UserPassesTestMixin, CreateView):
     context['data_result'] = {'error': 'no value'}
     context['student'] = Student.objects.filter(pk=self.kwargs['student_id'])
     context['survey'] = Survey.objects.filter(pk=self.kwargs['survey_id'])
+    context['field_types'] = ['text', 'number', 'text-list', 'number-list']
     return context
 
   def post(self, *args, **kwargs):
@@ -799,7 +824,10 @@ class SurveyResultCreate(UserPassesTestMixin, CreateView):
     data_fields = json.loads(Survey.objects.get(pk=self.kwargs['survey_id']).data_fields)
     data_results = {}
     for field in data_fields:
-      data_results[field['field_name']] = self.request.POST[field['field_name']]
+      try:
+        data_results[field['field_name']] = self.request.POST[field['field_name']]
+      except:
+        pass
     survey_results.results = json.dumps(data_results)
     #save()  # This is redundant, see comments.
     return super(SurveyResultCreate, self).form_valid(form)
