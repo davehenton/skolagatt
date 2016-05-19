@@ -13,21 +13,25 @@
 <script type='text/javascript'>
 	var data_fields = {{data_fields|default:""|safe }};
 	var data_result = {{data_result|default:""|safe }};
+	var field_types = {{field_types|safe}};
 
 	try {
 		//add namska select
 		data_input = "";
 		console.log(data_fields);
 		$.each(data_fields, function(key, value){
-			data_input += '<p>';
-			data_input += '<label for="'+value['field_name']+'">'+value['field_label']+': </label>';
-			if(data_result.error === "no value") {
-				data_input += '<input id="'+value['field_name']+'" name="'+value['field_name']+'" type="'+value['field_type']+'"  value="" />';
+			if(field_types.indexOf(value['field_type']) > -1)
+			{
+				data_input += '<p>';
+				data_input += '<label for="'+value['field_name']+'">'+value['field_label']+': </label>';
+				if(data_result.error === "no value") {
+					data_input += '<input id="'+value['field_name']+'" name="'+value['field_name']+'" type="'+value['field_type']+'"  value="" />';
+				}
+				else {
+					data_input += '<input id="'+value['field_name']+'" name="'+value['field_name']+'" type="'+value['field_type']+'"  value="'+data_result[value['field_name']]+'" />';
+				}
+				data_input += '</p>';
 			}
-			else {
-				data_input += '<input id="'+value['field_name']+'" name="'+value['field_name']+'" type="'+value['field_type']+'"  value="'+data_result[value['field_name']]+'" />';
-			}
-			data_input += '</p>';
 		});
 		var s = $('#survey_result_form').prepend(data_input);
 	}
