@@ -15,6 +15,7 @@ from uuid import uuid4
 import requests, json
 import zipfile
 from xml.etree.ElementTree import iterparse
+from datetime import datetime
 
 from common.models import School, Student, StudentGroup, Manager, Teacher, Survey, SurveyResult
 from common.models import SchoolForm, StudentForm, StudentGroupForm, ManagerForm, TeacherForm, SurveyForm, SurveyResultForm
@@ -560,6 +561,7 @@ class StudentGroupDetail(UserPassesTestMixin, DetailView):
     context['school'] = School.objects.get(pk=self.kwargs['school_id'])
     context['exceptions'] = Exceptions.objects.all()
     context['supports'] = SupportResource.objects.all()
+    context['surveys'] = self.object.survey_set.filter(active_to__gte=datetime.now())
     return context
 
 class StudentGroupCreate(UserPassesTestMixin, CreateView):
