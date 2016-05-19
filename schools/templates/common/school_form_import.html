@@ -9,12 +9,15 @@
 	</p>
 	<p>
 		<label for="school_ssn">Númer dálks fyrir kennitölu</label>
-		<input type="number" name="school_ssn" id="school_ssn" />
+		<input type="number" min="0" value="0" name="school_ssn" id="school_ssn" />
 	</p>
 	<p>
 		<label for="school_name">Númer dálks fyrir nafn</label>
-		<input type="number" name="school_name" id="school_name" />
+		<input type="number" min="0" value="0" name="school_name" id="school_name" />
 	</p>
+	<div>
+	<label for="title"><input type="checkbox" id="title" name="title" value="yes"> Er fyrsta línan með titli</label><br>
+	</div>
 	<p>
 		<input type="submit" value="Vista" />
 	</p>
