@@ -13,14 +13,9 @@ from django.utils import timezone
 from django.utils.text import slugify
 from uuid import uuid4
 import requests, json
-<<<<<<< HEAD
-import xlrd
 
-=======
-import zipfile
-from xml.etree.ElementTree import iterparse
+import xlrd
 from datetime import datetime
->>>>>>> 3615e291f042a7975b7e4062da6c46dcb0db66ae
 
 from common.models import School, Student, StudentGroup, Manager, Teacher, Survey, SurveyResult
 from common.models import SchoolForm, StudentForm, StudentGroupForm, ManagerForm, TeacherForm, SurveyForm, SurveyResultForm

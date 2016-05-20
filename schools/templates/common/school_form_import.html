@@ -5,7 +5,7 @@
 	{% csrf_token %}
 	<p>
 		<label for="file">Filename:</label>
-		<input type="file" name="file" id="file" />
+		<input type="file" name="file" id="file" class="btn btn-default"/>
 	</p>
 	<p>
 		<label for="school_ssn">Númer dálks fyrir kennitölu</label>
@@ -19,7 +19,7 @@
 	<label for="title"><input type="checkbox" id="title" name="title" value="yes"> Er fyrsta línan með titli</label><br>
 	</div>
 	<p>
-		<input type="submit" value="Vista" />
+		<input type="submit" value="Vista" class="btn btn-default"/>
 	</p>
 </form>
 {% endblock %}
