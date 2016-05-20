@@ -145,7 +145,7 @@ class SchoolCreateImport(UserPassesTestMixin, CreateView):
         for sheetsnumber in range(book.nsheets):
           sheet = book.sheet_by_index(sheetsnumber)
           for row in range(first, sheet.nrows):
-            data.append({'name': sheet.cell_value(row,int(name)), 'ssn': sheet.cell_value(row,int(ssn))})
+            data.append({'name': sheet.cell_value(row,int(name)), 'ssn': str(int(sheet.cell_value(row,int(ssn))))})
 
       return render(self.request, 'common/school_verify_import.html', {'data': data})
     else:
@@ -440,6 +440,7 @@ class StudentCreateImport(UserPassesTestMixin, CreateView):
       extension = u_file.split(".")[-1]
       ssn = self.request.POST.get('student_ssn')
       name = self.request.POST.get('student_name')
+      title = self.request.POST.get('title')
       if title == 'yes':
         first = 1
       else:
@@ -457,7 +458,7 @@ class StudentCreateImport(UserPassesTestMixin, CreateView):
         for sheetsnumber in range(book.nsheets):
           sheet = book.sheet_by_index(sheetsnumber)
           for row in range(first, sheet.nrows):
-            data.append({'name': sheet.cell_value(row,int(name)), 'ssn': sheet.cell_value(row,int(ssn))})
+            data.append({'name': str(sheet.cell_value(row,int(name))), 'ssn': str(int(sheet.cell_value(row,int(ssn))))})
       return render(self.request, 'common/student_verify_import.html', {'data': data, 'school': School.objects.get(pk=self.kwargs['school_id'])})
     else:
       student_data = json.loads(self.request.POST['students'])
