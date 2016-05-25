@@ -317,7 +317,8 @@ class TeacherCreate(UserPassesTestMixin, CreateView):
     if user:
       form.data['user'] = user.first().id
     else:
-      form.data['user'] = User.objects.create(username=self.request.POST.get('ssn'), password=str(uuid4()))
+       user = User.objects.create(username=self.request.POST.get('ssn'), password=str(uuid4()))
+       form.data['user'] = user.id
 
     if form.is_valid():
       return self.form_valid(form)
@@ -562,6 +563,7 @@ class StudentGroupDetail(UserPassesTestMixin, DetailView):
     context['exceptions'] = Exceptions.objects.all()
     context['supports'] = SupportResource.objects.all()
     context['surveys'] = self.object.survey_set.filter(active_to__gte=datetime.now())
+    context['old_surveys'] = self.object.survey_set.filter(active_to__lt=datetime.now())
     return context
 
 class StudentGroupCreate(UserPassesTestMixin, CreateView):
