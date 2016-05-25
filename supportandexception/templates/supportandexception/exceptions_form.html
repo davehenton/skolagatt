@@ -14,9 +14,13 @@
 	reason.push({{exceptions.reason}});
 </script>
 <form action="" method="post" id="exception">{% csrf_token %}
-
-
-<b>Nemandi:</b> {{student.ssn}} {{student.name}} {{studentgroup.student_year}}     <b>Bekkur:</b> {{studentgroup.name}}     <b>Prófstofa:</b>
+	<div class="row">
+		<div class="col-md-4">
+		
+		<b>Nafn:</b> {{student.name}} <b>Kennitala:</b> {{student.ssn}}
+		
+		</div>
+	</div>
 <div class="row">
 	<div class="col-md-4">
 		<b>Minnispunktar um skráninguna:</b>
