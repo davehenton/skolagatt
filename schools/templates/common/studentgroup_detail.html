@@ -29,7 +29,7 @@
 				<ul>
 					{% for student in studentgroup.students.all %}
 						<li>
-							<a href="{% url 'schools:student_detail' school.id student.id %}">{{student}}</a>
+							<a href="{% url 'schools:student_detail' school.id student.id %}">{{student.ssn}}{{student}}</a>
 							{% for exception in exceptions %}
 							{% if exception.student.id == student.id %}
 							<a href="{% url 'supportandexception:exception' school.id student.id %}" title="Undanþágur"><span class="glyphicon glyphicon-flag" style="color:#449D44"></span>&nbsp;</a>
