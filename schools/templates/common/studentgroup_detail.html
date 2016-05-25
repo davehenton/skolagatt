@@ -12,56 +12,52 @@
 </div>
 <div class="row">
 	<div class="col-md-4">
-		<ul>
-			<li>Árgangur: {{studentgroup.student_year}}</li>
-			<li><h4>Umsjónarmenn</h4>
-				<ul>
-					{% for teacher in studentgroup.group_managers.all %}
-						<li><a href="{% url 'schools:teacher_detail' school.id teacher.id %}">{{ teacher }}</a></li>
-					{% endfor %}
-				</ul>
-			</li>
-		</ul>
+		<h5>Árgangur: {{studentgroup.student_year}}</h5>
+		<h4>Umsjónarmenn</h4>
+		{% for teacher in studentgroup.group_managers.all %}
+			<div class="row">
+				<div class="col-md-12"><a href="{% url 'schools:teacher_detail' school.id teacher.id %}">{{ teacher }}</a></div>
+			</div>
+		{% endfor %}
 	</div>
 	<div class="col-md-4">
-		<ul>
-			<li><h4>Nemendur</h4>
-				<ul>
-					{% for student in studentgroup.students.all %}
-						<li>
-							<a href="{% url 'schools:student_detail' school.id student.id %}">{{student.ssn}}{{student}}</a>
-							{% for exception in exceptions %}
-								{% if exception.student.id == student.id %}
-								<a href="{% url 'supportandexception:exception' school.id student.id %}" title="Undanþágur"><span class="glyphicon glyphicon-flag" style="color:#449D44"></span>&nbsp;</a>
-								{% endif %}
-							{% endfor %}
-							{% for support in supports %}
-								{% if support.student.id == student.id %}
-								<a href="{% url 'supportandexception:supportresource' school.id student.id %}" title="Stuðningsúrræði"><span class="glyphicon glyphicon-flag" style="color:#EC971F"></span>&nbsp;</a>
-								{% endif %}
-							{% endfor %}
-						</li>
+		<h4>Nemendur</h4>
+		{% for student in studentgroup.students.all %}
+			<div class="row">
+				<div class="col-md-3">
+					<a href="{% url 'schools:student_detail' school.id student.id %}">{{student.ssn}}</a>
+				</div>
+				<div class="col-md-7">
+					<a href="{% url 'schools:student_detail' school.id student.id %}">{{student}}</a>
+				</div>
+				<div class="col-md-2">
+					{% for exception in exceptions %}
+						{% if exception.student.id == student.id %}
+						<a href="{% url 'supportandexception:exception' school.id student.id %}" title="Undanþágur"><span class="glyphicon glyphicon-flag" style="color:#449D44"></span>&nbsp;</a>
+						{% endif %}
 					{% endfor %}
-				</ul>
-			</li>
-		</ul>
+					{% for support in supports %}
+						{% if support.student.id == student.id %}
+						<a href="{% url 'supportandexception:supportresource' school.id student.id %}" title="Stuðningsúrræði"><span class="glyphicon glyphicon-flag" style="color:#EC971F"></span>&nbsp;</a>
+						{% endif %}
+					{% endfor %}
+				</div>
+			</div>
+		{% endfor %}
 	</div>
 	<div class="col-md-4">
-		<ul>
-			<li><h4>Kannanir</h4>
-				<a href="{% url 'schools:survey_create' school.id studentgroup.id %}" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span>&nbsp;Bæta við könnun</a>
-					{% for survey in surveys %}
-						<div class="row">
-							<div class="col-md-6">
-								<a href="{% url 'schools:survey_detail' school.id survey.id %}">{{ survey.title }}</a>
-							</div>
-							<div class="col-md-6">
-								{{ survey.active_to|date:"d-m-y"|lower }}
-							</div>
-						</div>
-					{% endfor %}
-			</li>
-		</ul>
+		<h4>Kannanir</h4>
+		<a href="{% url 'schools:survey_create' school.id studentgroup.id %}" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span>&nbsp;Bæta við könnun</a>
+			{% for survey in surveys %}
+				<div class="row">
+					<div class="col-md-6">
+						<a href="{% url 'schools:survey_detail' school.id survey.id %}">{{ survey.title }}</a>
+					</div>
+					<div class="col-md-6">
+						{{ survey.active_to|date:"d-m-y"|lower }}
+					</div>
+				</div>
+			{% endfor %}
 	</div>
 	<div class="row">
 		<div class="col-md-4">
@@ -69,20 +65,17 @@
 		<div class="col-md-4">
 		</div>
 		<div class="col-md-4">
-			<ul>
-				<li><h4>Niðurstöður</h4>
-						{% for survey in old_surveys %}
-							<div class="row">
-								<div class="col-md-6">
-									<a href="{% url 'schools:survey_detail' school.id survey.id %}">{{ survey.title }}</a>
-								</div>
-								<div class="col-md-6">
-									{{ survey.active_to|date:"d-m-y"|lower }}
-								</div>
-							</div>
-						{% endfor %}
-				</li>
-			</ul>
+			<h4>Niðurstöður</h4>
+			{% for survey in old_surveys %}
+				<div class="row">
+					<div class="col-md-6">
+						<a href="{% url 'schools:survey_detail' school.id survey.id %}">{{ survey.title }}</a>
+					</div>
+					<div class="col-md-6">
+						{{ survey.active_to|date:"d-m-y"|lower }}
+					</div>
+				</div>
+			{% endfor %}
 		</div>
 	</div>
 </div>
