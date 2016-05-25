@@ -4,7 +4,7 @@ $(document).ready(function() {
 		{
 			var r = confirm("Villtu vista skilaboðin?");
 			if (r == true) {
-				
+
 				$.post("notes_save/",{notes: $("#textareaid").val(), 'csrfmiddlewaretoken': $('input[name="csrfmiddlewaretoken"]').attr("value")},function(result){
 					$('div#notesshow').text($("#textareaid").val());
 				});
@@ -12,21 +12,21 @@ $(document).ready(function() {
 		}
     	$('#notesshow').toggle();
     	$('#textareashow').toggle();
-    	
+
     });
     $(document).on('click', "a[data-action='save_notes']", function(event){
     	if($('#textareaid').is(":visible"))
 		{
 			var r = confirm("Villtu vista skilaboðin?");
 			if (r == true) {
-				
+
 				$.post("notes_save/",{notes: $("#textareaid").val(), 'csrfmiddlewaretoken': $('input[name="csrfmiddlewaretoken"]').attr("value")},function(result){
-					
+
 				});
 			}
 		}
     });
-    
+
 });
 
 function update_form(data) {
@@ -63,7 +63,7 @@ $(function() {
 		var select = $("<select id=\"survey_select\" name=\"survey_select\" />");
 		var options= '<option value="">Velja könnun</option>';
 		$.each(survey_list, function(key, value){
-			options += '<option value=' + value['pk'] + '>' + value['title'] + '</option>';
+			options += '<option value=' + value['pk'] + '>' + value['title'] + ' - ' + value['active_to'] + '</option>';
 		});
 		select.append(options);
 		var s = $('#id_survey').parent().before(select);
