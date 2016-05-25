@@ -31,14 +31,14 @@
 						<li>
 							<a href="{% url 'schools:student_detail' school.id student.id %}">{{student.ssn}}{{student}}</a>
 							{% for exception in exceptions %}
-							{% if exception.student.id == student.id %}
-							<a href="{% url 'supportandexception:exception' school.id student.id %}" title="Undanþágur"><span class="glyphicon glyphicon-flag" style="color:#449D44"></span>&nbsp;</a>
-							{% endif %}
+								{% if exception.student.id == student.id %}
+								<a href="{% url 'supportandexception:exception' school.id student.id %}" title="Undanþágur"><span class="glyphicon glyphicon-flag" style="color:#449D44"></span>&nbsp;</a>
+								{% endif %}
 							{% endfor %}
 							{% for support in supports %}
-							{% if support.student.id == student.id %}
-							<a href="{% url 'supportandexception:supportresource' school.id student.id %}" title="Stuðningsúrræði"><span class="glyphicon glyphicon-flag" style="color:#EC971F"></span>&nbsp;</a>
-							{% endif %}
+								{% if support.student.id == student.id %}
+								<a href="{% url 'supportandexception:supportresource' school.id student.id %}" title="Stuðningsúrræði"><span class="glyphicon glyphicon-flag" style="color:#EC971F"></span>&nbsp;</a>
+								{% endif %}
 							{% endfor %}
 						</li>
 					{% endfor %}
