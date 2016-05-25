@@ -81,7 +81,7 @@ class SchoolListing(ListView):
       else:
         manager_schools = School.objects.filter(managers=Manager.objects.filter(user=self.request.user))
         teacher_schools = School.objects.filter(teachers=Teacher.objects.filter(user=self.request.user))
-        context['school_list'] = slug_sort(manager_schools | teacher_schools, 'name')
+        context['school_list'] = list(set(slug_sort(manager_schools | teacher_schools, 'name')))
     except Exception as e:
       print(e)
     return context
