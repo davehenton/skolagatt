@@ -10,3 +10,4 @@ pyvenv.cfg
 *.pyc
 *.sublime-workspace
 *.sublime-project
+pip-selfcheck.json

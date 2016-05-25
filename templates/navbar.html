@@ -29,9 +29,23 @@
           <ul class="nav navbar-nav navbar-right">
             <!-- li><a href="https://innskraning.island.is/?id=mms.is&login=skolagatt"><span class="glyphicon glyphicon-user">Innskráning</span></a></li -->
 	    {% if user.is_authenticated %}
-	        <li><a href="{% url 'auth_login' %}"><span class="glyphicon glyphicon-user">{{user.username}}</span></a></li>
+	        <li>
+	        	<span>
+	        		<span class="glyphicon glyphicon-user"></span>&nbsp;{{user.username}}
+	        		<a href="{% url 'auth_logout' %}" class="btn btn-xs btn-danger">
+	        			<span class="glyphicon glyphicon-log-out"></span>
+	        		</a>
+	        	</span>
+	        </li>
             {% else %}
-	        <li><a href="{% url 'auth_login' %}"><span class="glyphicon glyphicon-user">Innskráning</span></a></li>
+	        <li>
+	        	<span>
+	        		<span class="glyphicon glyphicon-user"></span>&nbsp;Innskráning
+	        		<a href="{% url 'auth_login' %}" class="btn btn-xs btn-success">
+	        			<span class="glyphicon glyphicon-log-in"></span>
+	        		</a>
+	        	</span>
+	        </li>
 	    {% endif %}
           </ul>
         </div>
