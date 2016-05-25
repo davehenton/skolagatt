@@ -48,14 +48,18 @@
 				<div class="col-md-6"><a href="{% url 'schools:student_detail' school.id student.id %}">{{student.name}}</a></div>
 				{% if student_result %}
 				<div class="col-md-4">
+					{% if is_group_manager %}
 					<a href="{% url 'schools:survey_result_update' school.id student.id survey.id student_result.id %}" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span>&nbsp;Breyta</a>
+					{% endif %}
 					<button href="" class="btn btn-default btn-xs" type="button" data-toggle="collapse" data-target="#results-{{student_result.id}}" aria-expanded="false" aria-controls="collapseExample">
 						<span class="caret"></span>
 					</button>
 				</div>
 				{% else %}
 				<div class="col-md-4">
+					{% if is_group_manager %}
 					<a href="{% url 'schools:survey_result_create' school.id student.id survey.id %}" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span>&nbsp;Skrá</a>
+					{% endif %}
 				</div>
 				{% endif %}
 			</div>

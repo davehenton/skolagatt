@@ -832,7 +832,7 @@ class SurveyResultCreate(UserPassesTestMixin, CreateView):
     return super(SurveyResultCreate, self).form_valid(form)
 
   def test_func(self):
-    return is_school_manager(self) or is_school_teacher(self) #TODO: manager or (teacher and group_manager)
+    return is_group_manager(self)
 
   def get_success_url(self):
     try:
