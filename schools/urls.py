@@ -1,20 +1,11 @@
 # -*- coding: utf-8 -*-
 from django.conf.urls import url
 
-from .views import StudentListing, StudentDetail, StudentCreate, StudentCreateImport, StudentUpdate, StudentDelete, StudentNotes
-from .views import SchoolListing, SchoolDetail, SchoolCreate, SchoolCreateImport, SchoolUpdate, SchoolDelete
-from .views import StudentGroupListing, StudentGroupDetail, StudentGroupCreate, StudentGroupUpdate, StudentGroupDelete
-from .views import ManagerListing, ManagerDetail, ManagerCreate, ManagerUpdate, ManagerDelete
-from .views import TeacherListing, TeacherDetail, TeacherCreate, TeacherUpdate, TeacherDelete
-from .views import SurveyListing, SurveyDetail, SurveyCreate, SurveyUpdate, SurveyDelete
-from .views import SurveyResultCreate, SurveyResultUpdate, SurveyResultDelete
-from .views import SurveyLoginCreate
+from .views import *
 from .api import SchoolViewSet
 
 app_name = 'schools'
 urlpatterns = [
-    url(r'^könnun/create$', SurveyLoginCreate.as_view(), name='survey_login_create'),
-
     url(r'^$', SchoolListing.as_view(), name='school_listing'),
     url(r'^api$', SchoolViewSet.as_view({'get': 'list'}), name='api_school_listing'),
     url(r'^(?P<pk>\d+)/$', SchoolDetail.as_view(), name='school_detail'),
@@ -40,6 +31,7 @@ urlpatterns = [
     url(r'^(?P<school_id>\d+)/bekkur/create/$', StudentGroupCreate.as_view(), name='group_create'),
     url(r'^(?P<school_id>\d+)/bekkur/(?P<pk>\d+)/update/$', StudentGroupUpdate.as_view(), name='group_update'),
     url(r'^(?P<school_id>\d+)/bekkur/(?P<pk>\d+)/delete/$', StudentGroupDelete.as_view(), name='group_delete'),
+    url(r'^(?P<school_id>\d+)/bekkur/(?P<student_group>\d+)/könnun/create/$', SurveyCreate.as_view(), name='survey_create'),
 
     url(r'^(?P<school_id>\d+)/skolastjórn/$', ManagerListing.as_view(), name='manager_listing'),
     url(r'^(?P<school_id>\d+)/skolastjórn/(?P<pk>\d+)/$', ManagerDetail.as_view(), name='manager_detail'),
@@ -55,8 +47,11 @@ urlpatterns = [
 
     url(r'^(?P<school_id>\d+)/könnun/$', SurveyListing.as_view(), name='survey_listing'),
     url(r'^(?P<school_id>\d+)/könnun/(?P<pk>\d+)/$', SurveyDetail.as_view(), name='survey_detail'),
-    url(r'^(?P<school_id>\d+)/bekkur/(?P<student_group>\d+)/könnun/create/$', SurveyCreate.as_view(), name='survey_create'),
     url(r'^(?P<school_id>\d+)/könnun/(?P<pk>\d+)/update/$', SurveyUpdate.as_view(), name='survey_update'),
     url(r'^(?P<school_id>\d+)/könnun/(?P<pk>\d+)/delete/$', SurveyDelete.as_view(), name='survey_delete'),
+
+    url(r'^(?P<school_id>\d+)/lykilorð/$', SurveyLoginListing.as_view(), name='survey_login_listing'),
+    url(r'^(?P<school_id>\d+)/lykilorð/(?P<survey_id>\w+)$', SurveyLoginDetail.as_view(), name='survey_login_detail'),
+    url(r'^könnun/create$', SurveyLoginCreate.as_view(), name='survey_login_create'),
 
 ]

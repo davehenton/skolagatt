@@ -136,11 +136,11 @@ class SurveyResultForm(forms.ModelForm):
 
 class SurveyLogin(models.Model):
 	student = models.ForeignKey(Student)
-	survey_id = models.CharField(max_length = 256)
+	survey_id = models.CharField(max_length = 256) #external survey identity
 	survey_code = models.CharField(max_length = 16)
 
 class SurveyLoginForm(forms.ModelForm):
 	file = forms.FileField()
 	class Meta:
 		model = SurveyLogin
-		fields = []
+		fields = ['student', 'survey_id', 'survey_code']

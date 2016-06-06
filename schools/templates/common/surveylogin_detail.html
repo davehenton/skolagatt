@@ -1,0 +1,22 @@
+{% extends 'common/index.html'%}
+
+{% block content %}
+<h3>Lykilorð nemenda</h3>
+<h4><a href="{{survey_id}}">{{survey_id}}</a></h4>
+<div>
+	<div id="survey_list" class="table table-hover">
+		<div class="row">
+			<div class="col-md-2"><h4>Kennitala</h4></div>
+			<div class="col-md-3"><h4>Nafn</h4></div>
+			<div class="col-md-3"><h4>Lykilorð</h4></div>
+		</div>
+		{% for data in survey_login_students %}
+		<div class="row">
+			<div class="col-md-2">{{data.student.ssn}}</div>
+			<div class="col-md-3">{{data.student.name}}</div>
+			<div class="col-md-3">{{data.survey_code}}</div>
+		</div>
+		{% endfor %}
+	</div>
+</div>
+{% endblock %}
