@@ -1,0 +1,17 @@
+{% extends 'common/index.html'%}
+
+{% block content %}
+<h3>Kannanir</h3>
+<div>
+	<div id="survey_list" class="table table-hover">
+		<div class="row">
+			<div class="col-md-12"><h4>Könnun</h4></div>
+		</div>
+		{% for survey in survey_login_list %}
+		<div class="row">
+			<div class="col-md-12"><a href="{% url 'schools:survey_login_detail' school_id survey.survey_id %}">{{survey.survey_id}}</a></div>
+		</div>
+		{% endfor %}
+	</div>
+</div>
+{% endblock %}

@@ -15,9 +15,7 @@ import requests, json
 import xlrd
 from datetime import datetime
 
-from common.models import School, Student, StudentGroup, Manager, Teacher, Survey, SurveyResult
-from common.models import SchoolForm, StudentForm, StudentGroupForm, ManagerForm, TeacherForm, SurveyForm, SurveyResultForm
-from common.models import SurveyLogin, SurveyLoginForm
+from common.models import *
 from supportandexception.models import *
 from .util import *
 
@@ -401,8 +399,8 @@ class StudentCreateImport(UserPassesTestMixin, CreateView):
       if extension == 'csv':
         for row in self.request.FILES['file'].readlines()[first:]:
           row = row.decode('utf-8')
-          student_ssn = row.split(' ')[int(ssn)]
-          student_name = row.split('  ')[int(name)]
+          student_ssn = row.split(',')[int(ssn)]
+          student_name = row.split(',')[int(name)]
           data.append({'name': student_name.strip(), 'ssn': student_ssn.strip()})
       elif extension == 'xlsx':
         input_excel = self.request.FILES['file']
@@ -416,12 +414,13 @@ class StudentCreateImport(UserPassesTestMixin, CreateView):
       student_data = json.loads(self.request.POST['students'])
       school = School.objects.get(pk=self.kwargs['school_id'])
       #iterate through students, add them if they don't exist then add to school
-      for student in student_data:
+      for data in student_data:
+        student = None
         try:
-          s = Student.objects.create(**student)
+          student = Student.objects.create(**data)
         except:
-          pass #student already exists
-        school.students.add(s)
+          student = Student.objects.get(ssn=data['ssn'])
+        school.students.add(student)
 
     return HttpResponseRedirect(self.get_success_url())
 
@@ -618,7 +617,7 @@ class SurveyListing(UserPassesTestMixin, ListView):
   def get_context_data(self, **kwargs):
     # xxx will be available in the template as the related objects
     context = super(SurveyListing, self).get_context_data(**kwargs)
-    school = School.objects.get(pk=kwargs['school_id'])
+    school = School.objects.get(pk=self.kwargs['school_id'])
     context['surveylisting_list'] = slug_sort(Survey.objects.filter(studentgroup__in=school.object.studentgroup_set.all()), 'title')
     return context
 
@@ -849,21 +848,106 @@ class SurveyResultDelete(UserPassesTestMixin, DeleteView):
     except:
       return reverse_lazy('schools:school_listing')
 
+class SurveyLoginListing(UserPassesTestMixin, ListView):
+  model = SurveyLogin
+
+  def get_context_data(self, **kwargs):
+    # xxx will be available in the template as the related objects
+    context = super(SurveyLoginListing, self).get_context_data(**kwargs)
+    print(kwargs)
+    school = School.objects.get(pk=self.kwargs['school_id'])
+    context['school_id'] = school.id
+    context['survey_login_list'] = SurveyLogin.objects.filter(student__in = Student.objects.filter(school=school)).values('survey_id').distinct()
+    return context
+
+  def test_func(self):
+    return is_school_manager(self.request, self.kwargs) or is_school_teacher(self.request, self.kwargs)
+
+class SurveyLoginDetail(UserPassesTestMixin, DetailView):
+  model = SurveyLogin
+
+  def test_func(self):
+    return is_school_manager(self.request, self.kwargs)
+
+  def get_object(self, **kwargs):
+    return SurveyLogin.objects.filter(survey_id=self.kwargs['survey_id']).first()
+
+  def get_context_data(self, **kwargs):
+    # xxx will be available in the template as the related objects
+    context = super(SurveyLoginDetail, self).get_context_data(**kwargs)
+    context['survey_id'] = self.kwargs['survey_id']
+    school = School.objects.get(pk=self.kwargs['school_id'])
+    context['survey_login_students'] = SurveyLogin.objects.filter(student__in = Student.objects.filter(school=school)).filter(survey_id=self.kwargs['survey_id'])
+    return context
+
 class SurveyLoginCreate(UserPassesTestMixin, CreateView):
   model = SurveyLogin
   form_class = SurveyLoginForm
-  success_url = reverse_lazy('schools:school_listing')
+  template_name = "common/password_form_import.html"
   login_url = reverse_lazy('denied')
 
   def post(self, *args, **kwargs):
     if(self.request.FILES):
+      u_file = self.request.FILES['file'].name
+      extension = u_file.split(".")[-1]
+      ssn = self.request.POST.get('student_ssn')
+      name = self.request.POST.get('student_name')
+      survey_id = self.request.POST.get('survey_id')
+      password = self.request.POST.get('password')
+      title = self.request.POST.get('title')
+      if title == 'yes':
+        first = 1
+      else:
+        first = 0
       data = []
-      for row in self.request.FILES['file'].readlines():
-        row = row.decode('utf-8')
-        student_ssn = row.split(',')[int(ssn)]
-        student_name = row.split(',')[int(name)]
-        data.append({'name': student_name.strip(), 'ssn': student_ssn.strip()})
-    return HttpResponse("sadf")
+      try:
+        if extension == 'csv':
+          for row in self.request.FILES['file'].readlines()[first:]:
+            row = row.decode('utf-8')
+            student_ssn = row.split(',')[int(ssn)]
+            student_survey_id = row.split(',')[int(survey_id)]
+            student_name = row.split(',')[int(name)]
+            student_password = row.split(',')[int(password)]
+            data.append({
+              'survey_id': student_survey_id.strip(),
+              'ssn': student_ssn.strip(),
+              'name': student_name.strip(),
+              'password': student_password.strip()})
+        elif extension == 'xlsx':
+          input_excel = self.request.FILES['file']
+          book = xlrd.open_workbook(file_contents=input_excel.read())
+          for sheetsnumber in range(book.nsheets):
+            sheet = book.sheet_by_index(sheetsnumber)
+            for row in range(first, sheet.nrows):
+              data.append({
+                'survey_id': str(sheet.cell_value(row,int(survey_id))),
+                'ssn': str(int(sheet.cell_value(row,int(ssn)))),
+                'name': str(int(sheet.cell_value(row,int(name)))),
+                'password': str(int(sheet.cell_value(row,int(password)))),
+                })
+        return render(self.request, 'common/password_verify_import.html', {'data': data})
+      except:
+        return render(self.request, 'common/password_form_import.html', {'error': 'Dálkur ekki til, reyndu aftur'})
+    else:
+      student_data = json.loads(self.request.POST['students'])
+      #iterate through the data, add students if they don't exist then create a survey_login object
+      for data in student_data:
+        student = None
+        try:
+          student = Student.objects.create(ssn=data['ssn'], name=data['name'])
+        except Exception as e:
+          student = Student.objects.get(ssn=data['ssn']) #student already exists
+
+        #check if survey_login for student exists, create if not, otherwise update
+        survey_login = SurveyLogin.objects.get(student=student, survey_id=data['survey_id'])
+        if survey_login:
+          survey_login.update(survey_code=data['password'])
+        else:
+          survey_login = SurveyLogin.objects.create(student=student, survey_id = data['survey_id'], survey_code=data['password'])
+    return HttpResponseRedirect(self.get_success_url())
+
+  def get_success_url(self):
+    return reverse_lazy('schools:school_listing')
 
   def test_func(self):
     return self.request.user.is_superuser
