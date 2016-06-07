@@ -854,7 +854,6 @@ class SurveyLoginListing(UserPassesTestMixin, ListView):
   def get_context_data(self, **kwargs):
     # xxx will be available in the template as the related objects
     context = super(SurveyLoginListing, self).get_context_data(**kwargs)
-    print(kwargs)
     school = School.objects.get(pk=self.kwargs['school_id'])
     context['school_id'] = school.id
     context['survey_login_list'] = SurveyLogin.objects.filter(student__in = Student.objects.filter(school=school)).values('survey_id').distinct()
@@ -862,6 +861,19 @@ class SurveyLoginListing(UserPassesTestMixin, ListView):
 
   def test_func(self):
     return is_school_manager(self.request, self.kwargs) or is_school_teacher(self.request, self.kwargs)
+
+class SurveyLoginAdminListing(UserPassesTestMixin, ListView):
+  model = SurveyLogin
+  template_name = "common/surveylogin_admin_list.html"
+
+  def get_context_data(self, **kwargs):
+    # xxx will be available in the template as the related objects
+    context = super(SurveyLoginAdminListing, self).get_context_data(**kwargs)
+    context['survey_login_list'] = SurveyLogin.objects.all().values('survey_id').distinct()
+    return context
+
+  def test_func(self):
+    return self.request.user.is_superuser
 
 class SurveyLoginDetail(UserPassesTestMixin, DetailView):
   model = SurveyLogin
@@ -895,10 +907,12 @@ class SurveyLoginCreate(UserPassesTestMixin, CreateView):
       survey_id = self.request.POST.get('survey_id')
       password = self.request.POST.get('password')
       title = self.request.POST.get('title')
+
       if title == 'yes':
         first = 1
       else:
         first = 0
+
       data = []
       try:
         if extension == 'csv':
@@ -928,6 +942,7 @@ class SurveyLoginCreate(UserPassesTestMixin, CreateView):
         return render(self.request, 'common/password_verify_import.html', {'data': data})
       except:
         return render(self.request, 'common/password_form_import.html', {'error': 'Dálkur ekki til, reyndu aftur'})
+
     else:
       student_data = json.loads(self.request.POST['students'])
       #iterate through the data, add students if they don't exist then create a survey_login object
@@ -939,15 +954,29 @@ class SurveyLoginCreate(UserPassesTestMixin, CreateView):
           student = Student.objects.get(ssn=data['ssn']) #student already exists
 
         #check if survey_login for student exists, create if not, otherwise update
-        survey_login = SurveyLogin.objects.get(student=student, survey_id=data['survey_id'])
+        survey_login = SurveyLogin.objects.filter(student=student, survey_id=data['survey_id'])
         if survey_login:
           survey_login.update(survey_code=data['password'])
         else:
           survey_login = SurveyLogin.objects.create(student=student, survey_id = data['survey_id'], survey_code=data['password'])
-    return HttpResponseRedirect(self.get_success_url())
+    return redirect(self.get_success_url())
 
   def get_success_url(self):
-    return reverse_lazy('schools:school_listing')
+    return reverse_lazy('schools:survey_login_admin_listing')
 
   def test_func(self):
     return self.request.user.is_superuser
+
+class SurveyLoginDelete(UserPassesTestMixin, DeleteView):
+  model = SurveyLogin
+  login_url = reverse_lazy('denied')
+  template_name = "schools/confirm_delete.html"
+
+  def test_func(self):
+    return self.request.user.is_superuser
+
+  def get_success_url(self):
+    return reverse_lazy('schools:survey_login_admin_listing')
+
+  def get_object(self):
+    return SurveyLogin.objects.filter(survey_id=self.kwargs['survey_id'])
