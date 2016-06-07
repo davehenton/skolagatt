@@ -27,6 +27,8 @@
 	            {% if is_school_manager %}
 			<li><a href="{% url 'schools:survey_login_listing' school.id %}">Lykilorð</a></li>
 			{% endif %}
+		{% elif user.is_superuser %}
+			<li><a href="{% url 'schools:survey_login_admin_listing' %}">Lykilorð</a></li>
             {% endif %}
           </ul>
           <ul class="nav navbar-nav navbar-right">
