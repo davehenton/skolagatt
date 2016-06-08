@@ -627,12 +627,22 @@ class SurveyListing(UserPassesTestMixin, ListView):
 class SurveyDetail(UserPassesTestMixin, DetailView):
   model = Survey
 
+  def get_survey_data(self):
+    """Get survey details"""
+    try:
+        uri_list = settings.PROFAGRUNNUR_URL.split('?')
+        r = requests.get(''.join([uri_list[0], '/', self.object.survey, '?', uri_list[1]]))
+        return r.json()
+    except Exception as e:
+      return []
+
   def test_func(self):
     return is_school_manager(self.request, self.kwargs) or is_school_teacher(self.request, self.kwargs)
 
   def get_context_data(self, **kwargs):
     # xxx will be available in the template as the related objects
     context = super(SurveyDetail, self).get_context_data(**kwargs)
+    context['survey_details'] = self.get_survey_data()
     context['school'] = School.objects.get(pk=self.kwargs['school_id'])
     context['students'] = self.object.studentgroup.students.all()
     context['field_types'] = ['text', 'number', 'text-list', 'number-list']
@@ -644,6 +654,7 @@ class SurveyCreate(UserPassesTestMixin, CreateView):
   login_url = reverse_lazy('denied')
 
   def get_survey(self):
+    """Get all surveys from profagrunnur to provide a list to survey create"""
     try:
         r = requests.get(settings.PROFAGRUNNUR_URL)
         return r.json()

@@ -96,7 +96,7 @@ class StudentGroupForm(forms.ModelForm):
 
 class Survey(models.Model):
 	studentgroup = models.ForeignKey('StudentGroup')
-	survey = models.CharField(max_length = 1024) #url to profagrunnur
+	survey = models.CharField(max_length = 1024) #survey id from profagrunnur
 	title = models.CharField(max_length = 256) #value from profagrunnur
 	active_from = models.DateField(default=timezone.now) #value from profagrunnur
 	active_to = models.DateField(default=timezone.now) #value from profagrunnur

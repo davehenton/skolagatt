@@ -4,6 +4,7 @@
 {% block content %}
 <script>
 	var survey_data = {{survey.data_fields|get_json|safe}};
+	console.log("{{survey_details}}")
 </script>
 <h1>{{survey.title}}</h1>
 <div class="row">
