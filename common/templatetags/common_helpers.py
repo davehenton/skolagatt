@@ -14,7 +14,7 @@ def get_item(dictionary, key):
 def get_json(text):
 	try:
 		return json.loads(text)
-	except:
+	except Exception as e:
 		return {}
 
 def get_current_school(context):
