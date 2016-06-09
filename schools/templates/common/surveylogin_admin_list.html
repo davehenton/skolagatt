@@ -15,8 +15,8 @@
 		</div>
 		{% for survey in survey_login_list %}
 		<div class="row">
-			<div class="col-md-4">{{survey.survey_id}}</div>
-			<div class="col-md-1"><a href="{% url 'schools:surveylogin_delete' survey.survey_id %}"><span class="glyphicon glyphicon-trash"></span></div>
+			<div class="col-md-4"><a href="{% url 'schools:survey_login_detail_all' survey.survey_id %}">{{survey.survey_id}}</a></div>
+			<div class="col-md-1"><a href="{% url 'schools:surveylogin_delete' survey.survey_id %}"><span class="glyphicon glyphicon-trash"></span></a></div>
 		</div>
 		{% endfor %}
 	</div>

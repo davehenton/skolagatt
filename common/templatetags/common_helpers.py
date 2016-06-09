@@ -1,10 +1,29 @@
 # -*- coding: utf-8 -*-
 from django import template
+from django.template.defaultfilters import stringfilter
 from common.models import Manager, Teacher, School, SurveyResult
 from itertools import chain
+from datetime import datetime
 import re, json
 
 register = template.Library()
+
+
+@stringfilter
+def parse_date(date_string, format):
+    """
+    Return a datetime corresponding to date_string, parsed according to format.
+
+    For example, to re-display a date string in another format::
+
+        {{ "01/01/1970"|parse_date:"%Y-%m-%d"|date:"d-m-y }}
+
+    """
+    try:
+        return datetime.strptime(date_string, format)
+    except ValueError:
+        return None
+register.filter(parse_date)
 
 @register.filter
 def get_item(dictionary, key):
