@@ -4,11 +4,10 @@
 {% block content %}
 <script>
 	var survey_data = {{survey.data_fields|get_json|safe}};
-	console.log("{{survey_details}}")
 </script>
 <h1>{{survey.title}}</h1>
 <div class="row">
-	<div class="col-md-6">
+	<div class="col-md-4">
 		<div class="row">
 			<div class="col-md-12">
 				<a href="{% url 'schools:survey_update' school.id survey.id %}" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span>&nbsp;Breyta</a>
@@ -17,19 +16,19 @@
 		</div>
 		<div class="row">
 			<div class="col-md-12">
-				Próf virkt frá: {{survey.active_from}}
+				Próf virkt frá: {{survey_details.active_from|parse_date:"%Y-%m-%d"|date:"d-m-Y" }}
 			</div>
 		</div>
 		<div class="row">
 			<div class="col-md-12">
-				Próf virkt til: {{survey.active_to}}
+				Próf virkt frá: {{survey_details.active_to|parse_date:"%Y-%m-%d"|date:"d-m-Y" }}
 			</div>
 		</div>
 		<div class="row">
 			<div class="col-md-12">
 				<h4>Gagnasvæði</h4>
 				<ul>
-				{% for field in survey.data_fields|get_json %}
+				{% for field in survey_details.data_fields %}
 					{% if field.field_type in field_types %}
 					<li >
 						{{ field.field_label }} ({{ field.field_type }})
@@ -40,15 +39,18 @@
 			</div>
 		</div>
 	</div>
-	<div class="col-md-6">
+	<div class="col-md-4">
+
+	</div>
+	<div class="col-md-4">
 		<div class="row">
 		{% for student in students %}
 			{% get_survey_results student survey as student_result %}
 			<div class="row">
-				<div class="col-md-2">{{student.ssn}}</div>
+				<div class="col-md-3">{{student.ssn}}</div>
 				<div class="col-md-6"><a href="{% url 'schools:student_detail' school.id student.id %}">{{student.name}}</a></div>
 				{% if student_result %}
-				<div class="col-md-4">
+				<div class="col-md-3">
 					{% if is_group_manager %}
 					<a href="{% url 'schools:survey_result_update' school.id student.id survey.id student_result.id %}" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span>&nbsp;Breyta</a>
 					{% endif %}
@@ -57,7 +59,7 @@
 					</button>
 				</div>
 				{% else %}
-				<div class="col-md-4">
+				<div class="col-md-3">
 					{% if is_group_manager %}
 					<a href="{% url 'schools:survey_result_create' school.id student.id survey.id %}" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span>&nbsp;Skrá</a>
 					{% endif %}

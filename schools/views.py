@@ -642,7 +642,7 @@ class SurveyDetail(UserPassesTestMixin, DetailView):
   def get_context_data(self, **kwargs):
     # xxx will be available in the template as the related objects
     context = super(SurveyDetail, self).get_context_data(**kwargs)
-    context['survey_details'] = self.get_survey_data()
+    context['survey_details'] = self.get_survey_data()[0]
     context['school'] = School.objects.get(pk=self.kwargs['school_id'])
     context['students'] = self.object.studentgroup.students.all()
     context['field_types'] = ['text', 'number', 'text-list', 'number-list']
@@ -899,8 +899,11 @@ class SurveyLoginDetail(UserPassesTestMixin, DetailView):
     # xxx will be available in the template as the related objects
     context = super(SurveyLoginDetail, self).get_context_data(**kwargs)
     context['survey_id'] = self.kwargs['survey_id']
-    school = School.objects.get(pk=self.kwargs['school_id'])
-    context['survey_login_students'] = SurveyLogin.objects.filter(student__in = Student.objects.filter(school=school)).filter(survey_id=self.kwargs['survey_id'])
+    if 'school_id' in self.kwargs:
+      school = School.objects.get(pk=self.kwargs['school_id'])
+      context['survey_login_students'] = SurveyLogin.objects.filter(student__in = Student.objects.filter(school=school)).filter(survey_id=self.kwargs['survey_id'])
+    else:
+      context['survey_login_students'] = SurveyLogin.objects.filter(survey_id=self.kwargs['survey_id'])
     return context
 
 class SurveyLoginCreate(UserPassesTestMixin, CreateView):
@@ -951,7 +954,8 @@ class SurveyLoginCreate(UserPassesTestMixin, CreateView):
                 'password': str(int(sheet.cell_value(row,int(password)))),
                 })
         return render(self.request, 'common/password_verify_import.html', {'data': data})
-      except:
+      except Exception as e:
+        print(e)
         return render(self.request, 'common/password_form_import.html', {'error': 'Dálkur ekki til, reyndu aftur'})
 
     else:

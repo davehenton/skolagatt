@@ -52,9 +52,11 @@ urlpatterns = [
 
 
     url(r'^lykilorð/$', SurveyLoginAdminListing.as_view(), name='survey_login_admin_listing'),
+    url(r'^lykilorð/(?P<survey_id>[\w ]+)$', SurveyLoginDetail.as_view(), name='survey_login_detail_all'),
     url(r'^(?P<school_id>\d+)/lykilorð/$', SurveyLoginListing.as_view(), name='survey_login_listing'),
-    url(r'^(?P<school_id>\d+)/lykilorð/(?P<survey_id>\w+)$', SurveyLoginDetail.as_view(), name='survey_login_detail'),
+    url(r'^(?P<school_id>\d+)/lykilorð/(?P<survey_id>[\w ]+)$', SurveyLoginDetail.as_view(), name='survey_login_detail'),
+    url(r'^lykilorð/(?P<survey_id>[\w ]+)$', SurveyLoginDetail.as_view(), name='survey_login_detail'),
     url(r'^könnun/create$', SurveyLoginCreate.as_view(), name='survey_login_create'),
-    url(r'^könnun/(?P<survey_id>\d+)/delete/$', SurveyLoginDelete.as_view(), name='surveylogin_delete'),
+    url(r'^könnun/(?P<survey_id>[\w ]+)/delete/$', SurveyLoginDelete.as_view(), name='surveylogin_delete'),
 
 ]
