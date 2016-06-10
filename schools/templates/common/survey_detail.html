@@ -38,9 +38,29 @@
 				</ul>
 			</div>
 		</div>
+		<div class="row">
+			<h3>Ítargögn</h3>
+			<ul class="survey_resources">
+			{% for resource in survey_details.resources %}
+				<li>
+					<div>
+						<h4><a href="{{resource.resource_url}}">{{resource.title}}</a></h4>
+						<p>{{resource.description|md|safe}}</p>
+					</div>
+				</li>
+			{% endfor %}
+			</ul>
+		</div>
 	</div>
 	<div class="col-md-4">
-
+		<div class="row">
+		{% for text in survey_details.texts %}
+			<div class="col-md-12">
+				<h3>{{text.title}}</h3>
+				<p>{{text.text|md|safe}}</p>
+			</div>
+		{% endfor %}
+		</div>
 	</div>
 	<div class="col-md-4">
 		<div class="row">
@@ -52,7 +72,7 @@
 				{% if student_result %}
 				<div class="col-md-3">
 					{% if is_group_manager %}
-					<a href="{% url 'schools:survey_result_update' school.id student.id survey.id student_result.id %}" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span>&nbsp;Breyta</a>
+					<a href="{% url 'schools:survey_result_update' school.id student.id survey.id student_result.id %}" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
 					{% endif %}
 					<button href="" class="btn btn-default btn-xs" type="button" data-toggle="collapse" data-target="#results-{{student_result.id}}" aria-expanded="false" aria-controls="collapseExample">
 						<span class="caret"></span>
