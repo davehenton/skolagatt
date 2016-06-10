@@ -39,8 +39,17 @@ def is_group_manager(request, kwargs):
   if not request.user.is_authenticated:
     return False
   try:
-    if StudentGroup.objects.filter(pk=kwargs['student_group']).filter(group_managers=Teacher.objects.filter(user=request.user)):# user=context.request.user)):
-      return True
+    print(kwargs)
+    try:
+      if StudentGroup.objects.filter(pk=kwargs['student_group']).filter(group_managers=Teacher.objects.filter(user=request.user)):# user=context.request.user)):
+        return True
+    except:
+      if 'survey_id' in kwargs:
+        survey_id = kwargs['survey_id']
+      else:
+        survey_id = kwargs['pk']
+      if StudentGroup.objects.filter(pk=Survey.objects.get(pk=survey_id).studentgroup.id).filter(group_managers=Teacher.objects.filter(user=request.user)):# user=context.request.user)):
+        return True
   except:
     pass
   return False

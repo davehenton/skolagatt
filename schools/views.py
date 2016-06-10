@@ -831,6 +831,7 @@ class SurveyResultUpdate(UserPassesTestMixin, UpdateView):
     context['student'] = Student.objects.filter(pk=self.kwargs['student_id'])
     context['survey'] = Survey.objects.filter(pk=self.kwargs['survey_id'])
     context['data_result'] = json.loads(SurveyResult.objects.get(pk=self.kwargs['pk']).results)
+    context['field_types'] = ['text', 'number', 'text-list', 'number-list']
     return context
 
   def get_success_url(self):

@@ -5,9 +5,16 @@ from common.models import Manager, Teacher, School, SurveyResult
 from itertools import chain
 from datetime import datetime
 import re, json
+from markdown2 import markdown
 
 register = template.Library()
 
+@register.filter
+@stringfilter
+def md(value):
+    return markdown(value)
+
+register.filter('md', md)
 
 @stringfilter
 def parse_date(date_string, format):
