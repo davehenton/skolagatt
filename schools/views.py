@@ -642,7 +642,11 @@ class SurveyDetail(UserPassesTestMixin, DetailView):
   def get_context_data(self, **kwargs):
     # xxx will be available in the template as the related objects
     context = super(SurveyDetail, self).get_context_data(**kwargs)
-    context['survey_details'] = self.get_survey_data()[0]
+    data = self.get_survey_data()
+    if data:
+      context['survey_details'] = self.get_survey_data()[0]
+    else:
+      context['survey_details'] = ''
     context['school'] = School.objects.get(pk=self.kwargs['school_id'])
     context['students'] = self.object.studentgroup.students.all()
     context['field_types'] = ['text', 'number', 'text-list', 'number-list']
@@ -753,6 +757,16 @@ class SurveyResultCreate(UserPassesTestMixin, CreateView):
   form_class = SurveyResultForm
   login_url = reverse_lazy('denied')
 
+  def get_survey_data(self):
+    """Get survey details"""
+    try:
+      survey = Survey.objects.get(pk=self.kwargs['survey_id']).survey
+      uri_list = settings.PROFAGRUNNUR_URL.split('?')
+      r = requests.get(''.join([uri_list[0], '/', survey, '?', uri_list[1]]))
+      return r.json()
+    except Exception as e:
+      return []
+
   def get_context_data(self, **kwargs):
     # xxx will be available in the template as the related objects
     context = super(SurveyResultCreate, self).get_context_data(**kwargs)
@@ -761,6 +775,14 @@ class SurveyResultCreate(UserPassesTestMixin, CreateView):
     context['student'] = Student.objects.filter(pk=self.kwargs['student_id'])
     context['survey'] = Survey.objects.filter(pk=self.kwargs['survey_id'])
     context['field_types'] = ['text', 'number', 'text-list', 'number-list']
+    data = self.get_survey_data()
+    print(data[0]['grading_template'])
+    if data:
+      context['grading_template'] = data[0]['grading_template'][0]['html'].replace('\n','').replace('\r','').replace('\t','')
+      context['if_grading_template'] = 'true'
+    else:
+      context['grading_template'] = '""'
+      context['if_grading_template'] = 'false'
     return context
 
   def post(self, *args, **kwargs):
