@@ -776,13 +776,12 @@ class SurveyResultCreate(UserPassesTestMixin, CreateView):
     context['survey'] = Survey.objects.filter(pk=self.kwargs['survey_id'])
     context['field_types'] = ['text', 'number', 'text-list', 'number-list']
     data = self.get_survey_data()
-    print(data[0]['grading_template'])
-    if data:
-      context['grading_template'] = data[0]['grading_template'][0]['html'].replace('\n','').replace('\r','').replace('\t','')
-      context['if_grading_template'] = 'true'
-    else:
+    if len(data[0]['grading_template']) == 0:
       context['grading_template'] = '""'
       context['if_grading_template'] = 'false'
+    else:
+      context['grading_template'] = data[0]['grading_template'][0]['html'].replace('\n','').replace('\r','').replace('\t','')
+      context['if_grading_template'] = 'true'
     return context
 
   def post(self, *args, **kwargs):

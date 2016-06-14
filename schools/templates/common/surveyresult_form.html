@@ -18,7 +18,8 @@
 
 	try {
 		if(if_grading_template) { //custom grading form
-			var grading_template = "{{grading_template|safe}}";
+			console.log(if_grading_template);
+			var grading_template = '{{grading_template|safe}}';
 			 $('#survey_result_form').prepend(grading_template);
 		}
 		else { //default grading form
