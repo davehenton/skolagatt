@@ -257,6 +257,7 @@ class TeacherDetail(UserPassesTestMixin, DetailView):
   def get_context_data(self, **kwargs):
     context = super(TeacherDetail, self).get_context_data(**kwargs)
     context['school'] = School.objects.get(pk=self.kwargs['school_id'])
+    context['groups'] = StudentGroup.objects.filter(group_managers=Teacher.objects.filter(user=self.request.user))
     return context
 
 class TeacherCreate(UserPassesTestMixin, CreateView):
@@ -780,7 +781,7 @@ class SurveyResultCreate(UserPassesTestMixin, CreateView):
       context['grading_template'] = '""'
       context['if_grading_template'] = 'false'
     else:
-      context['grading_template'] = data[0]['grading_template'][0]['html'].replace('\n','').replace('\r','').replace('\t','')
+      context['grading_template'] = data[0]['grading_template'][0]['md'].replace('\n','').replace('\r','').replace('\t','')
       context['if_grading_template'] = 'true'
     return context
 

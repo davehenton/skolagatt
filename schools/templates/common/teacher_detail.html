@@ -2,10 +2,30 @@
 
 {% block content %}
 <h1>{{teacher.name}}</h1>
+{% if is_school_manager %}
 <div class="row">
 	<div class="col-md-12">
 		<a href="{% url 'schools:teacher_update' school.id teacher.id %}" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span>&nbsp;Breyta</a>
 		<a href="{% url 'schools:teacher_delete' school.id teacher.id %}" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span>&nbsp;Eyða</a>
 	</div>
 </div>
+<div class="row">
+	<div class="col-md-6">
+		<div class="row">
+			<div class="col-md-6">	<h3>Hópar kennara</h3></div>
+			<div class="col-md-3">Árgangur</div>
+			<div class="col-md-3">Fjöldi í hóp</div>
+		</div>
+		{% for group in groups %}
+		<div class="row">
+			<div class="col-md-6">
+				<a href="{% url 'schools:group_detail' school.id group.id %}">{{ group }}</a>
+			</div>
+			<div class="col-md-3">{{ group.student_year }}</div>
+			<div class="col-md-3">{{ group.students.count }}</div>
+		</div>
+		{% endfor %}
+	</div>
+</div>
+{% endif %}
 {% endblock %}
