@@ -123,6 +123,7 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'skolagatt/static'),
     os.path.join(BASE_DIR, 'schools/static'),
     os.path.join(BASE_DIR, 'supportandexception/static'),
+    os.path.join(BASE_DIR, 'vendor'),
 )
 
 PROFAGRUNNUR_URL = 'http://localhost:8080/api?format=json'

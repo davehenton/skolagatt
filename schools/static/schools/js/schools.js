@@ -1,8 +1,16 @@
+
+$(function() {
+	// markdown format content of each md classed element
+	$( ".md" ).each(function( index ) {
+		$( this ).html(marked( $( this ).html() ));
+	});
+});
+
 $(document).ready(function() {
 	$("#notes").on('click',function(){
 		if($('#textareaid').is(":visible"))
 		{
-			var r = confirm("Villtu vista skilaboðin?");
+			var r = confirm("Viltu vista skilaboðin?");
 			if (r == true) {
 
 				$.post("notes_save/",{notes: $("#textareaid").val(), 'csrfmiddlewaretoken': $('input[name="csrfmiddlewaretoken"]').attr("value")},function(result){
@@ -17,7 +25,7 @@ $(document).ready(function() {
     $(document).on('click', "a[data-action='save_notes']", function(event){
     	if($('#textareaid').is(":visible"))
 		{
-			var r = confirm("Villtu vista skilaboðin?");
+			var r = confirm("Viltu vista skilaboðin?");
 			if (r == true) {
 
 				$.post("notes_save/",{notes: $("#textareaid").val(), 'csrfmiddlewaretoken': $('input[name="csrfmiddlewaretoken"]').attr("value")},function(result){
