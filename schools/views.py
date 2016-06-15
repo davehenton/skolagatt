@@ -781,7 +781,7 @@ class SurveyResultCreate(UserPassesTestMixin, CreateView):
       context['grading_template'] = '""'
       context['if_grading_template'] = 'false'
     else:
-      context['grading_template'] = data[0]['grading_template'][0]['md'].replace('\n','').replace('\r','').replace('\t','')
+      context['grading_template'] = data[0]['grading_template'][0]['md']
       context['if_grading_template'] = 'true'
     return context
 

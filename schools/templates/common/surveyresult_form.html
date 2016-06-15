@@ -1,8 +1,10 @@
 {% extends 'common/index.html'%}
 {% include staticfiles%}
+{% load common_helpers %}
 
 {% block content %}
 <form action="" method="post" id="survey_result_form">
+	<div class='md'>{{grading_template}}</div>
 	{% csrf_token %}
 	{{ form.as_p }}
 	<input type="submit" value="Save" />
@@ -10,41 +12,39 @@
 {% endblock %}
 
 {% block script %}
-<script type='text/javascript'>
-	var data_fields = {{data_fields|default:""|safe }};
-	var data_result = {{data_result|default:""|safe }};
-	var field_types = {{field_types|default:""|safe}};
-	var if_grading_template = {{if_grading_template}};
+	<script type='text/javascript'>
+		var data_fields = {{data_fields|default:""|safe }};
+		var data_result = {{data_result|default:""|safe }};
+		var field_types = {{field_types|default:""|safe}};
+		var if_grading_template = {{if_grading_template}};
 
-	try {
-		if(if_grading_template) { //custom grading form
-			console.log(if_grading_template);
-			var grading_template = '{{grading_template|safe}}';
-			 $('#survey_result_form').prepend(grading_template);
-		}
-		else { //default grading form
-			//add namska select
-			data_input = "";
-			$.each(data_fields, function(key, value){
-				if(field_types.indexOf(value['field_type']) > -1)
-				{
-					data_input += '<p>';
-					data_input += '<label for="'+value['field_name']+'">'+value['field_label']+': </label>';
-					if(data_result.error === "no value") {
-						data_input += '<input id="'+value['field_name']+'" name="'+value['field_name']+'" type="'+value['field_type']+'"  value="" />';
+		try {
+			if(if_grading_template){}
+			else {
+				//add namska select
+				data_input = "";
+				$.each(data_fields, function(key, value){
+					if(field_types.indexOf(value['field_type']) > -1)
+					{
+						data_input += '<p>';
+						data_input += '<label for="'+value['field_name']+'">'+value['field_label']+': </label>';
+						if(data_result.error === "no value") {
+							data_input += '<input id="'+value['field_name']+'" name="'+value['field_name']+'" type="'+value['field_type']+'"  value="" />';
+						}
+						else {
+							data_input += '<input id="'+value['field_name']+'" name="'+value['field_name']+'" type="'+value['field_type']+'"  value="'+data_result[value['field_name']]+'" />';
+						}
+						data_input += '</p>';
 					}
-					else {
-						data_input += '<input id="'+value['field_name']+'" name="'+value['field_name']+'" type="'+value['field_type']+'"  value="'+data_result[value['field_name']]+'" />';
-					}
-					data_input += '</p>';
-				}
-			});
-			var s = $('#survey_result_form').prepend(data_input);
+				});
+				var s = $('#survey_result_form').prepend(data_input);
+			}
 		}
-	}
-	catch(err) {
-		console.log(err);
-	}
-
-</script>
-{% endblock %}
+		catch(err) {
+			console.log(err);
+		}
+	$( ".md" ).each(function( index ) {
+		$( this ).html(marked( $( this ).html() ));
+	});
+	</script>
+	{% endblock %}
