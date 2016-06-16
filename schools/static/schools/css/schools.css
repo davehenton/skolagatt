@@ -1,3 +1,8 @@
 .survey_resources {
     list-style-type: none;
 }
+
+.removeable {
+	padding: 2px;
+	margin-right: 2px;
+}
