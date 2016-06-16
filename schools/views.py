@@ -753,20 +753,20 @@ class SurveyDelete(UserPassesTestMixin, DeleteView):
     except:
       return reverse_lazy('schools:school_listing')
 
+def get_survey_data(kwargs):
+  """Get survey details"""
+  try:
+    survey = Survey.objects.get(pk=kwargs['survey_id']).survey
+    uri_list = settings.PROFAGRUNNUR_URL.split('?')
+    r = requests.get(''.join([uri_list[0], '/', survey, '?', uri_list[1]]))
+    return r.json()
+  except Exception as e:
+    return []
+
 class SurveyResultCreate(UserPassesTestMixin, CreateView):
   model = SurveyResult
   form_class = SurveyResultForm
   login_url = reverse_lazy('denied')
-
-  def get_survey_data(self):
-    """Get survey details"""
-    try:
-      survey = Survey.objects.get(pk=self.kwargs['survey_id']).survey
-      uri_list = settings.PROFAGRUNNUR_URL.split('?')
-      r = requests.get(''.join([uri_list[0], '/', survey, '?', uri_list[1]]))
-      return r.json()
-    except Exception as e:
-      return []
 
   def get_context_data(self, **kwargs):
     # xxx will be available in the template as the related objects
@@ -776,7 +776,7 @@ class SurveyResultCreate(UserPassesTestMixin, CreateView):
     context['student'] = Student.objects.filter(pk=self.kwargs['student_id'])
     context['survey'] = Survey.objects.filter(pk=self.kwargs['survey_id'])
     context['field_types'] = ['text', 'number', 'text-list', 'number-list']
-    data = self.get_survey_data()
+    data = get_survey_data(self.kwargs)
     if len(data[0]['grading_template']) == 0:
       context['grading_template'] = '""'
       context['if_grading_template'] = 'false'
@@ -852,8 +852,16 @@ class SurveyResultUpdate(UserPassesTestMixin, UpdateView):
     context['data_fields'] = json.loads(Survey.objects.get(pk=self.kwargs['survey_id']).data_fields)
     context['student'] = Student.objects.filter(pk=self.kwargs['student_id'])
     context['survey'] = Survey.objects.filter(pk=self.kwargs['survey_id'])
-    context['data_result'] = json.loads(SurveyResult.objects.get(pk=self.kwargs['pk']).results)
+    context['data_result'] = json.loads(SurveyResult.objects.get(pk=self.kwargs['pk']).results) or "''"
     context['field_types'] = ['text', 'number', 'text-list', 'number-list']
+    data = get_survey_data(self.kwargs)
+    if len(data[0]['grading_template']) == 0:
+      context['grading_template'] = '""'
+      context['if_grading_template'] = 'false'
+    else:
+      context['grading_template'] = data[0]['grading_template'][0]['md']
+      context['if_grading_template'] = 'true'
+
     return context
 
   def get_success_url(self):
