@@ -6,3 +6,10 @@
 	padding: 2px;
 	margin-right: 2px;
 }
+
+span.selected {
+	background: yellow;
+	border: thin solid black;
+	padding-left: 5px;
+	padding-right: 5px;
+}

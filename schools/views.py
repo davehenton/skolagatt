@@ -771,18 +771,11 @@ class SurveyResultCreate(UserPassesTestMixin, CreateView):
   def get_context_data(self, **kwargs):
     # xxx will be available in the template as the related objects
     context = super(SurveyResultCreate, self).get_context_data(**kwargs)
-    context['data_fields'] = json.loads(Survey.objects.get(pk=self.kwargs['survey_id']).data_fields)
     context['data_result'] = {'error': 'no value'}
     context['student'] = Student.objects.filter(pk=self.kwargs['student_id'])
     context['survey'] = Survey.objects.filter(pk=self.kwargs['survey_id'])
-    context['field_types'] = ['text', 'number', 'text-list', 'number-list']
     data = get_survey_data(self.kwargs)
-    if len(data[0]['grading_template']) == 0:
-      context['grading_template'] = '""'
-      context['if_grading_template'] = 'false'
-    else:
-      context['grading_template'] = data[0]['grading_template'][0]['md']
-      context['if_grading_template'] = 'true'
+    context['grading_template'] = data[0]['grading_template'][0]['md']
     return context
 
   def post(self, *args, **kwargs):
@@ -803,15 +796,9 @@ class SurveyResultCreate(UserPassesTestMixin, CreateView):
     survey_results.student = Student.objects.get(pk=self.kwargs['student_id'])
     survey_results.survey = Survey.objects.get(pk=self.kwargs['survey_id'])
     survey_results.created_at = timezone.now()
-    data_fields = json.loads(Survey.objects.get(pk=self.kwargs['survey_id']).data_fields)
     data_results = {}
-    for field in data_fields:
-      try:
-        data_results[field['field_name']] = self.request.POST[field['field_name']]
-      except:
-        pass
+    #extract data
     survey_results.results = json.dumps(data_results)
-    #save()  # This is redundant, see comments.
     return super(SurveyResultCreate, self).form_valid(form)
 
   def test_func(self):
@@ -840,8 +827,7 @@ class SurveyResultUpdate(UserPassesTestMixin, UpdateView):
     survey_results.created_at = timezone.now()
     data_fields = json.loads(Survey.objects.get(pk=self.kwargs['survey_id']).data_fields)
     data_results = {}
-    for field in data_fields:
-      data_results[field['field_name']] = self.request.POST[field['field_name']]
+    #extract data
     survey_results.results = json.dumps(data_results)
     #save()  # This is redundant, see comments.
     return super(SurveyResultUpdate, self).form_valid(form)
@@ -849,18 +835,11 @@ class SurveyResultUpdate(UserPassesTestMixin, UpdateView):
   def get_context_data(self, **kwargs):
     # xxx will be available in the template as the related objects
     context = super(SurveyResultUpdate, self).get_context_data(**kwargs)
-    context['data_fields'] = json.loads(Survey.objects.get(pk=self.kwargs['survey_id']).data_fields)
     context['student'] = Student.objects.filter(pk=self.kwargs['student_id'])
     context['survey'] = Survey.objects.filter(pk=self.kwargs['survey_id'])
     context['data_result'] = json.loads(SurveyResult.objects.get(pk=self.kwargs['pk']).results) or "''"
-    context['field_types'] = ['text', 'number', 'text-list', 'number-list']
     data = get_survey_data(self.kwargs)
-    if len(data[0]['grading_template']) == 0:
-      context['grading_template'] = '""'
-      context['if_grading_template'] = 'false'
-    else:
-      context['grading_template'] = data[0]['grading_template'][0]['md']
-      context['if_grading_template'] = 'true'
+    context['grading_template'] = data[0]['grading_template'][0]['md']
 
     return context
 
