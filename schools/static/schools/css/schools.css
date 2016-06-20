@@ -13,3 +13,7 @@ span.selected {
 	padding-left: 5px;
 	padding-right: 5px;
 }
+
+.student-list{
+	border: none;
+}

@@ -3,12 +3,12 @@
 
 {% block content %}
 <form action="" method="post">{% csrf_token %}
-	<div>{{form.name.label_tag}} {{form.name}}</div>
-	<div>{{form.student_year.label_tag }}{{form.student_year }}</div>
-	<div>{{form.group_managers.label_tag}}{{form.group_managers}}</div>
-	<div>{{form.students.label_tag }}{{form.students}}</div>
-	
-
+	<div> {{ form.name.label_tag }} {{ form.name }} </div>
+	<div> {{ form.student_year.label_tag }} {{ form.student_year }} </div>
+	<div> {{ form.group_managers.label_tag }} {{ form.group_managers }} </div>
+	<div> {{ form.students.label_tag }} <a class="student-list">{{ form.students }} </a></div>
+	<div><input type='button' value='<<' id='move_left' />
+	<input type='button' value='>>' id='move_right' /></div>
 	<input type="submit" value="Vista" />
 </form>
 {% endblock %}
