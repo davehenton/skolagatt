@@ -4,10 +4,12 @@
 
 {% block content %}
 <form action="" method="post" id="survey_result_form">
-	<div class='md' id="grading_template">{{grading_template|safe}}</div>
-	<div id="selected_words" class="row">
-		Tvísmelltu á orð í textanum fyrir ofan sem voru rangt lesin. Síðasta orðið sem er valið er síðasta orðið sem nemandi las. Ef síðsta orðið var rangt lesið, veldu þá einnig næsta orð á eftir.
+	<div id="selected_words" class="row alert alert-info">
+		<p>Smelltu á orð í textanum fyrir neðan sem voru rangt lesin.</p>
+		<p>Smelltu á síðasta orðið sem nemandi las.</p>
+		<p>Ef rangt orð er valið, smelltu aftur á orðið til þess að fjarlægja valið</p>
 	</div>
+	<div class='md' id="grading_template">{{grading_template|safe}}</div>
 	<div id="selected_words" class="row"></div>
 	{% csrf_token %}
 	{{ form.as_p }}
@@ -17,47 +19,25 @@
 
 {% block script %}
 	<script type='text/javascript'>
+		// input
+		// val = string
+		// output = string where each word has been wrapped with span count=word number
 		function wrap_text( val ){
 			var words = val.match(/[\w]+/g);
-			console.log(words);
+			results = "";
 			for(i in words){
-				val = val.replace(words[i], "<span count='"+i+"'>"+words[i]+"</span>");
+				var replaced = val.replace(words[i], "<span count='"+i+"'>"+words[i]+"</span>"); //get replaced text
+				results += replaced.split('</span>')[0]+'</span>'; //add replaced text to results
+				val = replaced.split('</span>')[1]; //continue working on val
 			}
-			console.log(val);
-			return val;
+			results += val; //add the rest of val
+			return results;
 		}
 
-		var data_fields = {{data_fields|default:""|safe }};
-		var data_result = {{data_result|default:""|safe }};
-		var field_types = {{field_types|default:""|safe}};
-		var if_grading_template = {{if_grading_template}};
-
 		try {
-			if(if_grading_template){
-				//wrap each word in span count
-				var text_container = $("#grading_template");
-				text_container.html(wrap_text(text_container.html()));
-			}
-			else {
-				$("#selected_words").toggle();
-				//add namska select
-				data_input = "";
-				$.each(data_fields, function(key, value){
-					if(field_types.indexOf(value['field_type']) > -1)
-					{
-						data_input += '<p>';
-						data_input += '<label for="'+value['field_name']+'">'+value['field_label']+': </label>';
-						if(data_result.error === "no value") {
-							data_input += '<input id="'+value['field_name']+'" name="'+value['field_name']+'" type="'+value['field_type']+'"  value="" />';
-						}
-						else {
-							data_input += '<input id="'+value['field_name']+'" name="'+value['field_name']+'" type="'+value['field_type']+'"  value="'+data_result[value['field_name']]+'" />';
-						}
-						data_input += '</p>';
-					}
-				});
-				var s = $('#survey_result_form').prepend(data_input);
-			}
+			//wrap each word in span count
+			var text_container = $("#grading_template");
+			text_container.html(wrap_text(text_container.html()));
 		}
 		catch(err) {
 			console.log(err);
@@ -65,16 +45,28 @@
 	$( ".md" ).each(function( index ) {
 		$( this ).html(marked( $( this ).html() ));
 	});
-	$('span[count]').dblclick(function(){
+	$('span[count]').on('click',function(event){
 		//append removable div to grading_template
-		var selected_text = $(this).html();
-		var word_number = $(this).attr('count');
-		$("#grading_template").append("<span><a class='removable'><span class='glyphicon glyphicon-remove'></span></a>"+selected_text+":"+word_number+"</span>");
+		var selected_text = $(this).toggleClass('selected');
+		console.log(event.which);
 	});
 
 	$( document ).on('click', '.removable', function(event){
 		event.preventDefault()
 		$(this).parent().remove();
 	});
+
+    $("#survey_result_form").on('submit', function(event){
+    	event.preventDefault();
+    	var selected_words = $("span.selected");
+    	selected_words.each(function(i){
+    		console.log(selected_words[i])
+		$("#survey_result_form").append($("<input type='hidden' />").attr({
+			name:'data_results',
+			value: $(selected_words[i]).attr('count')
+		}));
+    	});
+    });
+
 	</script>
 	{% endblock %}
