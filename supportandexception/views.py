@@ -174,3 +174,7 @@ class ExceptionCreate(CreateView):
 		context['exceptions'] = Exceptions.objects.filter(student = student_info).get
 		context['school'] = School.objects.get(pk=self.kwargs['school_id'])
 		return context
+
+#class SurveyViewSet(viewsets.ModelViewSet):
+#    queryset = .objects.all()
+#    serializer_class = SurveySerializer
