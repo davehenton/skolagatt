@@ -1,5 +1,4 @@
 $(document).ready(function() {
-	console.log('rúnar er hér');
 	$('table#student_list tr').click(function(){
         window.location = $(this).attr('href');
         return false;
