@@ -29,7 +29,6 @@ INSTALLED_APPS = [
     'common',
     'schools',
     'supportandexception',
-    'bootstrap3',
 ]
 
 MIDDLEWARE_CLASSES = [
