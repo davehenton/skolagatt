@@ -549,6 +549,7 @@ class StudentGroupCreate(UserPassesTestMixin, CreateView):
     # xxx will be available in the template as the related objects
     context = super(StudentGroupCreate, self).get_context_data(**kwargs)
     context['school'] = School.objects.get(pk=self.kwargs['school_id'])
+    context['students'] = Student.objects.filter(school=self.kwargs['school_id'])
     return context
 
   def post(self, *args, **kwargs):
@@ -593,7 +594,11 @@ class StudentGroupUpdate(UserPassesTestMixin, UpdateView):
     # xxx will be available in the template as the related objects
     context = super(StudentGroupUpdate, self).get_context_data(**kwargs)
     #context['contact_list'] = Contact.objects.filter(school=self.get_object())
-    context['students'] = School.objects.get(pk=self.kwargs['school_id']).students
+    school = School.objects.get(pk=self.kwargs['school_id'])
+    print(school)
+    context['school'] = School.objects.get(pk=self.kwargs['school_id'])
+    context['students'] = Student.objects.filter(school=self.kwargs['school_id'])
+    
     return context
 
 class StudentGroupDelete(UserPassesTestMixin, DeleteView):
