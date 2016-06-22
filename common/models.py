@@ -104,6 +104,9 @@ class Survey(models.Model):
 	def results(self):
 		return SurveyResult.objects.filter(survey=self)
 
+	def __str__(self):
+		return self.title + " (" + self.survey + ")"
+
 class SurveyForm(forms.ModelForm):
 	class Meta:
 		model = Survey
