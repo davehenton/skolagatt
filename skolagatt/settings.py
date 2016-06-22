@@ -127,3 +127,4 @@ STATICFILES_DIRS = (
 )
 
 PROFAGRUNNUR_URL = 'http://localhost:8080/api?format=json'
+ICEKEY_VERIFICATION = 'http://localhost:8088/verify_login'
