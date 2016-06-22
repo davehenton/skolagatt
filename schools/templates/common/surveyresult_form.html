@@ -19,6 +19,17 @@
 
 {% block script %}
 	<script type='text/javascript'>
+		var data_results = {{data_result|safe}};
+
+		var update = [];
+		if(data_results){
+			//updating, prepare to highlight data
+			for(i in data_results){
+				//data_results = ['number,value', 'number,value', ...]
+				update.push(data_results[i].split(',')[0]);
+			}
+		}
+
 		// input
 		// val = string
 		// output = string where each word has been wrapped with span count=word number
@@ -38,35 +49,33 @@
 			//wrap each word in span count
 			var text_container = $("#grading_template");
 			text_container.html(wrap_text(text_container.html()));
+			//highlight words from update array
+			for(i in update) {
+				$('span[count='+update[i]+']').toggleClass('selected');
+			}
 		}
 		catch(err) {
 			console.log(err);
 		}
-	$( ".md" ).each(function( index ) {
-		$( this ).html(marked( $( this ).html() ));
-	});
-	$('span[count]').on('click',function(event){
-		//append removable div to grading_template
-		var selected_text = $(this).toggleClass('selected');
-		console.log(event.which);
-	});
 
-	$( document ).on('click', '.removable', function(event){
-		event.preventDefault()
-		$(this).parent().remove();
-	});
+		$( ".md" ).each(function( index ) {
+			$( this ).html(marked( $( this ).html() ));
+		});
+		$('span[count]').on('click',function(event){
+			//append removable div to grading_template
+			var selected_text = $(this).toggleClass('selected');
+			console.log(event.which);
+		});
 
-    $("#survey_result_form").on('submit', function(event){
-    	event.preventDefault();
-    	var selected_words = $("span.selected");
-    	selected_words.each(function(i){
-    		console.log(selected_words[i])
-		$("#survey_result_form").append($("<input type='hidden' />").attr({
-			name:'data_results',
-			value: $(selected_words[i]).attr('count')
-		}));
-    	});
-    });
-
+		$("#survey_result_form").on('submit', function(event){
+			//event.preventDefault();
+			var selected_words = $("span.selected");
+			selected_words.each(function(i){
+				$("#survey_result_form").append($("<input type='hidden' />").attr({
+					name:'data_results[]',
+					value: [$(selected_words[i]).attr('count'), $(selected_words[i]).text()]
+				}));
+			});
+		});
 	</script>
 	{% endblock %}

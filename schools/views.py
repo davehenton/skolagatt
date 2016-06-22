@@ -771,7 +771,7 @@ class SurveyResultCreate(UserPassesTestMixin, CreateView):
   def get_context_data(self, **kwargs):
     # xxx will be available in the template as the related objects
     context = super(SurveyResultCreate, self).get_context_data(**kwargs)
-    context['data_result'] = {'error': 'no value'}
+    context['data_result'] = "''"
     context['student'] = Student.objects.filter(pk=self.kwargs['student_id'])
     context['survey'] = Survey.objects.filter(pk=self.kwargs['survey_id'])
     data = get_survey_data(self.kwargs)
@@ -798,7 +798,7 @@ class SurveyResultCreate(UserPassesTestMixin, CreateView):
     survey_results.created_at = timezone.now()
     data_results = {}
     #extract data
-    survey_results.results = json.dumps(data_results)
+    survey_results.results = json.dumps(self.request.POST.getlist('data_results[]'))
     return super(SurveyResultCreate, self).form_valid(form)
 
   def test_func(self):
@@ -825,11 +825,10 @@ class SurveyResultUpdate(UserPassesTestMixin, UpdateView):
   def form_valid(self, form):
     survey_results = form.save(commit=False)
     survey_results.created_at = timezone.now()
-    data_fields = json.loads(Survey.objects.get(pk=self.kwargs['survey_id']).data_fields)
     data_results = {}
     #extract data
-    survey_results.results = json.dumps(data_results)
-    #save()  # This is redundant, see comments.
+    print(json.dumps(form.data))
+    survey_results.results = json.dumps(self.request.POST.getlist('data_results[]'))
     return super(SurveyResultUpdate, self).form_valid(form)
 
   def get_context_data(self, **kwargs):

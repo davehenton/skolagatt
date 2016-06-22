@@ -100,7 +100,6 @@ class Survey(models.Model):
 	title = models.CharField(max_length = 256) #value from profagrunnur
 	active_from = models.DateField(default=timezone.now) #value from profagrunnur
 	active_to = models.DateField(default=timezone.now) #value from profagrunnur
-	data_fields = models.TextField()
 
 	def results(self):
 		return SurveyResult.objects.filter(survey=self)
@@ -108,14 +107,13 @@ class Survey(models.Model):
 class SurveyForm(forms.ModelForm):
 	class Meta:
 		model = Survey
-		fields =  ['studentgroup', 'survey', 'title', 'active_from', 'active_to', 'data_fields']
+		fields =  ['studentgroup', 'survey', 'title', 'active_from', 'active_to']
 		widgets= {
 			'studentgroup': forms.HiddenInput(),
 			'survey': forms.HiddenInput(),
 			'title': forms.HiddenInput(),
 			'active_from': forms.HiddenInput(),
 			'active_to': forms.HiddenInput(),
-			'data_fields': forms.HiddenInput(),
 		}
 
 class SurveyResult(models.Model):
