@@ -8,6 +8,7 @@ from django.contrib.auth import authenticate, login as auth_login, logout as aut
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.conf import settings
 from uuid import uuid4
 
 from common.models import School
@@ -15,7 +16,7 @@ from common.models import School
 import requests, json
 
 def verify_token(token):
-	url = 'https://innskraning.mms.is/verify_login/'
+	url = settings.ICEKEY_VERIFICATION
 	payload = {'token': token}
 	r = requests.post(url, data=payload, headers=dict(Referer=url))
 	return r.json()['verified']

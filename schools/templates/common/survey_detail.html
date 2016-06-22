@@ -25,20 +25,6 @@
 			</div>
 		</div>
 		<div class="row">
-			<div class="col-md-12">
-				<h4>Gagnasvæði</h4>
-				<ul>
-				{% for field in survey_details.data_fields %}
-					{% if field.field_type in field_types %}
-					<li >
-						{{ field.field_label }} ({{ field.field_type }})
-					</li>
-					{% endif %}
-				{% endfor %}
-				</ul>
-			</div>
-		</div>
-		<div class="row">
 			<h3>Ítargögn</h3>
 			<ul class="survey_resources">
 			{% for resource in survey_details.resources %}
@@ -90,12 +76,9 @@
 			<div class="collapse row" id="results-{{student_result.id}}">
 				<div class="well col-md-12">
 					{% with results=student_result.results|get_json %}
-						{% for key in results %}
 						<div class='row'>
-							<div class='col-md-2'>{{ key }}</div>
-							<div class='col-md-10'>{{ results|get_item:key }}</div>
+							<div class='col-md-12'>{{ results }}</div>
 						</div>
-						{% endfor %}
 					{% endwith %}
 				</div>
 			</div>
