@@ -41,7 +41,8 @@ def login(request):
 		auth_login(request, user)
 		return redirect('schools:school_listing')
 	else:
-		return render(request, 'login.html')
+		context = {'icekey_verification': settings.ICEKEY_VERIFICATION, 'icekey_login': settings.ICEKEY_LOGIN}
+		return render(request, 'login.html', context)
 
 def logout(request):
 	auth_logout(request)
