@@ -550,13 +550,23 @@ class StudentGroupCreate(UserPassesTestMixin, CreateView):
     context = super(StudentGroupCreate, self).get_context_data(**kwargs)
     context['school'] = School.objects.get(pk=self.kwargs['school_id'])
     context['students'] = Student.objects.filter(school=self.kwargs['school_id'])
+    context['teacher'] = Teacher.objects.filter(school=self.kwargs['school_id'])
     return context
 
-  def post(self, *args, **kwargs):
+  def post(self, request, *args, **kwargs):
     self.object = None
     form = self.get_form()
     #make data mutable
     form.data = self.request.POST.copy()
+
+    print(form.data)
+    students = request.POST.getlist('students')
+    #students_list =[]
+    #if(students != []):
+    #    for i in range(len(students)):
+    #      students_list.append(int(students[i]))
+    print(students)
+    return HttpResponse('kalli')
     form.data['school'] = School.objects.get(pk=self.kwargs['school_id']).pk
     if form.is_valid():
       return self.form_valid(form)

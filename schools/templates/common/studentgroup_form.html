@@ -2,18 +2,23 @@
 {% include staticfiles%}
 
 {% block content %}
-<form action="" method="post">{% csrf_token %}
-	<div> {{ form.name.label_tag }} {{ form.name }} </div>
+<form action="" method="post" onsubmit="return studentselect(this);">{% csrf_token %}
+	<div> {{ form.name.label_tag }}   {{ form.name }} </div>
 	<div> {{ form.student_year.label_tag }} {{ form.student_year }} </div>
-	<div> {{ form.group_managers.label_tag }} {{ form.group_managers }} </div>
+	<div> <div class="col-xs-1">{{ form.group_managers.label_tag }}</div> <div class="col-xs-3"><select class="form-control" name="teacher" id="teacherlist1" size="6">{%for teach in teacher%}
+	<option>{{ teach.name }}</option>
+	{%endfor%}
+	</select>
+	</div>
 	<div class="form-group"> <div class="col-xs-1">{{ form.students.label_tag }}</div> <div class="col-xs-3"><select class="form-control" id="list1" size="6">{%for stud in students%}
 	<option>{{stud.name}}</option>
 	{%endfor%}
-	</select></div><div class="col-xs-3"><select class="form-control" id="list2" size="6">
+	</select></div><div class="col-xs-3"><select multiple="multiple" class="form-control" id="list2" name="students" size="6">
 	</select></div>
 	</div>
 	<div><input type='button' value='<<' id='move_left' />
 	<input type='button' value='>>' id='move_right' /></div>
 	<input type="submit" value="Vista" />
+	<input type="button" value="dækjækj" id="molli"/>
 </form>
 {% endblock %}
