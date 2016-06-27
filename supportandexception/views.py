@@ -81,7 +81,6 @@ class SupportreResourceCreate(CreateView):
 
 	def post(self, request, *args, **kwargs):
 		if(request.POST.get('submit')== 'supportsave'):
-			print('allo')
 			notes = request.POST['notes']
 			expl = request.POST['explanation']
 			ra = request.POST.getlist('reading_assistance')
@@ -122,7 +121,6 @@ class SupportreResourceCreate(CreateView):
 				sr.save()	
 			return HttpResponseRedirect(reverse('schools:student_detail', args=(int(self.kwargs.get('school_id')),int(self.kwargs.get('pk')),)))
 		if(request.POST.get('submit')== 'supportdelete'):
-			print('kalli')
 			s = Student.objects.get(pk = self.kwargs.get('pk'))
 			SupportResource.objects.filter(student = s).delete()
 			return HttpResponseRedirect(reverse('schools:student_detail', args=(int(self.kwargs.get('school_id')),int(self.kwargs.get('pk')),)))
@@ -135,7 +133,6 @@ class ExceptionCreate(CreateView):
 	
 	def post(self, request, *args, **kwargs):
 		if(request.POST.get('submit')== 'exceptionsave'):
-			print('donni')
 			expl = request.POST.get('explanation')
 			exam = request.POST.getlist("exam")
 			notes = request.POST.get('notes')

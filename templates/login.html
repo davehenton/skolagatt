@@ -3,9 +3,9 @@
 {% block content %}
 	<h4>Það þarf að skrá inn með Íslykli eða rafrænum skilríkjum</h4>
 	<p>
-		<a href="https://innskraning.mms.is/island_innskraning">
-			<div><img src="{% static 'img/islykill.png' %}"></div>
-			<div>Smelltu hér til að skrá inn með Íslykli</div>
+		<div class="icekey_link"><img src="{% static 'img/islykill.png' %}"></div>
+		<a href="{{icekey_login}}" class="icekey_link">
+			Smelltu hér til að skrá inn með Íslykli
 		</a>
 	</p>
 {% endblock %}
