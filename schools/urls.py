@@ -34,12 +34,14 @@ urlpatterns = [
     url(r'^(?P<school_id>\d+)/bekkur/(?P<student_group>\d+)/könnun/create/$', SurveyCreate.as_view(), name='survey_create'),
 
     url(r'^(?P<school_id>\d+)/skolastjórn/$', ManagerListing.as_view(), name='manager_listing'),
+    url(r'^skolastjórn/(?P<pk>\d+)/$', ManagerOverview.as_view(), name='manager_overview'),
     url(r'^(?P<school_id>\d+)/skolastjórn/(?P<pk>\d+)/$', ManagerDetail.as_view(), name='manager_detail'),
     url(r'^(?P<school_id>\d+)/skolastjórn/create/$', ManagerCreate.as_view(), name='manager_create'),
     url(r'^(?P<school_id>\d+)/skolastjórn/(?P<pk>\d+)/update/$', ManagerUpdate.as_view(), name='manager_update'),
     url(r'^(?P<school_id>\d+)/skolastjórn/(?P<pk>\d+)/delete/$', ManagerDelete.as_view(), name='manager_delete'),
 
     url(r'^(?P<school_id>\d+)/kennari/$', TeacherListing.as_view(), name='teacher_listing'),
+    url(r'^kennari/(?P<pk>\d+)/$', TeacherOverview.as_view(), name='teacher_overview'),
     url(r'^(?P<school_id>\d+)/kennari/(?P<pk>\d+)/$', TeacherDetail.as_view(), name='teacher_detail'),
     url(r'^(?P<school_id>\d+)/kennari/create/$', TeacherCreate.as_view(), name='teacher_create'),
     url(r'^(?P<school_id>\d+)/kennari/(?P<pk>\d+)/update/$', TeacherUpdate.as_view(), name='teacher_update'),
