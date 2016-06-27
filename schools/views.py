@@ -44,8 +44,8 @@ class SchoolDetail(UserPassesTestMixin, DetailView):
   def get_context_data(self, **kwargs):
     context = super(SchoolDetail, self).get_context_data(**kwargs)
     context['studentgroup_list'] = self.object.studentgroup_set.all()
-    context['managers'] = self.object.managers.all()
-    context['teachers'] = self.object.teachers.all()
+    context['managers'] = slug_sort(self.object.managers.all(),'name')
+    context['teachers'] = slug_sort(self.object.teachers.all(),'name')
     context['surveys'] = slug_sort(Survey.objects.filter(studentgroup__in=self.object.studentgroup_set.all()), 'title')
     context['students'] = self.object.students.all()
     return context
