@@ -47,6 +47,13 @@ $(document).ready(function() {
 		$('#list2').append($('#list1 .selected').removeClass('selected'));
 	});
 
+	$('#molli').click(function(){
+		$("#list2 option").each(function(){
+			console.log('donni');
+			$(this).addClass('selected',true);
+		});
+	});
+
 });
 
 function update_form(data) {
@@ -90,3 +97,10 @@ $(function() {
 	}
 	catch(err) {	}
 });
+
+function studentselect(form){
+	$("#list2 option").each(function(){
+		$(this).addClass('selected');
+	});
+	return false;
+}
