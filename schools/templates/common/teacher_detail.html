@@ -3,29 +3,34 @@
 {% block content %}
 <h1>{{teacher.name}}</h1>
 {% if is_school_manager %}
-<div class="row">
-	<div class="col-md-12">
-		<a href="{% url 'schools:teacher_update' school.id teacher.id %}" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span>&nbsp;Breyta</a>
-		<a href="{% url 'schools:teacher_delete' school.id teacher.id %}" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span>&nbsp;Eyða</a>
-	</div>
-</div>
-<div class="row">
-	<div class="col-md-6">
-		<div class="row">
-			<div class="col-md-6">	<h3>Hópar kennara</h3></div>
-			<div class="col-md-3">Árgangur</div>
-			<div class="col-md-3">Fjöldi í hóp</div>
+	<div class="row">
+		<div class="col-md-12">
+			<a href="{% url 'schools:teacher_update' school.id teacher.id %}" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span>&nbsp;Breyta</a>
+			<a href="{% url 'schools:teacher_delete' school.id teacher.id %}" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span>&nbsp;Eyða</a>
 		</div>
-		{% for group in groups %}
-		<div class="row">
-			<div class="col-md-6">
-				<a href="{% url 'schools:group_detail' school.id group.id %}">{{ group }}</a>
+	</div>
+	{% for school in  teacher.school_set.all %}
+		<h3><a href="{% url 'schools:school_detail' school.id %}">{{ school }}</a></h3>
+		{% for group in school.studentgroup_set.all %}
+			{% if teacher in group.group_managers.all %}
+			<div class="row">
+				<div class="col-md-6">
+					<div class="row">
+						<div class="col-md-6">	Hópar kennara</div>
+						<div class="col-md-3">Árgangur</div>
+						<div class="col-md-3">Fjöldi í hóp</div>
+					</div>
+					<div class="row">
+						<div class="col-md-6">
+							<a href="{% url 'schools:group_detail' school.id group.id %}">{{ group }}</a>
+						</div>
+						<div class="col-md-3">{{ group.student_year }}</div>
+						<div class="col-md-3">{{ group.students.count }}</div>
+					</div>
+				</div>
 			</div>
-			<div class="col-md-3">{{ group.student_year }}</div>
-			<div class="col-md-3">{{ group.students.count }}</div>
-		</div>
+			{% endif %}
 		{% endfor %}
-	</div>
-</div>
+	{% endfor %}
 {% endif %}
 {% endblock %}
