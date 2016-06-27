@@ -18,8 +18,12 @@ import requests, json
 def verify_token(token):
 	url = settings.ICEKEY_VERIFICATION
 	payload = {'token': token}
-	r = requests.post(url, data=payload, headers=dict(Referer=url))
-	return r.json()['verified']
+	try:
+		r = requests.post(url, data=payload, headers=dict(Referer=url))
+		return r.json()['verified']
+	except:
+		pass
+	return False
 
 @csrf_exempt
 def index(request):
