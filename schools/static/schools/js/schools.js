@@ -41,19 +41,18 @@ $(document).ready(function() {
 
 	$('#move_left').click(function() {
 		$('#list1').append($('#list2 .selected').removeClass('selected'));
+
 	});
 
 	$('#move_right').click(function() {
 		$('#list2').append($('#list1 .selected').removeClass('selected'));
+		$("#list2 option").removeAttr('selected');
 	});
 
-	$('#molli').click(function(){
-		$("#list2 option").each(function(){
-			console.log('donni');
-			$(this).addClass('selected',true);
-		});
+	$('#studentgroup').submit(function(){
+		$("#list2 option").prop('selected',true);
+		
 	});
-
 });
 
 function update_form(data) {
@@ -98,9 +97,3 @@ $(function() {
 	catch(err) {	}
 });
 
-function studentselect(form){
-	$("#list2 option").each(function(){
-		$(this).addClass('selected');
-	});
-	return false;
-}

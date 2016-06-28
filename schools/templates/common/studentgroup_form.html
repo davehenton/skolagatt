@@ -2,7 +2,7 @@
 {% include staticfiles%}
 
 {% block content %}
-<form action="" method="post" onsubmit="return studentselect(this);">{% csrf_token %}
+<form action="" method="post" id="studentgroup">{% csrf_token %}
 	<div> {{ form.name.label_tag }}   {{ form.name }} </div>
 	<div> {{ form.student_year.label_tag }} {{ form.student_year }} </div>
 	<div> <div class="col-xs-1">{{ form.group_managers.label_tag }}</div> <div class="col-xs-3"><select class="form-control" name="teacher" id="teacherlist1" size="6">{%for teach in teacher%}
@@ -19,6 +19,5 @@
 	<div><input type='button' value='<<' id='move_left' />
 	<input type='button' value='>>' id='move_right' /></div>
 	<input type="submit" value="Vista" />
-	<input type="button" value="dækjækj" id="molli"/>
 </form>
 {% endblock %}
