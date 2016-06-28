@@ -24,6 +24,16 @@ def is_school_manager(request, kwargs):
     pass
   return False
 
+def is_manager(request):
+  if not request.user.is_authenticated:
+    return False
+  try:
+    if Manager.objects.filter(user=request.user):
+      return True
+  except:
+    pass
+  return False
+
 def is_school_teacher(request, kwargs):
   if not request.user.is_authenticated:
     return False
@@ -34,6 +44,17 @@ def is_school_teacher(request, kwargs):
   except:
     pass
   return False
+
+def is_teacher(request):
+  if not request.user.is_authenticated:
+    return False
+  try:
+    if Teacher.objects.filter(user=request.user):
+      return True
+  except:
+    pass
+  return False
+
 
 def is_group_manager(request, kwargs):
   if not request.user.is_authenticated:

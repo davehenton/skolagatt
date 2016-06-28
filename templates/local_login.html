@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block content %}
+	{% if form.errors %}
+		<p>Your username and password didn't match. Please try again.</p>
+	{% endif %}
+	<div id="login">
+		<form class="form-horizontal" name="LoginForm" method="post">
+			{% csrf_token %}
+			<div class="control-group">
+				<label class="control-label" for="user_ssn">Username</label>
+				<div class="controls">
+					<input type="text" id="user_ssn" name="user_ssn"  placeholder="Kennitala">
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="password">Password</label>
+				<div class="controls">
+					<input type="password" name="password" id="password" placeholder="Lykilorð">
+				</div>
+			</div>
+			<div class="control-group">
+				<div class="controls">
+					<button type="submit" class="btn">Login</button>
+				</div>
+			</div>
+		</form>
+	</div>
+{% endblock %}
