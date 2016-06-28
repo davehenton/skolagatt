@@ -582,7 +582,7 @@ class StudentGroupCreate(UserPassesTestMixin, CreateView):
     context = super(StudentGroupCreate, self).get_context_data(**kwargs)
     context['school'] = School.objects.get(pk=self.kwargs['school_id'])
     context['students'] = Student.objects.filter(school=self.kwargs['school_id'])
-    context['teacher'] = Teacher.objects.filter(school=self.kwargs['school_id'])
+    context['teachers'] = Teacher.objects.filter(school=self.kwargs['school_id'])
     return context
 
   def post(self, request, *args, **kwargs):
@@ -590,14 +590,10 @@ class StudentGroupCreate(UserPassesTestMixin, CreateView):
     form = self.get_form()
     #make data mutable
     form.data = self.request.POST.copy()
-    print(form.data)
-    #students_list =[]
-    #if(students != []):
-    #    for i in range(len(students)):
-    #      students_list.append(int(students[i]))
     form.data['school'] = School.objects.get(pk=self.kwargs['school_id']).pk
+    print(form.errors)
+    print(form.is_bound)
     if form.is_valid():
-      form.save()
       return self.form_valid(form)
     else:
       print(form.data)
@@ -636,10 +632,11 @@ class StudentGroupUpdate(UserPassesTestMixin, UpdateView):
     context = super(StudentGroupUpdate, self).get_context_data(**kwargs)
     #context['contact_list'] = Contact.objects.filter(school=self.get_object())
     school = School.objects.get(pk=self.kwargs['school_id'])
-    print(school)
     context['school'] = School.objects.get(pk=self.kwargs['school_id'])
     context['students'] = Student.objects.filter(school=self.kwargs['school_id'])
-
+    context['teachers'] = Teacher.objects.filter(school=self.kwargs['school_id'])
+    context['studentgroups'] = Student.objects.filter(studentgroup=self.kwargs['pk'])
+    
     return context
 
 class StudentGroupDelete(UserPassesTestMixin, DeleteView):

@@ -7,6 +7,8 @@ $(function() {
 });
 
 $(document).ready(function() {
+	alert($('#list2 option').length);
+	$('#list1 option').filter(function(){return $('#list2 option[id"'+$(this).data('id')+'"]').length}).remove();
 	$("#notes").on('click',function(){
 		if($('#textareaid').is(":visible"))
 		{
@@ -50,6 +52,16 @@ $(document).ready(function() {
 	});
 
 	$('#studentgroup').submit(function(){
+		if($("#id_name").val()=="")
+		{
+			alert('Gleymdir að fylla inn nafnið');
+			return false;
+		}
+		if($("#id_student_year").val()=="")
+		{
+			alert('Gleymdir að fylla inn námsár')
+			return false;
+		}
 		$("#list2 option").prop('selected',true);
 		
 	});
