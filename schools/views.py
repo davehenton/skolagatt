@@ -44,8 +44,8 @@ class SchoolDetail(UserPassesTestMixin, DetailView):
   def get_context_data(self, **kwargs):
     context = super(SchoolDetail, self).get_context_data(**kwargs)
     context['studentgroup_list'] = self.object.studentgroup_set.all()
-    context['managers'] = self.object.managers.all()
-    context['teachers'] = self.object.teachers.all()
+    context['managers'] = slug_sort(self.object.managers.all(),'name')
+    context['teachers'] = slug_sort(self.object.teachers.all(),'name')
     context['surveys'] = slug_sort(Survey.objects.filter(studentgroup__in=self.object.studentgroup_set.all()), 'title')
     context['students'] = self.object.students.all()
     return context
@@ -156,6 +156,22 @@ class ManagerDetail(UserPassesTestMixin, DetailView):
     context['school'] = School.objects.get(pk=self.kwargs['school_id'])
     return context
 
+class ManagerOverview(UserPassesTestMixin, DetailView):
+  model = Manager
+
+  def test_func(self):
+    try:
+      if self.request.user.id == Manager.objects.get(pk=self.kwargs['pk']).user.id:
+        return True
+    except:
+      return False
+    return False
+
+  def get_context_data(self, **kwargs):
+    context = super(ManagerOverview, self).get_context_data(**kwargs)
+    context['school'] = School.objects.filter(managers=Manager.objects.filter(pk=self.kwargs['pk'])).first()
+    return context
+
 class ManagerCreate(UserPassesTestMixin, CreateView):
   model = Manager
   form_class = ManagerForm
@@ -258,6 +274,22 @@ class TeacherDetail(UserPassesTestMixin, DetailView):
     context = super(TeacherDetail, self).get_context_data(**kwargs)
     context['school'] = School.objects.get(pk=self.kwargs['school_id'])
     context['groups'] = StudentGroup.objects.filter(group_managers=Teacher.objects.filter(user=self.request.user))
+    return context
+
+class TeacherOverview(UserPassesTestMixin, DetailView):
+  model = Teacher
+
+  def test_func(self):
+    try:
+      if self.request.user.id == Teacher.objects.get(pk=self.kwargs['pk']).user.id:
+        return True
+    except:
+      return False
+    return False
+
+  def get_context_data(self, **kwargs):
+    context = super(TeacherOverview, self).get_context_data(**kwargs)
+    context['school'] = School.objects.filter(teachers=Teacher.objects.filter(pk=self.kwargs['pk'])).first()
     return context
 
 class TeacherCreate(UserPassesTestMixin, CreateView):
@@ -607,7 +639,7 @@ class StudentGroupUpdate(UserPassesTestMixin, UpdateView):
     print(school)
     context['school'] = School.objects.get(pk=self.kwargs['school_id'])
     context['students'] = Student.objects.filter(school=self.kwargs['school_id'])
-    
+
     return context
 
 class StudentGroupDelete(UserPassesTestMixin, DeleteView):
