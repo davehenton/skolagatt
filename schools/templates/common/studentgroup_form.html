@@ -28,9 +28,11 @@
 		</div>
 		<div class="col-xs-3">
 			<select multiple="multiple" class="form-control" id="list2" name="students" size="6">
+			
 			{% for studentgroup in studentgroups %}
 					<option id="{{ studentgroup.id }}" value="{{ studentgroup.id }}">{{studentgroup.name}}</option>
 				{% endfor %}
+			
 			</select>
 		</div>
 	</div>

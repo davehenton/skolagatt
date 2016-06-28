@@ -7,7 +7,8 @@ $(function() {
 });
 
 $(document).ready(function() {
-	$('#list1 option').filter(function(){return $('#list2 option[id"'+$(this).data('id')+'"]').length}).remove();
+
+	
 	$("#notes").on('click',function(){
 		if($('#textareaid').is(":visible"))
 		{
