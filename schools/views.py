@@ -558,19 +558,18 @@ class StudentGroupCreate(UserPassesTestMixin, CreateView):
     form = self.get_form()
     #make data mutable
     form.data = self.request.POST.copy()
-
     print(form.data)
-    students = request.POST.getlist('students')
     #students_list =[]
     #if(students != []):
     #    for i in range(len(students)):
     #      students_list.append(int(students[i]))
-    print(students)
-    return HttpResponse('kalli')
     form.data['school'] = School.objects.get(pk=self.kwargs['school_id']).pk
     if form.is_valid():
+      form.save()
       return self.form_valid(form)
     else:
+      print(form.data)
+      return HttpResponse(form.data)
       return self.form_invalid(form)
 
   def test_func(self):
