@@ -2,22 +2,42 @@
 {% include staticfiles%}
 
 {% block content %}
+<script>
+	pagetype = "studentcreate"
+</script>
 <form action="" method="post" id="studentgroup">{% csrf_token %}
 	<div> {{ form.name.label_tag }}   {{ form.name }} </div>
 	<div> {{ form.student_year.label_tag }} {{ form.student_year }} </div>
-	<div> <div class="col-xs-1">{{ form.group_managers.label_tag }}</div> <div class="col-xs-3"><select class="form-control" name="teacher" id="teacherlist1" size="6">{%for teach in teacher%}
-	<option>{{ teach.name }}</option>
-	{%endfor%}
-	</select>
+	<div> 
+		<div class="col-xs-1">{{ form.group_managers.label_tag }}</div>
+		<div class="col-xs-3">
+			<select class="form-control" name="group_managers" id="teacherlist1" size="6">
+				{%for teacher in teachers%}
+					<option value="{{teacher.id}}">{{ teacher.name }}</option>
+				{%endfor%}
+			</select>
 	</div>
-	<div class="form-group"> <div class="col-xs-1">{{ form.students.label_tag }}</div> <div class="col-xs-3"><select class="form-control" id="list1" size="6">{%for stud in students%}
-	<option>{{stud.name}}</option>
-	{%endfor%}
-	</select></div><div class="col-xs-3"><select multiple="multiple" class="form-control" id="list2" name="students" size="6">
-	</select></div>
+	<div class="form-group"> 
+		<div class="col-xs-1">{{ form.students.label_tag }}</div>
+		<div class="col-xs-3">
+			<select class="form-control" id="list1" size="6">
+				{% for student in students %}
+					<option id="{{ studentgroup.id }}" value="{{ student.id }}">{{student.name}}</option>
+				{% endfor %}
+			</select>
+		</div>
+		<div class="col-xs-3">
+			<select multiple="multiple" class="form-control" id="list2" name="students" size="6">
+			{% for studentgroup in studentgroups %}
+					<option id="{{ studentgroup.id }}" value="{{ studentgroup.id }}">{{studentgroup.name}}</option>
+				{% endfor %}
+			</select>
+		</div>
 	</div>
-	<div><input type='button' value='<<' id='move_left' />
-	<input type='button' value='>>' id='move_right' /></div>
+	<div>
+		<input type='button' value='<<' id='move_left' />
+		<input type='button' value='>>' id='move_right' />
+	</div>
 	<input type="submit" value="Vista" />
 </form>
 {% endblock %}
