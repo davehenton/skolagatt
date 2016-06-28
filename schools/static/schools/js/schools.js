@@ -24,6 +24,7 @@ $(document).ready(function() {
     	$('#textareashow').toggle();
 
     });
+
     $(document).on('click', "a[data-action='save_notes']", function(event){
     	if($('#textareaid').is(":visible"))
 		{
