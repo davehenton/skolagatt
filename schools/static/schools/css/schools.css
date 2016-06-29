@@ -24,6 +24,10 @@ ul {
     margin:0px;
 }
 
+.md-display li {
+    list-style-type:disc;
+}
+
 .selected {
     background-color:#efefef;
 }
