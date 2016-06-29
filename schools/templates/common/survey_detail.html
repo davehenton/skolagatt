@@ -7,24 +7,28 @@
 </script>
 <h1>{{survey.title}}</h1>
 <div class="row">
-	<div class="col-md-4">
-		<div class="row">
-			<div class="col-md-12">
-				<a href="{% url 'schools:survey_update' school.id survey.id %}" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span>&nbsp;Breyta</a>
-				<a href="{% url 'schools:survey_delete' school.id survey.id %}" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span>&nbsp;Eyða</a>
+	<div class="row">
+		<div class="col-md-4">
+			<div class="row">
+				<div class="col-md-12">
+					<a href="{% url 'schools:survey_update' school.id survey.id %}" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span>&nbsp;Breyta</a>
+					<a href="{% url 'schools:survey_delete' school.id survey.id %}" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span>&nbsp;Eyða</a>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					Próf virkt frá: {{survey_details.active_from|parse_date:"%Y-%m-%d"|date:"d-m-Y" }}
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					Próf virkt frá: {{survey_details.active_to|parse_date:"%Y-%m-%d"|date:"d-m-Y" }}
+				</div>
 			</div>
 		</div>
-		<div class="row">
-			<div class="col-md-12">
-				Próf virkt frá: {{survey_details.active_from|parse_date:"%Y-%m-%d"|date:"d-m-Y" }}
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-md-12">
-				Próf virkt frá: {{survey_details.active_to|parse_date:"%Y-%m-%d"|date:"d-m-Y" }}
-			</div>
-		</div>
-		<div class="row">
+	</div>
+	<div class="row">
+		<div class="col-md-4 md-display">
 			<h3>Ítargögn</h3>
 			<ul class="survey_resources">
 			{% for resource in survey_details.resources %}
@@ -37,53 +41,54 @@
 			{% endfor %}
 			</ul>
 		</div>
-	</div>
-	<div class="col-md-4">
-		<div class="row">
-		{% for text in survey_details.texts %}
-			<div class="col-md-12">
-				<h3>{{text.title}}</h3>
-				<p>{{text.text|md|safe}}</p>
-			</div>
-		{% endfor %}
-		</div>
-	</div>
-	<div class="col-md-4">
-		<div class="row">
-		{% for student in students %}
-			{% get_survey_results student survey as student_result %}
+		<div class="col-md-4">
 			<div class="row">
-				<div class="col-md-3">{{student.ssn}}</div>
-				<div class="col-md-6"><a href="{% url 'schools:student_detail' school.id student.id %}">{{student.name}}</a></div>
-				{% if student_result %}
-				<div class="col-md-3">
-					{% if is_group_manager %}
-					<a href="{% url 'schools:survey_result_update' school.id student.id survey.id student_result.id %}" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
-					{% endif %}
-					<button href="" class="btn btn-default btn-xs" type="button" data-toggle="collapse" data-target="#results-{{student_result.id}}" aria-expanded="false" aria-controls="collapseExample">
-						<span class="caret"></span>
-					</button>
+			{% for text in survey_details.texts %}
+				<div class="col-md-12 md-display">
+					<h3>{{text.title}}</h3>
+					<p>{{text.text|md|safe}}</p>
 				</div>
-				{% else %}
-				<div class="col-md-3">
-					{% if is_group_manager %}
-					<a href="{% url 'schools:survey_result_create' school.id student.id survey.id %}" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span>&nbsp;Skrá</a>
+			{% endfor %}
+			</div>
+		</div>
+		<div class="col-md-4">
+			<h3>Nemendur</h3>
+			<div class="row">
+			{% for student in students %}
+				{% get_survey_results student survey as student_result %}
+				<div class="row">
+					<div class="col-md-3">{{student.ssn}}</div>
+					<div class="col-md-6"><a href="{% url 'schools:student_detail' school.id student.id %}">{{student.name}}</a></div>
+					{% if student_result %}
+					<div class="col-md-3">
+						{% if is_group_manager %}
+						<a href="{% url 'schools:survey_result_update' school.id student.id survey.id student_result.id %}" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
+						{% endif %}
+						<button href="" class="btn btn-default btn-xs" type="button" data-toggle="collapse" data-target="#results-{{student_result.id}}" aria-expanded="false" aria-controls="collapseExample">
+							<span class="caret"></span>
+						</button>
+					</div>
+					{% else %}
+					<div class="col-md-3">
+						{% if is_group_manager %}
+						<a href="{% url 'schools:survey_result_create' school.id student.id survey.id %}" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span>&nbsp;Skrá</a>
+						{% endif %}
+					</div>
 					{% endif %}
+				</div>
+				{% if student_result %}
+				<div class="collapse row" id="results-{{student_result.id}}">
+					<div class="well col-md-12">
+						{% with results=student_result.results|get_json %}
+							<div class='row'>
+								<div class='col-md-12'>{{ results }}</div>
+							</div>
+						{% endwith %}
+					</div>
 				</div>
 				{% endif %}
+			{% endfor %}
 			</div>
-			{% if student_result %}
-			<div class="collapse row" id="results-{{student_result.id}}">
-				<div class="well col-md-12">
-					{% with results=student_result.results|get_json %}
-						<div class='row'>
-							<div class='col-md-12'>{{ results }}</div>
-						</div>
-					{% endwith %}
-				</div>
-			</div>
-			{% endif %}
-		{% endfor %}
 		</div>
 	</div>
 </div>
