@@ -7,7 +7,18 @@ $(function() {
 });
 
 $(document).ready(function() {
-
+	studentlist = []
+	$('#list2 > option').each(function() {
+		studentlist.push(parseInt(this.value));
+	});
+	
+	$('#list1 > option').each(function() {
+		var idx = $.inArray(parseInt(this.value),studentlist);
+		if (idx != -1) {
+			$(this).remove();
+		}
+	});	
+	
 	
 	$("#notes").on('click',function(){
 		if($('#textareaid').is(":visible"))
