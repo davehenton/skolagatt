@@ -16,6 +16,7 @@ from .models import *
 from common.models import *
 
 from .forms import *
+from rest_framework import viewsets
 
 # Create your views here.
 def Csv(request):
@@ -74,9 +75,10 @@ class SupportreResourceCreate(CreateView):
 		student_moreinfo = StudentExceptionSupport.objects.filter(student = student_info)
 		context['student'] = student_info.get
 		context['studentmorinfo'] = student_moreinfo.get
-		context['supportresource'] = SupportResource.objects.filter(student = student_info).get
+		context['supportresource'] = SupportResource.objects.filter(student = student_info).get or "''"
 		context['studentgroup'] = StudentGroup.objects.filter(students = student_info).get
 		context['school'] = School.objects.get(pk=self.kwargs['school_id'])
+		
 		return context
 
 	def post(self, request, *args, **kwargs):
@@ -172,6 +174,6 @@ class ExceptionCreate(CreateView):
 		context['school'] = School.objects.get(pk=self.kwargs['school_id'])
 		return context
 
-#class SurveyViewSet(viewsets.ModelViewSet):
-#    queryset = .objects.all()
-#    serializer_class = SurveySerializer
+class StudentExceptionSupportViewSet(viewsets.ModelViewSet):
+    queryset = StudentExceptionSupport.objects.all()
+    serializer_class = StudentExceptionSerializer

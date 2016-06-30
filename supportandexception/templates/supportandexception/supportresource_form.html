@@ -13,10 +13,10 @@
 	var longer_time = [];
 	var pagetype = "supportresource";
 	
-	reading_assistance={{supportresource.reading_assistance}};
-	interpretation={{supportresource.interpretation}};
-	return_to_sites={{supportresource.return_to_sites}};
-	longer_time={{supportresource.longer_time}};
+	reading_assistance={% if supportresource.reading_assistance == "" %}"no"{% else %}{{ supportresource.reading_assistance }}{% endif %};
+	interpretation={% if supportresource.interpretation == "" %}"no"{% else %}{{supportresource.interpretation}}{% endif %};
+	return_to_sites={% if supportresource.return_to_sites == "" %}"no"{% else %}{{supportresource.return_to_sites}}{% endif %};
+	longer_time={% if supportresource.longer_time == "" %}"no"{% else %}{{supportresource.longer_time}}{% endif %};
 	
 	
 </script>

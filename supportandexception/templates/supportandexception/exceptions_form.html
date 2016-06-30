@@ -10,7 +10,7 @@
 	
 	var pagetype = "exceptions";
 	
-	exam={{exceptions.exam}};
+	exam={% if exceptions.exam == "" %}"no"{% else %}{{ exceptions.exam }}{% endif %};
 	reason.push({{exceptions.reason}});
 </script>
 <form action="" method="post" id="exception">{% csrf_token %}
