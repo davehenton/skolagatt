@@ -591,13 +591,10 @@ class StudentGroupCreate(UserPassesTestMixin, CreateView):
     #make data mutable
     form.data = self.request.POST.copy()
     form.data['school'] = School.objects.get(pk=self.kwargs['school_id']).pk
-    print(form.errors)
-    print(form.is_bound)
+    print(form.data)
     if form.is_valid():
       return self.form_valid(form)
     else:
-      print(form.data)
-      return HttpResponse(form.data)
       return self.form_invalid(form)
 
   def test_func(self):
@@ -610,11 +607,38 @@ class StudentGroupCreate(UserPassesTestMixin, CreateView):
                               kwargs={'pk': school_id})
     except:
       return reverse_lazy('schools:school_listing')
+ 
 
 class StudentGroupUpdate(UserPassesTestMixin, UpdateView):
   model = StudentGroup
   form_class = StudentGroupForm
   login_url = reverse_lazy('denied')
+
+  
+  def get_context_data(self, **kwargs):
+    # xxx will be available in the template as the related objects
+    context = super(StudentGroupUpdate, self).get_context_data(**kwargs)
+    #context['contact_list'] = Contact.objects.filter(school=self.get_object())
+    school = School.objects.get(pk=self.kwargs['school_id'])
+    context['school'] = School.objects.get(pk=self.kwargs['school_id'])
+    context['students'] = Student.objects.filter(school=self.kwargs['school_id'])
+    context['teachers'] = Teacher.objects.filter(school=self.kwargs['school_id'])
+    context['teacheringroup'] = Teacher.objects.filter(studentgroup=self.kwargs['pk'])
+    context['studentgroups'] = Student.objects.filter(studentgroup=self.kwargs['pk'])
+    return context
+
+  def post(self, request, *args, **kwargs):
+    self.object = None
+    form = self.get_form()
+    #make data mutable
+    form.data = self.request.POST.copy()
+    form.data['school'] = School.objects.get(pk=self.kwargs['school_id']).pk
+    form = StudentGroupForm(form.data or None, instance = StudentGroup.objects.get(id=self.kwargs['pk']))
+    if form.is_valid():
+      form.save()
+      return self.form_valid(form)
+    else:
+      return self.form_invalid(form)
 
   def test_func(self):
     return is_school_manager(self.request, self.kwargs) or is_school_teacher(self.request, self.kwargs) #TODO: manager or (teacher and group_manager)
@@ -627,17 +651,8 @@ class StudentGroupUpdate(UserPassesTestMixin, UpdateView):
     except:
       return reverse_lazy('schools:school_listing')
 
-  def get_context_data(self, **kwargs):
-    # xxx will be available in the template as the related objects
-    context = super(StudentGroupUpdate, self).get_context_data(**kwargs)
-    #context['contact_list'] = Contact.objects.filter(school=self.get_object())
-    school = School.objects.get(pk=self.kwargs['school_id'])
-    context['school'] = School.objects.get(pk=self.kwargs['school_id'])
-    context['students'] = Student.objects.filter(school=self.kwargs['school_id'])
-    context['teachers'] = Teacher.objects.filter(school=self.kwargs['school_id'])
-    context['studentgroups'] = Student.objects.filter(studentgroup=self.kwargs['pk'])
-    
-    return context
+
+
 
 class StudentGroupDelete(UserPassesTestMixin, DeleteView):
   model = StudentGroup

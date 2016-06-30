@@ -3,9 +3,16 @@
 
 {% block content %}
 <script>
-	pagetype = "studentcreate"
+	var pagetype = "studentcreate";
+	var teachername = [];
+	
+	{%for teacherin in teacheringroup%}
+		teachername.push({{ teacherin.id }});
+	{%endfor%}
+
 </script>
 <form action="" method="post" id="studentgroup">{% csrf_token %}
+
 	<div> {{ form.name.label_tag }}   {{ form.name }} </div>
 	<div> {{ form.student_year.label_tag }} {{ form.student_year }} </div>
 	<div> 
