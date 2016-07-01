@@ -26,7 +26,6 @@ class UploadFileForm(forms.Form):
 support_title = (
 	('reading_assistance','Lestraraðstoð'),
 	('interpretation','Túlkun fyrirmæla'),
-	('return_to_sites','Fái að að skila ritun á vefsvæði'),
 	('longer_time','Lengdur próftími'),
 )
 
@@ -40,11 +39,6 @@ interpretation = (
 	(2,'Enska'),
 	(3,'Stærðfræði'),
 	)
-return_to_sites = (
-	(1,'Íslenska'),
-	(2,'Enska'),
-	(3,'Stærðfræði'),
-	)
 longer_time = (
 	(1,'Íslenska'),
 	(2,'Enska'),
@@ -54,7 +48,6 @@ class SupportResourceForm(forms.ModelForm):
 	support_title = forms.ChoiceField(required = False, widget = forms.CheckboxSelectMultiple, choices = support_title)
 	reading_assistance = forms.ChoiceField(required = False, widget = forms.CheckboxSelectMultiple, choices = reading_assistance)
 	interpretation = forms.ChoiceField(required = False, widget = forms.CheckboxSelectMultiple, choices = interpretation)
-	return_to_sites = forms.ChoiceField(required = False, widget = forms.CheckboxSelectMultiple, choices = return_to_sites)
 	longer_time = forms.ChoiceField(required = False, widget = forms.CheckboxSelectMultiple, choices = longer_time)
 	
 	class Meta:
