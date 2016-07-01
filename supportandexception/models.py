@@ -36,7 +36,6 @@ class SupportResource(models.Model):
 	support_title = models.CharField(max_length = 1,null=True)
 	reading_assistance = models.CharField(max_length = 1,null=True)
 	interpretation = models.CharField(max_length = 1,null=True)
-	return_to_sites = models.CharField(max_length = 1,null=True)
 	longer_time = models.CharField(max_length = 1,null=True)
 	def __str__(self):
 		return self.student
