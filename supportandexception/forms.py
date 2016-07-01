@@ -60,6 +60,7 @@ class SupportResourceForm(forms.ModelForm):
 	class Meta:
 		model = SupportResource
 		fields = '__all__'
+		
 
 exam_choices = (
 	(1,'Íslenska'),
@@ -78,5 +79,14 @@ class ExceptionsForm(forms.ModelForm):
 	class Meta:
 		model = Exceptions
 		fields = '__all__'
+		labels = {
+			'student': 'Nemandi',
+			'reason': 'Ástæða',
+			'exam': 'Próf',
+			'explanation': 'Skýringar',
+			'signature': 'Undirskrift',
+			'date': 'Dagsetning',
+		}
+		
 
 SupportResourceFormSet = formset_factory(SupportResourceForm)
