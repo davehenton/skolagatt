@@ -26,7 +26,12 @@ class ManagerForm(forms.ModelForm):
 		model = Manager
 		fields = ['ssn', 'name', 'user']
 		widgets = {'user': forms.HiddenInput()}
-
+		labels = {
+			'ssn': 'Kennitala',
+			'name': 'Nafn',
+			'user': 'Notendur',
+		}
+		
 class Teacher(models.Model):
 	ssn = models.CharField(max_length = 10, unique=True)
 	name = models.CharField(max_length = 128)
@@ -43,6 +48,11 @@ class TeacherForm(forms.ModelForm):
 		model = Teacher
 		fields =  ['ssn', 'name', 'user']
 		widgets = {'user': forms.HiddenInput()}
+		labels = {
+			'ssn': 'Kennitala',
+			'name': 'Nafn',
+			'user': 'Notendur',
+		}
 
 class Student(models.Model):
 	ssn = models.CharField(max_length = 10, unique=True)
@@ -58,6 +68,10 @@ class StudentForm(forms.ModelForm):
 	class Meta:
 		model = Student
 		fields =  ['ssn', 'name']
+		labels = {
+			'ssn': 'Kennitala',
+			'name': 'Nafn',
+		}
 
 class School(models.Model):
 	name = models.CharField(max_length = 128)
@@ -71,12 +85,20 @@ class School(models.Model):
 
 	class Meta:
 		ordering = ["name"]
+		
 
 class SchoolForm(forms.ModelForm):
 	class Meta:
 		model = School
 		fields = '__all__'
 		widgets = {'group': forms.HiddenInput()}
+		labels = {
+			'name': 'Nafn',
+			'ssn': 'Kennitala',
+			'managers': 'Stjórnendur',
+			'teachers': 'Kennarar',
+			'students': 'Nemendur',
+		}
 
 class StudentGroup(models.Model):
 	name = models.CharField(max_length = 128)
@@ -93,6 +115,13 @@ class StudentGroupForm(forms.ModelForm):
 		model = StudentGroup
 		fields =  ['name', 'student_year', 'group_managers', 'school', 'students']
 		widgets = {'school': forms.HiddenInput()}
+		labels = {
+			'name': 'Nafn',
+			'student_year': 'Ár',
+			'group_managers': 'Hópastjórnendur',
+			'school': 'Skóli',
+			'students': 'Nemendur',
+		}
 
 class Survey(models.Model):
 	studentgroup = models.ForeignKey('StudentGroup')
@@ -118,6 +147,14 @@ class SurveyForm(forms.ModelForm):
 			'active_from': forms.HiddenInput(),
 			'active_to': forms.HiddenInput(),
 		}
+		labels = {
+			'studentgroup': 'Nemendahópur',
+			'survey': 'Könnun',
+			'title': 'Titill',
+			'active_from': 'Virkt frá',
+			'active_to': 'Virkt til',
+		}
+		
 
 class SurveyResult(models.Model):
 	student = models.ForeignKey('Student')
@@ -134,6 +171,13 @@ class SurveyResultForm(forms.ModelForm):
 	class Meta:
 		model = SurveyResult
 		fields = []
+		labels = {
+			'student': 'Nemandi',
+			'created_at': 'Búið til',
+			'results': 'Niðurstöður',
+			'reported_by': 'Skýrsla frá',
+			'survey': 'Könnun',
+		}
 
 class SurveyLogin(models.Model):
 	student = models.ForeignKey(Student)
@@ -145,3 +189,8 @@ class SurveyLoginForm(forms.ModelForm):
 	class Meta:
 		model = SurveyLogin
 		fields = ['student', 'survey_id', 'survey_code']
+		labels = {
+			'student': 'Nemandi',
+			'survey_id': 'Könnunarnúmer',
+			'survey_code': 'Könnunarkóði',
+		}
