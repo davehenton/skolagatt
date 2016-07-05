@@ -5,6 +5,7 @@ from __future__ import unicode_literals
 from django.db import models
 
 from common.models import *
+from rest_framework import serializers
 
 
 class StudentExceptionSupport(models.Model):
@@ -35,7 +36,17 @@ class SupportResource(models.Model):
 	support_title = models.CharField(max_length = 1,null=True)
 	reading_assistance = models.CharField(max_length = 1,null=True)
 	interpretation = models.CharField(max_length = 1,null=True)
-	return_to_sites = models.CharField(max_length = 1,null=True)
 	longer_time = models.CharField(max_length = 1,null=True)
 	def __str__(self):
 		return self.student
+
+class StudentExceptionSerializer(serializers.ModelSerializer):
+	
+	class Meta:
+		model = StudentExceptionSupport
+		fields = ['student','notes']
+
+	#def get_survey_data(self, container):
+	#	data = SurveyData.objects.filter(survey=container)
+	#	serializer = SurveyDataSerializer(instance=data, many=True)
+	#	return serializer.data
