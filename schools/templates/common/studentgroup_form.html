@@ -6,39 +6,49 @@
 	pagetype = "studentcreate"
 </script>
 <form action="" method="post" id="studentgroup">{% csrf_token %}
-	<div> {{ form.name.label_tag }}   {{ form.name }} </div>
-	<div> {{ form.student_year.label_tag }} {{ form.student_year }} </div>
-	<div> 
-		<div class="col-xs-1">{{ form.group_managers.label_tag }}</div>
-		<div class="col-xs-3">
+	<div class="row">
+		<div class="col-md-2">{{ form.name.label_tag }}</div>
+		<div class="col-md-10">{{ form.name }}</div>
+	</div>
+	<div class="row">
+		<div class="col-md-2">{{ form.student_year.label_tag }}</div>
+		<div class="col-md-10">{{ form.student_year }}</div>
+	</div>
+	<div class="row">
+		<div class="col-md-2">{{ form.group_managers.label_tag }}</div>
+		<div class="col-md-4">
 			<select class="form-control" name="group_managers" id="teacherlist1" size="6">
 				{%for teacher in teachers%}
 					<option value="{{teacher.id}}">{{ teacher.name }}</option>
 				{%endfor%}
 			</select>
-	</div>
-	<div class="form-group"> 
-		<div class="col-xs-1">{{ form.students.label_tag }}</div>
-		<div class="col-xs-3">
-			<select class="form-control" id="list1" size="6">
-				{% for student in students %}
-					<option id="{{ studentgroup.id }}" value="{{ student.id }}">{{student.name}}</option>
-				{% endfor %}
-			</select>
 		</div>
-		<div class="col-xs-3">
-			<select multiple="multiple" class="form-control" id="list2" name="students" size="6">
-			
-			{% for studentgroup in studentgroups %}
+	</div>
+	<div class="form-group">
+		<div class="row">
+			<h4>Veljið nemendur inn í hóp</h4>
+			<div class="col-md-4">
+				<h4>Nemendur skóla</h4>
+				<select class="form-control" id="list1" size="6">
+					{% for student in students %}
+						<option id="{{ studentgroup.id }}" value="{{ student.id }}">{{student.name}}</option>
+					{% endfor %}
+				</select>
+			</div>
+			<div class="col-md-2">
+				<h4>Færa</h4>
+				<input type='button' value='<<' id='move_left' />
+				<input type='button' value='>>' id='move_right' />
+			</div>
+			<div class="col-md-4">
+				<h4>Nemendur í hóp</h4>
+				<select multiple="multiple" class="form-control" id="list2" name="students" size="6">
+				{% for studentgroup in studentgroups %}
 					<option id="{{ studentgroup.id }}" value="{{ studentgroup.id }}">{{studentgroup.name}}</option>
 				{% endfor %}
-			
-			</select>
+				</select>
+			</div>
 		</div>
-	</div>
-	<div>
-		<input type='button' value='<<' id='move_left' />
-		<input type='button' value='>>' id='move_right' />
 	</div>
 	<input type="submit" value="Vista" />
 </form>

@@ -1,19 +1,20 @@
 {% extends "base.html" %}
 
-
-
-
 {% block content %}
 <h1>Dell</h1>
-<div ><table id="student_list" class="table table-hover">
-<thead><th>Kennitala</th><th>nafn</th></thead>
-{% for student in students %}
-<tr href="{% url 'supportandexception:detail' school.id student.id %}">
-		<td>{{student.ssn}}</td><td>{{student.name}}</td>
-</tr>
-{% endfor %}
+<div >
+	<table id="student_list" class="table table-hover">
+		<thead>
+			<th>Kennitala</th>
+			<th>nafn</th>
+		</thead>
+		{% for student in students %}
+		<tr href="{% url 'supportandexception:detail' school.id student.id %}">
+			<td>{{student.ssn}}</td><td>{{student.name}}</td>
+		</tr>
+		{% endfor %}
 
-</table>
+	</table>
 </div>
 {% endblock %}
 

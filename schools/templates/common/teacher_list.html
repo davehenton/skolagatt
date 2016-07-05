@@ -6,13 +6,11 @@
 	<a href="{% url 'schools:teacher_create' school.id %}" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span>Bæta við kennara</a>
 	<div id="teacher_list" class="table table-hover">
 		<div class="row">
-			<div class="col-md-1"><h4>Kennitala</h4></div>
 			<div class="col-md-3"><h4>Nafn</h4></div>
 			<div class="col-md-1"><h4>Aðgerðir</h4></div>
 		</div>
 		{% for teacher in teachers %}
 		<div class="row">
-			<div class="col-md-1"><a href="{% url 'schools:teacher_detail' school.id teacher.id %}">{{teacher.ssn}}</a></div>
 			<div class="col-md-3"><a href="{% url 'schools:teacher_detail' school.id teacher.id %}">{{teacher.name}}</a></div>
 			<div class="col-md-1">
 				<a href="{% url 'schools:teacher_update' school.id teacher.id %}" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
