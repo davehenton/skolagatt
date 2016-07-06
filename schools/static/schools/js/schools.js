@@ -7,29 +7,7 @@ $(function() {
 });
 
 $(document).ready(function() {
-	if ( typeof pagetype !== 'undefined' && pagetype == "studentcreate")
-	{
-		$('#teacherlist1 > option').each(function() {
-			var idx = $.inArray(parseInt(this.value),teachername);
-			if (idx != -1) {
-				$(this).prop('selected',true);
-			}
-		});
-		studentlist = []
-		$('#list2 > option').each(function() {
-			studentlist.push(parseInt(this.value));
-		});
-		
-		$('#list1 > option').each(function() {
-			var idx = $.inArray(parseInt(this.value),studentlist);
-			if (idx != -1) {
-				$(this).remove();
-			}
-		});
-	}
-	
-	
-	
+
 	$("#notes").on('click',function(){
 		if($('#textareaid').is(":visible"))
 		{
@@ -64,13 +42,13 @@ $(document).ready(function() {
 	});
 
 	$('#move_left').click(function() {
-		$('#list1').append($('#list2 .selected').removeClass('selected'));
+		$('#all_students').append($('#group_students .selected').removeClass('selected'));
 
 	});
 
 	$('#move_right').click(function() {
-		$('#list2').append($('#list1 .selected').removeClass('selected'));
-		$("#list2 option").removeAttr('selected');
+		$('#group_students').append($('#all_students .selected').removeClass('selected'));
+		$("#group_students option").removeAttr('selected');
 	});
 
 	$('#studentgroup').submit(function(){
@@ -84,8 +62,8 @@ $(document).ready(function() {
 			alert('Gleymdir að fylla inn námsár')
 			return false;
 		}
-		$("#list2 option").prop('selected',true);
-		
+		$("#group_students option").prop('selected',true);
+
 	});
 });
 

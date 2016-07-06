@@ -1,37 +1,93 @@
 {% extends 'common/index.html'%}
+{% load common_helpers %}
 
 {% block content %}
 <form action="" method="POST">{% csrf_token %}
-<script type="text/javascript">
-	var studentpk = {{student.pk}};
-</script>
+	<script type="text/javascript">
+		var studentpk = {{student.pk}};
+	</script>
 
-<h1>{{student.name}}</h1>
-<div class="row">
-	<div class="col-md-12">
-		<a href="{% url 'schools:student_update' school.id student.id %}" class="btn btn-default" data-action='save_notes'><span class="glyphicon glyphicon-pencil"></span>&nbsp;Breyta</a>
-		<a href="{% url 'schools:student_delete' school.id student.id %}" class="btn btn-danger" data-action='delete'><span class="glyphicon glyphicon-trash"></span>&nbsp;Eyða</a>
-		<a href="{% url 'supportandexception:exception' school.id student.id %}" class="btn btn-success" data-action='save_notes'><span class="
-glyphicon glyphicon-bookmark"></span>&nbsp;Undanþágur</a>
-		<a href="{% url 'supportandexception:supportresource' school.id student.id %}" class="btn btn-warning" data-action='save_notes'><span class="
-glyphicon glyphicon-bookmark"></span>&nbsp;Stuðningsúrræði</a>
-		<a  id="notes" class="btn btn-info"><span class="glyphicon glyphicon-bookmark"></span>&nbsp;Skilaboð</a>
+	<h1>{{student.name}}</h1>
+	<div class="row">
+		<div class="col-md-12">
+			{% if  is_school_manager %}
+			<a href="{% url 'schools:student_update' school.id student.id %}" class="btn btn-default" data-action='save_notes'>
+				<span class="glyphicon glyphicon-pencil"></span>&nbsp;Breyta
+			</a>
+			<a href="{% url 'schools:student_delete' school.id student.id %}" class="btn btn-danger" data-action='delete'>
+				<span class="glyphicon glyphicon-trash"></span>&nbsp;Eyða
+			</a>
+			{% endif %}
+			<a href="{% url 'supportandexception:exception' school.id student.id %}" class="btn btn-success" data-action='save_notes'>
+				<span class="glyphicon glyphicon-bookmark"></span>&nbsp;Undanþágur
+			</a>
+			<a href="{% url 'supportandexception:supportresource' school.id student.id %}" class="btn btn-warning" data-action='save_notes'>
+				<span class="glyphicon glyphicon-bookmark"></span>&nbsp;Stuðningsúrræði
+			</a>
+		</div>
 	</div>
-</div>
-skilaboð:
-<div>
-<div id="notesshow">
-{% if student_moreinfo.notes != null %}
-{{student_moreinfo.notes}}
-{% endif %}
-</div>
-<div id="textareashow" style="display:none;">
+	<div class="row">
+		<div class="col-md-6">
+			<h3>Athugasemd</h3>
+			<a  id="notes" class="btn btn-info"><span class="glyphicon glyphicon-plus">
+				</span>&nbsp;Uppfæra athugasemd
+			</a>
 
-<textarea rows="5" cols="50" id="textareaid">{% if student_moreinfo.notes != null %}
-{{student_moreinfo.notes}}
-{% endif %}</textarea>
-
-</div>
-</div>
+			<div class="row">
+				<div id="notesshow">
+				{% if student_moreinfo.notes != null %}
+					{{student_moreinfo.notes}}
+				{% endif %}
+				</div>
+				<div id="textareashow" style="display:none;">
+					<textarea rows="5" cols="50" id="textareaid">{% if student_moreinfo.notes != null %}{{student_moreinfo.notes}}{% endif %}</textarea>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-6">
+			<h3>Kannanir</h3>
+			<div class="row">
+			{% for surveyresults in student.surveyresult_set.all %}
+				{% get_survey_results student surveyresults.survey as student_result %}
+				<div class="row">
+					<div class="col-md-9">
+						<a href="{% url 'schools:survey_detail' school.id surveyresults.survey.id %}">{{surveyresults.survey.title}}</a>
+					</div>
+					{% if student_result %}
+					<div class="col-md-3">
+						{% if is_group_manager %}
+						<a href="{% url 'schools:survey_result_update' school.id student.id surveyresults.survey.id student_result.id %}" class="btn btn-default btn-xs">
+							<span class="glyphicon glyphicon-pencil"></span>
+						</a>
+						{% endif %}
+						<button href="" class="btn btn-default btn-xs" type="button" data-toggle="collapse" data-target="#results-{{student_result.id}}" aria-expanded="false" aria-controls="collapseExample">
+							<span class="caret"></span>
+						</button>
+					</div>
+					{% else %}
+					<div class="col-md-3">
+						{% if is_group_manager %}
+						<a href="{% url 'schools:survey_result_create' school.id student.id surveyresults.survey.id %}" class="btn btn-default btn-xs">
+							<span class="glyphicon glyphicon-plus"></span>&nbsp;Skrá
+						</a>
+						{% endif %}
+					</div>
+					{% endif %}
+				</div>
+				{% if student_result %}
+				<div class="collapse row" id="results-{{student_result.id}}">
+					<div class="well col-md-12">
+						{% with results=student_result.results|get_json %}
+							<div class='row'>
+								<div class='col-md-12'>{{ results }}</div>
+							</div>
+						{% endwith %}
+					</div>
+				</div>
+				{% endif %}
+			{% endfor %}
+			</div>
+		</div>
+	</div>
 </form>
 {% endblock %}

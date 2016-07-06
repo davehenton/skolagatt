@@ -607,24 +607,24 @@ class StudentGroupCreate(UserPassesTestMixin, CreateView):
                               kwargs={'pk': school_id})
     except:
       return reverse_lazy('schools:school_listing')
- 
+
 
 class StudentGroupUpdate(UserPassesTestMixin, UpdateView):
   model = StudentGroup
   form_class = StudentGroupForm
   login_url = reverse_lazy('denied')
 
-  
+
   def get_context_data(self, **kwargs):
     # xxx will be available in the template as the related objects
     context = super(StudentGroupUpdate, self).get_context_data(**kwargs)
     #context['contact_list'] = Contact.objects.filter(school=self.get_object())
     school = School.objects.get(pk=self.kwargs['school_id'])
     context['school'] = School.objects.get(pk=self.kwargs['school_id'])
-    context['students'] = Student.objects.filter(school=self.kwargs['school_id'])
+    context['all_students'] = Student.objects.filter(school=self.kwargs['school_id'])
     context['teachers'] = Teacher.objects.filter(school=self.kwargs['school_id'])
-    context['teacheringroup'] = Teacher.objects.filter(studentgroup=self.kwargs['pk'])
-    context['studentgroups'] = Student.objects.filter(studentgroup=self.kwargs['pk'])
+    context['group_managers'] = Teacher.objects.filter(studentgroup=self.kwargs['pk'])
+    context['students'] = Student.objects.filter(studentgroup=self.kwargs['pk'])
     return context
 
   def post(self, request, *args, **kwargs):
@@ -633,6 +633,7 @@ class StudentGroupUpdate(UserPassesTestMixin, UpdateView):
     #make data mutable
     form.data = self.request.POST.copy()
     form.data['school'] = School.objects.get(pk=self.kwargs['school_id']).pk
+    print(form.data)
     form = StudentGroupForm(form.data or None, instance = StudentGroup.objects.get(id=self.kwargs['pk']))
     if form.is_valid():
       form.save()
