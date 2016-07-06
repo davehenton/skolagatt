@@ -2,9 +2,13 @@
 {% include staticfiles%}
 
 {% block content %}
-<script>
-	pagetype = "studentcreate"
-</script>
+{% if form.subject.errors %}
+    <ol>
+    {% for error in form.subject.errors %}
+        <li><strong>{{ error|escape }}</strong></li>
+    {% endfor %}
+    </ol>
+{% endif %}
 <form action="" method="post" id="studentgroup">{% csrf_token %}
 	<div class="row">
 		<div class="col-md-2">{{ form.name.label_tag }}</div>
@@ -17,10 +21,14 @@
 	<div class="row">
 		<div class="col-md-2">{{ form.group_managers.label_tag }}</div>
 		<div class="col-md-4">
-			<select class="form-control" name="group_managers" id="teacherlist1" size="6">
-				{%for teacher in teachers%}
-					<option value="{{teacher.id}}">{{ teacher.name }}</option>
-				{%endfor%}
+			<select class="form-control" name="group_managers" id="teacherlist" size="6">
+				{% for teacher in teachers %}
+					{% if teacher in group_managers %}
+						<option value="{{teacher.id}}" selected>{{ teacher.name }}</option>
+					{% else %}
+						<option value="{{teacher.id}}">{{ teacher.name }}</option>
+					{% endif %}
+				{% endfor %}
 			</select>
 		</div>
 	</div>
@@ -29,9 +37,9 @@
 			<h4>Veljið nemendur inn í hóp</h4>
 			<div class="col-md-4">
 				<h4>Nemendur skóla</h4>
-				<select class="form-control" id="list1" size="6">
-					{% for student in students %}
-						<option id="{{ studentgroup.id }}" value="{{ student.id }}">{{student.name}}</option>
+				<select class="form-control" id="all_students" size="6">
+					{% for student in all_students %}
+						<option id="{{ studentgroup.id }}" value="{{ student.id }}" selected>{{student.name}}</option>
 					{% endfor %}
 				</select>
 			</div>
@@ -42,9 +50,9 @@
 			</div>
 			<div class="col-md-4">
 				<h4>Nemendur í hóp</h4>
-				<select multiple="multiple" class="form-control" id="list2" name="students" size="6">
-				{% for studentgroup in studentgroups %}
-					<option id="{{ studentgroup.id }}" value="{{ studentgroup.id }}">{{studentgroup.name}}</option>
+				<select multiple="multiple" class="form-control" id="group_students" name="students" size="6">
+				{% for student in students %}
+					<option id="{{ student.id }}" value="{{ student.id }}" selected>{{student.name}}</option>
 				{% endfor %}
 				</select>
 			</div>
