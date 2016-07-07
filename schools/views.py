@@ -834,7 +834,10 @@ class SurveyResultCreate(UserPassesTestMixin, CreateView):
     context['student'] = Student.objects.filter(pk=self.kwargs['student_id'])
     context['survey'] = Survey.objects.filter(pk=self.kwargs['survey_id'])
     data = get_survey_data(self.kwargs)
-    context['grading_template'] = data[0]['grading_template'][0]['md']
+    try:
+      context['grading_template'] = data[0]['grading_template'][0]['md']
+    except:
+      raise Exception("Ekki næst samband við prófagrunn")
     return context
 
   def post(self, *args, **kwargs):
