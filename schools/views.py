@@ -835,8 +835,13 @@ class SurveyResultCreate(UserPassesTestMixin, CreateView):
     context['survey'] = Survey.objects.filter(pk=self.kwargs['survey_id'])
     data = get_survey_data(self.kwargs)
     try:
-      context['grading_template'] = data[0]['grading_template'][0]['md']
-    except:
+      if len(data) == 0:
+        #survey is expired
+        context['grading_template'] = ""
+      else:
+        context['grading_template'] = data[0]['grading_template'][0]['md']
+    except Exception as e:
+      print(e)
       raise Exception("Ekki næst samband við prófagrunn")
     return context
 
