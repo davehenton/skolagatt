@@ -31,9 +31,9 @@
 				{% elif user.is_superuser %}
 				<li><a href="{% url 'schools:survey_login_admin_listing' %}">Lykilorð</a></li>
 				{% endif %}
-				<li><a href="mailto:skolagatt@mms.is"><span class="glyphicon glyphicon-envelope"></span>&nbsp;Hafðu samband</a></li>
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
+				<li><a href="mailto:skolagatt@mms.is"><span class="glyphicon glyphicon-envelope"></span>&nbsp;Hafðu samband</a></li>
 				{% if user.is_authenticated %}
 				<li>
 					<a href="{% url 'auth_logout' %}" class="btn btn-xs btn-danger">
