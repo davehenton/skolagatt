@@ -31,7 +31,7 @@ class ManagerForm(forms.ModelForm):
 			'name': 'Nafn',
 			'user': 'Notendur',
 		}
-		
+
 class Teacher(models.Model):
 	ssn = models.CharField(max_length = 10, unique=True)
 	name = models.CharField(max_length = 128)
@@ -85,7 +85,7 @@ class School(models.Model):
 
 	class Meta:
 		ordering = ["name"]
-		
+
 
 class SchoolForm(forms.ModelForm):
 	class Meta:
@@ -130,6 +130,11 @@ class Survey(models.Model):
 	active_from = models.DateField(default=timezone.now) #value from profagrunnur
 	active_to = models.DateField(default=timezone.now) #value from profagrunnur
 
+	def is_expired(self):
+		if timezone.now().date() > self.active_to:
+			return True
+		return False
+
 	def results(self):
 		return SurveyResult.objects.filter(survey=self)
 
@@ -154,7 +159,7 @@ class SurveyForm(forms.ModelForm):
 			'active_from': 'Virkt frá',
 			'active_to': 'Virkt til',
 		}
-		
+
 
 class SurveyResult(models.Model):
 	student = models.ForeignKey('Student')
