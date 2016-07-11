@@ -1,58 +1,55 @@
 {% load staticfiles %}
 {% load common_helpers %}
-    <nav class="navbar navbar-default navbar-static-top">
-      <div class="container">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="{% url 'schools:school_listing' %}">
-            <span><img src="{% static 'img/logo.png'%}" /></span>
-            <span>Skólagátt</span>
-          </a>
-        </div>
-        <div id="navbar" class="navbar-collapse collapse">
-          <ul class="nav navbar-nav">
-          	<li class="dropdown">
-            		{% get_user_schools %}
-            	</li>
-            {% if school.id %}
-            <li><a href="{% url 'schools:manager_listing' school.id %}">Skólastjórnendur</a></li>
-            <li><a href="{% url 'schools:teacher_listing' school.id %}">Kennarar</a></li>
-            <li><a href="{% url 'schools:group_listing' school.id %}">Bekkir</a></li>
-            <li><a href="{% url 'schools:student_listing' school.id %}">Nemendur</a></li>
-	            {% if is_school_manager %}
-			<li><a href="{% url 'schools:survey_login_listing' school.id %}">Lykilorð</a></li>
-			{% endif %}
-		{% elif user.is_superuser %}
-			<li><a href="{% url 'schools:survey_login_admin_listing' %}">Lykilorð</a></li>
-            {% endif %}
-          </ul>
-          <ul class="nav navbar-nav navbar-right">
-            <!-- li><a href="https://innskraning.island.is/?id=mms.is&login=skolagatt"><span class="glyphicon glyphicon-user">Innskráning</span></a></li -->
-	    {% if user.is_authenticated %}
-	        <li>
-	        	<span>
-	        		<span class="glyphicon glyphicon-user"></span>&nbsp;{{user.username}}
-	        		<a href="{% url 'auth_logout' %}" class="btn btn-xs btn-danger">
-	        			<span class="glyphicon glyphicon-log-out"></span>
-	        		</a>
-	        	</span>
-	        </li>
-            {% else %}
-	        <li>
-	        	<span>
-	        		<span class="glyphicon glyphicon-user"></span>&nbsp;Innskráning
-	        		<a href="{% url 'auth_login' %}" class="btn btn-xs btn-success">
-	        			<span class="glyphicon glyphicon-log-in"></span>
-	        		</a>
-	        	</span>
-	        </li>
-	    {% endif %}
-          </ul>
-        </div>
-      </div>
-    </nav>
+
+<nav class="navbar navbar-default navbar-static-top" role="navigation">
+	<div class="container-fluid">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="{% url 'schools:school_listing' %}">
+				<span><img src="{% static 'img/logo.png'%}" /></span>
+				<span>Skólagátt</span>
+			</a>
+		</div>
+		<div id="navbar" class="navbar-collapse collapse">
+			<ul class="nav navbar-nav">
+				<li class="dropdown">
+					{% get_user_schools %}
+				</li>
+				{% if school.id %}
+				<li><a href="{% url 'schools:manager_listing' school.id %}">Skólastjórnendur</a></li>
+				<li><a href="{% url 'schools:teacher_listing' school.id %}">Kennarar</a></li>
+				<li><a href="{% url 'schools:group_listing' school.id %}">Bekkir</a></li>
+				<li><a href="{% url 'schools:student_listing' school.id %}">Nemendur</a></li>
+				{% if is_school_manager %}
+				<li><a href="{% url 'schools:survey_login_listing' school.id %}">Lykilorð</a></li>
+				{% endif %}
+				{% elif user.is_superuser %}
+				<li><a href="{% url 'schools:survey_login_admin_listing' %}">Lykilorð</a></li>
+				{% endif %}
+				<li><a href="mailto:skolagatt@mms.is"><span class="glyphicon glyphicon-envelope"></span>&nbsp;Hafðu samband</a></li>
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+				{% if user.is_authenticated %}
+				<li>
+					<a href="{% url 'auth_logout' %}" class="btn btn-xs btn-danger">
+						<span class="glyphicon glyphicon-user"></span>&nbsp;{{user.username}}
+						<span class="glyphicon glyphicon-log-out"></span>
+					</a>
+				</li>
+				{% else %}
+				<li>
+					<a href="{% url 'auth_login' %}" class="btn btn-xs btn-success">
+						<span class="glyphicon glyphicon-user"></span>&nbsp;Innskráning
+						<span class="glyphicon glyphicon-log-in"></span>
+					</a>
+				</li>
+				{% endif %}
+			</ul>
+		</div>
+	</div>
+</nav>
