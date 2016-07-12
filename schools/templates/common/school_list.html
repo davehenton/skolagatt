@@ -1,9 +1,10 @@
 {% extends 'common/index.html'%}
-
+{% load staticfiles %}
 {% block content %}
-<h1>Skólar</h1>
-<div>
-	{% if request.user.is_authenticated %}
+<div class="row">
+	<div class="col-md-6">
+		{% if request.user.is_authenticated %}
+		<h1>Skólar</h1>
 		{% if request.user.is_superuser %}
 		<div class="row">
 			<div class="btn-group" role="group">
@@ -27,18 +28,18 @@
 		{% endif %}
 		<div id="school_list" class="table table-hover">
 			<div class="row">
-				<div class="col-md-1"><h4>Kennitala</h4></div>
-				<div class="col-md-3"><h4>Nafn</h4></div>
+				<div class="col-md-2"><h4>Kennitala</h4></div>
+				<div class="col-md-6"><h4>Nafn</h4></div>
 				{% if request.user.is_superuser %}
-				<div class="col-md-1"><h4>Aðgerðir</h4></div>
+				<div class="col-md-2"><h4>Aðgerðir</h4></div>
 				{% endif %}
 			</div>
 			{% for school in school_list %}
 			<div class="row">
-				<div class="col-md-1"><a href="{% url 'schools:school_detail' school.id %}">{{school.ssn}}</a></div>
-				<div class="col-md-3"><a href="{% url 'schools:school_detail' school.id %}">{{school.name}}</a></div>
+				<div class="col-md-2"><a href="{% url 'schools:school_detail' school.id %}">{{school.ssn}}</a></div>
+				<div class="col-md-6"><a href="{% url 'schools:school_detail' school.id %}">{{school.name}}</a></div>
 				{% if request.user.is_superuser %}
-				<div class="col-md-1">
+				<div class="col-md-2">
 					<a href="{% url 'schools:school_update' school.id %}" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
 					<a href="{% url 'schools:school_delete' school.id %}" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-trash"></span></a>
 				</div>
@@ -46,6 +47,20 @@
 			</div>
 			{% endfor %}
 		</div>
-	{% endif %}
+		{% else %}
+			<p>Vinsamlegast skráðu þig inn.</p>
+		{% endif %}
+	</div>
+	<div class="col-md-6">
+		<div class="row">
+			<div class="col-md-12">
+				<h4>Um skólagátt</h4>
+				<p>Skólagáttin er samskiptatæki <a href="https://mms.is">Menntamálastofnunnar</a> við alla grunnskóla landsins. Innskráning í skólagáttina er í með <a href="https://www.island.is/islykill/">Íslykli</a> hvers og eins.</p>
+				<p>Skólagáttin heldur utan um þá nemendur sem eru í hverjum skóla og í hvaða hópum eða bekkjum þeir eru. Það er hægt að skrá stuðningsúrræði fyrir nemendur, ná í lykilorð fyrir rafræn próf, skrá niðurstöður á könnunarprófum og ýmislegt fleira sem bætist smá saman við kerfið.</p>
+				<p>Ef þú ert búin(n) að skrá þig inn en sérð enga skóla hérna vinstra megin þá er það af því að þú ert ekki skólastjórnandi eða kennari í neinum skóla. Ef þú ert kennari, hafðu þá samband við skólastjórn sem bætir þér við í skólann þinn. Ef þú ert skólastjórandi, sendu þá póst á <a  href="mailto:skolagatt@mms.is">tölvupóstfangið okkar</a></p>
+				<p>Til þess að halda áfram þá getur þú smellt á skólann þinn hérna vinstra megin eða, hvaðan sem er, valið úr listanum ("Velja skóla") hér fyrir ofan. Ef þú hefur einhverjar spurningar, endilega smelltu á "<a href="mailto:skolagatt@mms.is">Hafðu samband</a>" takkan hér að ofan.</p>
+			</div>
+		</div>
+	</div>
 </div>
 {% endblock %}
