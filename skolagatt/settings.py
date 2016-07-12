@@ -127,5 +127,6 @@ STATICFILES_DIRS = (
 )
 
 PROFAGRUNNUR_URL = 'http://localhost:8080/api?format=json'
+PROFAGRUNNUR_JSON_KEY = 'some-random-string'
 ICEKEY_VERIFICATION = 'http://localhost:8088/verify_login'
 ICEKEY_LOGIN = 'http://localhost:8088/island_innskraning'

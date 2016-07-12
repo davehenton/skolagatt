@@ -5,9 +5,7 @@
 {% block content %}
 <form action="" method="post" id="survey_result_form">
 	<div id="selected_words" class="row alert alert-info">
-		<p>Smelltu á orð í textanum fyrir neðan sem voru rangt lesin.</p>
-		<p>Smelltu á síðasta orðið sem nemandi las.</p>
-		<p>Ef rangt orð er valið, smelltu aftur á orðið til þess að fjarlægja valið</p>
+		<p>{{info|safe}}</p>
 	</div>
 	<div class='md' id="grading_template">{{grading_template|safe}}</div>
 	<div id="selected_words" class="row"></div>
