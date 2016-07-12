@@ -24,6 +24,11 @@ ul {
     margin:0px;
 }
 
+.form_elements li label {
+    display: inline-block;
+    width: 200px;
+}
+
 .md-display li {
     list-style-type:disc;
 }
