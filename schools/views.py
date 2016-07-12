@@ -691,7 +691,8 @@ class SurveyDetail(UserPassesTestMixin, DetailView):
     """Get survey details"""
     try:
         uri_list = settings.PROFAGRUNNUR_URL.split('?')
-        r = requests.get(''.join([uri_list[0], '/', self.object.survey, '?', uri_list[1]]))
+        r = requests.get(''.join([uri_list[0], '/', self.object.survey, '?', uri_list[1], '&json_api_key=',settings.PROFAGRUNNUR_JSON_KEY]))
+        print(r.json())
         return r.json()
     except Exception as e:
       return []
@@ -720,9 +721,10 @@ class SurveyCreate(UserPassesTestMixin, CreateView):
   def get_survey(self):
     """Get all surveys from profagrunnur to provide a list to survey create"""
     try:
-        r = requests.get(settings.PROFAGRUNNUR_URL)
+        r = requests.get(settings.PROFAGRUNNUR_URL+'&json_api_key='+settings.PROFAGRUNNUR_JSON_KEY)
+        print(r.json())
         return r.json()
-    except:
+    except Exception as e:
       return []
 
   def post(self, *args, **kwargs):
@@ -764,9 +766,10 @@ class SurveyUpdate(UserPassesTestMixin, UpdateView):
 
   def get_survey(self):
     try:
-        r = requests.get(settings.PROFAGRUNNUR_URL)
+        r = requests.get(settings.PROFAGRUNNUR_URL+'&json_api_key='+settings.PROFAGRUNNUR_JSON_KEY)
+        print(r.json())
         return r.json()
-    except:
+    except Exception as e:
       return []
 
   def get_form(self):
@@ -817,7 +820,8 @@ def get_survey_data(kwargs):
   try:
     survey = Survey.objects.get(pk=kwargs['survey_id']).survey
     uri_list = settings.PROFAGRUNNUR_URL.split('?')
-    r = requests.get(''.join([uri_list[0], '/', survey, '?', uri_list[1]]))
+    r = requests.get(''.join([uri_list[0], '/', survey, '?', uri_list[1], '&json_api_key=',settings.PROFAGRUNNUR_JSON_KEY]))
+    print(r.json())
     return r.json()
   except Exception as e:
     return []
@@ -838,8 +842,10 @@ class SurveyResultCreate(UserPassesTestMixin, CreateView):
       if len(data) == 0:
         #survey is expired
         context['grading_template'] = ""
+        context['info'] = ""
       else:
         context['grading_template'] = data[0]['grading_template'][0]['md']
+        context['info'] = data[0]['grading_template'][0]['info']
     except Exception as e:
       print(e)
       raise Exception("Ekki næst samband við prófagrunn")

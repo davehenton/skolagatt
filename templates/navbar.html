@@ -33,17 +33,17 @@
 				{% endif %}
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
-				<li><a href="mailto:skolagatt@mms.is"><span class="glyphicon glyphicon-envelope"></span>&nbsp;Hafðu samband</a></li>
+				<li><a href="mailto:skolagatt@mms.is" class="btn btn-info"><span class="glyphicon glyphicon-envelope"></span>&nbsp;Hafðu samband</a></li>
 				{% if user.is_authenticated %}
 				<li>
-					<a href="{% url 'auth_logout' %}" class="btn btn-xs btn-danger">
+					<a href="{% url 'auth_logout' %}" class="btn btn-sm btn-danger">
 						<span class="glyphicon glyphicon-user"></span>&nbsp;{{user.username}}
 						<span class="glyphicon glyphicon-log-out"></span>
 					</a>
 				</li>
 				{% else %}
 				<li>
-					<a href="{% url 'auth_login' %}" class="btn btn-xs btn-success">
+					<a href="{% url 'auth_login' %}" class="btn btn-sm btn-success">
 						<span class="glyphicon glyphicon-user"></span>&nbsp;Innskráning
 						<span class="glyphicon glyphicon-log-in"></span>
 					</a>
