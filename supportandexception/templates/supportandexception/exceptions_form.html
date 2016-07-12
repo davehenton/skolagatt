@@ -7,18 +7,18 @@
 <script>
 	var exam = [];
 	var reason = [];
-	
+
 	var pagetype = "exceptions";
-	
+
 	exam={% if exceptions.exam == "" %}"no"{% else %}{{ exceptions.exam }}{% endif %};
 	reason.push({{exceptions.reason}});
 </script>
 <form action="" method="post" id="exception">{% csrf_token %}
 	<div class="row">
 		<div class="col-md-4">
-		
+
 		<b>Nafn:</b> {{student.name}} <b>Kennitala:</b> {{student.ssn}}
-		
+
 		</div>
 	</div>
 <div class="row">
@@ -34,7 +34,7 @@
 				<b>Undanþágur</b>
 			</div>
 		</div>
-		Athugið að Námsmatsstofnun veitir ekki undanþágur. En ber að skrá ástæðu þess að nemandi er fjarverandi á prófdegi. Hægt er að skrá og afskrá hér samkvæmt mati foreldra og kennara hverju sinni. Skólinn varðveitir umsóknarbeiðnina.
+		Athugið að Menntamálastofnun veitir ekki undanþágur. En ber að skrá ástæðu þess að nemandi er fjarverandi á prófdegi. Hægt er að skrá og afskrá hér samkvæmt mati foreldra og kennara hverju sinni. Skólinn varðveitir umsóknarbeiðnina.
 	</div>
 </div>
 <table>
@@ -83,7 +83,7 @@
 {% endif %}
 <div>
 <button class="btn btn-primary" type="submit" value="exceptionsave" name="submit">Vista beiðni um undanþágu</button>
-      
+
 <button class="btn btn-primary" type="submit" value="exceptiondelete" name="submit">Eyða beiðni um undanþágu</button>
 </div>
 </form>
