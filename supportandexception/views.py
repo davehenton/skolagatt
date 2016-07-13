@@ -22,7 +22,7 @@ from rest_framework import viewsets
 def Csv(request):
 	title = "Nemendaskráning"
 	StudentForm = StudentsForm()
-	if request.method == 'POST':	
+	if request.method == 'POST':
 		form = UploadFileForm(request.POST, request.FILES)
 		if form.is_valid():
 			file = request.FILES['file']
@@ -30,16 +30,16 @@ def Csv(request):
 				kt, nafn = line.decode('utf-8').split(';')
 				Student(socialsecurity=str(kt), name=str(nafn)).save()
 			#CodeCSvModel.import_data(data=open(file))
-        
+
 	else:
 		form = UploadFileForm()
-	
+
 	context = {
 		"title" : title,
 		"StudentForm": StudentForm,
 		"uploadform": form,
 	}
-	
+
 	return render(request,"csv-import.html",context)
 
 class ExamSupport(ListView):
@@ -78,7 +78,7 @@ class SupportreResourceCreate(CreateView):
 		context['supportresource'] = SupportResource.objects.filter(student = student_info).get or "''"
 		context['studentgroup'] = StudentGroup.objects.filter(students = student_info).get
 		context['school'] = School.objects.get(pk=self.kwargs['school_id'])
-		
+
 		return context
 
 	def post(self, request, *args, **kwargs):
@@ -87,23 +87,18 @@ class SupportreResourceCreate(CreateView):
 			expl = request.POST['explanation']
 			ra = request.POST.getlist('reading_assistance')
 			inte = request.POST.getlist('interpretation')
-			rts = request.POST.getlist('return_to_sites')
 			lt = request.POST.getlist('longer_time')
-			
+
 			reading_assistance= []
 			interpretation = []
-			return_to_sites = []
 			longer_time = []
-			
+
 			if(ra != []):
 				for i in range(len(ra)):
 					reading_assistance.append(int(ra[i]))
 			if(inte!=[]):
 				for i in range(len(inte)):
 					interpretation.append(int(inte[i]))
-			if(rts!=[]):
-				for i in range(len(rts)):
-					return_to_sites.append(int(rts[i]))
 			if(lt != []):
 				for i in range(len(lt)):
 					longer_time.append(int(lt[i]))
@@ -114,25 +109,25 @@ class SupportreResourceCreate(CreateView):
 				ses = StudentExceptionSupport(notes = notes)
 				ses.student = s
 				ses.save()
-			
+
 			if(SupportResource.objects.filter(student = s).exists()):
-				SupportResource.objects.filter(student = s).update(explanation = expl, signature=request.user.username, reading_assistance = reading_assistance, interpretation = interpretation, return_to_sites = return_to_sites, longer_time = longer_time)
+				SupportResource.objects.filter(student = s).update(explanation = expl, signature=request.user.username, reading_assistance = reading_assistance, interpretation = interpretation, longer_time = longer_time)
 			else:
-				sr = SupportResource(explanation = expl, signature=self.request.user, reading_assistance = reading_assistance, interpretation = interpretation, return_to_sites = return_to_sites, longer_time = longer_time)
+				sr = SupportResource(explanation = expl, signature=self.request.user, reading_assistance = reading_assistance, interpretation = interpretation, longer_time = longer_time)
 				sr.student = s
-				sr.save()	
+				sr.save()
 			return HttpResponseRedirect(reverse('schools:student_detail', args=(int(self.kwargs.get('school_id')),int(self.kwargs.get('pk')),)))
 		if(request.POST.get('submit')== 'supportdelete'):
 			s = Student.objects.get(pk = self.kwargs.get('pk'))
 			SupportResource.objects.filter(student = s).delete()
 			return HttpResponseRedirect(reverse('schools:student_detail', args=(int(self.kwargs.get('school_id')),int(self.kwargs.get('pk')),)))
 
-		
+
 
 class ExceptionCreate(CreateView):
 	model = Exceptions
 	form_class = ExceptionsForm
-	
+
 	def post(self, request, *args, **kwargs):
 		if(request.POST.get('submit')== 'exceptionsave'):
 			expl = request.POST.get('explanation')
