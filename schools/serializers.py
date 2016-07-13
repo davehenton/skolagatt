@@ -15,7 +15,6 @@ class SurveyResultSerializer(serializers.ModelSerializer):
 
     def __init__(self, *args, **kwargs):
         super(SurveyResultSerializer, self).__init__(*args, **kwargs)
-        print(*args)
 
     def to_representation(self, instance):
         data = super(SurveyResultSerializer, self).to_representation(instance)

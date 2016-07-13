@@ -138,9 +138,7 @@ class ExceptionCreate(CreateView):
 			if(exam != []):
 				for i in range(len(exam)):
 					exam_list.append(int(exam[i]))
-			print(exam_list)
 			s = Student.objects.get(pk = self.kwargs.get('pk'))
-			print(StudentExceptionSupport.objects.filter(student = s).exists())
 			if(StudentExceptionSupport.objects.filter(student = s).exists()):
 				StudentExceptionSupport.objects.filter(student = s).update(notes = notes)
 			else:
