@@ -27,10 +27,6 @@ $(document).ready(function() {
             {
                 $("#id_interpretation_"+(i-1)).prop('checked',true);
             }
-            if ($.inArray( i, return_to_sites )!=-1)
-            {
-                $("#id_return_to_sites_"+(i-1)).prop('checked',true);
-            }
             if ($.inArray( i, longer_time )!=-1)
             {
                 $("#id_longer_time_"+(i-1)).prop('checked',true);

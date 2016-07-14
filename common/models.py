@@ -118,7 +118,7 @@ class StudentGroupForm(forms.ModelForm):
 		labels = {
 			'name': 'Nafn',
 			'student_year': 'Ár',
-			'group_managers': 'Hópastjórnendur',
+			'group_managers': 'Kennarar',
 			'school': 'Skóli',
 			'students': 'Nemendur',
 		}

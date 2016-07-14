@@ -60,7 +60,6 @@ def is_group_manager(request, kwargs):
   if not request.user.is_authenticated:
     return False
   try:
-    print(kwargs)
     try:
       if StudentGroup.objects.filter(pk=kwargs['student_group']).filter(group_managers=Teacher.objects.filter(user=request.user)):# user=context.request.user)):
         return True
