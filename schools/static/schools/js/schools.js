@@ -7,6 +7,7 @@ $(function() {
 });
 
 $(document).ready(function() {
+	
 
 	$("#notes").on('click',function(){
 		if($('#textareaid').is(":visible"))
