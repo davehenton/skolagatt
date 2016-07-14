@@ -6,9 +6,19 @@
 	var survey_list = {{ survey_list|safe }};
 </script>
 
-<form action="" method="post">
-	{% csrf_token %}
-	{{ form.as_p }}
-	<input type="submit" value="Save" />
-</form>
+<div class="row">
+	<div class="col-md-6">
+		<form action="" method="post">
+			{% csrf_token %}
+			{{ form.as_p }}
+			<p>
+				<input type="submit" class="btn btn-success" value="Vista" />
+			</p>
+		</form>
+	</div>
+	<div class="col-md-6 alert-info">
+		<p>Veljið könnun úr prófagrunni Menntamálastofnunnar. Ef engin könnun er virk þá er listinn tómur.</p>
+		<p>Vinsamlegast sendið spurningar á <a href="mailto:skolagatt@mms.is">vefpóst skólagáttarinnar</a></p>
+	</div>
+</div>
 {% endblock %}

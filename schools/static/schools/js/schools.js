@@ -52,6 +52,15 @@ $(document).ready(function() {
 		$("#group_students option").removeAttr('selected');
 	});
 
+	$('#teacher_move_left').click(function() {
+		$('#all_teachers').append($('#group_managers .selected').removeClass('selected'));
+	});
+
+	$('#teacher_move_right').click(function() {
+		$('#group_managers').append($('#all_teachers .selected').removeClass('selected'));
+		$("#group_managers option").removeAttr('selected');
+	});
+
 	$('#studentgroup').submit(function(){
 		if($("#id_name").val()=="")
 		{
@@ -64,6 +73,7 @@ $(document).ready(function() {
 			return false;
 		}
 		$("#group_students option").prop('selected',true);
+		$("#group_managers option").prop('selected',true);
 
 	});
 });

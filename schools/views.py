@@ -32,7 +32,7 @@ class SchoolListing(ListView):
         teacher_schools = School.objects.filter(teachers=Teacher.objects.filter(user=self.request.user))
         context['school_list'] = list(set(slug_sort(manager_schools | teacher_schools, 'name')))
     except Exception as e:
-      print(e)
+      pass
     return context
 
 class SchoolDetail(UserPassesTestMixin, DetailView):
@@ -388,6 +388,7 @@ class StudentListing(UserPassesTestMixin, ListView):
     school = School.objects.get(pk=self.kwargs['school_id'])
     context['school'] = school
     context['students'] = slug_sort(Student.objects.filter(school=school), 'name')
+    context['students_outside_groups'] = slug_sort(Student.objects.exclude(studentgroup__in=StudentGroup.objects.filter(school=school), school=school), 'name')
     return context
 
   def test_func(self):
@@ -604,7 +605,6 @@ class StudentGroupCreate(UserPassesTestMixin, CreateView):
     #make data mutable
     form.data = self.request.POST.copy()
     form.data['school'] = School.objects.get(pk=self.kwargs['school_id']).pk
-    print(form.data)
     if form.is_valid():
       return self.form_valid(form)
     else:
@@ -634,10 +634,9 @@ class StudentGroupUpdate(UserPassesTestMixin, UpdateView):
     #context['contact_list'] = Contact.objects.filter(school=self.get_object())
     school = School.objects.get(pk=self.kwargs['school_id'])
     context['school'] = School.objects.get(pk=self.kwargs['school_id'])
-    context['all_students'] = Student.objects.filter(school=self.kwargs['school_id'])
+    context['students'] = Student.objects.filter(school=self.kwargs['school_id'])
     context['teachers'] = Teacher.objects.filter(school=self.kwargs['school_id'])
     context['group_managers'] = Teacher.objects.filter(studentgroup=self.kwargs['pk'])
-    context['students'] = Student.objects.filter(studentgroup=self.kwargs['pk'])
     return context
 
   def post(self, request, *args, **kwargs):
@@ -646,7 +645,6 @@ class StudentGroupUpdate(UserPassesTestMixin, UpdateView):
     #make data mutable
     form.data = self.request.POST.copy()
     form.data['school'] = School.objects.get(pk=self.kwargs['school_id']).pk
-    print(form.data)
     form = StudentGroupForm(form.data or None, instance = StudentGroup.objects.get(id=self.kwargs['pk']))
     if form.is_valid():
       form.save()
@@ -705,7 +703,6 @@ class SurveyDetail(UserPassesTestMixin, DetailView):
     try:
         uri_list = settings.PROFAGRUNNUR_URL.split('?')
         r = requests.get(''.join([uri_list[0], '/', self.object.survey, '?', uri_list[1], '&json_api_key=',settings.PROFAGRUNNUR_JSON_KEY]))
-        print(r.json())
         return r.json()
     except Exception as e:
       return []
@@ -735,7 +732,6 @@ class SurveyCreate(UserPassesTestMixin, CreateView):
     """Get all surveys from profagrunnur to provide a list to survey create"""
     try:
         r = requests.get(settings.PROFAGRUNNUR_URL+'&json_api_key='+settings.PROFAGRUNNUR_JSON_KEY)
-        print(r.json())
         return r.json()
     except Exception as e:
       return []
@@ -780,7 +776,6 @@ class SurveyUpdate(UserPassesTestMixin, UpdateView):
   def get_survey(self):
     try:
         r = requests.get(settings.PROFAGRUNNUR_URL+'&json_api_key='+settings.PROFAGRUNNUR_JSON_KEY)
-        print(r.json())
         return r.json()
     except Exception as e:
       return []
@@ -834,7 +829,6 @@ def get_survey_data(kwargs):
     survey = Survey.objects.get(pk=kwargs['survey_id']).survey
     uri_list = settings.PROFAGRUNNUR_URL.split('?')
     r = requests.get(''.join([uri_list[0], '/', survey, '?', uri_list[1], '&json_api_key=',settings.PROFAGRUNNUR_JSON_KEY]))
-    print(r.json())
     return r.json()
   except Exception as e:
     return []
@@ -860,7 +854,6 @@ class SurveyResultCreate(UserPassesTestMixin, CreateView):
         context['grading_template'] = data[0]['grading_template'][0]['md']
         context['info'] = data[0]['grading_template'][0]['info']
     except Exception as e:
-      print(e)
       raise Exception("Ekki næst samband við prófagrunn")
     return context
 
@@ -913,7 +906,6 @@ class SurveyResultUpdate(UserPassesTestMixin, UpdateView):
     survey_results.created_at = timezone.now()
     data_results = {}
     #extract data
-    print(json.dumps(form.data))
     survey_results.results = json.dumps(self.request.POST.getlist('data_results[]'))
     return super(SurveyResultUpdate, self).form_valid(form)
 
@@ -1050,7 +1042,6 @@ class SurveyLoginCreate(UserPassesTestMixin, CreateView):
                 })
         return render(self.request, 'common/password_verify_import.html', {'data': data})
       except Exception as e:
-        print(e)
         return render(self.request, 'common/password_form_import.html', {'error': 'Dálkur ekki til, reyndu aftur'})
 
     else:
