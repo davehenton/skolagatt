@@ -1,25 +1,35 @@
 {% extends 'common/index.html'%}
 {% include staticfiles%}
 {% block content %}
-<form action="" method="post" enctype="multipart/form-data">
-	{% csrf_token %}
-	<p>
-		<label for="file">Filename:</label>
-		<input type="file" name="file" id="file" class="btn btn-default"/>
-	</p>
-	<p>
-		<label for="school_ssn">Númer dálks fyrir kennitölu</label>
-		<input type="number" min="0" value="0" name="school_ssn" id="school_ssn" />
-	</p>
-	<p>
-		<label for="school_name">Númer dálks fyrir nafn</label>
-		<input type="number" min="0" value="0" name="school_name" id="school_name" />
-	</p>
-	<div>
-	<label for="title"><input type="checkbox" id="title" name="title" value="yes"> Er fyrsta línan með titli</label><br>
+<div class="row">
+	<div class="col-md-6">
+		<form action="" method="post" enctype="multipart/form-data">
+			{% csrf_token %}
+			<ul class="form_elements">
+				<li>
+					<label for="file">Filename:</label>
+					<input type="file" name="file" id="file" class="btn btn-default"/>
+				</li>
+				<li>
+					<label for="school_ssn">Númer dálks fyrir kennitölu</label>
+					<input type="number" min="0" value="0" name="school_ssn" id="school_ssn" />
+				</li>
+				<li>
+					<label for="school_name">Númer dálks fyrir nafn</label>
+					<input type="number" min="0" value="0" name="school_name" id="school_name" />
+				</li>
+				<li>
+					<label for="title">Er fyrsta línan með titli</label>
+					<input type="checkbox" id="title" name="title" value="yes">
+				</li>
+				<li>
+					<input type="submit" value="Vista" class="btn btn-default"/>
+				</li>
+			</ul>
+		</form>
+	<div class="col-md-6 alert-info">
+		<p>Veljið skrá, excel eða csv, sem inniheldur dálka fyrir kennitölur og nöfn nemenda. Skráin verður að vera vistuð sem UTF-8</p>
+		<p>Veljið dálkanúmer kennitölu og nafns þar sem fremsti dálkurinn er <strong>númer 0</strong>, næsti númer 1 o.s.frv.</p>
 	</div>
-	<p>
-		<input type="submit" value="Vista" class="btn btn-default"/>
-	</p>
-</form>
+</div>
 {% endblock %}
