@@ -621,10 +621,9 @@ class StudentGroupUpdate(UserPassesTestMixin, UpdateView):
     #context['contact_list'] = Contact.objects.filter(school=self.get_object())
     school = School.objects.get(pk=self.kwargs['school_id'])
     context['school'] = School.objects.get(pk=self.kwargs['school_id'])
-    context['all_students'] = Student.objects.filter(school=self.kwargs['school_id'])
+    context['students'] = Student.objects.filter(school=self.kwargs['school_id'])
     context['teachers'] = Teacher.objects.filter(school=self.kwargs['school_id'])
     context['group_managers'] = Teacher.objects.filter(studentgroup=self.kwargs['pk'])
-    context['students'] = Student.objects.filter(studentgroup=self.kwargs['pk'])
     return context
 
   def post(self, request, *args, **kwargs):
