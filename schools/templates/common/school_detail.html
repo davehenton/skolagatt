@@ -31,4 +31,17 @@
 		</div>
 	</div>
 </div>
+<div class="row">
+	
+		<div class="col-md-3">
+			<div id="messages">
+			kalli
+				{% for message in messages %}
+				{{ message.title }}
+				{% endfor %}
+			</div>
+		</div>
+		
+	
+</div>
 {% endblock %}
