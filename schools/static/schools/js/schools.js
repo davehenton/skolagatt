@@ -7,6 +7,9 @@ $(function() {
 });
 
 $(document).ready(function() {
+	$(document.body).on('click', '#message-header', function(){ 
+		var details = $(this).nextUntil('#message-header').toggle();
+    });
 	
 
 	$("#notes").on('click',function(){
