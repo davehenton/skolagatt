@@ -385,7 +385,7 @@ class StudentListing(UserPassesTestMixin, ListView):
     school = School.objects.get(pk=self.kwargs['school_id'])
     context['school'] = school
     context['students'] = slug_sort(Student.objects.filter(school=school), 'name')
-    context['students_outside_groups'] = slug_sort(Student.objects.exclude(studentgroup__in=StudentGroup.objects.filter(school=school), school=school), 'name')
+    context['students_outside_groups'] = slug_sort(Student.objects.filter(school=school).exclude(studentgroup__in=StudentGroup.objects.filter(school=school)), 'name')
     return context
 
   def test_func(self):
