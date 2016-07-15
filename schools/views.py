@@ -42,7 +42,6 @@ class SchoolDetail(UserPassesTestMixin, DetailView):
     """Get all messages from innrivefur"""
     try:
         r = requests.get(settings.INNRI_SKILABOD_URL+'&json_api_key='+settings.INNRI_SKILABOD_JSON_KEY)
-        print(r.json())
         return r.json()
     except Exception as e:
       return []
@@ -57,7 +56,12 @@ class SchoolDetail(UserPassesTestMixin, DetailView):
     context['teachers'] = slug_sort(self.object.teachers.all(),'name')
     context['surveys'] = slug_sort(Survey.objects.filter(studentgroup__in=self.object.studentgroup_set.all()), 'title')
     context['students'] = self.object.students.all()
-    context['messages'] = self.get_messages()
+    #if self.request.user.id == Manager.objects.get(pk=self.kwargs['pk']).user.id:
+    if is_school_teacher(self.request, self.kwargs):
+      context['messages'] = [message for message in self.get_messages() if message['teachers_allow'] == True]
+    else:
+      context['messages'] = self.get_messages()
+      
     return context
 
 class SchoolCreate(UserPassesTestMixin, CreateView):
