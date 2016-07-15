@@ -41,13 +41,10 @@ class SchoolDetail(UserPassesTestMixin, DetailView):
   def get_messages(self):
     """Get all messages from innrivefur"""
     try:
-        print('donna')
         r = requests.get(settings.INNRI_SKILABOD_URL+'&json_api_key='+settings.INNRI_SKILABOD_JSON_KEY)
-        print('er búin')
         print(r.json())
         return r.json()
     except Exception as e:
-      print(e.args)
       return []
 
   def test_func(self):
