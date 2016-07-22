@@ -1,3 +1,5 @@
+
+
 <h3>Skilaboð</h3>
 <div>
 	<div id="survey_list" class="table table-hover">
@@ -10,20 +12,25 @@
 
 			<!-- Modal -->
 			<div class="modal fade" id="myModal-{{message.pk}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-			  <div class="modal-dialog" role="document">
-			    <div class="modal-content">
-			      <div class="modal-header">
-			        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-			        <h4 class="modal-title" id="myModalLabel">{{ message.title }}</h4>
-			      </div>
-			      <div class="modal-body row">
-					<div class="col-md-12 md">{{message.description}}</div>
-			      </div>
-			      <div class="modal-footer">
-			        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>  
-			      </div>
-			    </div>
-			  </div>
+				<div class="modal-dialog" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+							<h4 class="modal-title" id="myModalLabel">{{ message.title }}</h4>
+						</div>
+						<div class="modal-body row">
+							<div class="col-md-12 md">{{message.description}}</div>
+						</div>
+						{% if message.file %}
+						<div style="border-top: 1px">
+							<a href="{{ message.file }}">{{message.file}}</a>
+						</div>
+						{% endif %}
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>  
+						</div>
+					</div>
+				</div>
 			</div>
 		{% endfor %}
 	</div>

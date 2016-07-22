@@ -131,5 +131,8 @@ PROFAGRUNNUR_JSON_KEY = 'some-random-string'
 INNRI_SKILABOD_URL = 'http://localhost:8081/skilabod/api?format=json'
 INNRI_SKILABOD_JSON_KEY = 'some-random-string'
 
+# Key for Json pull from this site
+JSON_API_KEY = 'some-random-string'
+
 ICEKEY_VERIFICATION = 'http://localhost:8088/verify_login'
 ICEKEY_LOGIN = 'http://localhost:8088/island_innskraning'
