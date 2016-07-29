@@ -214,6 +214,68 @@ class ManagerCreate(UserPassesTestMixin, CreateView):
       'school': school,
     }
 
+class ManagerCreateImport(UserPassesTestMixin, CreateView):
+  model = School
+  form_class = SchoolForm
+  login_url = reverse_lazy('denied')
+  template_name = "common/manager_form_import.html"
+
+  def get_context_data(self, **kwargs):
+    # xxx will be available in the template as the related objects
+    context = super(ManagerCreateImport, self).get_context_data(**kwargs)
+    return context
+
+  def post(self, *args, **kwargs):
+    if(self.request.FILES):
+      u_file = self.request.FILES['file'].name
+      extension = u_file.split(".")[-1]
+      ssn = self.request.POST.get('ssn')
+      name = self.request.POST.get('name')
+      school_ssn = self.request.POST.get('school_ssn')
+      title = self.request.POST.get('title')
+      if title == 'yes':
+        first = 1
+      else:
+        first = 0
+      data = []
+      if extension == 'csv':
+        for row in self.request.FILES['file'].readlines()[first:]:
+          row = row.decode('utf-8')
+          school_ssn = row.split(',')[int(school_ssn)]
+          school_name = row.split(',')[school_name]
+          name = row.split(',')[name]
+          data.append({'name': name.strip(), 
+            'ssn': ssn.strip(), 
+            'school_ssn': school_ssn.strip()})
+      elif extension == 'xlsx':
+        input_excel = self.request.FILES['file']
+        book = xlrd.open_workbook(file_contents=input_excel.read())
+        for sheetsnumber in range(book.nsheets):
+          sheet = book.sheet_by_index(sheetsnumber)
+          for row in range(first, sheet.nrows):
+            data.append({'name': sheet.cell_value(row,int(name)), 
+              'ssn': str(int(sheet.cell_value(row,int(ssn)))),
+              'school_ssn': str(int(sheet.cell_value(row,int(school_ssn))))})
+
+      return render(self.request, 'common/manager_verify_import.html', {'data': data})
+    else:
+      manager_data = json.loads(self.request.POST['managers'])
+      #iterate through managers, add them if they don't exist then add to school
+      for manager in manager_data:
+        try:
+          m = School.objects.get(ssn=manager['school_ssn']).manager_set.add(**manager)
+        except:
+          pass #manager already exists
+
+    return HttpResponseRedirect(self.get_success_url())
+
+  def test_func(self):
+    return is_school_manager(self.request, self.kwargs)
+
+  def get_success_url(self):
+      return reverse_lazy('schools:school_listing')
+
+
 class ManagerUpdate(UserPassesTestMixin, UpdateView):
   model = Manager
   form_class = ManagerForm
