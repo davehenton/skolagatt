@@ -58,17 +58,30 @@
 				<div class="col-md-4">Lýkur</div>
 			</div>
 			{% for group in school.studentgroup_set.all %}
-				<h6><a href="{% url 'schools:group_detail' school.id group.id %}">{{ group }}</a></h6>
-				{% for survey in group.survey_set.all %}
-					<div class="row">
-						<div class="col-md-8">
-						<a href="{% url 'schools:survey_detail' school.id survey.id %}">{{ survey.title }}</a>
-						</div>
-						<div class="col-md-4">
-						{{ survey.active_to|date:"d-m-y"|lower }}
-						</div>
+				<div class="row">
+					<div class="col-md-8">
+						<h6><a href="{% url 'schools:group_detail' school.id group.id %}">{{ group }}</a></h6>
 					</div>
-				{% endfor %}
+					<div class="col-md-4">
+						<a class="btn btn-default btn-xs" type="button" data-toggle="collapse" data-target="#results-{{group.id}}" aria-expanded="false" aria-controls="collapseExample">
+						<span class="caret"></span>&nbsp;{{ group.survey_set.count}}
+					</a>
+					</div>
+				</div>
+				<div class="collapse row"  id="results-{{group.id}}">
+					<div class="col-md-12">
+					{% for survey in group.survey_set.all %}
+						<div class="row" >
+							<div class="col-md-8">
+								<a href="{% url 'schools:survey_detail' school.id survey.id %}">{{ survey.title }}</a>
+							</div>
+							<div class="col-md-4">
+								{{ survey.active_to|date:"d-m-y"|lower }}
+							</div>
+						</div>
+					{% endfor %}
+					</div>
+				</div>
 			{% endfor %}
 		</div>
 	</div>

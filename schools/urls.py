@@ -37,6 +37,7 @@ urlpatterns = [
     url(r'^skolastjórn/(?P<pk>\d+)/$', ManagerOverview.as_view(), name='manager_overview'),
     url(r'^(?P<school_id>\d+)/skolastjórn/(?P<pk>\d+)/$', ManagerDetail.as_view(), name='manager_detail'),
     url(r'^(?P<school_id>\d+)/skolastjórn/create/$', ManagerCreate.as_view(), name='manager_create'),
+    url(r'^skolastjórn/create/import$', ManagerCreateImport.as_view(), name='manager_create_import'),
     url(r'^(?P<school_id>\d+)/skolastjórn/(?P<pk>\d+)/update/$', ManagerUpdate.as_view(), name='manager_update'),
     url(r'^(?P<school_id>\d+)/skolastjórn/(?P<pk>\d+)/delete/$', ManagerDelete.as_view(), name='manager_delete'),
 
