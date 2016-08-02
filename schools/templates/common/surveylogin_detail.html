@@ -7,13 +7,22 @@
 	<div id="survey_list" class="table table-hover">
 		<div class="row">
 			<div class="col-md-2"><h4>Kennitala</h4></div>
-			<div class="col-md-3"><h4>Nafn</h4></div>
+			<div class="col-md-4"><h4>Nafn</h4></div>
+			<div class="col-md-3"><h4>Stuðningur</h4></div>
 			<div class="col-md-3"><h4>Lykilorð</h4></div>
 		</div>
 		{% for data in survey_login_students %}
 		<div class="row">
 			<div class="col-md-2">{{data.student.ssn}}</div>
-			<div class="col-md-3">{{data.student.name}}</div>
+			<div class="col-md-4">{{data.student.name}}</div>
+			<div class="col-md-3">
+				{% if data.student.exceptions_set.exists %}
+					<a href="{% url 'supportandexception:exception' data.student.school_set.first.id data.student.id %}" title="Undanþágur"><span class="glyphicon glyphicon-flag" style="color:#449D44"></span>&nbsp;</a>
+				{% endif %}
+				{% if data.student.supportresource_set.exists %}
+					<a href="{% url 'supportandexception:supportresource' data.student.school_set.first.id data.student.id %}" title="Stuðningsúrræði"><span class="glyphicon glyphicon-flag" style="color:#EC971F"></span>&nbsp;</a>
+				{% endif %}
+			</div>
 			<div class="col-md-3">{{data.survey_code}}</div>
 		</div>
 		{% endfor %}
