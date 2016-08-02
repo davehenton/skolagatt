@@ -1,7 +1,7 @@
 {% extends 'common/index.html'%}
 
 {% block content %}
-<h1>{{teacher.name}}</h1>
+<h1>{{teacher.name}} ({{teacher.user}})</h1>
 {% if is_school_manager %}
 	<div class="row">
 		<div class="col-md-12">
