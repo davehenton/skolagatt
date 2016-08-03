@@ -132,7 +132,7 @@ INNRI_SKILABOD_URL = 'http://localhost:8081/skilabod/api?format=json'
 INNRI_SKILABOD_JSON_KEY = 'some-random-string'
 
 # Key for Json pull from this site
-JSON_API_KEY = 'some-random-string'
+JSON_API_KEY = '079cbfaa-4a6d-480b-8335-94b72808e434'
 
 ICEKEY_VERIFICATION = 'http://localhost:8088/verify_login'
 ICEKEY_LOGIN = 'http://localhost:8088/island_innskraning'

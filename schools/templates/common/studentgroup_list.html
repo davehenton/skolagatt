@@ -8,12 +8,18 @@
 		<div class="row">
 			<div class="col-md-3"><h4>Nafn</h4></div>
 			<div class="col-md-1"><h4>Árgangur</h4></div>
+			<div class="col-md-2"><h4>Kennarar</h4></div>
 			<div class="col-md-1"><h4>Aðgerðir</h4></div>
 		</div>
 		{% for group in studentgroups %}
 		<div class="row">
 			<div class="col-md-3"><a href="{% url 'schools:group_detail' school.id group.id %}">{{group.name}}</a></div>
 			<div class="col-md-1">{{group.student_year}}</div>
+			<div class="col-md-2">
+			{% for manager in group.group_managers.all %}
+			<a href="{% url 'schools:teacher_detail' school.id manager.id %}">{{ manager.name }}</a>
+			{% endfor %}
+			</div>
 			<div class="col-md-1">
 				<a href="{% url 'schools:group_update' group.school.id group.id%}" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
 				<a href="{% url 'schools:group_delete' group.school.id group.id%}" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-trash"></span></a>

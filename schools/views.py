@@ -335,6 +335,9 @@ class TeacherListing(UserPassesTestMixin, ListView):
     school = School.objects.get(pk=self.kwargs['school_id'])
     context['school'] = school
     context['teachers'] = Teacher.objects.filter(school=school)
+    context['groups'] = StudentGroup.objects.filter(school=school)
+    print(Teacher.objects.filter(id= StudentGroup.objects.filter(school=school)))
+    """context['teachers_in_group'] = Teacher.group_managers.all()"""
     return context
 
   def test_func(self):
