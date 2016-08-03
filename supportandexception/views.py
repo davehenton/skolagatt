@@ -9,6 +9,7 @@ from django.contrib.auth.mixins import UserPassesTestMixin
 from django.contrib.auth import login
 from django.views.generic import * #ListView, CreateView, DetailView, UpdateView, DeleteView
 from django.core.urlresolvers import reverse
+from django.conf import settings
 
 from datetime import *
 
@@ -111,9 +112,9 @@ class SupportreResourceCreate(CreateView):
 				ses.save()
 
 			if(SupportResource.objects.filter(student = s).exists()):
-				SupportResource.objects.filter(student = s).update(explanation = expl, signature=request.user.username, reading_assistance = reading_assistance, interpretation = interpretation, longer_time = longer_time)
+				SupportResource.objects.filter(student = s).update(explanation = expl, supportresourcesignature=request.user.username, reading_assistance = reading_assistance, interpretation = interpretation, longer_time = longer_time)
 			else:
-				sr = SupportResource(explanation = expl, signature=self.request.user, reading_assistance = reading_assistance, interpretation = interpretation, longer_time = longer_time)
+				sr = SupportResource(explanation = expl, supportresourcesignature=self.request.user, reading_assistance = reading_assistance, interpretation = interpretation, longer_time = longer_time)
 				sr.student = s
 				sr.save()
 			return HttpResponseRedirect(reverse('schools:student_detail', args=(int(self.kwargs.get('school_id')),int(self.kwargs.get('pk')),)))
@@ -146,9 +147,9 @@ class ExceptionCreate(CreateView):
 				ses.student = s
 				ses.save()
 			if(Exceptions.objects.filter(student = s).exists()):
-				Exceptions.objects.filter(student = s).update(explanation = expl, exam = exam_list, reason = reason,signature= str(request.user))
+				Exceptions.objects.filter(student = s).update(explanation = expl, exam = exam_list, reason = reason,exceptionssignature= str(request.user))
 			else:
-				exceptions = Exceptions(explanation = expl, exam = exam_list, reason = reason,signature= str(request.user))
+				exceptions = Exceptions(explanation = expl, exam = exam_list, reason = reason,exceptionssignature= str(request.user))
 				exceptions.student = s
 				exceptions.save()
 			return HttpResponseRedirect(reverse('schools:student_detail', args=(int(self.kwargs.get('school_id')),int(self.kwargs.get('pk')),)))
@@ -167,6 +168,10 @@ class ExceptionCreate(CreateView):
 		context['school'] = School.objects.get(pk=self.kwargs['school_id'])
 		return context
 
-class StudentExceptionSupportViewSet(viewsets.ModelViewSet):
-    queryset = StudentExceptionSupport.objects.all()
-    serializer_class = StudentExceptionSerializer
+class StudentWithExceptViewSet(viewsets.ModelViewSet):
+	queryset = Student.objects.all()
+	serializer_class = StudentWithExceptSerializer
+
+	def get_queryset(self):
+		return Student.objects.all()
+		
