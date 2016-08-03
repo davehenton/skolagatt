@@ -1,0 +1,53 @@
+{% extends 'common/index.html'%}
+{% load staticfiles %}
+{% block content %}
+<div class="row">
+	<div class="col-md-6">
+		{% if request.user.is_authenticated %}
+		<h1>Skólar</h1>
+		{% if request.user.is_superuser %}
+		<div class="row">
+			<div class="col-md-12">
+				<a href="{% url 'schools:admin_create' %}" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span>&nbsp;Bæta við umsjónarmanni</a>
+			</div>
+		</div>
+		{% endif %}
+		<div id="school_list" class="table table-hover">
+			<div class="row">
+				<div class="col-md-2"><h4>Kennitala</h4></div>
+				<div class="col-md-6"><h4>Nafn</h4></div>
+				{% if request.user.is_superuser %}
+				<div class="col-md-2"><h4>Aðgerðir</h4></div>
+				{% endif %}
+			</div>
+			{% for user in user_list %}
+			<div class="row">
+				<div class="col-md-2">{{user.username}}</div>
+				{% if user.manager_set.exists %}
+					<div class="col-md-6">{{user.manager_set.first}}</div>
+				{% elif user.teacher_set.exists %}
+					<div class="col-md-6">{{user.teacher_set.first}}</div>
+				{% else %}
+					<div class="col-md-6">Nafn finnst ekki</div>
+				{% endif %}
+				{% if request.user.is_superuser %}
+				<div class="col-md-2">
+					<a href="{% url 'schools:admin_update' user.id %}" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>				
+				</div>
+				{% endif %}
+			</div>
+			{% endfor %}
+		</div>
+		{% else %}
+			<p>Vinsamlegast skráðu þig inn.</p>
+		{% endif %}
+	</div>
+	<div class="col-md-6">
+		<div class="row">
+			<div class="col-md-12 alert-info">
+				
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}
