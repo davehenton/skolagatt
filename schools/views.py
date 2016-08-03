@@ -1144,3 +1144,57 @@ class SurveyLoginDelete(UserPassesTestMixin, DeleteView):
 
   def get_object(self):
     return SurveyLogin.objects.filter(survey_id=self.kwargs['survey_id'])
+
+class AdminListing(UserPassesTestMixin, ListView):
+  model = User
+  login_url = reverse_lazy('denied')
+  template_name = "common/admin_list.html"
+
+  def test_func(self):
+    return self.request.user.is_superuser
+
+  def get_success_url(self):
+    return reverse_lazy('schools:admin_listing')
+
+  def get_context_data(self, **kwargs):
+    # xxx will be available in the template as the related objects
+    context = super(AdminListing, self).get_context_data(**kwargs)
+    context['user_list'] = User.objects.filter(is_superuser=True)
+    return context
+
+class AdminCreate(UserPassesTestMixin, CreateView):
+  model = User
+  form_class = SuperUserForm
+  login_url = reverse_lazy('denied')
+  template_name = "common/admin_form.html"
+
+  def test_func(self):
+    return self.request.user.is_superuser
+
+  def post(self, *args, **kwargs):
+    username = self.request.POST.get('username')
+    is_superuser = self.request.POST.get('is_superuser', False)
+    if User.objects.filter(username=username).exists():
+      if is_superuser:
+        User.objects.filter(username=username).update(is_superuser=True)
+    else:
+      user = User.objects.create_user(
+        username=username,
+        is_superuser=is_superuser
+      )
+    return redirect(self.get_success_url())
+
+  def get_success_url(self):
+    return reverse_lazy('schools:admin_listing')
+
+class AdminUpdate(UserPassesTestMixin, UpdateView):
+  model = User
+  form_class = SuperUserForm
+  login_url = reverse_lazy('denied')
+  template_name = "common/admin_form.html"
+
+  def test_func(self):
+    return self.request.user.is_superuser
+
+  def get_success_url(self):
+    return reverse_lazy('schools:admin_listing')      

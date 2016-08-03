@@ -61,4 +61,9 @@ urlpatterns = [
     url(r'^lykilorð/(?P<survey_id>[\w ]+)$', SurveyLoginDetail.as_view(), name='survey_login_detail'),
     url(r'^könnun/create$', SurveyLoginCreate.as_view(), name='survey_login_create'),
     url(r'^könnun/(?P<survey_id>[\w ]+)/delete/$', SurveyLoginDelete.as_view(), name='surveylogin_delete'),
+
+    url(r'^umsjónarmenn/$', AdminListing.as_view(), name='admin_listing'),
+    url(r'^umsjónarmenn/create$', AdminCreate.as_view(), name='admin_create'),
+    url(r'^umsjónarmenn/(?P<pk>\d+)/update/$', AdminUpdate.as_view(), name='admin_update'),
+
 ]
