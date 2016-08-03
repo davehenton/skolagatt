@@ -199,3 +199,12 @@ class SurveyLoginForm(forms.ModelForm):
 			'survey_id': 'Könnunarnúmer',
 			'survey_code': 'Könnunarkóði',
 		}
+
+class SuperUserForm(forms.ModelForm):
+	class Meta:
+		model = User
+		fields = ['username', 'is_superuser']
+		labels = {
+			'username': 'Kennitala',
+			'is_superuser': 'Umsjónarmaður',
+		}		

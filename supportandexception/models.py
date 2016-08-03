@@ -37,8 +37,9 @@ class SupportResource(models.Model):
 	reading_assistance = models.CharField(max_length = 1,null=True)
 	interpretation = models.CharField(max_length = 1,null=True)
 	longer_time = models.CharField(max_length = 1,null=True)
+	
 	def __str__(self):
-		return self.student
+		return self.explanation
 
 # serializer
 class ExceptionsSerializer(serializers.ModelSerializer):
