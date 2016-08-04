@@ -53,3 +53,7 @@ ul {
     width: 600px;
     white-space: pre-wrap;
 }
+
+.striped div.row:nth-child(even) {
+    background:#cccccc;
+}
