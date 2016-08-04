@@ -13,10 +13,12 @@ import json
 class Manager(models.Model):
 	ssn = models.CharField(max_length = 10, unique=True)
 	name = models.CharField(max_length = 128)
+	email = models.CharField(max_length = 256, blank=True)
+	phone = models.CharField(max_length = 7, blank=True)
 	user = models.ForeignKey(User)
 
 	class Meta:
-		ordering = ["-name"]
+		ordering = ["name"]
 
 	def __str__(self):
 		return self.name
@@ -24,11 +26,13 @@ class Manager(models.Model):
 class ManagerForm(forms.ModelForm):
 	class Meta:
 		model = Manager
-		fields = ['ssn', 'name', 'user']
+		fields = ['ssn', 'name', 'email', 'phone', 'user']
 		widgets = {'user': forms.HiddenInput()}
 		labels = {
 			'ssn': 'Kennitala',
 			'name': 'Nafn',
+			'email': 'Tölvupóstfang',
+			'phone': 'Símanúmer',			
 			'user': 'Notendur',
 		}
 
@@ -38,7 +42,7 @@ class Teacher(models.Model):
 	user = models.ForeignKey(User)
 
 	class Meta:
-		ordering = ["-name"]
+		ordering = ["name"]
 
 	def __str__(self):
 		return self.name
