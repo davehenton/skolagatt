@@ -1197,4 +1197,4 @@ class AdminUpdate(UserPassesTestMixin, UpdateView):
     return self.request.user.is_superuser
 
   def get_success_url(self):
-    return reverse_lazy('schools:admin_listing')      
+    return reverse_lazy('schools:admin_listing') 

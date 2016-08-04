@@ -26,6 +26,14 @@
 				</div>
 			</div>
 		</div>
+		<div class="col-md-4"></div>
+		<div class="col-md-4 alert-info">
+			{% if is_group_manager %}
+				Þú ert umsjónarmaður í þessum hóp og getur skráð niðurstöður kannanna.
+			{% else %}
+				Aðeins umsjónarmaður hóps getur skráð niðurstöður kannanna.
+			{% endif %}
+		</div>
 	</div>
 	<div class="row">
 		<div class="col-md-4 md-display">
