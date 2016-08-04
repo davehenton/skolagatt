@@ -127,12 +127,12 @@ STATICFILES_DIRS = (
 )
 
 PROFAGRUNNUR_URL = 'http://localhost:8080/api?format=json'
-PROFAGRUNNUR_JSON_KEY = '2115b4a3-76cd-4be7-90a3-e33b48df1f3c'
+PROFAGRUNNUR_JSON_KEY = 'some-random-string'
 INNRI_SKILABOD_URL = 'http://localhost:8081/skilabod/api?format=json'
 INNRI_SKILABOD_JSON_KEY = 'some-random-string'
 
 # Key for Json pull from this site
-JSON_API_KEY = '079cbfaa-4a6d-480b-8335-94b72808e434'
+JSON_API_KEY = 'some-random-string'
 
 ICEKEY_VERIFICATION = 'http://localhost:8088/verify_login'
 ICEKEY_LOGIN = 'http://localhost:8088/island_innskraning'
