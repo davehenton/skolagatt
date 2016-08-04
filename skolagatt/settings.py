@@ -127,7 +127,7 @@ STATICFILES_DIRS = (
 )
 
 PROFAGRUNNUR_URL = 'http://localhost:8080/api?format=json'
-PROFAGRUNNUR_JSON_KEY = 'some-random-string'
+PROFAGRUNNUR_JSON_KEY = '2115b4a3-76cd-4be7-90a3-e33b48df1f3c'
 INNRI_SKILABOD_URL = 'http://localhost:8081/skilabod/api?format=json'
 INNRI_SKILABOD_JSON_KEY = 'some-random-string'
 
