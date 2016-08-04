@@ -15,10 +15,9 @@
 			<div class="col-md-3"><a href="{% url 'schools:teacher_detail' school.id teacher.id %}">{{teacher.name}}</a></div>
 			<div class="col-md-3">
 				{% for group in groups%}
-					{% for  manager in group.group_managers.all%}		
+					{% for  manager in group.group_managers.all%}
 				 		{% if manager.id == teacher.id %}
-							<a href="{% url 'schools:group_detail' school.id group.id %}">{{ group.name }}</a>
-				 			
+				 			<a href="{% url 'schools:group_detail' school.id group.id %}">{{ group.name }}</a>
 						{%endif%}
 					{% endfor %}
 				{% endfor %}
