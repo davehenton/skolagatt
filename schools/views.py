@@ -256,7 +256,7 @@ class ManagerCreateImport(UserPassesTestMixin, CreateView):
         for row in self.request.FILES['file'].readlines()[first:]:
           row = row.decode('utf-8')
           school_ssn = row.split(',')[int(school_ssn)]
-          school_name = row.split(',')[school_name]
+          ssn = row.split(',')[ssn]
           name = row.split(',')[name]
           data.append({'name': name.strip(), 
             'ssn': ssn.strip(), 
