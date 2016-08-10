@@ -57,10 +57,19 @@ class SchoolDetail(UserPassesTestMixin, DetailView):
     context['surveys'] = slug_sort(Survey.objects.filter(studentgroup__in=self.object.studentgroup_set.all()), 'title')
     context['students'] = self.object.students.all()
     #if self.request.user.id == Manager.objects.get(pk=self.kwargs['pk']).user.id:
+    all_messages = self.get_messages()
+    messages = []
+    for message in all_messages:
+      if message['file'] != None:
+        file_name = message['file'].split('/')[-1]
+        file_name = file_name.encode('utf-8')
+        message['file_name'] = file_name
+      messages.append(message)
+
     if is_school_teacher(self.request, self.kwargs):
-      context['messages'] = [message for message in self.get_messages() if message['teachers_allow'] == True]
+      context['messages'] = [message for message in messages if message['teachers_allow'] == True]
     else:
-      context['messages'] = self.get_messages()
+      context['messages'] = messages
       
     return context
 
