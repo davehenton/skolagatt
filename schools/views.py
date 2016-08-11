@@ -38,14 +38,6 @@ class SchoolListing(ListView):
 class SchoolDetail(UserPassesTestMixin, DetailView):
   model = School
 
-  def get_messages(self):
-    """Get all messages from innrivefur"""
-    try:
-        r = requests.get(settings.INNRI_SKILABOD_URL+'&json_api_key='+settings.INNRI_SKILABOD_JSON_KEY)
-        return r.json()
-    except Exception as e:
-      return []
-
   def test_func(self):
     return is_school_manager(self.request, self.kwargs) or is_school_teacher(self.request, self.kwargs)
 
@@ -57,7 +49,7 @@ class SchoolDetail(UserPassesTestMixin, DetailView):
     context['surveys'] = slug_sort(Survey.objects.filter(studentgroup__in=self.object.studentgroup_set.all()), 'title')
     context['students'] = self.object.students.all()
     #if self.request.user.id == Manager.objects.get(pk=self.kwargs['pk']).user.id:
-    all_messages = self.get_messages()
+    all_messages = get_messages()
     messages = []
     for message in all_messages:
       if message['file'] != None:
