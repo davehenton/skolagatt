@@ -57,10 +57,19 @@ class SchoolDetail(UserPassesTestMixin, DetailView):
     context['surveys'] = slug_sort(Survey.objects.filter(studentgroup__in=self.object.studentgroup_set.all()), 'title')
     context['students'] = self.object.students.all()
     #if self.request.user.id == Manager.objects.get(pk=self.kwargs['pk']).user.id:
+    all_messages = self.get_messages()
+    messages = []
+    for message in all_messages:
+      if message['file'] != None:
+        file_name = message['file'].split('/')[-1]
+        file_name = file_name.encode('utf-8')
+        message['file_name'] = file_name
+      messages.append(message)
+
     if is_school_teacher(self.request, self.kwargs):
-      context['messages'] = [message for message in self.get_messages() if message['teachers_allow'] == True]
+      context['messages'] = [message for message in messages if message['teachers_allow'] == True]
     else:
-      context['messages'] = self.get_messages()
+      context['messages'] = messages
       
     return context
 
@@ -521,7 +530,7 @@ class StudentCreateImport(UserPassesTestMixin, CreateView):
         for sheetsnumber in range(book.nsheets):
           sheet = book.sheet_by_index(sheetsnumber)
           for row in range(first, sheet.nrows):
-            data.append({'name': str(sheet.cell_value(row,int(name))), 'ssn': str(int(sheet.cell_value(row,int(ssn))))})
+            data.append({'name': str(sheet.cell_value(row,int(name))), 'ssn': str(sheet.cell_value(row,int(ssn))).zfill(10)})
       return render(self.request, 'common/student_verify_import.html', {'data': data, 'school': School.objects.get(pk=self.kwargs['school_id'])})
     else:
       student_data = json.loads(self.request.POST['students'])
