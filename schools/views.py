@@ -670,8 +670,9 @@ class StudentGroupCreate(UserPassesTestMixin, CreateView):
     # xxx will be available in the template as the related objects
     context = super(StudentGroupCreate, self).get_context_data(**kwargs)
     context['school'] = School.objects.get(pk=self.kwargs['school_id'])
-    context['students'] = Student.objects.filter(school=self.kwargs['school_id'])
-    context['teachers'] = Teacher.objects.filter(school=self.kwargs['school_id'])
+    context['students'] = slug_sort(Student.objects.filter(school=self.kwargs['school_id']), 'name')
+    context['teachers'] = slug_sort(Teacher.objects.filter(school=self.kwargs['school_id']), 'name')
+
     return context
 
   def post(self, request, *args, **kwargs):
@@ -709,8 +710,8 @@ class StudentGroupUpdate(UserPassesTestMixin, UpdateView):
     #context['contact_list'] = Contact.objects.filter(school=self.get_object())
     school = School.objects.get(pk=self.kwargs['school_id'])
     context['school'] = School.objects.get(pk=self.kwargs['school_id'])
-    context['students'] = Student.objects.filter(school=self.kwargs['school_id'])
-    context['teachers'] = Teacher.objects.filter(school=self.kwargs['school_id'])
+    context['students'] = slug_sort(Student.objects.filter(school=self.kwargs['school_id']), 'name')
+    context['teachers'] = slug_sort(Teacher.objects.filter(school=self.kwargs['school_id']), 'name')
     context['group_managers'] = Teacher.objects.filter(studentgroup=self.kwargs['pk'])
     return context
 
