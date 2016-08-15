@@ -7,6 +7,8 @@ from datetime import datetime
 import re, json
 from markdown2 import markdown
 
+from schools.util import *
+
 register = template.Library()
 
 @register.filter
@@ -58,6 +60,33 @@ def get_user_schools(context):
 		return {'schools': schools}
 	except:
 		return {'schools': []}
+
+@register.inclusion_tag('common/_message_list.html', takes_context=True)
+def get_user_messages(context, **kwargs):
+	try:
+		user = context['request'].user
+		manager_schools = School.objects.filter(managers=Manager.objects.filter(user=user))
+		teacher_schools = School.objects.filter(teachers=Teacher.objects.filter(user=user))
+		schools = list(set(chain(manager_schools, teacher_schools)))
+
+		messages = []
+		all_messages = get_messages()
+		for message in all_messages:
+			if message['file'] != None:
+				file_name = message['file'].split('/')[-1]
+				file_name = file_name.encode('utf-8')
+				message['file_name'] = file_name
+			messages.append(message)
+
+		if is_school_teacher(context['request'], kwargs):
+			context['messages'] = [message for message in messages if message['teachers_allow'] == True]
+		else:
+			context['messages'] = messages
+
+		return {'messages': messages}
+	except Exception as e:
+		print(e)
+		return {'messages': []}
 
 @register.simple_tag(takes_context=True)
 def get_school_name(context):

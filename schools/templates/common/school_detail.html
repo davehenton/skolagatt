@@ -3,10 +3,13 @@
 
 {% block content %}
 <div class="row">
-	<div class="col-md-9">
+	<div class="col-md-8">
 		<h1>{{school.name}} ({{school.ssn}})</h1>
 	</div>
-	<div class="col-md-3">
+	<div class="col-md-4">
+		{% if is_school_teacher or is_school_manager %}
+			{% get_user_messages %}
+		{% endif %}
 		{% if request.user.is_superuser %}
 		<a href="{% url 'schools:school_update' school.id %}" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span>&nbsp;Breyta</a>
 		<a href="{% url 'schools:school_delete' school.id %}" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span>&nbsp;Eyða</a>
@@ -30,15 +33,5 @@
 			{% include 'common/_group_list.html' %}
 		</div>
 	</div>
-</div>
-<div class="row">
-	
-		<div class="col-md-5">
-			<div id="messages">
-				{% include 'common/_message_list.html' %}
-			</div>
-		</div>
-		
-	
 </div>
 {% endblock %}
