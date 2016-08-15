@@ -585,6 +585,11 @@ class StudentCreate(UserPassesTestMixin, CreateView):
     else:
       return self.form_invalid(form)
 
+  def get_context_data(self, **kwargs):
+    context = super(StudentCreate, self).get_context_data(**kwargs)
+    context['school']=School.objects.get(pk=self.kwargs['school_id'])
+    return context
+    
   def get_success_url(self):
     try:
       school_id = self.kwargs['school_id']
@@ -601,6 +606,11 @@ class StudentUpdate(UserPassesTestMixin, UpdateView):
 
   def test_func(self):
     return is_school_manager(self.request, self.kwargs)
+
+  def get_context_data(self, **kwargs):
+    context = super(StudentUpdate, self).get_context_data(**kwargs)
+    context['school']=School.objects.get(pk=self.kwargs['school_id'])
+    return context
 
   def get_success_url(self):
     try:
