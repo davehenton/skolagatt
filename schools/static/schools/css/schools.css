@@ -29,6 +29,11 @@ ul {
     width: 200px;
 }
 
+.align label {
+    display: inline-block;
+    width: 50px;
+}
+
 .md-display li {
     list-style-type:disc;
 }
