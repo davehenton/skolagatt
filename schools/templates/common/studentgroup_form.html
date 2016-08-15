@@ -51,11 +51,21 @@
 			<h4>Veljið nemendur inn í hóp</h4>
 			<div class="col-md-4">
 				<h4>Nemendur skóla</h4>
-				<select class="form-control" id="all_students" size="10">
-					{% for student in students %}
-						<option id="{{ studentgroup.id }}" value="{{ student.id }}">{{student.name}}</option>
-					{% endfor %}
-				</select>
+				<div class="align">
+					<label for="search_students">Nafn:</label>
+					<input id="search_students" type="text" />
+				</div>
+				<div class="align">
+					<label for="search_year">Ár:</label>
+					<input id="search_year" type="text" /> <span class="alert-info">Dæmi: 01</span>
+				</div>
+				<div>
+					<select class="form-control" id="all_students" size="10">
+						{% for student in students %}
+							<option id="{{ studentgroup.id }}" value="{{ student.id }}">{{student.ssn}} - {{student.name}}</option>
+						{% endfor %}
+					</select>
+				</div>
 			</div>
 			<div class="col-md-2">
 				<h4>Færa</h4>

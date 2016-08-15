@@ -1,5 +1,15 @@
 from common.models import *
+from django.conf import settings
 from django.utils.text import slugify
+import requests
+
+def get_messages():
+  """Get all messages from innrivefur"""
+  try:
+      r = requests.get(settings.INNRI_SKILABOD_URL+'&json_api_key='+settings.INNRI_SKILABOD_JSON_KEY)
+      return r.json()
+  except Exception as e:
+    return []
 
 def get_current_school(path_variables):
   try:
