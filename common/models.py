@@ -121,7 +121,7 @@ class StudentGroupForm(forms.ModelForm):
 		widgets = {'school': forms.HiddenInput()}
 		labels = {
 			'name': 'Nafn',
-			'student_year': 'Ár',
+			'student_year': 'Árgangur',
 			'group_managers': 'Kennarar',
 			'school': 'Skóli',
 			'students': 'Nemendur',
