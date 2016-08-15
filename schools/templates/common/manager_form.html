@@ -7,6 +7,7 @@
 	<ul class="form_elements">
 	{{ form.as_ul }}
 	</ul>
-	<input type="submit" value="Vista" />
+	<input type="submit" value="Vista" class="btn btn-default" />
+	<a class="btn btn-default" href="{% url 'schools:manager_listing' school.id %}">Til baka</a>
 </form>
 {% endblock %}

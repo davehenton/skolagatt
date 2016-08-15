@@ -191,6 +191,11 @@ class ManagerCreate(UserPassesTestMixin, CreateView):
   model = Manager
   form_class = ManagerForm
   login_url = reverse_lazy('denied')
+  
+  def get_context_data(self, **kwargs):
+    context = super(ManagerCreate, self).get_context_data(**kwargs)
+    context['school'] = School.objects.get(pk=self.kwargs['school_id'])
+    return context
 
   def test_func(self):
     return is_school_manager(self.request, self.kwargs)
@@ -380,6 +385,11 @@ class TeacherCreate(UserPassesTestMixin, CreateView):
   def test_func(self):
     return is_school_manager(self.request, self.kwargs)
 
+  def get_context_data(self, **kwargs):
+    context = super(TeacherCreate, self).get_context_data(**kwargs)
+    context['school']=School.objects.get(pk=self.kwargs['school_id'])
+    return context
+
   def post(self, *args, **kwargs):
     self.object = Teacher.objects.filter(ssn=self.request.POST.get('ssn')).first()
     if self.object:
@@ -496,6 +506,11 @@ class StudentCreateImport(UserPassesTestMixin, CreateView):
     # xxx will be available in the template as the related objects
     context = super(StudentCreateImport, self).get_context_data(**kwargs)
     context['school'] = School.objects.get(pk=self.kwargs['school_id'])
+    return context
+
+  def get_context_data(self, **kwargs):
+    context = super(StudentCreateImport, self).get_context_data(**kwargs)
+    context['school']=School.objects.get(pk=self.kwargs['school_id'])
     return context
 
   def post(self, *args, **kwargs):
