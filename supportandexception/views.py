@@ -112,7 +112,7 @@ class SupportreResourceCreate(CreateView):
 				ses.save()
 
 			if(SupportResource.objects.filter(student = s).exists()):
-				SupportResource.objects.filter(student = s).update(explanation = expl, supportresourcesignature=request.user.username, reading_assistance = reading_assistance, interpretation = interpretation, longer_time = longer_time)
+				SupportResource.objects.filter(student = s).update(explanation = expl, reading_assistance = reading_assistance, interpretation = interpretation, longer_time = longer_time)
 			else:
 				sr = SupportResource(explanation = expl, supportresourcesignature=self.request.user, reading_assistance = reading_assistance, interpretation = interpretation, longer_time = longer_time)
 				sr.student = s
@@ -147,7 +147,7 @@ class ExceptionCreate(CreateView):
 				ses.student = s
 				ses.save()
 			if(Exceptions.objects.filter(student = s).exists()):
-				Exceptions.objects.filter(student = s).update(explanation = expl, exam = exam_list, reason = reason,exceptionssignature= str(request.user))
+				Exceptions.objects.filter(student = s).update(explanation = expl, exam = exam_list, reason = reason)
 			else:
 				exceptions = Exceptions(explanation = expl, exam = exam_list, reason = reason,exceptionssignature= str(request.user))
 				exceptions.student = s
