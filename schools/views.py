@@ -304,6 +304,11 @@ class ManagerUpdate(UserPassesTestMixin, UpdateView):
   def test_func(self):
     return is_school_manager(self.request, self.kwargs)
 
+  def get_context_data(self, **kwargs):
+    context = super(ManagerUpdate, self).get_context_data(**kwargs)
+    context['school'] = School.objects.get(pk=self.kwargs['school_id'])
+    return context
+
   def get_success_url(self):
     try:
       school_id = self.kwargs['school_id']
@@ -427,6 +432,11 @@ class TeacherUpdate(UserPassesTestMixin, UpdateView):
 
   def test_func(self):
     return is_school_manager(self.request, self.kwargs)
+
+  def get_context_data(self, **kwargs):
+    context = super(TeacherUpdate, self).get_context_data(**kwargs)
+    context['school'] = School.objects.get(pk=self.kwargs['school_id'])
+    return context
 
   def get_success_url(self):
     try:
