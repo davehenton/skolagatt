@@ -309,6 +309,27 @@ class ManagerUpdate(UserPassesTestMixin, UpdateView):
     context['school'] = School.objects.get(pk=self.kwargs['school_id'])
     return context
 
+  def post(self, request, **kwargs):
+    #get Teacher to be updated
+    self.object = Teacher.objects.get(pk=self.kwargs['pk'])
+    #get user by ssn
+    try:
+      user = User.objects.get(username=self.request.POST.get('ssn'))
+    except:
+      user = User.objects.create(username=self.request.POST.get('ssn'), password=str(uuid4()))
+
+    print(self.object.user)
+    print(user)
+
+    if self.object.user == user:
+      #no changes
+      pass
+    else:
+      request.POST = request.POST.copy()
+      request.POST['user'] = user.id
+
+    return super(ManagerUpdate, self).post(request, **kwargs)
+
   def get_success_url(self):
     try:
       school_id = self.kwargs['school_id']
@@ -437,6 +458,27 @@ class TeacherUpdate(UserPassesTestMixin, UpdateView):
     context = super(TeacherUpdate, self).get_context_data(**kwargs)
     context['school'] = School.objects.get(pk=self.kwargs['school_id'])
     return context
+
+  def post(self, request, **kwargs):
+    #get Teacher to be updated
+    self.object = Teacher.objects.get(pk=self.kwargs['pk'])
+    #get user by ssn
+    try:
+      user = User.objects.get(username=self.request.POST.get('ssn'))
+    except:
+      user = User.objects.create(username=self.request.POST.get('ssn'), password=str(uuid4()))
+
+    print(self.object.user)
+    print(user)
+
+    if self.object.user == user:
+      #no changes
+      pass
+    else:
+      request.POST = request.POST.copy()
+      request.POST['user'] = user.id
+
+    return super(TeacherUpdate, self).post(request, **kwargs)
 
   def get_success_url(self):
     try:
