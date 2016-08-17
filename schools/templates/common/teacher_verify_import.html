@@ -16,15 +16,15 @@
 		</div>
 	</div>
 	<div class="row">
-		<div class="col-md-1"><h4>Kennitala</h4></div>
-		<div class="col-md-10"><h4>Nafn</h4></div>
-		<div class="col-md-1"><h4>Kennitala skóla</h4></div>
+		<div class="col-md-2"><h4>Kennitala</h4></div>
+		<div class="col-md-4"><h4>Nafn</h4></div>
+		<div class="col-md-2"><h4>Kennitala skóla</h4></div>
 	</div>
-	{% for manager in data %}
+	{% for teacher in data %}
 		<div class="row">
-			<div class="col-md-1">{{ manager.ssn }}</div>
-			<div class="col-md-10">{{ manager.name }}</div>
-			<div class="col-md-1">{{ manager.school_ssn }}</div>
+			<div class="col-md-2">{{ teacher.ssn }}</div>
+			<div class="col-md-4">{{ teacher.name }}</div>
+			<div class="col-md-2">{{ teacher.school_ssn }}</div>
 		</div>
 	{% endfor %}
 {% endblock %}
@@ -37,7 +37,7 @@
 				url: '',
 				data: {
 					'csrfmiddlewaretoken': '{{ csrf_token }}',
-					'managers': JSON.stringify(data),
+					'teachers': JSON.stringify(data),
 				},
 			});
 		});
