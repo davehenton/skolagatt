@@ -17,7 +17,7 @@ jQuery.fn.filterByText = function(textbox, selectSingleMatch, year) {
 				data = option.text;
 				if(year)
 				{
-					data = data.substring(4,6);
+					data = data.substring(5,7);
 				}
 				if(data.match(regex) !== null) {
 					$(select).append(
