@@ -283,7 +283,7 @@ class ManagerCreateImport(UserPassesTestMixin, CreateView):
       #iterate through managers, add them if they don't exist then add to school
       for manager in manager_data:
         try:
-          m = School.objects.get(ssn=manager['school_ssn']).manager_set.add(**manager)
+          m = School.objects.get(ssn=manager['school_ssn']).managers.add(**manager)
         except:
           pass #manager already exists
 
@@ -308,6 +308,24 @@ class ManagerUpdate(UserPassesTestMixin, UpdateView):
     context = super(ManagerUpdate, self).get_context_data(**kwargs)
     context['school'] = School.objects.get(pk=self.kwargs['school_id'])
     return context
+
+  def post(self, request, **kwargs):
+    #get Manager to be updated
+    self.object = Manager.objects.get(pk=self.kwargs['pk'])
+    #get user by ssn
+    try:
+      user = User.objects.get(username=self.request.POST.get('ssn'))
+    except:
+      user = User.objects.create(username=self.request.POST.get('ssn'), password=str(uuid4()))
+
+    if self.object.user == user:
+      #no changes
+      pass
+    else:
+      request.POST = request.POST.copy()
+      request.POST['user'] = user.id
+
+    return super(ManagerUpdate, self).post(request, **kwargs)
 
   def get_success_url(self):
     try:
@@ -425,6 +443,69 @@ class TeacherCreate(UserPassesTestMixin, CreateView):
     except:
       return reverse_lazy('schools:school_listing')
 
+class TeacherCreateImport(UserPassesTestMixin, CreateView):
+  model = School
+  form_class = SchoolForm
+  login_url = reverse_lazy('denied')
+  template_name = "common/teacher_form_import.html"
+
+  def get_context_data(self, **kwargs):
+    # xxx will be available in the template as the related objects
+    context = super(TeacherCreateImport, self).get_context_data(**kwargs)
+    return context
+
+  def post(self, *args, **kwargs):
+    if(self.request.FILES):
+      u_file = self.request.FILES['file'].name
+      extension = u_file.split(".")[-1]
+      ssn = self.request.POST.get('ssn')
+      name = self.request.POST.get('name')
+      school_ssn = self.request.POST.get('school_ssn')
+      title = self.request.POST.get('title')
+      if title == 'yes':
+        first = 1
+      else:
+        first = 0
+      data = []
+      if extension == 'csv':
+        for row in self.request.FILES['file'].readlines()[first:]:
+          row = row.decode('utf-8')
+          school_ssn = row.split(',')[int(school_ssn)]
+          ssn = row.split(',')[ssn]
+          name = row.split(',')[name]
+          data.append({'name': name.strip(), 
+            'ssn': ssn.strip(), 
+            'school_ssn': school_ssn.strip()})
+      elif extension == 'xlsx':
+        input_excel = self.request.FILES['file']
+        book = xlrd.open_workbook(file_contents=input_excel.read())
+        for sheetsnumber in range(book.nsheets):
+          sheet = book.sheet_by_index(sheetsnumber)
+          for row in range(first, sheet.nrows):
+            data.append({'name': sheet.cell_value(row,int(name)), 
+              'ssn': str(int(sheet.cell_value(row,int(ssn)))),
+              'school_ssn': str(int(sheet.cell_value(row,int(school_ssn))))})
+
+      return render(self.request, 'common/teacher_verify_import.html', {'data': data})
+    else:
+      teacher_data = json.loads(self.request.POST['teachers'])
+      #iterate through teachers, add them if they don't exist then add to school
+      for teacher in teacher_data:
+        try:
+          u,c = User.objects.get_or_create(username=teacher['ssn'])
+          t,c = Teacher.objects.get_or_create(ssn=teacher['ssn'], name=teacher['name'], user=u)
+          School.objects.get(ssn=teacher['school_ssn']).teachers.add(t)
+        except Exception as e:
+          pass #teacher already exists
+
+    return HttpResponseRedirect(self.get_success_url())
+
+  def test_func(self):
+    return is_school_manager(self.request, self.kwargs)
+
+  def get_success_url(self):
+      return reverse_lazy('schools:school_listing')
+
 class TeacherUpdate(UserPassesTestMixin, UpdateView):
   model = Teacher
   form_class = TeacherForm
@@ -437,6 +518,24 @@ class TeacherUpdate(UserPassesTestMixin, UpdateView):
     context = super(TeacherUpdate, self).get_context_data(**kwargs)
     context['school'] = School.objects.get(pk=self.kwargs['school_id'])
     return context
+
+  def post(self, request, **kwargs):
+    #get Teacher to be updated
+    self.object = Teacher.objects.get(pk=self.kwargs['pk'])
+    #get user by ssn
+    try:
+      user = User.objects.get(username=self.request.POST.get('ssn'))
+    except:
+      user = User.objects.create(username=self.request.POST.get('ssn'), password=str(uuid4()))
+
+    if self.object.user == user:
+      #no changes
+      pass
+    else:
+      request.POST = request.POST.copy()
+      request.POST['user'] = user.id
+
+    return super(TeacherUpdate, self).post(request, **kwargs)
 
   def get_success_url(self):
     try:
