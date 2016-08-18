@@ -45,6 +45,7 @@ urlpatterns = [
     url(r'^kennari/(?P<pk>\d+)/$', TeacherOverview.as_view(), name='teacher_overview'),
     url(r'^(?P<school_id>\d+)/kennari/(?P<pk>\d+)/$', TeacherDetail.as_view(), name='teacher_detail'),
     url(r'^(?P<school_id>\d+)/kennari/create/$', TeacherCreate.as_view(), name='teacher_create'),
+    url(r'^kennari/create/import$', TeacherCreateImport.as_view(), name='teacher_create_import'),
     url(r'^(?P<school_id>\d+)/kennari/(?P<pk>\d+)/update/$', TeacherUpdate.as_view(), name='teacher_update'),
     url(r'^(?P<school_id>\d+)/kennari/(?P<pk>\d+)/delete/$', TeacherDelete.as_view(), name='teacher_delete'),
 

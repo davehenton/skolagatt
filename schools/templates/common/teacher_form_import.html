@@ -1,0 +1,40 @@
+{% extends 'common/index.html'%}
+{% include staticfiles%}
+{% block content %}
+<div class="row">
+	<div class="col-md-6">
+		<form action="" method="post" enctype="multipart/form-data">
+			{% csrf_token %}
+			<ul class="form_elements">
+				<li>
+					<label for="file">Filename:</label>
+					<input type="file" name="file" id="file" class="btn btn-default"/>
+				</li>
+				<li>
+					<label for="ssn">Númer dálks fyrir kennitölu</label>
+					<input type="number" min="0" value="0" name="ssn" id="ssn" />
+				</li>
+				<li>
+					<label for="name">Númer dálks fyrir nafn</label>
+					<input type="number" min="0" value="0" name="name" id="name" />
+				</li>
+				<li>
+					<label for="school_ssn">Númer dálks fyrir kennitölu skóla</label>
+					<input type="number" min="0" value="0" name="school_ssn" id="school_ssn" />
+				</li>
+				<li>
+					<label for="title">Er fyrsta línan með titli</label>
+					<input type="checkbox" id="title" name="title" value="yes">
+				</li>
+				<li>
+					<input type="submit" value="Vista" class="btn btn-default"/>
+				</li>
+			</ul>
+		</form>
+	</div>
+	<div class="col-md-6 alert-info">
+		<p>Veljið skrá, excel eða csv, sem inniheldur dálka fyrir kennitölur og nöfn nemenda. Skráin verður að vera vistuð sem .csv eða .xlsx</p>
+		<p>Veljið dálkanúmer kennitölu og nafns þar sem fremsti dálkurinn er <strong>númer 0</strong>, næsti númer 1 o.s.frv.</p>
+	</div>
+</div>
+{% endblock %}
