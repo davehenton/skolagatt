@@ -646,7 +646,12 @@ class StudentCreateImport(UserPassesTestMixin, CreateView):
         for sheetsnumber in range(book.nsheets):
           sheet = book.sheet_by_index(sheetsnumber)
           for row in range(first, sheet.nrows):
-            data.append({'name': str(sheet.cell_value(row,int(name))), 'ssn': str(sheet.cell_value(row,int(ssn))).zfill(10)})
+            if str(sheet.cell_value(row,int(ssn)))[0].isspace():
+              data.append({'name': str(sheet.cell_value(row,int(name))), 'ssn': str(sheet.cell_value(row,int(ssn)))[1:].zfill(10)})
+            
+            else:
+              data.append({'name': str(sheet.cell_value(row,int(name))), 'ssn': str(int(sheet.cell_value(row,int(ssn)))).zfill(10)})
+            
       return render(self.request, 'common/student_verify_import.html', {'data': data, 'school': School.objects.get(pk=self.kwargs['school_id'])})
     else:
       student_data = json.loads(self.request.POST['students'])
