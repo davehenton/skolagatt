@@ -648,7 +648,7 @@ class StudentCreateImport(UserPassesTestMixin, CreateView):
           for row in range(first, sheet.nrows):
             if str(sheet.cell_value(row,int(ssn)))[0].isspace():
               data.append({'name': str(sheet.cell_value(row,int(name))), 'ssn': str(sheet.cell_value(row,int(ssn)))[1:].zfill(10)})
-            elif sheet.cell_value(row,int(ssn)).isdigit():
+            elif isinstance(sheet.cell_value(row,int(ssn)),float):
               data.append({'name': str(sheet.cell_value(row,int(name))), 'ssn': str(int(sheet.cell_value(row,int(ssn)))).zfill(10)})
             else:
               data.append({'name': str(sheet.cell_value(row,int(name))), 'ssn': str(sheet.cell_value(row,int(ssn))).zfill(10)})
