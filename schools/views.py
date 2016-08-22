@@ -648,9 +648,10 @@ class StudentCreateImport(UserPassesTestMixin, CreateView):
           for row in range(first, sheet.nrows):
             if str(sheet.cell_value(row,int(ssn)))[0].isspace():
               data.append({'name': str(sheet.cell_value(row,int(name))), 'ssn': str(sheet.cell_value(row,int(ssn)))[1:].zfill(10)})
-            
-            else:
+            elif sheet.cell_value(row,int(ssn)).isdigit():
               data.append({'name': str(sheet.cell_value(row,int(name))), 'ssn': str(int(sheet.cell_value(row,int(ssn)))).zfill(10)})
+            else:
+              data.append({'name': str(sheet.cell_value(row,int(name))), 'ssn': str(sheet.cell_value(row,int(ssn))).zfill(10)})
             
       return render(self.request, 'common/student_verify_import.html', {'data': data, 'school': School.objects.get(pk=self.kwargs['school_id'])})
     else:
