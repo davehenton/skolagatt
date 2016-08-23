@@ -14,6 +14,8 @@ urlpatterns = [
     url(r'^(?P<pk>\d+)/update/$', SchoolUpdate.as_view(), name='school_update'),
     url(r'^(?P<pk>\d+)/delete/$', SchoolDelete.as_view(), name='school_delete'),
 
+    url(r'^notification/create/$', NotificationCreate.as_view(), name='notification_create'),
+
     url(r'^(?P<school_id>\d+)/nemandi/$', StudentListing.as_view(), name='student_listing'),
     url(r'^(?P<school_id>\d+)/nemandi/(?P<pk>\d+)/$', StudentDetail.as_view(), name='student_detail'),
     url(r'^(?P<school_id>\d+)/nemandi/(?P<pk>\d+)/notes_save/$', StudentNotes, name='notes_save'),
