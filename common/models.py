@@ -10,6 +10,15 @@ from django.utils import timezone
 from datetime import datetime
 import json
 
+class Notification(models.Model):
+	notification_type = models.CharField(max_length = 128)
+	notification_id = models.IntegerField()
+	user = models.ForeignKey(User)
+
+	class Meta:
+		unique_together = (("notification_type", "notification_id"),)
+
+
 class Manager(models.Model):
 	ssn = models.CharField(max_length = 10, unique=True)
 	name = models.CharField(max_length = 128)

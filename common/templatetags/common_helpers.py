@@ -85,8 +85,13 @@ def get_user_messages(context, **kwargs):
 
 		return {'messages': messages}
 	except Exception as e:
-		print(e)
 		return {'messages': []}
+
+@register.simple_tag(takes_context=True)
+def get_nr_notifications(context, messages):
+	message_ids = [m['pk'] for m in messages]
+	n = Notification.objects.filter(user=context.request.user).filter(notification_type='message').filter(notification_id__in=message_ids)
+	return len(messages) - len(n)
 
 @register.simple_tag(takes_context=True)
 def get_school_name(context):
