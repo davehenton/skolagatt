@@ -4,11 +4,15 @@
 
 {% block content %}
 <form action="" method="post" id="survey_result_form">
+	<h4>Skráningareyðublað</h4>
+	<hr />
 	<div id="selected_words" class="row alert alert-info">
 		<p>{{info|safe}}</p>
 	</div>
 	<div class='md' id="grading_template">{{grading_template|safe}}</div>
 	<div id="selected_words" class="row"></div>
+	<hr />
+	{% if input_fields %}
 	<h4>Innsláttarsvæði</h4>
 	<div id="input_fields">
 		{% for field in input_fields %}
@@ -25,6 +29,7 @@
 			</div>
 		{% endfor %}
 	</div>
+	{% endif %}
 	{% csrf_token %}
 	{{ form.as_p }}
 	<input type="submit" class="btn btn-success" value="Vista" />
