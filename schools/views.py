@@ -1082,9 +1082,12 @@ class SurveyResultCreate(UserPassesTestMixin, CreateView):
         #survey is expired
         context['grading_template'] = ""
         context['info'] = ""
+        context['input_fields'] = ""
       else:
+        print(data[0]['input_fields'])
         context['grading_template'] = data[0]['grading_template'][0]['md']
         context['info'] = data[0]['grading_template'][0]['info']
+        context['input_fields'] = data[0]['input_fields']
     except Exception as e:
       raise Exception("Ekki næst samband við prófagrunn")
     return context
