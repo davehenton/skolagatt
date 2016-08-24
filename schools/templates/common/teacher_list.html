@@ -3,7 +3,23 @@
 {% block content %}
 <h3>Kennarar</h3>
 <div>
-	<a href="{% url 'schools:teacher_create' school.id %}" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span>Bæta við kennara</a>
+	<div class="btn-group" role="group">
+		<a href="{% url 'schools:student_create' school.id %}" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+			<span class="caret"></span>&nbsp;Bæta við kennurum
+		</a>
+		<ul class="dropdown-menu">
+			<li>
+				<a href="{% url 'schools:teacher_create' school.id %}">
+					<span class="glyphicon glyphicon-plus"></span>&nbsp;Bæta við einum
+				</a>
+			</li>
+			<li>
+				<a href="{% url 'schools:teacher_create_import' %}">
+					<span class="glyphicon glyphicon-plus"></span>&nbsp;Bæta við mörgum
+				</a>
+			</li>
+		</ul>
+	</div>		
 	<div id="teacher_list" class="table table-hover">
 		<div class="row">
 			<div class="col-md-3"><h4>Nafn</h4></div>
