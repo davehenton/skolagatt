@@ -18,7 +18,7 @@ span.selected {
 	border: none;
 }
 
-ul {
+ul.form_elements {
     list-style-type:none;
     padding:0px;
     margin:0px;

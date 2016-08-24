@@ -9,9 +9,25 @@
 	</div>
 	<div class='md' id="grading_template">{{grading_template|safe}}</div>
 	<div id="selected_words" class="row"></div>
+	<h4>Innsláttarsvæði</h4>
+	<div id="input_fields">
+		{% for field in input_fields %}
+			<div class="row">
+				<div class="col-md-1">
+					{{ field.label }}
+				</div>
+				<div class="col-md-3">
+					<input type="text" name="{{ field.name }}" id="{{ field.name }}" />
+				</div>
+				<div class="col-md-4 alert-info">
+					{{ field.description }}
+				</div>
+			</div>
+		{% endfor %}
+	</div>
 	{% csrf_token %}
 	{{ form.as_p }}
-	<input type="submit" value="Vista" />
+	<input type="submit" class="btn btn-success" value="Vista" />
 </form>
 {% endblock %}
 
