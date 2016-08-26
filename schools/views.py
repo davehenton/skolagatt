@@ -468,14 +468,15 @@ class TeacherCreate(UserPassesTestMixin, CreateView):
       return reverse_lazy('schools:school_listing')
 
 class TeacherCreateImport(UserPassesTestMixin, CreateView):
-  model = School
-  form_class = SchoolForm
+  model = Teacher
+  form_class = TeacherForm
   login_url = reverse_lazy('denied')
   template_name = "common/teacher_form_import.html"
 
   def get_context_data(self, **kwargs):
     # xxx will be available in the template as the related objects
     context = super(TeacherCreateImport, self).get_context_data(**kwargs)
+    context['school']=School.objects.get(pk=self.kwargs['school_id'])
     return context
 
   def post(self, *args, **kwargs):
@@ -520,7 +521,9 @@ class TeacherCreateImport(UserPassesTestMixin, CreateView):
                 'name': str(sheet.cell_value(row,int(name))),
                 'ssn': str(sheet.cell_value(row,int(ssn))).zfill(10)
               })
-      return render(self.request, 'common/teacher_verify_import.html', {'data': data})
+
+
+      return render(self.request, 'common/teacher_verify_import.html', {'data': data,'school': School.objects.get(pk=self.kwargs['school_id'])})
     else:
       teacher_data = json.loads(self.request.POST['teachers'])
       #iterate through teachers, add them if they don't exist then add to school
