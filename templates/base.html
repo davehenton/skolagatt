@@ -20,8 +20,9 @@
 		{% endblock %}
 	</div>
 
-	<script src='{% static "marked/lib/marked.js" %}'></script>
 	{% include 'javascript.html' %}
+	<script src='{% static "marked/lib/marked.js" %}'></script>
+	<script src='{% static "sparkline/jquery.sparkline.min.js" %}'></script>
 	{% block script %}
 	{% endblock %}
 
