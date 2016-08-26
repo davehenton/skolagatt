@@ -45,6 +45,13 @@ def get_json(text):
 	except Exception as e:
 		return {}
 
+@register.filter
+def get_graph(text):
+	try:
+		return json.loads(text)
+	except Exception as e:
+		return {}
+
 def get_current_school(context):
 	r = 'skoli\/(?P<school_id>[\d]*)'
 	m = re.search(r, context.request.path)

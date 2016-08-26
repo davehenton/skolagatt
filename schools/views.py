@@ -67,7 +67,7 @@ class SchoolDetail(UserPassesTestMixin, DetailView):
 
   def get_context_data(self, **kwargs):
     context = super(SchoolDetail, self).get_context_data(**kwargs)
-    context['studentgroup_list'] = self.object.studentgroup_set.all()
+    context['studentgroup_list'] = slug_sort(self.object.studentgroup_set.all(), 'name')
     context['managers'] = slug_sort(self.object.managers.all(),'name')
     context['teachers'] = slug_sort(self.object.teachers.all(),'name')
     context['surveys'] = slug_sort(Survey.objects.filter(studentgroup__in=self.object.studentgroup_set.all()), 'title')
@@ -388,7 +388,7 @@ class TeacherListing(UserPassesTestMixin, ListView):
     school = School.objects.get(pk=self.kwargs['school_id'])
     context['school'] = school
     context['teachers'] = Teacher.objects.filter(school=school)
-    context['groups'] = StudentGroup.objects.filter(school=school)
+    context['groups'] = slug_sort(StudentGroup.objects.filter(school=school), 'name')
     print(Teacher.objects.filter(id= StudentGroup.objects.filter(school=school)))
     """context['teachers_in_group'] = Teacher.group_managers.all()"""
     return context
@@ -405,7 +405,7 @@ class TeacherDetail(UserPassesTestMixin, DetailView):
   def get_context_data(self, **kwargs):
     context = super(TeacherDetail, self).get_context_data(**kwargs)
     context['school'] = School.objects.get(pk=self.kwargs['school_id'])
-    context['groups'] = StudentGroup.objects.filter(group_managers=Teacher.objects.filter(user=self.request.user))
+    context['groups'] = slug_sort(StudentGroup.objects.filter(group_managers=Teacher.objects.filter(user=self.request.user)), 'name')
     return context
 
 class TeacherOverview(UserPassesTestMixin, DetailView):
@@ -484,7 +484,6 @@ class TeacherCreateImport(UserPassesTestMixin, CreateView):
       extension = u_file.split(".")[-1]
       ssn = self.request.POST.get('ssn')
       name = self.request.POST.get('name')
-      school_ssn = self.request.POST.get('school_ssn')
       title = self.request.POST.get('title')
       if title == 'yes':
         first = 1
@@ -494,22 +493,33 @@ class TeacherCreateImport(UserPassesTestMixin, CreateView):
       if extension == 'csv':
         for row in self.request.FILES['file'].readlines()[first:]:
           row = row.decode('utf-8')
-          school_ssn = row.split(',')[int(school_ssn)]
           ssn = row.split(',')[ssn]
           name = row.split(',')[name]
-          data.append({'name': name.strip(), 
-            'ssn': ssn.strip(), 
-            'school_ssn': school_ssn.strip()})
+          data.append({
+            'name': name.strip(), 
+            'ssn': ssn.strip().zfill(10), 
+          })
       elif extension == 'xlsx':
         input_excel = self.request.FILES['file']
         book = xlrd.open_workbook(file_contents=input_excel.read())
         for sheetsnumber in range(book.nsheets):
           sheet = book.sheet_by_index(sheetsnumber)
           for row in range(first, sheet.nrows):
-            data.append({'name': sheet.cell_value(row,int(name)), 
-              'ssn': str(int(sheet.cell_value(row,int(ssn)))),
-              'school_ssn': str(int(sheet.cell_value(row,int(school_ssn))))})
-
+            if str(sheet.cell_value(row,int(ssn)))[0].isspace():
+              data.append({
+                'name': str(sheet.cell_value(row,int(name))),
+                'ssn': str(sheet.cell_value(row,int(ssn)))[1:].zfill(10)
+              })
+            elif isinstance(sheet.cell_value(row,int(ssn)),float):
+              data.append({
+                'name': str(sheet.cell_value(row,int(name))),
+                'ssn': str(int(sheet.cell_value(row,int(ssn)))).zfill(10)
+              })
+            else:
+              data.append({
+                'name': str(sheet.cell_value(row,int(name))),
+                'ssn': str(sheet.cell_value(row,int(ssn))).zfill(10)
+              })
       return render(self.request, 'common/teacher_verify_import.html', {'data': data})
     else:
       teacher_data = json.loads(self.request.POST['teachers'])
@@ -518,16 +528,19 @@ class TeacherCreateImport(UserPassesTestMixin, CreateView):
         try:
           u,c = User.objects.get_or_create(username=teacher['ssn'])
           t,c = Teacher.objects.get_or_create(ssn=teacher['ssn'], name=teacher['name'], user=u)
-          School.objects.get(ssn=teacher['school_ssn']).teachers.add(t)
+          School.objects.get(pk=self.kwargs['school_id']).teachers.add(t)
         except Exception as e:
           pass #teacher already exists
-
     return HttpResponseRedirect(self.get_success_url())
 
   def test_func(self):
     return is_school_manager(self.request, self.kwargs)
 
   def get_success_url(self):
+    try:
+      return reverse_lazy('schools:school_detail',
+                              kwargs={'pk': self.kwargs['school_id']})
+    except:
       return reverse_lazy('schools:school_listing')
 
 class TeacherUpdate(UserPassesTestMixin, UpdateView):
@@ -663,7 +676,7 @@ class StudentCreateImport(UserPassesTestMixin, CreateView):
           row = row.decode('utf-8')
           student_ssn = row.split(',')[int(ssn)]
           student_name = row.split(',')[int(name)]
-          data.append({'name': student_name.strip(), 'ssn': student_ssn.strip()})
+          data.append({'name': student_name.strip(), 'ssn': student_ssn.strip().zfill(10)})
       elif extension == 'xlsx':
         input_excel = self.request.FILES['file']
         book = xlrd.open_workbook(file_contents=input_excel.read())
