@@ -481,6 +481,7 @@ class TeacherCreateImport(UserPassesTestMixin, CreateView):
 
   def post(self, *args, **kwargs):
     if(self.request.FILES):
+      print('kali')
       u_file = self.request.FILES['file'].name
       extension = u_file.split(".")[-1]
       ssn = self.request.POST.get('ssn')
@@ -501,9 +502,11 @@ class TeacherCreateImport(UserPassesTestMixin, CreateView):
             'ssn': ssn.strip().zfill(10), 
           })
       elif extension == 'xlsx':
+        print('ahli')
         input_excel = self.request.FILES['file']
         book = xlrd.open_workbook(file_contents=input_excel.read())
         for sheetsnumber in range(book.nsheets):
+          print('danni')
           sheet = book.sheet_by_index(sheetsnumber)
           for row in range(first, sheet.nrows):
             if str(sheet.cell_value(row,int(ssn)))[0].isspace():
