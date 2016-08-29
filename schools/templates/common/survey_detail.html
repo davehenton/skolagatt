@@ -77,7 +77,7 @@
 							<div class="col-md-2">{{student.ssn}}</div>
 							<div class="col-md-6"><a href="{% url 'schools:student_detail' school.id student.id %}">{{student.name}}</a></div>
 							{% if student_result %}
-							<div class="col-md-2">{{student_result}}</div>
+							<div class="col-md-2"><!-- sparkline to be added --></div>
 							<div class="col-md-2">
 								{% if is_group_manager %}
 									{% if survey.is_expired %}
