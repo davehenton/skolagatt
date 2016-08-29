@@ -1125,7 +1125,15 @@ class SurveyResultCreate(UserPassesTestMixin, CreateView):
     survey_results.created_at = timezone.now()
     data_results = {}
     #extract data
-    survey_results.results = json.dumps(self.request.POST.getlist('data_results[]'))
+    #survey_results.results = json.dumps(self.request.POST.getlist('data_results[]'))
+    survey_results_data = {'click_values': [], 'input_values': {}}
+    for k in self.request.POST:
+      if k != 'csrfmiddlewaretoken':
+        if k == 'data_results[]':
+          survey_results_data['click_values'] = json.dumps(self.request.POST.getlist('data_results[]'))
+        else:
+          survey_results_data['input_values'][k] = self.request.POST[k]
+    survey_results.results = json.dumps(survey_results_data)
     return super(SurveyResultCreate, self).form_valid(form)
 
   def test_func(self):
@@ -1154,7 +1162,14 @@ class SurveyResultUpdate(UserPassesTestMixin, UpdateView):
     survey_results.created_at = timezone.now()
     data_results = {}
     #extract data
-    survey_results.results = json.dumps(self.request.POST.getlist('data_results[]'))
+    survey_results_data = {'click_values': [], 'input_values': {}}
+    for k in self.request.POST:
+      if k != 'csrfmiddlewaretoken':
+        if k == 'data_results[]':
+          survey_results_data['click_values'] = json.dumps(self.request.POST.getlist('data_results[]'))
+        else:
+          survey_results_data['input_values'][k] = self.request.POST[k]
+    survey_results.results = json.dumps(survey_results_data)
     return super(SurveyResultUpdate, self).form_valid(form)
 
   def get_context_data(self, **kwargs):
@@ -1165,6 +1180,7 @@ class SurveyResultUpdate(UserPassesTestMixin, UpdateView):
     context['data_result'] = json.loads(SurveyResult.objects.get(pk=self.kwargs['pk']).results) or "''"
     data = get_survey_data(self.kwargs)
     context['grading_template'] = data[0]['grading_template'][0]['md']
+    context['input_fields'] = data[0]['input_fields']
 
     return context
 
