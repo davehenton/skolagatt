@@ -39,14 +39,28 @@
 {% block script %}
 	<script type='text/javascript'>
 		var data_results = {{data_result|safe}};
-
 		var update = [];
 		if(data_results){
 			//updating, prepare to highlight data
-			for(i in data_results){
-				//data_results = ['number,value', 'number,value', ...]
-				update.push(data_results[i].split(',')[0]);
+			try {
+				var click_values = JSON.parse(data_results['click_values']);
+				for(i in click_values){
+					//data_results = {
+						//'click_values': ['number,value', 'number,value', ...],
+						//'input_values': {
+							//'input_field_1': 'value',
+							//'input_field_2': 'value',
+						//}
+					//}
+					console.log(click_values[i]);
+					update.push(click_values[i].split(',')[0]);
+				}
+				var input_values = JSON.parse(data_results['input_values']);
+				for(i in input_values){
+					console.log(input_values[i]);
+				}
 			}
+			catch(err) {}
 		}
 
 		// input
@@ -95,6 +109,7 @@
 					value: [$(selected_words[i]).attr('count'), $(selected_words[i]).text()]
 				}));
 			});
+
 		});
 	</script>
 	{% endblock %}
