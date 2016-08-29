@@ -52,13 +52,10 @@
 							//'input_field_2': 'value',
 						//}
 					//}
-					console.log(click_values[i]);
 					update.push(click_values[i].split(',')[0]);
 				}
-				var input_values = JSON.parse(data_results['input_values']);
-				for(i in input_values){
-					console.log(input_values[i]);
-				}
+				var input_values = data_results['input_values'];
+				var input_keys = Object.keys(data_results['input_values']);
 			}
 			catch(err) {}
 		}
@@ -78,6 +75,7 @@
 			return results;
 		}
 
+		// update click_input form
 		try {
 			//wrap each word in span count
 			var text_container = $("#grading_template");
@@ -91,13 +89,24 @@
 			console.log(err);
 		}
 
+		// update input_fields
+		try {
+			for(i in input_keys)
+			{
+				$("#"+input_keys[i]).val(input_values[input_keys[i]]);
+			}
+		}
+		catch(err) {
+			console.log(err);
+		}
+
+
 		$( ".md" ).each(function( index ) {
 			$( this ).html(marked( $( this ).html() ));
 		});
 		$('span[count]').on('click',function(event){
 			//append removable div to grading_template
 			var selected_text = $(this).toggleClass('selected');
-			console.log(event.which);
 		});
 
 		$("#survey_result_form").on('submit', function(event){
