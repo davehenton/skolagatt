@@ -24,17 +24,30 @@
 			<h3>Nemendur</h3>
 			<div class="row">
 				<div class="col-md-3"><h4>Kennitala</h4></div>
-				<div class="col-md-6"><h4>Nafn</h4></div>
-				<div class="col-md-3"><h4>Aðgerðir</h4></div>
+				<div class="col-md-5"><h4>Nafn</h4></div>
+				<div class="col-md-2"><h4>Stuðningur</h4></div>
+				{% if is_school_manager %}
+				<div class="col-md-2"><h4>Aðgerðir</h4></div>
+				{% endif %}
 			</div>
 			{% for student in students %}
 			<div class="row">
 				<div class="col-md-3"><a href="{% url 'schools:student_detail' school.id student.id %}">{{student.ssn}}</a></div>
-				<div class="col-md-6"><a href="{% url 'schools:student_detail' school.id student.id %}">{{student.name}}</a></div>
-				<div class="col-md-3">
+				<div class="col-md-5"><a href="{% url 'schools:student_detail' school.id student.id %}">{{student.name}}</a></div>
+				<div class="col-md-2">
+					{% if student.exceptions_set.first %}
+					<a href="{% url 'supportandexception:exception' school.id student.id %}" title="Undanþágur"><span class="glyphicon glyphicon-flag" style="color:#449D44"></span>&nbsp;</a>
+					{% endif %}
+					{% if student.supportresource_set.first %}
+					<a href="{% url 'supportandexception:supportresource' school.id student.id %}" title="Stuðningsúrræði"><span class="glyphicon glyphicon-flag" style="color:#EC971F"></span>&nbsp;</a>
+					{% endif %}
+				</div>
+				{% if is_school_manager %}
+				<div class="col-md-2">
 					<a href="{% url 'schools:student_update' school.id student.id %}" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
 					<a href="{% url 'schools:student_delete' school.id student.id %}" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-trash"></span></a>
 				</div>
+				{% endif %}
 			</div>
 			{% endfor %}
 		</div>
