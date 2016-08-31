@@ -2,4 +2,4 @@
 
 ## Samskiptatæki milli menntamálastofnunnar og grunnskóla landsins
 
-Upplýsingar hjá skolagatt@mms.is og (mms.is)[https://mms.is]
+Upplýsingar hjá skolagatt@mms.is og https://mms.is
