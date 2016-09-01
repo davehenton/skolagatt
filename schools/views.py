@@ -845,7 +845,9 @@ class StudentGroupAdminListing(UserPassesTestMixin, ListView):
     try:
       context = super(StudentGroupAdminListing, self).get_context_data(**kwargs)
       context['schools'] = slug_sort(School.objects.all(), 'name')
+      print(self.kwargs['survey_title'])
       context['surveys'] = Survey.objects.filter(title=self.kwargs['survey_title'])
+      print(context['surveys'])
       if('format' in self.kwargs and self.kwargs['format'] == 'csv'):
         self.template_name = "common/studentgroup_admin_list.csv"
     except Exception as e:
