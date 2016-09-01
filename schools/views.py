@@ -836,6 +836,21 @@ class StudentGroupDetail(UserPassesTestMixin, DetailView):
     context['old_surveys'] = self.object.survey_set.filter(active_to__lt=datetime.now())
     return context
 
+class StudentGroupAdminListing(UserPassesTestMixin, ListView):
+  model = StudentGroup
+  template_name = "common/studentgroup_admin_list.html"
+
+  def get_context_data(self, **kwargs):
+    context = super(StudentGroupAdminListing, self).get_context_data(**kwargs)
+    context['schools'] = slug_sort(School.objects.all(), 'name')
+    context['survey'] = Survey.objects.get(id=self.kwargs['survey_id'])
+    if('format' in self.kwargs and self.kwargs['format'] == 'csv'):
+      self.template_name = "common/studentgroup_admin_list.csv"
+    return context
+
+  def test_func(self):
+    return self.request.user.is_superuser
+
 class StudentGroupCreate(UserPassesTestMixin, CreateView):
   model = StudentGroup
   form_class = StudentGroupForm
@@ -914,9 +929,6 @@ class StudentGroupUpdate(UserPassesTestMixin, UpdateView):
     except:
       return reverse_lazy('schools:school_listing')
 
-
-
-
 class StudentGroupDelete(UserPassesTestMixin, DeleteView):
   model = StudentGroup
   login_url = reverse_lazy('denied')
@@ -945,6 +957,19 @@ class SurveyListing(UserPassesTestMixin, ListView):
 
   def test_func(self):
     return is_school_manager(self.request, self.kwargs) or is_school_teacher(self.request, self.kwargs)
+
+class SurveyAdminListing(UserPassesTestMixin, ListView):
+  model = Survey
+  template_name = "common/survey_admin_list.html"
+
+  def get_context_data(self, **kwargs):
+    # xxx will be available in the template as the related objects
+    context = super(SurveyAdminListing, self).get_context_data(**kwargs)
+    context['surveys'] = Survey.objects.all()
+    return context
+
+  def test_func(self):
+    return self.request.user.is_superuser
 
 class SurveyDetail(UserPassesTestMixin, DetailView):
   model = Survey
