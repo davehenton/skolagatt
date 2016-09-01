@@ -1,52 +1,52 @@
 {% extends 'common/index.html'%}
 
 {% block content %}
-	<a href="{% url 'schools:group_admin_listing_csv' survey.id "csv" %}">CSV útgáfa</a>
-	{% for school in schools %}
+	<a href="{% url 'schools:group_admin_listing_csv' surveys.first.title "csv" %}">CSV útgáfa</a>
+	{% for survey in surveys %}
 		<div class="row">
 			<div class="col-md-6">
-				<h3><a href="{% url 'schools:school_detail' school.id %}">{{ school }}</a></h3>
+				<h3><a href="{% url 'schools:school_detail' survey.studentgroup.school.id %}">{{ survey.studentgroup.school }}</a></h3>
 			</div>
 		</div>
-		{% for group in school.studentgroup_set.all %}
-			{% if survey in group.survey_set.all %}
-			<div class="row well">
-				<div class="col-md-12">
-					<div class="row"><h4><a href="{% url 'schools:group_detail' school.id group.id %}">{{ group }}</a></h4></div>
-						<div class="row">
-							<div class="col-md-4"><h4>Kennitala</h4></div>
-							<div class="col-md-4"><h4>Nemandi</h4></div>
-							<div class="col-md-4"><h4>Undanþága og Stuðningur</h4></div>
-						</div>
-					{% for student in group.students.all %}
-						<div class="row">
-							<div class="col-md-4">{{ student.ssn }}</div>
-							<div class="col-md-4">
-								<a href="{% url 'schools:student_detail' school.id student.id %}">{{ student.name }}</a>
-							</div>
-							{% if student.exceptions_set.all and student.supportresource_set.all %}
-							<div class="col-md-4">
-								<a href="{% url 'supportandexception:exception' school.id student.id %}" title="Undanþágur"><span class="glyphicon glyphicon-flag" style="color:#449D44"></span>&nbsp;</a>
-								<a href="{% url 'supportandexception:supportresource' school.id student.id %}" title="Stuðningsúrræði"><span class="glyphicon glyphicon-flag" style="color:#EC971F"></span>&nbsp;</a>
-							</div>
-							{% elif student.exceptions_set.all %}
-							<div class="col-md-4">
-								<a href="{% url 'supportandexception:exception' school.id student.id %}" title="Undanþágur"><span class="glyphicon glyphicon-flag" style="color:#449D44"></span>&nbsp;</a>
-							</div>
-							{% elif student.supportresource_set.all %}							
-							<div class="col-md-4">
-								<a href="{% url 'supportandexception:supportresource' school.id student.id %}" title="Stuðningsúrræði"><span class="glyphicon glyphicon-flag" style="color:#EC971F"></span>&nbsp;</a>
-							</div>
-							{% else %}
-							<div class="col-md-4">
-							</div>							
-							{% endif %}
-						</div>
-					{% endfor %}
+		<div class="row well">
+			<div class="col-md-12">
+				<div class="row">
+					<h4>
+						<a href="{% url 'schools:group_detail' survey.studentgroup.school.id survey.studentgroup.id %}">{{ group }}</a>
+					</h4>
 				</div>
+				<div class="row">
+					<div class="col-md-4"><h4>Kennitala</h4></div>
+					<div class="col-md-4"><h4>Nemandi</h4></div>
+					<div class="col-md-4"><h4>Undanþága og Stuðningur</h4></div>
+				</div>
+				{% for student in survey.studentgroup.students.all %}
+					<div class="row">
+						<div class="col-md-4">{{ student.ssn }}</div>
+						<div class="col-md-4">
+							<a href="{% url 'schools:student_detail' survey.studentgroup.school.id student.id %}">{{ student.name }}</a>
+						</div>
+						{% if student.exceptions_set.all and student.supportresource_set.all %}
+						<div class="col-md-4">
+							<a href="{% url 'supportandexception:exception' survey.studentgroup.school.id student.id %}" title="Undanþágur"><span class="glyphicon glyphicon-flag" style="color:#449D44"></span>&nbsp;</a>
+							<a href="{% url 'supportandexception:supportresource' survey.studentgroup.school.id student.id %}" title="Stuðningsúrræði"><span class="glyphicon glyphicon-flag" style="color:#EC971F"></span>&nbsp;</a>
+						</div>
+						{% elif student.exceptions_set.all %}
+						<div class="col-md-4">
+							<a href="{% url 'supportandexception:exception' survey.studentgroup.school.id student.id %}" title="Undanþágur"><span class="glyphicon glyphicon-flag" style="color:#449D44"></span>&nbsp;</a>
+						</div>
+						{% elif student.supportresource_set.all %}							
+						<div class="col-md-4">
+							<a href="{% url 'supportandexception:supportresource' survey.studentgroup.school.id student.id %}" title="Stuðningsúrræði"><span class="glyphicon glyphicon-flag" style="color:#EC971F"></span>&nbsp;</a>
+						</div>
+						{% else %}
+						<div class="col-md-4">
+						</div>							
+						{% endif %}
+					</div>
+				{% endfor %}
 			</div>
-			{% endif %}
-		{% endfor %}
+		</div>
 	{% endfor %}
 
 {% endblock %}

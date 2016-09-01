@@ -1,27 +1,23 @@
 {% block content %}
 	school_ssn, school_name, group_name, student_ssn, student_name, exception, support<br />
-	{% for school in schools %}
-		{% for group in school.studentgroup_set.all %}
-			{% if survey in group.survey_set.all %}
-				{% for student in group.students.all %}
-					{{ school.ssn }},
-					{{ school.name }},
-					{{ group.name }},
-					{{ student.ssn }},
-					{{ student.name }},
-					{% if student.exceptions_set.all %}
-					1,
-					{% else %}
-					0,
-					{% endif %}
-					{% if student.supportresource_set.all %}
-					1
-					{% else %}
-					0
-					{% endif %}
-					<br />
-				{% endfor %}
+	{% for survey in surveys %}
+		{% for student in survey.studentgroup.students.all %}
+			{{ survey.studentgroup.school.ssn }},
+			{{ survey.studentgroup.school.name }},
+			{{ survey.studentgroup.name }},
+			{{ student.ssn }},
+			{{ student.name }},
+			{% if student.exceptions_set.all %}
+			1,
+			{% else %}
+			0,
 			{% endif %}
+			{% if student.supportresource_set.all %}
+			1
+			{% else %}
+			0
+			{% endif %}
+			<br />
 		{% endfor %}
 	{% endfor %}
 

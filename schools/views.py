@@ -11,6 +11,7 @@ from django.contrib.auth.models import User, Group
 from django.conf import settings
 from django.utils import timezone
 from django.utils.decorators import method_decorator
+from django.utils.text import slugify
 from django.views.decorators.csrf import csrf_exempt
 from uuid import uuid4
 import requests, json
@@ -843,7 +844,7 @@ class StudentGroupAdminListing(UserPassesTestMixin, ListView):
   def get_context_data(self, **kwargs):
     context = super(StudentGroupAdminListing, self).get_context_data(**kwargs)
     context['schools'] = slug_sort(School.objects.all(), 'name')
-    context['survey'] = Survey.objects.get(id=self.kwargs['survey_id'])
+    context['surveys'] = Survey.objects.filter(title=self.kwargs['survey_title'])
     if('format' in self.kwargs and self.kwargs['format'] == 'csv'):
       self.template_name = "common/studentgroup_admin_list.csv"
     return context
@@ -965,7 +966,7 @@ class SurveyAdminListing(UserPassesTestMixin, ListView):
   def get_context_data(self, **kwargs):
     # xxx will be available in the template as the related objects
     context = super(SurveyAdminListing, self).get_context_data(**kwargs)
-    context['surveys'] = Survey.objects.all()
+    context['surveys'] = Survey.objects.values('title').distinct()
     return context
 
   def test_func(self):
