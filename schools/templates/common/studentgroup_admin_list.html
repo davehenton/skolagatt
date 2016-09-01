@@ -13,7 +13,9 @@
 			<div class="col-md-12">
 				<div class="row">
 					<h4>
-						<a href="{% url 'schools:group_detail' survey.studentgroup.school.id survey.studentgroup.id %}">{{ group }}</a>
+						<a href="{% url 'schools:group_detail' survey.studentgroup.school.id survey.studentgroup.id %}">
+							{{ survey.studentgroup }}
+						</a>
 					</h4>
 				</div>
 				<div class="row">
@@ -29,16 +31,20 @@
 						</div>
 						{% if student.exceptions_set.all and student.supportresource_set.all %}
 						<div class="col-md-4">
-							<a href="{% url 'supportandexception:exception' survey.studentgroup.school.id student.id %}" title="Undanþágur"><span class="glyphicon glyphicon-flag" style="color:#449D44"></span>&nbsp;</a>
+							<a href="{% url 'supportandexception:exception' survey.studentgroup.school.id student.id %}" title="Undanþágur"><span class="glyphicon glyphicon-flag" style="color:#449D44"></span>&nbsp;</a> 
+							{{ student.exceptions_set.first.exam }}
 							<a href="{% url 'supportandexception:supportresource' survey.studentgroup.school.id student.id %}" title="Stuðningsúrræði"><span class="glyphicon glyphicon-flag" style="color:#EC971F"></span>&nbsp;</a>
+							{{ student.supportresource_set.first.longer_time }}{{ student.supportresource_set.first.reading_assistance }}
 						</div>
 						{% elif student.exceptions_set.all %}
 						<div class="col-md-4">
 							<a href="{% url 'supportandexception:exception' survey.studentgroup.school.id student.id %}" title="Undanþágur"><span class="glyphicon glyphicon-flag" style="color:#449D44"></span>&nbsp;</a>
+							{{ student.exceptions_set.first.exam }}
 						</div>
 						{% elif student.supportresource_set.all %}							
 						<div class="col-md-4">
 							<a href="{% url 'supportandexception:supportresource' survey.studentgroup.school.id student.id %}" title="Stuðningsúrræði"><span class="glyphicon glyphicon-flag" style="color:#EC971F"></span>&nbsp;</a>
+							{{ student.supportresource_set.first.longer_time }}{{ student.supportresource_set.first.reading_assistance }}
 						</div>
 						{% else %}
 						<div class="col-md-4">
