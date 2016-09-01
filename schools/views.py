@@ -842,12 +842,17 @@ class StudentGroupAdminListing(UserPassesTestMixin, ListView):
   template_name = "common/studentgroup_admin_list.html"
 
   def get_context_data(self, **kwargs):
-    context = super(StudentGroupAdminListing, self).get_context_data(**kwargs)
-    context['schools'] = slug_sort(School.objects.all(), 'name')
-    context['surveys'] = Survey.objects.filter(title=self.kwargs['survey_title'])
-    if('format' in self.kwargs and self.kwargs['format'] == 'csv'):
-      self.template_name = "common/studentgroup_admin_list.csv"
+    try:
+      context = super(StudentGroupAdminListing, self).get_context_data(**kwargs)
+      context['schools'] = slug_sort(School.objects.all(), 'name')
+      context['surveys'] = Survey.objects.filter(title=self.kwargs['survey_title'])
+      context['error'] = "checking"
+      if('format' in self.kwargs and self.kwargs['format'] == 'csv'):
+        self.template_name = "common/studentgroup_admin_list.csv"
+    except Exception as e:
+      context['error'] = str(e)
     return context
+
 
   def test_func(self):
     return self.request.user.is_superuser
@@ -965,8 +970,11 @@ class SurveyAdminListing(UserPassesTestMixin, ListView):
 
   def get_context_data(self, **kwargs):
     # xxx will be available in the template as the related objects
-    context = super(SurveyAdminListing, self).get_context_data(**kwargs)
-    context['surveys'] = Survey.objects.values('title').distinct()
+    try:
+      context = super(SurveyAdminListing, self).get_context_data(**kwargs)
+      context['surveys'] = Survey.objects.values('title').distinct()
+    except Exception as e:
+      context['error'] = str(e)
     return context
 
   def test_func(self):

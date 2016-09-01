@@ -1,6 +1,7 @@
 {% extends 'common/index.html'%}
 
 {% block content %}
+	<div class="alert-danger">{{error}}</div>
 	<a href="{% url 'schools:group_admin_listing_csv' surveys.first.title "csv" %}">CSV útgáfa</a>
 	{% for survey in surveys %}
 		<div class="row">
