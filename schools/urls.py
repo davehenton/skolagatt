@@ -69,7 +69,7 @@ urlpatterns = [
     url(r'^umsjónarmenn/create$', AdminCreate.as_view(), name='admin_create'),
     url(r'^umsjónarmenn/(?P<pk>\d+)/update/$', AdminUpdate.as_view(), name='admin_update'),
     url(r'^umsjónarmenn/könnun/$', SurveyAdminListing.as_view(), name='survey_admin_listing'),
-    url(r'^umsjónarmenn/könnun/(?P<survey_title>[\w ]+)/$', StudentGroupAdminListing.as_view(), name='group_admin_listing'),
-    url(r'^umsjónarmenn/könnun/(?P<survey_title>[\w ]+)/(?P<format>\w+)/$', StudentGroupAdminListing.as_view(), name='group_admin_listing_csv'),
+    url(r'^umsjónarmenn/könnun/(?P<survey_title>.*)/$', StudentGroupAdminListing.as_view(), name='group_admin_listing'),
+    url(r'^umsjónarmenn/könnun/(?P<survey_title>.*)/(?P<format>\w+)/$', StudentGroupAdminListing.as_view(), name='group_admin_listing_csv'),
 
 ]
