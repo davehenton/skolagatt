@@ -48,7 +48,15 @@ class ExamSupport(ListView):
 	template_name = "supportandexception/student_list.html"
 	def get_context_data(self, **kwargs):
 		context = super(ExamSupport, self).get_context_data(**kwargs)
-		context['students'] = Student.objects.all()
+		school = School.objects.get(pk=self.kwargs['school_id'])
+		
+		student_info = Student.objects.filter(school=school)
+		student_moreinfo = StudentExceptionSupport.objects.filter(student = student_info)
+		
+		context['student'] = Student.objects.filter(school=school)
+		context['studentmorinfo'] = student_moreinfo
+		context['studentssupport'] = SupportResource.objects.filter(student__in = student_info).all
+		context['studentsexception'] = Exceptions.objects.filter(student__in = student_info).all
 		context['school'] = School.objects.get(pk=self.kwargs['school_id'])
 		return context
 

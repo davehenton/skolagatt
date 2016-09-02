@@ -25,6 +25,7 @@
 				<li><a href="{% url 'schools:teacher_listing' school.id %}">Kennarar</a></li>
 				<li><a href="{% url 'schools:group_listing' school.id %}">Bekkir</a></li>
 				<li><a href="{% url 'schools:student_listing' school.id %}">Nemendur</a></li>
+				<li><a href="{% url 'supportandexception:examsupport' school.id %}">Stuðningsúrræði</a></li>
 				{% if is_school_manager %}
 				<li><a href="{% url 'schools:survey_login_listing' school.id %}">Lykilorð</a></li>
 				{% endif %}
