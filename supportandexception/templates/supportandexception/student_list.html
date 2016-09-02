@@ -1,16 +1,29 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Dell</h1>
+<h1>Stuðningsúrræði</h1>
 <div >
 	<table id="student_list" class="table table-hover">
 		<thead>
 			<th>Kennitala</th>
 			<th>nafn</th>
 		</thead>
-		{% for student in students %}
-		<tr href="{% url 'supportandexception:detail' school.id student.id %}">
-			<td>{{student.ssn}}</td><td>{{student.name}}</td>
+		{% for support in studentssupport %}
+		<tr >
+			<td>{{support.student.ssn}}</td><td>{{support.student.name}}</td>
+		</tr>
+		{% endfor %}
+
+	</table>
+	<h1>undanþágur</h1>
+	<table id="student_list" class="table table-hover">
+		<thead>
+			<th>Kennitala</th>
+			<th>nafn</th>
+		</thead>
+		{% for support in studentsexception %}
+		<tr >
+			<td>{{support.student.ssn}}</td><td>{{support.student.name}}</td>
 		</tr>
 		{% endfor %}
 
