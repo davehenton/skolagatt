@@ -837,17 +837,67 @@ class StudentGroupDetail(UserPassesTestMixin, DetailView):
     context['old_surveys'] = self.object.survey_set.filter(active_to__lt=datetime.now())
     return context
 
+def group_admin_listing_csv(request, survey_title):
+    # Create the HttpResponse object with the appropriate CSV header.
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="'+survey_title+'.csv"'
+    fieldnames = ['school_ssn', 'school_name', 'group_name', 'student_ssn', 'student_name', 'exception', 'support_reading', 'support_time']
+    writer = csv.writer(response)
+    writer.writerow(fieldnames)
+
+    surveys = Survey.objects.filter(title=survey_title)
+
+    for survey in surveys:
+      for student in survey.studentgroup.students.all():
+        if student.exceptions_set.exists():
+          writer.writerow([
+            survey.studentgroup.school.ssn,
+            survey.studentgroup.school.name,
+            survey.studentgroup.name,
+            student.ssn,
+            student.name,
+            student.exceptions_set.first().exam,
+            [],
+            []
+          ])
+        elif student.supportresource_set.exists():
+          writer.writerow([
+            survey.studentgroup.school.ssn,
+            survey.studentgroup.school.name,
+            survey.studentgroup.name,
+            student.ssn,
+            student.name,
+            [],
+            student.supportresource_set.first().reading_assistance,
+            student.supportresource_set.first().longer_time
+          ])
+        else:
+          writer.writerow([
+            survey.studentgroup.school.ssn,
+            survey.studentgroup.school.name,
+            survey.studentgroup.name,
+            student.ssn,
+            student.name,
+            [],
+            [],
+            []
+          ])
+
+    return response
+
 class StudentGroupAdminListing(UserPassesTestMixin, ListView):
   model = StudentGroup
   template_name = "common/studentgroup_admin_list.html"
 
   def get_context_data(self, **kwargs):
-    context = super(StudentGroupAdminListing, self).get_context_data(**kwargs)
-    context['schools'] = slug_sort(School.objects.all(), 'name')
-    context['surveys'] = Survey.objects.filter(title=self.kwargs['survey_title'])
-    if('format' in self.kwargs and self.kwargs['format'] == 'csv'):
-      self.template_name = "common/studentgroup_admin_list.csv"
+    try:
+      context = super(StudentGroupAdminListing, self).get_context_data(**kwargs)
+      context['schools'] = slug_sort(School.objects.all(), 'name')
+      context['surveys'] = Survey.objects.filter(title=self.kwargs['survey_title'])
+    except Exception as e:
+      context['error'] = str(e)
     return context
+
 
   def test_func(self):
     return self.request.user.is_superuser
@@ -965,8 +1015,11 @@ class SurveyAdminListing(UserPassesTestMixin, ListView):
 
   def get_context_data(self, **kwargs):
     # xxx will be available in the template as the related objects
-    context = super(SurveyAdminListing, self).get_context_data(**kwargs)
-    context['surveys'] = Survey.objects.values('title').distinct()
+    try:
+      context = super(SurveyAdminListing, self).get_context_data(**kwargs)
+      context['surveys'] = Survey.objects.values('title').distinct()
+    except Exception as e:
+      context['error'] = str(e)
     return context
 
   def test_func(self):
