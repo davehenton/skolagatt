@@ -226,7 +226,7 @@ class ManagerCreate(UserPassesTestMixin, CreateView):
     return is_school_manager(self.request, self.kwargs)
 
   def post(self, *args, **kwargs):
-    self.object = Manager.objects.filter(name=self.request.POST.get('name')).first()
+    self.object = Manager.objects.filter(user__username=self.request.POST.get('ssn')).first()
     if self.object:
       return HttpResponseRedirect(self.get_success_url())
     form = self.get_form()
