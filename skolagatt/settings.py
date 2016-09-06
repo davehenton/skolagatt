@@ -11,9 +11,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '9g!57u34sefgiuay(d7bj4s5@#oaqybj8)sts63pjyi39l@ihd'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', 'skolagatt.is']
 
 
 # Application definition
@@ -117,7 +117,7 @@ USE_TZ = True
 
 SUBDIRECTORY = ''
 
-STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'static')
+STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'skolagatt/public/static')
 STATIC_URL = '/static/'
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'skolagatt/static'),
@@ -126,13 +126,12 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'vendor'),
 )
 
-PROFAGRUNNUR_URL = 'http://localhost:8080/api?format=json'
-PROFAGRUNNUR_JSON_KEY = 'some-random-string'
-INNRI_SKILABOD_URL = 'http://localhost:8081/skilabod/api?format=json'
-INNRI_SKILABOD_JSON_KEY = 'some-random-string'
 
-# Key for Json pull from this site
-JSON_API_KEY = 'some-random-string'
+JSON_API_KEY = 'bc547aff-3a20-4362-a100-b59d433a37ad'
 
-ICEKEY_VERIFICATION = 'http://localhost:8088/verify_login'
-ICEKEY_LOGIN = 'http://localhost:8088/island_innskraning'
+PROFAGRUNNUR_URL = 'https://profagrunnur.skolagatt.is/api?format=json'
+PROFAGRUNNUR_JSON_KEY = '2efb6446-e75f-4b15-abd5-cf2975e75bbe'
+ICEKEY_VERIFICATION = 'https://innskraning.mms.is/verify_login/'
+ICEKEY_LOGIN = 'https://innskraning.mms.is/island_innskraning'
+INNRI_SKILABOD_URL = 'http://www4.mms.is/innri_vefur/skilabod/api?format=json'
+INNRI_SKILABOD_JSON_KEY = 'abba56c7-73e8-4b28-9310-95ac3f767e60'
