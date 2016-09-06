@@ -841,21 +841,26 @@ def group_admin_listing_csv(request, survey_title):
     # Create the HttpResponse object with the appropriate CSV header.
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="'+survey_title+'.csv"'
-    fieldnames = ['school_ssn', 'school_name', 'group_name', 'student_ssn', 'student_name', 'exception', 'support_reading', 'support_time']
+    fieldnames = ['school_ssn', 'school_name', 'group_name', 'student_ssn', 'student_first_names', 'student_lastname', 'exception', 'support_reading', 'support_time']
     writer = csv.writer(response)
     writer.writerow(fieldnames)
 
     surveys = Survey.objects.filter(title=survey_title)
-
     for survey in surveys:
       for student in survey.studentgroup.students.all():
+        # find last name by finding last space
+        k = student.name.rfind(" ")
+        student_first_names = student.name[:k]
+        student_lastname = student.name[k+1:]
+        
         if student.exceptions_set.exists():
           writer.writerow([
             survey.studentgroup.school.ssn,
             survey.studentgroup.school.name,
             survey.studentgroup.name,
             student.ssn,
-            student.name,
+            student_first_names,
+            student_lastname,
             student.exceptions_set.first().exam,
             [],
             []
@@ -866,7 +871,8 @@ def group_admin_listing_csv(request, survey_title):
             survey.studentgroup.school.name,
             survey.studentgroup.name,
             student.ssn,
-            student.name,
+            student_first_names,
+            student_lastname,
             [],
             student.supportresource_set.first().reading_assistance,
             student.supportresource_set.first().longer_time
@@ -877,7 +883,8 @@ def group_admin_listing_csv(request, survey_title):
             survey.studentgroup.school.name,
             survey.studentgroup.name,
             student.ssn,
-            student.name,
+            student_first_names,
+            student_lastname,
             [],
             [],
             []
