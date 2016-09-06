@@ -71,7 +71,7 @@ ul.form_elements {
         font-weight: 700;
     }
     a[href]:after {
-        content: " (" attr(href) ")";
+        content: none !important;
     }
     #survey_list > div.row > div {
         display: inline-block;
