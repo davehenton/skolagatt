@@ -62,3 +62,36 @@ ul.form_elements {
 .striped div.row:nth-child(even) {
     background:#efeff5;
 }
+.removeme {
+    display: none;
+}
+@media print {
+    .removeme {
+        display: block;
+        font-weight: 700;
+    }
+    a[href]:after {
+        content: none !important;
+    }
+    #survey_list > div.row > div {
+        display: inline-block;
+    }
+    #survey_list .kt {
+        width: 14%;
+    }
+    #survey_list .name {
+        width: 30%;
+    }
+    #survey_list .support {
+        width: 30%;
+    }
+    #survey_list .testcode {
+        width: 20%;
+    }
+    .on-einstaklingsblod {
+        display: block !important;
+    }
+    div.on-einstaklingsblod.student-testcode {
+        page-break-after: always !important;
+    }
+}
