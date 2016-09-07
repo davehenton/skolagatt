@@ -147,6 +147,7 @@ $(document).ready(function() {
 function update_form(data) {
 	$('#id_survey').val(data[0]['pk']);
 	$('#id_title').val(data[0]['title']);
+	$('#id_identifier').val(data[0]['identifier']);
 	$('#id_active_from').val(data[0]['active_from']);
 	$('#id_active_to').val(data[0]['active_to']);
 	$('#id_data_fields').val(JSON.stringify(data[0]['data_fields']));
@@ -155,6 +156,7 @@ function update_form(data) {
 function clear_form() {
 	$('#id_survey').val('');
 	$('#id_title').val('');
+	$('#id_identifier').val('');
 	$('#id_active_from').val('');
 	$('#id_active_to').val('');
 	$('#id_data_fields').val('');
