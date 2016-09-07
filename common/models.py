@@ -140,6 +140,7 @@ class Survey(models.Model):
 	studentgroup = models.ForeignKey('StudentGroup')
 	survey = models.CharField(max_length = 1024) #survey id from profagrunnur
 	title = models.CharField(max_length = 256) #value from profagrunnur
+	identifier = models.CharField(max_length = 256,null=True) #value from profagrunnur
 	active_from = models.DateField(default=timezone.now) #value from profagrunnur
 	active_to = models.DateField(default=timezone.now) #value from profagrunnur
 
@@ -157,10 +158,11 @@ class Survey(models.Model):
 class SurveyForm(forms.ModelForm):
 	class Meta:
 		model = Survey
-		fields =  ['studentgroup', 'survey', 'title', 'active_from', 'active_to']
+		fields =  ['studentgroup', 'survey', 'title', 'identifier','active_from', 'active_to']
 		widgets= {
 			'studentgroup': forms.HiddenInput(),
 			'survey': forms.HiddenInput(),
+			'identifier': forms.HiddenInput(),
 			'title': forms.HiddenInput(),
 			'active_from': forms.HiddenInput(),
 			'active_to': forms.HiddenInput(),
@@ -168,6 +170,7 @@ class SurveyForm(forms.ModelForm):
 		labels = {
 			'studentgroup': 'Nemendahópur',
 			'survey': 'Könnun',
+			'identifier': 'Auðkenniskóði',
 			'title': 'Titill',
 			'active_from': 'Virkt frá',
 			'active_to': 'Virkt til',
