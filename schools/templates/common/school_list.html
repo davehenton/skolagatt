@@ -30,19 +30,23 @@
 		<div id="school_list" class="table table-hover">
 			<div class="row">
 				<div class="col-md-2"><h4>Kennitala</h4></div>
-				<div class="col-md-5"><h4>Nafn</h4></div>
+				<div class="col-md-4"><h4>Nafn</h4></div>
 				{% if request.user.is_superuser %}
-				<div class="col-md-1"><h4>#</h4></div>
+				<div class="col-md-2"><h4>#</h4></div>
+				<div class="col-md-2"><h4>Nemendur</h4></div>
 				<div class="col-md-2"><h4>Aðgerðir</h4></div>
 				{% endif %}
 			</div>
 			{% for school in school_list %}
 			<div class="row">
 				<div class="col-md-2"><a href="{% url 'schools:school_detail' school.id %}">{{school.ssn}}</a></div>
-				<div class="col-md-5"><a href="{% url 'schools:school_detail' school.id %}">{{school.name}}</a></div>
+				<div class="col-md-4"><a href="{% url 'schools:school_detail' school.id %}">{{school.name}}</a></div>
 				{% if request.user.is_superuser %}
 				<div class="col-md-2">
 				{{ school.managers.count }}
+				</div>
+				<div class="col-md-2">
+				{{ school.students.count }}
 				</div>
 				<div class="col-md-2">
 					<a href="{% url 'schools:school_update' school.id %}" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
