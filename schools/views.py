@@ -226,7 +226,7 @@ class ManagerCreate(UserPassesTestMixin, CreateView):
     return is_school_manager(self.request, self.kwargs)
 
   def post(self, *args, **kwargs):
-    self.object = Manager.objects.filter(name=self.request.POST.get('name')).first()
+    self.object = Manager.objects.filter(user__username=self.request.POST.get('ssn')).first()
     if self.object:
       return HttpResponseRedirect(self.get_success_url())
     form = self.get_form()
@@ -1069,25 +1069,19 @@ class SurveyCreate(UserPassesTestMixin, CreateView):
     """Get all surveys from profagrunnur to provide a list to survey create"""
     try:
         r = requests.get(settings.PROFAGRUNNUR_URL+'&json_api_key='+settings.PROFAGRUNNUR_JSON_KEY)
-        print(r.json())
         return r.json()
     except Exception as e:
       return []
 
   def post(self, *args, **kwargs):
     self.object = None
-    print('kalli')
     form = self.get_form()
-    print('donni')
     #make data mutable
     form.data = self.request.POST.copy()
-    print('balli')
     form.data['studentgroup'] = StudentGroup.objects.filter(pk=self.kwargs['student_group'])
     if form.is_valid():
-      print('onni')
       return self.form_valid(form)
     else:
-      print('anna')
       return self.form_invalid(form)
 
   def get_context_data(self, **kwargs):
