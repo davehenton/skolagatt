@@ -21,10 +21,9 @@
 		</div>
 		{% for data in survey_login_students %}
 		<div class="row">
-<<<<<<< HEAD
-			<div class="col-md-2">{{data.student.ssn}}</div>
-			<div class="col-md-4">{{data.student.name}}</div>
-			<div class="col-md-3">
+			<div class="col-md-2 kt student-kt">{{data.student.ssn}}</div>
+			<div class="col-md-4 name student-name">{{data.student.name}}</div>
+			<div class="col-md-3 support not-on-einstaklingsblod">
 			{% for student in survey.studentgroup.students.all %}
 					<div class="row">
 						<div class="col-md-4">{{ student.ssn }}</div>
@@ -54,11 +53,6 @@
 						{% endif %}
 					</div>
 				{% endfor %}
-=======
-			<div class="col-md-2 kt student-kt">{{data.student.ssn}}</div>
-			<div class="col-md-4 name student-name">{{data.student.name}}</div>
-			<div class="col-md-3 support not-on-einstaklingsblod">
->>>>>>> 6119d04e666bfed8371f857c62a440925e0def61
 				{% if data.student.exceptions_set.exists %}
 					<a href="{% url 'supportandexception:exception' data.student.school_set.first.id data.student.id %}" title="Undanþágur"><span class="glyphicon glyphicon-flag" style="color:#449D44"></span>&nbsp;</a>
 				{% endif %}
