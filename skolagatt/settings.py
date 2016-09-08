@@ -111,6 +111,8 @@ USE_L10N = True
 
 USE_TZ = True
 
+SESSION_COOKIE_AGE = 60 * 30  # Session will expiry after 30 minutes idle.
+SESSION_SAVE_EVERY_REQUEST = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
@@ -127,11 +129,11 @@ STATICFILES_DIRS = (
 )
 
 
-JSON_API_KEY = 'bc547aff-3a20-4362-a100-b59d433a37ad'
+JSON_API_KEY = 'some-random-string'
 
 PROFAGRUNNUR_URL = 'https://profagrunnur.skolagatt.is/api?format=json'
-PROFAGRUNNUR_JSON_KEY = '2efb6446-e75f-4b15-abd5-cf2975e75bbe'
+PROFAGRUNNUR_JSON_KEY = 'some-random-string'
 ICEKEY_VERIFICATION = 'https://innskraning.mms.is/verify_login/'
 ICEKEY_LOGIN = 'https://innskraning.mms.is/island_innskraning'
 INNRI_SKILABOD_URL = 'http://www4.mms.is/innri_vefur/skilabod/api?format=json'
-INNRI_SKILABOD_JSON_KEY = 'abba56c7-73e8-4b28-9310-95ac3f767e60'
+INNRI_SKILABOD_JSON_KEY = 'some-random-string'
