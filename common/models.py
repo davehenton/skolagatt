@@ -115,7 +115,20 @@ class SchoolForm(forms.ModelForm):
 
 class StudentGroup(models.Model):
 	name = models.CharField(max_length = 128)
-	student_year = models.CharField(max_length = 2, null=True, blank=True)
+	YEARS = (
+		('0','Blandaður árgangur'),
+		('1','1. bekkur'),
+		('2','2. bekkur'),
+		('3','3. bekkur'),
+		('4','4. bekkur'),
+		('5','5. bekkur'),
+		('6','6. bekkur'),
+		('7','7. bekkur'),
+		('8','8. bekkur'),
+		('9','9. bekkur'),
+		('10','10. bekkur'),
+	)
+	student_year = models.CharField(max_length = 2, choices=YEARS, null=True, blank=True)	
 	group_managers = models.ManyToManyField(Teacher, blank=True)
 	school = models.ForeignKey('School')
 	students = models.ManyToManyField(Student, blank=True)
