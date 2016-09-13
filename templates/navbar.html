@@ -27,12 +27,12 @@
 				<li><a href="{% url 'schools:student_listing' school.id %}">Nemendur</a></li>
 				<li><a href="{% url 'supportandexception:examsupport' school.id %}">Stuðningsúrræði</a></li>
 				{% if is_school_manager %}
-				<li><a href="{% url 'schools:survey_login_listing' school.id %}">Lykilorð</a></li>
+				<li><a href="{% url 'schools:survey_login_listing' school.id %}">Prófkóðar</a></li>
 				{% endif %}
 				{% elif user.is_superuser %}
 				<li><a href="{% url 'schools:survey_login_admin_listing' %}">
 						<span class="glyphicon glyphicon-lock"></span>
-						&nbsp;Lykilorð
+						&nbsp;Prófkóðar
 					</a>
 				</li>
 				<li><a href="{% url 'schools:admin_listing' %}">
@@ -42,7 +42,7 @@
 				</li>
 				<li><a href="{% url 'schools:survey_admin_listing' %}">
 						<span class="glyphicon glyphicon-lock"></span>
-						&nbsp;Kannanir
+						&nbsp;Próf
 					</a>
 				</li>
 				{% endif %}
