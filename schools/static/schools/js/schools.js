@@ -178,7 +178,7 @@ $(function() {
 	try {
 		//add namska select
 		var select = $("<select id=\"survey_select\" name=\"survey_select\" />");
-		var options= '<option value="">Velja könnun</option>';
+		var options= '<option value="">Velja próf</option>';
 		$.each(survey_list, function(key, value){
 			options += '<option value=' + value['pk'] + '>' + value['title'] + ' - ' + value['active_to'] + '</option>';
 		});

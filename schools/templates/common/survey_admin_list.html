@@ -3,7 +3,7 @@
 
 {% block content %}
 	<div class="alert-danger">{{error}}</div>
-	<h3>Veldu könnun</h3>
+	<h3>Veldu próf</h3>
 	{% for survey in surveys %}
 		<div class="row">
 			<a href="{% url 'schools:group_admin_listing' survey.title %}">{{ survey.title }}</a>
