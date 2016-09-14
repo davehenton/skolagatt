@@ -14,7 +14,7 @@
 	<div class="col-md-3">
 		<h5>Árgangur: {{studentgroup.student_year}}</h5>
 		<h4>Umsjónarmenn</h4>
-		{% for teacher in studentgroup.group_managers.all %}
+		{% for teacher in teachers %}
 			<div class="row">
 				<div class="col-md-12"><a href="{% url 'schools:teacher_detail' school.id teacher.id %}">{{ teacher }}</a></div>
 			</div>
@@ -22,7 +22,7 @@
 	</div>
 	<div class="col-md-5">
 		<h4>Nemendur</h4>
-		{% for student in studentgroup.students.all %}
+		{% for student in students %}
 			<div class="row">
 				<div class="col-md-3">
 					<a href="{% url 'schools:student_detail' school.id student.id %}">{{student.ssn}}</a>
