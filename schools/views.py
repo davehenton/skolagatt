@@ -846,9 +846,15 @@ def group_admin_listing_csv(request, survey_title):
     # Create the HttpResponse object with the appropriate CSV header.
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="'+survey_title+'.csv"'
-    fieldnames = ['school_ssn', 'school_name', 'group_name', 'student_ssn', 'student_first_names', 'student_lastname', 'exception', 'support_reading', 'support_time']
+    fieldnames = ['FIRST', 'LAST', 'RESULTS EMAIL', 'EXTERNAL ID', 'CODE EMAIL', 'TEST NAME', 'GROUP PATH', 'EXTRA TIME']
     writer = csv.writer(response)
     writer.writerow(fieldnames)
+
+    KEY = {
+      1: 'íslenska',
+      2: 'enska',
+      3: 'stærðfræði'
+    }
 
     surveys = Survey.objects.filter(title=survey_title)
     for survey in surveys:
@@ -857,42 +863,33 @@ def group_admin_listing_csv(request, survey_title):
         k = student.name.rfind(" ")
         student_first_names = student.name[:k]
         student_lastname = student.name[k+1:]
-        
-        if student.exceptions_set.exists():
+
+        student_processed = False
+        if student.supportresource_set.exists():
+          for i in student.supportresource_set.first().longer_time + student.supportresource_set.first().reading_assistance:
+            if KEY.get(i, '') in survey.identifier and not student_processed:
+              writer.writerow([
+                student_first_names,
+                student_lastname,
+                '',
+                student.ssn,
+                '',
+                survey.identifier+'_stuðningur',
+                '',
+                'Y'
+              ])
+              student_processed = True
+
+        if not student_processed:
           writer.writerow([
-            survey.studentgroup.school.ssn,
-            survey.studentgroup.school.name,
-            survey.studentgroup.name,
-            student.ssn,
             student_first_names,
             student_lastname,
-            student.exceptions_set.first().exam,
-            [],
-            []
-          ])
-        elif student.supportresource_set.exists():
-          writer.writerow([
-            survey.studentgroup.school.ssn,
-            survey.studentgroup.school.name,
-            survey.studentgroup.name,
+            '',
             student.ssn,
-            student_first_names,
-            student_lastname,
-            [],
-            student.supportresource_set.first().reading_assistance,
-            student.supportresource_set.first().longer_time
-          ])
-        else:
-          writer.writerow([
-            survey.studentgroup.school.ssn,
-            survey.studentgroup.school.name,
-            survey.studentgroup.name,
-            student.ssn,
-            student_first_names,
-            student_lastname,
-            [],
-            [],
-            []
+            '',
+            survey.identifier,
+            '',
+            ''
           ])
 
     return response
