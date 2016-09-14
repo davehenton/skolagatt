@@ -798,6 +798,9 @@ class StudentDelete(UserPassesTestMixin, DeleteView):
     self.object = self.get_object()
     #delete student_school entry
     School.objects.get(pk=self.kwargs.get('school_id')).students.remove(self.object)
+    #remove student from all studentgroups in school
+    for group in StudentGroup.objects.filter(school=self.kwargs.get('school_id')):
+      group.students.remove(self.object)
     return HttpResponseRedirect(self.get_success_url())
 
   def get_success_url(self):
