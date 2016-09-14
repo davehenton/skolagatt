@@ -1365,7 +1365,6 @@ class SurveyLoginCreate(UserPassesTestMixin, CreateView):
       u_file = self.request.FILES['file'].name
       extension = u_file.split(".")[-1]
       ssn = self.request.POST.get('student_ssn')
-      name = self.request.POST.get('student_name')
       survey_id = self.request.POST.get('survey_id')
       password = self.request.POST.get('password')
       title = self.request.POST.get('title')
@@ -1382,12 +1381,10 @@ class SurveyLoginCreate(UserPassesTestMixin, CreateView):
             row = row.decode('utf-8')
             student_ssn = row.split(',')[int(ssn)]
             student_survey_id = row.split(',')[int(survey_id)]
-            student_name = row.split(',')[int(name)]
             student_password = row.split(',')[int(password)]
             data.append({
               'survey_id': student_survey_id.strip(),
               'ssn': student_ssn.strip(),
-              'name': student_name.strip(),
               'password': student_password.strip()})
         elif extension == 'xlsx':
           input_excel = self.request.FILES['file']
@@ -1398,7 +1395,6 @@ class SurveyLoginCreate(UserPassesTestMixin, CreateView):
               data.append({
                 'survey_id': str(sheet.cell_value(row,int(survey_id))),
                 'ssn': str(int(sheet.cell_value(row,int(ssn)))).zfill(10),
-                'name': str(sheet.cell_value(row,int(name))),
                 'password': str(sheet.cell_value(row,int(password))),
                 })
         return render(self.request, 'common/password_verify_import.html', {'data': data})
@@ -1409,11 +1405,7 @@ class SurveyLoginCreate(UserPassesTestMixin, CreateView):
       student_data = json.loads(self.request.POST['students'])
       #iterate through the data, add students if they don't exist then create a survey_login object
       for data in student_data:
-        student = None
-        try:
-          student = Student.objects.create(ssn=data['ssn'], name=data['name'])
-        except Exception as e:
-          student = Student.objects.get(ssn=data['ssn']) #student already exists
+        student = Student.objects.get(ssn=data['ssn']) #student already exists
 
         #check if survey_login for student exists, create if not, otherwise update
         survey_login = SurveyLogin.objects.filter(student=student, survey_id=data['survey_id'])
