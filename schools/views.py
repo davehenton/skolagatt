@@ -838,6 +838,8 @@ class StudentGroupDetail(UserPassesTestMixin, DetailView):
     context['supports'] = SupportResource.objects.all()
     context['surveys'] = self.object.survey_set.filter(active_to__gte=datetime.now())
     context['old_surveys'] = self.object.survey_set.filter(active_to__lt=datetime.now())
+    context['students'] = slug_sort(self.object.students.all(), 'name')
+    context['teachers'] = slug_sort(self.object.group_managers.all(), 'name')
     return context
 
 def group_admin_listing_csv(request, survey_title):
