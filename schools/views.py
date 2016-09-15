@@ -843,6 +843,7 @@ class StudentGroupDetail(UserPassesTestMixin, DetailView):
     return context
 
 def group_admin_listing_csv(request, survey_title):
+    from ast import literal_eval
     # Create the HttpResponse object with the appropriate CSV header.
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="'+survey_title+'.csv"'
@@ -866,11 +867,13 @@ def group_admin_listing_csv(request, survey_title):
 
         student_processed = False
         if student.supportresource_set.exists():
+          longer_time = literal_eval(student.supportresource_set.first().longer_time)
+          reading_assistance = literal_eval(student.supportresource_set.first().reading_assistance)
           """Fyrir öll stuðningsúrræði, ath hvort stuðningsúrræðið sé fyrir þetta próf"""
-          for i in student.supportresource_set.first().longer_time + student.supportresource_set.first().reading_assistance:
+          for i in longer_time + reading_assistance:
             if KEY.get(i, '') in survey.identifier and not student_processed:
               """Próftaki með lengdan tíma og engan stuðning á að fá venjulegt próf með lengdum tíma"""
-              if i in student.supportresource_set.first().longer_time and i not in student.supportresource_set.first().reading_assistance:
+              if i in longer_time and i not in reading_assistance:
                 writer.writerow([
                   student_first_names,
                   student_lastname,
