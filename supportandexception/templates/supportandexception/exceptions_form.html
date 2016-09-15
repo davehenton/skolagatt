@@ -81,10 +81,12 @@
 <b>Skráð:</b>{{exceptions.exceptionsdate}}
 </div>
 {% endif %}
-<div>
-<button class="btn btn-primary" type="submit" value="exceptionsave" name="submit">Vista beiðni um undanþágu</button>
-
-<button class="btn btn-primary" type="submit" value="exceptiondelete" name="submit">Eyða beiðni um undanþágu</button>
+<div class="row">
+	Skráningartími fyrir stuðningsúrræði er liðinn.
+</div>
+<div class="row">
+	<button class="btn btn-success" type="submit" value="exceptionsave" name="submit" disabled>Vista beiðni um undanþágu</button>
+	<button class="btn btn-danger" type="submit" value="exceptiondelete" name="submit" disabled>Eyða beiðni um undanþágu</button>
 </div>
 </form>
 {% endblock %}
