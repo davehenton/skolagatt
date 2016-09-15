@@ -2,7 +2,6 @@
 {% load common_helpers %}
 
 {% block content %}
-<form action="" method="POST">{% csrf_token %}
 	<script type="text/javascript">
 		var studentpk = {{student.pk}};
 	</script>
@@ -28,21 +27,23 @@
 	</div>
 	<div class="row">
 		<div class="col-md-6">
-			<h3>Athugasemd</h3>
-			<a  id="notes" class="btn btn-info"><span class="glyphicon glyphicon-plus">
-				</span>&nbsp;Uppfæra athugasemd
-			</a>
+			<form action="" method="POST">{% csrf_token %}
+				<h3>Athugasemd</h3>
+				<a  id="notes" class="btn btn-info"><span class="glyphicon glyphicon-plus">
+					</span>&nbsp;Uppfæra athugasemd
+				</a>
 
-			<div class="row">
-				<div id="notesshow">
-				{% if student_moreinfo.notes != null %}
-					{{student_moreinfo.notes}}
-				{% endif %}
+				<div class="row">
+					<div id="notesshow">
+					{% if student_moreinfo.notes != null %}
+						{{student_moreinfo.notes}}
+					{% endif %}
+					</div>
+					<div id="textareashow" style="display:none;">
+						<textarea rows="5" cols="50" id="textareaid">{% if student_moreinfo.notes != null %}{{student_moreinfo.notes}}{% endif %}</textarea>
+					</div>
 				</div>
-				<div id="textareashow" style="display:none;">
-					<textarea rows="5" cols="50" id="textareaid">{% if student_moreinfo.notes != null %}{{student_moreinfo.notes}}{% endif %}</textarea>
-				</div>
-			</div>
+			</form>
 		</div>
 		<div class="col-md-6">
 			<h3>Kannanir</h3>
@@ -89,5 +90,25 @@
 			</div>
 		</div>
 	</div>
-</form>
+	{% if request.user.is_superuser %}
+		<h3>Skólar sem nemandi er í</h3>
+		{% for school in student.school_set.all %}
+			<div class="row">
+				<div class="col-md-6">
+					<h3><a href="{% url 'schools:school_detail' school.id %}">{{school.name}}</a></h3>
+				</div>
+				<div class="col-md-6">
+					<h3>Hópar</h3>
+					{% for group in school.studentgroup_set.all %}
+						<div class="row">
+							<div class="col-md-12">
+								<a href="{% url 'schools:group_detail' school.id group.id %}">{{ group.name }}
+							</div>
+						</div>
+					{% endfor %}
+				</div>
+			</div>
+		{% endfor %}
+	{% endif %}
+
 {% endblock %}
