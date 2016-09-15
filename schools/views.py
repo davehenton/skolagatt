@@ -860,27 +860,43 @@ def group_admin_listing_csv(request, survey_title):
     for survey in surveys:
       for student in survey.studentgroup.students.all():
         # find last name by finding last space
-        k = student.name.rfind(" ")
-        student_first_names = student.name[:k]
-        student_lastname = student.name[k+1:]
+        student_names = student.name.strip().split(" ")
+        student_first_names = ' '.join(student_names[:-1])
+        student_lastname = student_names[-1]
 
         student_processed = False
         if student.supportresource_set.exists():
+          """Fyrir öll stuðningsúrræði, ath hvort stuðningsúrræðið sé fyrir þetta próf"""
           for i in student.supportresource_set.first().longer_time + student.supportresource_set.first().reading_assistance:
             if KEY.get(i, '') in survey.identifier and not student_processed:
-              writer.writerow([
-                student_first_names,
-                student_lastname,
-                '',
-                student.ssn,
-                '',
-                survey.identifier+'_stuðningur',
-                '',
-                'Y'
-              ])
+              """Próftaki með lengdan tíma og engan stuðning á að fá venjulegt próf með lengdum tíma"""
+              if i in student.supportresource_set.first().longer_time and i not in student.supportresource_set.first().reading_assistance:
+                writer.writerow([
+                  student_first_names,
+                  student_lastname,
+                  '',
+                  student.ssn,
+                  '',
+                  survey.identifier,
+                  '',
+                  'Y'
+                ])
+              else:
+                """Annars lengdur tími og stuðningur"""
+                writer.writerow([
+                  student_first_names,
+                  student_lastname,
+                  '',
+                  student.ssn,
+                  '',
+                  survey.identifier+'_stuðningur',
+                  '',
+                  'Y'
+                ])
               student_processed = True
 
         if not student_processed:
+          """Próftaki fær venjulegt próf"""
           writer.writerow([
             student_first_names,
             student_lastname,
