@@ -25,11 +25,18 @@
 				<li><a href="{% url 'schools:teacher_listing' school.id %}">Kennarar</a></li>
 				<li><a href="{% url 'schools:group_listing' school.id %}">Bekkir</a></li>
 				<li><a href="{% url 'schools:student_listing' school.id %}">Nemendur</a></li>
-				<li><a href="{% url 'supportandexception:examsupport' school.id %}">Stuðningsúrræði</a></li>
+				<li class="dropdown">
+					<a class="dropdown-toggle" data-toggle="dropdown" href="#">Samræmdu próf
+        				<span class="caret"></span>
+        			</a>
+        			<ul class="dropdown-menu">
+						<li><a href="{% url 'supportandexception:examsupport' school.id %}">Stuðningsúrræði</a></li>
+						{% if is_school_manager %}
+						<li><a href="{% url 'schools:survey_login_listing' school.id %}">Prófkóðar</a></li>
+						{% endif %}
+					</ul>
+				</li>
 				<li><a href="{% url 'schools:lesferill' school.id %}">Lesferill</a></li>
-				{% if is_school_manager %}
-				<li><a href="{% url 'schools:survey_login_listing' school.id %}">Prófkóðar</a></li>
-				{% endif %}
 				{% elif user.is_superuser %}
 				<li><a href="{% url 'schools:survey_login_admin_listing' %}">
 						<span class="glyphicon glyphicon-lock"></span>
