@@ -22,6 +22,9 @@ from common.models import *
 from supportandexception.models import *
 from .util import *
 
+def lesferill(request, school_id):
+  return render(request, 'common/lesferill.html', {'school_id': school_id})
+
 class NotificationCreate(UserPassesTestMixin, CreateView):
   model = Notification
 
