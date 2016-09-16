@@ -91,7 +91,7 @@ class SupportreResourceCreate(CreateView):
 		return context
 
 	def post(self, request, *args, **kwargs):
-		return HttpResponseRedirect(reverse('schools:student_detail', args=(int(self.kwargs.get('school_id')),int(self.kwargs.get('pk')),)))
+		#return HttpResponseRedirect(reverse('schools:student_detail', args=(int(self.kwargs.get('school_id')),int(self.kwargs.get('pk')),)))
 		if(request.POST.get('submit')== 'supportsave'):
 			notes = request.POST['notes']
 			expl = request.POST['explanation']
@@ -139,7 +139,7 @@ class ExceptionCreate(CreateView):
 	form_class = ExceptionsForm
 
 	def post(self, request, *args, **kwargs):
-		return HttpResponseRedirect(reverse('schools:student_detail', args=(int(self.kwargs.get('school_id')),int(self.kwargs.get('pk')),)))
+		#return HttpResponseRedirect(reverse('schools:student_detail', args=(int(self.kwargs.get('school_id')),int(self.kwargs.get('pk')),)))
 		if(request.POST.get('submit')== 'exceptionsave'):
 			expl = request.POST.get('explanation')
 			exam = request.POST.getlist("exam")
