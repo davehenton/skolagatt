@@ -1362,6 +1362,14 @@ class SurveyLoginDetail(UserPassesTestMixin, DetailView):
   def get_object(self, **kwargs):
     return SurveyLogin.objects.filter(survey_id=self.kwargs['survey_id']).first()
 
+  def get_template_names(self, **kwargs):
+    if 'print' in self.kwargs:
+      if self.kwargs['print'] == 'listi':
+        return ['surveylogin_detail_print_list.html']
+      elif self.kwargs['print'] == 'einstaklingsblod':
+        return ['surveylogin_detail_print_singles.html']
+    return ['surveylogin_detail.html']
+
   def get_context_data(self, **kwargs):
     # xxx will be available in the template as the related objects
     context = super(SurveyLoginDetail, self).get_context_data(**kwargs)
