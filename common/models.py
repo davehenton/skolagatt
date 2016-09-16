@@ -50,6 +50,7 @@ class ManagerForm(forms.ModelForm):
 class Teacher(models.Model):
 	ssn = models.CharField(max_length = 10, unique=True)
 	name = models.CharField(max_length = 128)
+	position = models.CharField(max_length = 256, blank=True)	
 	user = models.ForeignKey(User)
 
 	class Meta:
@@ -61,11 +62,12 @@ class Teacher(models.Model):
 class TeacherForm(forms.ModelForm):
 	class Meta:
 		model = Teacher
-		fields =  ['ssn', 'name', 'user']
+		fields =  ['ssn', 'name', 'position', 'user']
 		widgets = {'user': forms.HiddenInput()}
 		labels = {
 			'ssn': 'Kennitala',
 			'name': 'Nafn',
+			'position': 'Staða',			
 			'user': 'Notendur',
 		}
 

@@ -6,12 +6,14 @@
 	<a href="{% url 'schools:manager_create' school.id %}" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span>Bæta við skólastjórnanda</a>
 	<div id="manager_list" class="table table-hover">
 		<div class="row">
-			<div class="col-md-3"><h4>Nafn</h4></div>
+			<div class="col-md-4"><h4>Nafn</h4></div>
+			<div class="col-md-4"><h4>Staða</h4></div>
 			<div class="col-md-1"><h4>Aðgerðir</h4></div>
 		</div>
 		{% for manager in managers %}
 		<div class="row">
-			<div class="col-md-3"><a href="{% url 'schools:manager_detail' school.id manager.id %}">{{manager.name}}</a></div>
+			<div class="col-md-4"><a href="{% url 'schools:manager_detail' school.id manager.id %}">{{manager.name}}</a></div>
+			<div class="col-md-4">{{manager.position}}</div>
 			<div class="col-md-1">
 				<a href="{% url 'schools:manager_update' school.id manager.id %}" class="btn btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
 				<a href="{% url 'schools:manager_delete' school.id manager.id %}" class="btn btn-xs btn-danger"><span class="glyphicon glyphicon-trash"></span></a>
