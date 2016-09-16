@@ -24,6 +24,7 @@ class Manager(models.Model):
 	name = models.CharField(max_length = 128)
 	email = models.CharField(max_length = 256, blank=True)
 	phone = models.CharField(max_length = 7, blank=True)
+	position = models.CharField(max_length = 256, blank=True)
 	user = models.ForeignKey(User)
 
 	class Meta:
@@ -35,13 +36,14 @@ class Manager(models.Model):
 class ManagerForm(forms.ModelForm):
 	class Meta:
 		model = Manager
-		fields = ['ssn', 'name', 'email', 'phone', 'user']
+		fields = ['ssn', 'name', 'email', 'phone', 'position', 'user']
 		widgets = {'user': forms.HiddenInput()}
 		labels = {
 			'ssn': 'Kennitala',
 			'name': 'Nafn',
 			'email': 'Tölvupóstfang',
-			'phone': 'Símanúmer',			
+			'phone': 'Símanúmer',
+			'position': 'Staða',
 			'user': 'Notendur',
 		}
 
