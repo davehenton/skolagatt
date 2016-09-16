@@ -1,0 +1,144 @@
+{% extends 'second_base.html'%}
+{% load staticfiles %}
+{% block stylesheet %}
+<link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+<style>
+	body {
+		background: #EAEAEA;
+		font-family: 'Open Sans', sans-serif;
+		color: #0374A2;
+	}
+	page[size="A4"] {
+	    -webkit-print-color-adjust: exact;
+	    background: white;
+	    width: 210mm;
+	    height: 291.9mm;
+	    display: block;
+	    margin: 0 auto;
+	    margin-bottom: 5mm;
+	    padding: 2em;
+	    box-shadow: 0 0 5mm rgba(0, 0, 0, 0.5);
+	}
+	@page {
+        margin: 0;
+    }
+	.outer-border {
+		border: solid 3px #0374A2;
+		padding: 2px;
+		height: 100%;
+	}
+	.inner-border {
+		border: solid 1px #0374A2;
+		height: 100%;
+	}
+	h1 {
+		font-size: 20pt;
+	}
+	h1 > small {
+		font-size: 15pt;
+		color: #0374A2;
+	}
+	.thead td {
+		font-size: 12pt;
+		border: none !important;
+		vertical-align: middle !important;
+		padding-bottom: 2px !important;
+	}
+	.tbody td {
+		font-size: 12pt;
+		color: #000;
+	}
+	.testcode {
+		font-size: 14pt !important;
+	}
+	.table-container {
+		padding: 2em;
+	}
+	.mms-logo {
+		margin: 0 auto;
+		padding-top: 20px;
+		width: 20%
+	}
+	.fineprint {
+		width: 100%;
+	}
+	.disclaimer {
+		padding-top: 30em;
+		color: #000;
+	}
+	.disclaimer p {
+		padding: 0 5px;
+	}
+</style>
+{% endblock %}
+{% block content %}
+{% for data in survey_login_students %}
+<page size="A4">
+	<div class="outer-border">
+		<div class="inner-border">
+			<img src="{% static 'img/logo-3litur.png'%}" class="img-responsive mms-logo"/>
+			<h1 class="text-center">Prófkóði nemanda <small>{{survey_id}}</small></h1>
+			<div class="table-container">
+				<table id="{{data.student.ssn}}" class="table">
+					<tbody>
+						<tr class="thead">
+							<td>Kennitala</td>
+							<td>Nafn</td>
+							<td>Stuðningur</td>
+							<td class="testcode">Prófkóði</td>
+						</tr>
+						<tr class="tbody">
+							<td>{{data.student.ssn}}</td>
+							<td>{{data.student.name}}</td>
+							<td>
+							{% for student in survey.studentgroup.students.all %}
+									<div class="row">
+										<div class="col-md-4">{{ student.ssn }}</div>
+										<div class="col-md-4">
+											<a href="{% url 'schools:student_detail' survey.studentgroup.school.id student.id %}">{{ student.name }}</a>
+										</div>
+										{% if student.exceptions_set.all and student.supportresource_set.all %}
+										<div class="col-md-4">
+											<a href="{% url 'supportandexception:exception' survey.studentgroup.school.id student.id %}" title="Undanþágur"><span class="glyphicon glyphicon-flag" style="color:#449D44"></span>&nbsp;</a> 
+											{{ student.exceptions_set.first.exam }}
+											<a href="{% url 'supportandexception:supportresource' survey.studentgroup.school.id student.id %}" title="Stuðningsúrræði"><span class="glyphicon glyphicon-flag" style="color:#EC971F"></span>&nbsp;</a>
+											Tími: {{ student.supportresource_set.first.longer_time }} Lestur:{{ student.supportresource_set.first.reading_assistance }}
+										</div>
+										{% elif student.exceptions_set.all %}
+										<div class="col-md-4">
+											<a href="{% url 'supportandexception:exception' survey.studentgroup.school.id student.id %}" title="Undanþágur"><span class="glyphicon glyphicon-flag" style="color:#449D44"></span>&nbsp;</a>
+											{{ student.exceptions_set.first.exam }}
+										</div>
+										{% elif student.supportresource_set.all %}							
+										<div class="col-md-4">
+											<a href="{% url 'supportandexception:supportresource' survey.studentgroup.school.id student.id %}" title="Stuðningsúrræði"><span class="glyphicon glyphicon-flag" style="color:#EC971F"></span>&nbsp;</a>
+											Tími: {{ student.supportresource_set.first.longer_time }} Lestur: {{ student.supportresource_set.first.reading_assistance }}
+										</div>
+										{% else %}
+										<div class="col-md-4">
+										</div>							
+										{% endif %}
+									</div>
+								{% endfor %}
+								{% if data.student.exceptions_set.exists %}
+									<a href="{% url 'supportandexception:exception' data.student.school_set.first.id data.student.id %}" title="Undanþágur"><span class="glyphicon glyphicon-flag" style="color:#449D44"></span>&nbsp;</a>
+								{% endif %}
+								{% if data.student.supportresource_set.exists %}
+									<a href="{% url 'supportandexception:supportresource' data.student.school_set.first.id data.student.id %}" title="Stuðningsúrræði"><span class="glyphicon glyphicon-flag" style="color:#EC971F"></span>&nbsp;</a>
+								{% endif %}
+							</td>
+							<td class="testcode">{{data.survey_code}}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="row disclaimer">
+				<p class="col-md-6 col-md-offset-3 col-xs-6 col-xs-offset-3">
+					<strong>Ath.</strong> þegar þú hefur slegið prófkóðann inn, skaltu snúa blaðinu við. Þú getur notað það sem rissblað ef þú vilt. Að prófi loknu skal þessu blaði skilað til kennara.
+				</p>
+			</div>
+		</div>
+	</div>
+</page>
+{% endfor %}
+{% endblock %}
