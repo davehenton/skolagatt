@@ -23,12 +23,14 @@
 	<div id="teacher_list" class="table table-hover">
 		<div class="row">
 			<div class="col-md-3"><h4>Nafn</h4></div>
+			<div class="col-md-3"><h4>Staða</h4></div>
 			<div class="col-md-3"><h4>Bekkir</h4></div>
-			<div class="col-md-1"><h4>Aðgerðir</h4></div>
+			<div class="col-md-2"><h4>Aðgerðir</h4></div>
 		</div>
 		{% for teacher in teachers %}
 		<div class="row">
 			<div class="col-md-3"><a href="{% url 'schools:teacher_detail' school.id teacher.id %}">{{teacher.name}}</a></div>
+			<div class="col-md-3">{{teacher.position}}</div>
 			<div class="col-md-3">
 				{% for group in groups%}
 					{% for  manager in group.group_managers.all%}
