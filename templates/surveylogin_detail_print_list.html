@@ -140,13 +140,13 @@
 							<td>
 							{% if data.student.supportresource_set.exists %}
 								{% if exam in data.student.supportresource_set.first.reading_assistance %}
-									<b>1</b>,
+									<b>1.</b>
 								{% endif %}
 								{% if exam in data.student.supportresource_set.first.interpretation %}
-									<b>2</b>,
+									<b>2.</b>
 								{% endif %}
 								{% if exam in data.student.supportresource_set.first.longer_time %}
-									<b>3</b>
+									<b>3.</b>
 								{% endif %}
 							{% endif %}
 							</td>
