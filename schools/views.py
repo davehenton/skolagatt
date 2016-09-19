@@ -1379,6 +1379,12 @@ class SurveyLoginDetail(UserPassesTestMixin, DetailView):
       context['survey_login_students'] = SurveyLogin.objects.filter(student__in = Student.objects.filter(school=school)).filter(survey_id=self.kwargs['survey_id'])
     else:
       context['survey_login_students'] = SurveyLogin.objects.filter(survey_id=self.kwargs['survey_id'])
+    if 'íslenska' in self.kwargs['survey_id']:
+      context['exam'] = '1'
+    elif 'enska' in self.kwargs['survey_id']:
+      context['exam'] = '2'
+    elif 'stærðfræði' in self.kwargs['survey_id']:
+      context['exam'] = '3'
     return context
 
 class SurveyLoginCreate(UserPassesTestMixin, CreateView):
