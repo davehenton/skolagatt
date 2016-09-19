@@ -19,7 +19,10 @@
 	    box-shadow: 0 0 5mm rgba(0, 0, 0, 0.5);
 	    color: #0374A2;
 	}
-	.outer-border {
+	@page {
+        margin: 0;
+    }
+ 	.outer-border {
 		border: solid 3px #0374A2;
 		padding: 2px;
 		height: 100%;
@@ -36,15 +39,15 @@
 		color: #0374A2;
 	}
 
-	thead td {
+	.thead td {
 		font-size: 12pt;
+		border: none !important;
 		vertical-align: middle !important;
 		padding-bottom: 2px !important;
 	}
-	tbody td {
+	.tbody td {
+		font-size: 12pt;
 		color: #000;
-		vertical-align: middle !important;
-		padding: 4px !important;
 	}
 	.fjarvera {
 		font-size: 10pt;
@@ -81,18 +84,48 @@
 			<h1 class="text-center">Þátttökulisti nemenda <small>{{survey_id}}</small></h1>
 			<div class="table-container">
 				<table id="survey_list" class="table">
-					<thead>
-						<tr>
+					<tbody>
+						<tr class="thead">
 							<td class="fjarvera">*M F V</td>
 							<td>Kennitala</td>
 							<td>Nafn</td>
 							<td>**Stuðningur</td>
 							<td class="testcode">Prófkóði</td>
 						</tr>
-					</thead>
-					<tbody>
 						{% for data in survey_login_students %}
-						<tr>
+							{% if forloop.counter0|divisibleby:20 and forloop.counter0 != 0 %}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	<div class="row fineprint">
+		<div class="col-md-4 col-xs-4">
+			<span class="text-left">*Mætt/ur Fjarverandi Veik/ur</span>
+		</div>
+		<div class="col-md-8 col-xs-8 text-right">
+			<span class="">**<strong>1.</strong> Lestraraðstoð <strong>2.</strong> Túlkun fyrirmæla <strong>3.</strong> Lengdur próftími</span>
+		</div>
+		
+	</div>
+</page>
+<page size="A4">
+	<div class="outer-border">
+		<div class="inner-border">
+			<img src="{% static 'img/logo-3litur.png'%}" class="img-responsive mms-logo"/>
+			<h1 class="text-center">Þátttökulisti nemenda <small>{{survey_id}}</small></h1>
+			<div class="table-container">
+				<table id="survey_list" class="table">
+					<tbody>
+						<tr class="thead">
+							<td class="fjarvera">*M F V</td>
+							<td>Kennitala</td>
+							<td>Nafn</td>
+							<td>**Stuðningur</td>
+							<td class="testcode">Prófkóði</td>
+						</tr>
+							{% endif %}
+						<tr class="tbody">
 							<td>
 								<div class="ticks">
 									<span class="glyphicon glyphicon-unchecked" aria-hidden="true"></span>
@@ -101,7 +134,7 @@
 								</div>
 							</td>
 							<td>{{data.student.ssn}}</td>
-							<td>{{data.student.name}}</td>EC971F
+							<td>{{data.student.name}}</td>
 							<td>
 							{% for student in survey.studentgroup.students.all %}
 									<div class="row">
