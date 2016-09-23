@@ -9,7 +9,9 @@
 		</div>
 		{% for survey in survey_login_list %}
 		<div class="row">
-			<div class="col-md-12"><a href="{% url 'schools:survey_login_detail' school_id survey.survey_id %}">{{survey.survey_id}}</a></div>
+			<div class="col-md-12">
+				<a href="{% url 'schools:survey_login_detail' school_id survey.survey_id %}">{{survey.survey_id}}</a>
+			</div>
 		</div>
 		{% endfor %}
 	</div>

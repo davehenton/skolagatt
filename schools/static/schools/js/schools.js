@@ -167,6 +167,7 @@ $( document ).on("change", "#survey_select", function(){
 	var survey_id = $( "#survey_select option:selected" ).val();
 	if(survey_id !== "") {
 		data = $.grep(survey_list, function(e){ return e.pk == survey_id; });
+		$("#survey_description").html(marked(data[0]['description']));
 		update_form( data );
 	}
 	else {
@@ -176,7 +177,7 @@ $( document ).on("change", "#survey_select", function(){
 
 $(function() {
 	try {
-		//add namska select
+		//add survey select
 		var select = $("<select id=\"survey_select\" name=\"survey_select\" />");
 		var options= '<option value="">Velja próf</option>';
 		$.each(survey_list, function(key, value){
