@@ -200,6 +200,7 @@ class SurveyResult(models.Model):
 	results = models.TextField()
 	reported_by = models.ForeignKey('Teacher')
 	survey = models.ForeignKey('Survey') #url to survey
+	created_at = models.DateField(default=timezone.now)
 
 	@classmethod
 	def get_results(cls, id):

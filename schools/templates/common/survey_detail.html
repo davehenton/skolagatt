@@ -11,18 +11,22 @@
 		<div class="col-md-4">
 			<div class="row">
 				<div class="col-md-12">
+				{% if expired %}
+					Lokið
+				{% else %}
 					<a href="{% url 'schools:survey_update' school.id survey.id %}" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span>&nbsp;Breyta</a>
 					<a href="{% url 'schools:survey_delete' school.id survey.id %}" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span>&nbsp;Eyða</a>
+				{% endif %}
 				</div>
 			</div>
 			<div class="row">
 				<div class="col-md-12">
-					Skráning virk frá: {{survey_details.active_from|parse_date:"%Y-%m-%d"|date:"d-m-Y" }}
+					Skráning virk frá: {{survey.active_from|parse_date:"%Y-%m-%d"|date:"d-m-Y" }}
 				</div>
 			</div>
 			<div class="row">
 				<div class="col-md-12">
-					Skráning virkt frá: {{survey_details.active_to|parse_date:"%Y-%m-%d"|date:"d-m-Y" }}
+					Skráning virkt frá: {{survey.active_to|parse_date:"%Y-%m-%d"|date:"d-m-Y" }}
 				</div>
 			</div>
 		</div>
@@ -75,11 +79,11 @@
 						{% get_survey_results student survey as student_result %}
 						<div class="row">
 							<div class="col-md-2">{{student.ssn}}</div>
-							<div class="col-md-6"><a href="{% url 'schools:student_detail' school.id student.id %}">{{student.name}}</a></div>
+							<div class="col-md-5"><a href="{% url 'schools:student_detail' school.id student.id %}">{{student.name}}</a></div>
 							{% if student_result %}
-							<div class="col-md-2"><!-- sparkline to be added --></div>
+							<div class="col-md-3">{{ student_results|get_item:student }}<!-- sparkline to be added --></div>
 							<div class="col-md-2">
-								{% if is_group_manager %}
+								{% if is_group_manager or is_school_manager %}
 									{% if survey.is_expired %}
 									{% else %}
 									<a href="{% url 'schools:survey_result_update' school.id student.id survey.id student_result.id %}" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
@@ -91,7 +95,7 @@
 							</div>
 							{% else %}
 							<div class="col-md-3">
-								{% if is_group_manager %}
+								{% if is_group_manager or is_school_manager %}
 									{% if survey.is_expired %}
 									{% else %}
 									<a href="{% url 'schools:survey_result_create' school.id student.id survey.id %}" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span>&nbsp;Skrá</a>
@@ -105,7 +109,19 @@
 							<div class="well col-md-12">
 								{% with results=student_result.results|get_json %}
 									<div class='row'>
-										<div class='col-md-12'>{{ results }}</div>
+										<div class='col-md-12'>
+											<div>
+												Valin orð: 
+												{% for val in results.click_values|literal_eval %}
+													<p class="click_values">{{val}}</p>
+												{% endfor %}
+											</div>
+											<div>Innsláttur: 
+												{% for val in results.input_values %}
+													<p class="click_values">{{val}}: {{results.input_values|get_item:val}}</p>
+												{% endfor %}
+											</div>
+										</div>
 									</div>
 								{% endwith %}
 							</div>

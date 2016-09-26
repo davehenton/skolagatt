@@ -16,7 +16,8 @@ from django.views.decorators.csrf import csrf_exempt
 from uuid import uuid4
 import requests, json
 import xlrd
-from datetime import datetime
+from datetime import datetime, date
+from ast import literal_eval
 
 from common.models import *
 from supportandexception.models import *
@@ -393,7 +394,6 @@ class TeacherListing(UserPassesTestMixin, ListView):
     context['school'] = school
     context['teachers'] = Teacher.objects.filter(school=school)
     context['groups'] = slug_sort(StudentGroup.objects.filter(school=school), 'name')
-    print(Teacher.objects.filter(id= StudentGroup.objects.filter(school=school)))
     """context['teachers_in_group'] = Teacher.group_managers.all()"""
     return context
 
@@ -485,7 +485,6 @@ class TeacherCreateImport(UserPassesTestMixin, CreateView):
 
   def post(self, *args, **kwargs):
     if(self.request.FILES):
-      print('kali')
       u_file = self.request.FILES['file'].name
       extension = u_file.split(".")[-1]
       ssn = self.request.POST.get('ssn')
@@ -506,11 +505,9 @@ class TeacherCreateImport(UserPassesTestMixin, CreateView):
             'ssn': ssn.strip().zfill(10), 
           })
       elif extension == 'xlsx':
-        print('ahli')
         input_excel = self.request.FILES['file']
         book = xlrd.open_workbook(file_contents=input_excel.read())
         for sheetsnumber in range(book.nsheets):
-          print('danni')
           sheet = book.sheet_by_index(sheetsnumber)
           for row in range(first, sheet.nrows):
             if str(sheet.cell_value(row,int(ssn)))[0].isspace():
@@ -686,20 +683,20 @@ class StudentCreateImport(UserPassesTestMixin, CreateView):
           row = row.decode('utf-8')
           student_ssn = row.split(',')[int(ssn)]
           student_name = row.split(',')[int(name)]
-          data.append({'name': student_name.strip(), 'ssn': student_ssn.strip().zfill(10)})
+          if len(student_ssn.strip()) == 10:
+            data.append({'name': student_name.strip(), 'ssn': student_ssn.strip().zfill(10)})
+          else:
+            return render(self.request, 'common/student_error_import.html')
       elif extension == 'xlsx':
         input_excel = self.request.FILES['file']
         book = xlrd.open_workbook(file_contents=input_excel.read())
         for sheetsnumber in range(book.nsheets):
           sheet = book.sheet_by_index(sheetsnumber)
           for row in range(first, sheet.nrows):
-            if str(sheet.cell_value(row,int(ssn)))[0].isspace():
-              data.append({'name': str(sheet.cell_value(row,int(name))), 'ssn': str(sheet.cell_value(row,int(ssn)))[1:].zfill(10)})
-            elif isinstance(sheet.cell_value(row,int(ssn)),float):
-              data.append({'name': str(sheet.cell_value(row,int(name))), 'ssn': str(int(sheet.cell_value(row,int(ssn)))).zfill(10)})
+            if len(str(sheet.cell_value(row,int(ssn))).strip()) == 10:
+              data.append({'name': str(sheet.cell_value(row,int(name))).strip(), 'ssn': str(sheet.cell_value(row,int(ssn))).strip().zfill(10)})
             else:
-              data.append({'name': str(sheet.cell_value(row,int(name))), 'ssn': str(sheet.cell_value(row,int(ssn))).zfill(10)})
-            
+              return render(self.request, 'common/student_error_import.html')
       return render(self.request, 'common/student_verify_import.html', {'data': data, 'school': School.objects.get(pk=self.kwargs['school_id'])})
     else:
       student_data = json.loads(self.request.POST['students'])
@@ -1081,6 +1078,19 @@ class SurveyDetail(UserPassesTestMixin, DetailView):
       context['survey_details'] = ''
     context['school'] = School.objects.get(pk=self.kwargs['school_id'])
     context['students'] = self.object.studentgroup.students.all()
+    context['expired'] = True if self.object.active_to < date.today() else False
+    student_results = {}
+    for student in context['students']:
+      sr = SurveyResult.objects.filter(student=student, survey=self.object)
+      if sr:
+        r = literal_eval(sr.first().results) #get student results
+        try:
+          student_results[student] = calc_survey_results(self.object.identifier, literal_eval(r['click_values']), r['input_values'])
+        except Exception as e:
+          student_results[student] = sr
+      else:
+        student_results[student] = sr
+    context['student_results'] = student_results
     context['field_types'] = ['text', 'number', 'text-list', 'number-list']
     return context
 
@@ -1213,7 +1223,6 @@ class SurveyResultCreate(UserPassesTestMixin, CreateView):
         context['info'] = ""
         context['input_fields'] = ""
       else:
-        print(data[0]['input_fields'])
         context['grading_template'] = data[0]['grading_template'][0]['md']
         context['info'] = data[0]['grading_template'][0]['info']
         context['input_fields'] = data[0]['input_fields']
@@ -1253,7 +1262,7 @@ class SurveyResultCreate(UserPassesTestMixin, CreateView):
     return super(SurveyResultCreate, self).form_valid(form)
 
   def test_func(self):
-    return is_group_manager(self.request, self.kwargs)
+    return is_group_manager(self.request, self.kwargs) or is_school_manager(self.request, self.kwargs)
 
   def get_success_url(self):
     try:
@@ -1271,7 +1280,7 @@ class SurveyResultUpdate(UserPassesTestMixin, UpdateView):
   login_url = reverse_lazy('denied')
 
   def test_func(self):
-    return is_school_manager(self.request, self.kwargs) or is_school_teacher(self.request, self.kwargs) #TODO: manager or (teacher and group_manager)
+    return is_school_manager(self.request, self.kwargs) or is_group_manager(self.request, self.kwargs)
 
   def form_valid(self, form):
     survey_results = form.save(commit=False)
@@ -1316,7 +1325,7 @@ class SurveyResultDelete(UserPassesTestMixin, DeleteView):
   template_name = "schools/confirm_delete.html"
 
   def test_func(self):
-    return is_school_manager(self.request, self.kwargs) or is_school_teacher(self.request, self.kwargs) #TODO: manager or (teacher and group_manager)
+    return is_school_manager(self.request, self.kwargs) or is_group_manager(self.request, self.kwargs)
 
   def get_success_url(self):
     try:

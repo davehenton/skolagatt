@@ -4,12 +4,16 @@ from django.template.defaultfilters import stringfilter
 from common.models import Manager, Teacher, School, SurveyResult
 from itertools import chain
 from datetime import datetime
-import re, json
+import re, json, ast
 from markdown2 import markdown
 
 from schools.util import *
 
 register = template.Library()
+
+@register.filter
+def literal_eval(value):
+    return ast.literal_eval(value)
 
 @register.filter
 @stringfilter
