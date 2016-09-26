@@ -96,4 +96,6 @@ def calc_survey_results(survey_identifier, click_values, input_values):
     except:
       pass
     return str(int(words_read / time_read * 60)) + " orð/mín"
+  else:
+    return ""
   return click_values
