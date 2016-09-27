@@ -1089,7 +1089,7 @@ class SurveyDetail(UserPassesTestMixin, DetailView):
         except Exception as e:
           student_results[student] = calc_survey_results(self.object.identifier, [], r['input_values'])
       else:
-        student_results[student] = calc_survey_results(self.object.identifier, [], r['input_values'])
+        student_results[student] = calc_survey_results(self.object.identifier, [], {})
     context['student_results'] = student_results
     context['field_types'] = ['text', 'number', 'text-list', 'number-list']
     return context
