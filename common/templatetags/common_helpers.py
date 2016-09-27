@@ -13,7 +13,10 @@ register = template.Library()
 
 @register.filter
 def literal_eval(value):
-    return ast.literal_eval(value)
+	try:
+		return ast.literal_eval(value)
+	except:
+		return None
 
 @register.filter
 @stringfilter
@@ -40,7 +43,10 @@ register.filter(parse_date)
 
 @register.filter
 def get_item(dictionary, key):
-	return dictionary.get(key)
+	try:
+		return dictionary.get(key)
+	except:
+		return None
 
 @register.filter
 def get_json(text):

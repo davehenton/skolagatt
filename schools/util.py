@@ -89,13 +89,16 @@ def slug_sort(q, attr):
 
 def calc_survey_results(survey_identifier, click_values, input_values):
   if survey_identifier == '1b_LF_sept':
-    words_read = int(click_values[-1].split(',')[0]) - len(click_values)
-    time_read = 120
     try:
-      time_read = int(input_values.get('b1_LF_timi', 120))
+      words_read = int(click_values[-1].split(',')[0]) - len(click_values)
+      time_read = 120
+      try:
+        time_read = int(input_values.get('b1_LF_timi', 120))
+      except:
+        return ""
+      return str(int(words_read / time_read * 60)) + " orð/mín"
     except:
       return ""
-    return str(int(words_read / time_read * 60)) + " orð/mín"
   else:
     return ""
   return click_values
