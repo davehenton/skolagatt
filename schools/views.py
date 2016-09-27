@@ -1436,7 +1436,7 @@ class SurveyLoginCreate(UserPassesTestMixin, CreateView):
             for row in range(first, sheet.nrows):
               data.append({
                 'survey_id': str(sheet.cell_value(row,int(survey_id))),
-                'ssn': str(int(sheet.cell_value(row,int(ssn)))).zfill(10),
+                'ssn': str(sheet.cell_value(row,int(ssn))),
                 'password': str(sheet.cell_value(row,int(password))),
                 })
         return render(self.request, 'common/password_verify_import.html', {'data': data})
