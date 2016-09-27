@@ -1087,9 +1087,9 @@ class SurveyDetail(UserPassesTestMixin, DetailView):
         try:
           student_results[student] = calc_survey_results(self.object.identifier, literal_eval(r['click_values']), r['input_values'])
         except Exception as e:
-          student_results[student] = sr
+          student_results[student] = calc_survey_results(self.object.identifier, [], r['input_values'])
       else:
-        student_results[student] = sr
+        student_results[student] = calc_survey_results(self.object.identifier, [], r['input_values'])
     context['student_results'] = student_results
     context['field_types'] = ['text', 'number', 'text-list', 'number-list']
     return context
@@ -1215,8 +1215,8 @@ class SurveyResultCreate(UserPassesTestMixin, CreateView):
     context['data_result'] = "''"
     context['student'] = Student.objects.filter(pk=self.kwargs['student_id'])
     context['survey'] = Survey.objects.filter(pk=self.kwargs['survey_id'])
-    data = get_survey_data(self.kwargs)
     try:
+      data = get_survey_data(self.kwargs)
       if len(data) == 0:
         #survey is expired
         context['grading_template'] = ""
