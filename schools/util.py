@@ -88,7 +88,7 @@ def slug_sort(q, attr):
   return sorted(q, key=lambda x: slugify(getattr(x,attr)))
 
 def calc_survey_results(survey_identifier, click_values, input_values):
-  if survey_identifier == '1b_LF_sept':
+  if 'b_LF_' in survey_identifier:
     try:
       words_read = int(click_values[-1].split(',')[0]) - len(click_values)
       time_read = 120
