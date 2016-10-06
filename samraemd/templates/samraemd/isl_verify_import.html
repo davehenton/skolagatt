@@ -1,0 +1,84 @@
+{% extends 'common/index.html'%}
+{% include staticfiles%}
+{% block content %}
+
+	<div class="row">
+		<div class="col-md-12"><h3>Eru gögnin rétt?</h3></div>
+	</div>
+	<div class="row">
+		<div class="col-md-2">
+			<h3>Já</h3>
+			<a class="btn btn-default" href="" id="save_data"><span class="glyphicon glyphicon-ok"></span>&nbsp;Vista gögn</a>
+		</div>
+		<div class="col-md-2">
+			<h3>Nei</h3>
+			<a class="btn btn-default" href="{% url 'schools:school_listing' %}"><span class="glyphicon glyphicon-remove"></span>&nbsp;Hætta við</a>
+		</div>
+	</div>
+	<div class="row">
+		<h3>{{ data.0.exam_code }} - {{ data.0.exam_date }}</h3>
+	</div>
+	<div class="row">
+		<table class="table table-striped table-bordered table-hover">
+			<thead class="thead-default">
+				<tr>
+					<th></th>
+					<th colspan="4">Samræmd einkunn</th>
+					<th colspan="4">Raðeinkunn</th>
+					<th colspan="4">Grunnskólaeinkunn</th>
+					<th></th>
+				</tr>
+				<tr>
+					<th>Nemandi</th>
+					<th>Lestur</th>
+					<th>Málnotkun</th>
+					<th>Ritun</th>
+					<th>Heild</th>
+					<th>Lestur</th>
+					<th>Málnotkun</th>
+					<th>Ritun</th>
+					<th>Heild</th>
+					<th>Lestur</th>
+					<th>Málnotkun</th>
+					<th>Ritun</th>
+					<th>Heild</th>
+				</tr>				
+			</thead>
+			<tbody>
+			{% for result in data %}
+				<tr>				
+					<td>{{ result.student }}</td>
+					<td>{{ result.le_se }}</td>
+					<td>{{ result.mn_se }}</td>
+					<td>{{ result.ri_se }}</td>
+					<td>{{ result.se }}</td>
+					<td>{{ result.le_re }}</td>
+					<td>{{ result.mn_re }}</td>
+					<td>{{ result.ri_re }}</td>
+					<td>{{ result.re }}</td>
+					<td>{{ result.le_sg }}</td>
+					<td>{{ result.mn_sg }}</td>
+					<td>{{ result.ri_sg }}</td>
+					<td>{{ result.sg }}</td>
+				</tr>
+			{% endfor %}
+			</tbody>
+		</table>
+	</div>
+	
+{% endblock %}
+{% block script %}
+	<script type='text/javascript'>
+		var data = {{data|safe}};
+		$( document ).on("click", "#save_data", function(){
+			$.ajax({
+				type: "POST",
+				url: '',
+				data: {
+					'csrfmiddlewaretoken': '{{ csrf_token }}',
+					'students': JSON.stringify(data),
+				},
+			});
+		});
+	</script>
+{% endblock %}

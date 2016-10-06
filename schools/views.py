@@ -1262,7 +1262,7 @@ class SurveyResultCreate(UserPassesTestMixin, CreateView):
     return super(SurveyResultCreate, self).form_valid(form)
 
   def test_func(self):
-    return is_group_manager(self.request, self.kwargs) or is_school_manager(self.request, self.kwargs)
+    return is_school_manager(self.request, self.kwargs) or is_group_manager(self.request, self.kwargs)
 
   def get_success_url(self):
     try:
