@@ -207,6 +207,20 @@ class SamraemdMathResultCreate(UserPassesTestMixin, CreateView):
 	def test_func(self):
 		return self.request.user.is_superuser
 
+class SamraemdMathResultDelete(UserPassesTestMixin, DeleteView):
+	model = SamraemdMathResult
+	login_url = reverse_lazy('denied')
+	template_name = "schools/confirm_delete.html"
+
+	def test_func(self):
+		return is_school_manager(self.request, self.kwargs)
+
+	def get_success_url(self):
+		return reverse_lazy('schools:school_listing')
+
+	def get_object(self):
+		return SamraemdMathResult.objects.filter(exam_code=self.kwargs['exam_code'])
+
 class SamraemdISLResultAdminListing(UserPassesTestMixin, ListView):
 	model = SamraemdISLResult
 	template_name = 'samraemd/samraemdmathresult_admin_list.html'
@@ -394,3 +408,16 @@ class SamraemdISLResultCreate(UserPassesTestMixin, CreateView):
 	def test_func(self):
 		return self.request.user.is_superuser
 
+class SamraemdISLResultDelete(UserPassesTestMixin, DeleteView):
+	model = SamraemdISLResult
+	login_url = reverse_lazy('denied')
+	template_name = "schools/confirm_delete.html"
+
+	def test_func(self):
+		return is_school_manager(self.request, self.kwargs)
+
+	def get_success_url(self):
+		return reverse_lazy('schools:school_listing')
+
+	def get_object(self):
+		return SamraemdISLResult.objects.filter(exam_code=self.kwargs['exam_code'])
