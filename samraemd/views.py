@@ -86,7 +86,8 @@ class SamraemdMathResultCreate(UserPassesTestMixin, CreateView):
 				if extension == 'csv':
 					for row in self.request.FILES['file'].readlines()[1:]:
 						row = row.decode('utf-8')
-						row_data = row.split(';')
+						row = row.replace('"', '')
+						row_data = row.split(',')
 						data.append({
 							'student': row_data[0].strip(),
 							'ra_se': row_data[1].strip(),
@@ -293,7 +294,8 @@ class SamraemdISLResultCreate(UserPassesTestMixin, CreateView):
 				if extension == 'csv':
 					for row in self.request.FILES['file'].readlines()[1:]:
 						row = row.decode('utf-8')
-						row_data = row.split(';')
+						row = row.replace('"', '')
+						row_data = row.split(',')
 						data.append({
 							'student': row_data[0].strip(),
 							'le_se': row_data[1].strip(),
