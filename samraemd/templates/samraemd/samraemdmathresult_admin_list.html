@@ -26,10 +26,12 @@
 		<div class="row">
 			{% if 'stæ' in request.path %}
 			<div class="col-md-4"><a href="{% url 'samraemd:math_detail' exam.exam_code %}">{{exam.exam_code}}</a></div>
+			<div class="col-md-2"><a href="{% url 'samraemd:math_delete' exam.exam_code %}"><span class="glyphicon glyphicon-trash"></span></a></div>
 			{% elif 'isl' in request.path %}
 			<div class="col-md-4"><a href="{% url 'samraemd:isl_detail' exam.exam_code %}">{{exam.exam_code}}</a></div>
+			<div class="col-md-2"><a href="{% url 'samraemd:isl_delete' exam.exam_code %}"><span class="glyphicon glyphicon-trash"></span></a></div>
 			{% endif %}
-			<div class="col-md-2"></div>
+			
 		</div>
 		{% endfor %}
 	</div>
