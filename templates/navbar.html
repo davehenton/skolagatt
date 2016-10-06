@@ -38,21 +38,20 @@
 				</li>
 				<li><a href="{% url 'schools:lesferill' school.id %}">Lesferill</a></li>
 				{% elif user.is_superuser %}
-				<li><a href="{% url 'schools:survey_login_admin_listing' %}">
-						<span class="glyphicon glyphicon-lock"></span>
-						&nbsp;Prófkóðar
-					</a>
-				</li>
-				<li><a href="{% url 'schools:admin_listing' %}">
-						<span class="glyphicon glyphicon-lock"></span>
-						&nbsp;Umsjónarmenn
-					</a>
-				</li>
-				<li><a href="{% url 'schools:survey_admin_listing' %}">
-						<span class="glyphicon glyphicon-lock"></span>
-						&nbsp;Próf
-					</a>
-				</li>
+					<li class="dropdown">
+						<a class="dropdown-toggle" data-toggle="dropdown" href="#">
+							<span class="glyphicon glyphicon-lock"></span>
+							Umsjónarmenn
+	        				<span class="caret"></span>
+	        			</a>
+	        			<ul class="dropdown-menu">
+							<li><a href="{% url 'schools:survey_login_admin_listing' %}">&nbsp;Prófkóðar fyrir samræmd próf</a></li>
+							<li><a href="{% url 'samraemd:math_admin_listing' %}">&nbsp;Samræmd próf í stærðfræði</a></li>
+							<li><a href="{% url 'samraemd:isl_admin_listing' %}">&nbsp;Samræmd próf í íslensku</a></li>
+							<li><a href="{% url 'schools:survey_admin_listing' %}">&nbsp;Próf</a></li>
+							<li><a href="{% url 'schools:admin_listing' %}">&nbsp;Skoða umsjónarmenn</a></li>
+						</ul>
+					</li>
 				{% endif %}
 			</ul>
 			<ul class="nav navbar-nav navbar-right">

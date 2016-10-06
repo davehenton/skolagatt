@@ -12,5 +12,6 @@ urlpatterns = [
     url(r'^'+settings.SUBDIRECTORY+'accounts/login', views.login, name='auth_login'),
     url(r'^'+settings.SUBDIRECTORY+'accounts/logout', views.logout, name='auth_logout'),
     url(r'^'+settings.SUBDIRECTORY+'skoli/', include('schools.urls')),
-    url(r'^'+settings.SUBDIRECTORY+'skoli/', include('supportandexception.urls')),
+    url(r'^'+settings.SUBDIRECTORY+'stuðningur/', include('supportandexception.urls')),
+    url(r'^'+settings.SUBDIRECTORY+'samræmd/', include('samraemd.urls')),
 ]

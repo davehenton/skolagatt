@@ -1,0 +1,78 @@
+{% extends 'common/index.html'%}
+
+{% block content %}
+<div class="row not-on-einstaklingsblod">
+	<div class="col-md-6">
+		<h3>Niðurstöður nemenda</h3>
+		<h4>{{exam_code}}</h4>
+	</div>
+	<div class="col-md-6 hidden-print">
+		<a href="listi" class="btn btn-default" target="_blank">Prentvænn listi</a>
+		<a href="einstaklingsblod" class="btn btn-default" target="_blank">Prentvæn einstaklingsblöð</a>
+	</div>
+</div>
+<div>
+	<div class="row">
+		<table class="table table-striped table-bordered table-hover">
+			<thead class="thead-default">
+				<tr>
+					<th></th>
+					<th colspan="4">Samræmd einkunn</th>
+					<th colspan="4">Raðeinkunn</th>
+					<th colspan="4">Grunnskólaeinkunn</th>
+					<th></th>
+				</tr>
+				<tr>
+					<th>Nemandi</th>
+					<th>Reikningur og aðgerðir</th>
+					<th>Rúmfræði og mælingar</th>
+					<th>Tölur og talnaskilningur</th>
+					<th>Heild</th>
+					<th>Reikningur og aðgerðir</th>
+					<th>Rúmfræði og mælingar</th>
+					<th>Tölur og talnaskilningur</th>
+					<th>Heild</th>
+					<th>Reikningur og aðgerðir</th>
+					<th>Rúmfræði og mælingar</th>
+					<th>Tölur og talnaskilningur</th>
+					<th>Heild</th>
+					<th>Orðadæmi og talnadæmi</th>
+				</tr>				
+			</thead>
+			<tbody>
+			{% for result in exam_results %}
+				<tr>
+					<td>{{ result.student.ssn }}</td>
+					<td>{{ result.ra_se }}</td>
+					<td>{{ result.rm_se }}</td>
+					<td>{{ result.tt_se }}</td>
+					<td>{{ result.se }}</td>
+					<td>{{ result.ra_re }}</td>
+					<td>{{ result.rm_re }}</td>
+					<td>{{ result.tt_re }}</td>
+					<td>{{ result.re }}</td>
+					<td>{{ result.ra_sg }}</td>
+					<td>{{ result.rm_sg }}</td>
+					<td>{{ result.tt_sg }}</td>
+					<td>{{ result.sg }}</td>
+					<td>{{ result.ord_talna_txt }}</td>
+				</tr>
+			{% endfor %}
+			</tbody>
+		</table>
+	</div>
+</div>
+<script type="text/javascript">
+	function printEinstaklingsblod() {
+		$('.not-on-einstaklingsblod').addClass('hidden-print');
+		$('.student-testcode').addClass('on-einstaklingsblod').prepend('<span class="removeme">Prófkóði: </span>');
+		$('.student-kt').addClass('on-einstaklingsblod').prepend('<span class="removeme">Kennitala: </span>');
+		$('.student-name').addClass('on-einstaklingsblod').prepend('<span class="removeme">Nafn: </span>');
+		window.print();
+		$('.removeme').remove();
+		$('.on-einstaklingsblod').removeClass('on-einstaklingsblod');
+		$('.not-on-einstaklingsblod').removeClass('hidden-print');
+		$('.student-testcode').css('page-break-after','auto');
+	}
+</script>
+{% endblock %}
