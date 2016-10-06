@@ -26,6 +26,7 @@
 					<th colspan="4">Samræmd einkunn</th>
 					<th colspan="4">Raðeinkunn</th>
 					<th colspan="4">Grunnskólaeinkunn</th>
+					<th colspan="2">Framfaraeinkunn</th>
 					<th></th>
 				</tr>
 				<tr>
@@ -42,6 +43,8 @@
 					<th>Rúmfræði og mælingar</th>
 					<th>Tölur og talnaskilningur</th>
 					<th>Heild</th>
+					<th>Framfaraflokkur</th>
+					<th>Framfaratexti</th>					
 					<th>Orðadæmi og talnadæmi</th>
 				</tr>				
 			</thead>
@@ -61,6 +64,8 @@
 					<td>{{ result.rm_sg }}</td>
 					<td>{{ result.tt_sg }}</td>
 					<td>{{ result.sg }}</td>
+					<td>{{ result.fm_fl }}</td>
+					<td>{{ result.fm_txt }}</td>					
 					<td>{{ result.ord_talna_txt }}</td>
 				</tr>
 			{% endfor %}

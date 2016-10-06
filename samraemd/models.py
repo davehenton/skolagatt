@@ -12,10 +12,10 @@ class SamraemdMathResult(models.Model):
 	student = models.ForeignKey(Student)
 	#data fields
 	#Samræmd einkunn
-	ra_se = models.IntegerField()
-	rm_se = models.IntegerField()
-	tt_se = models.IntegerField()
-	se = models.IntegerField()
+	ra_se = models.CharField(max_length = 4)
+	rm_se = models.CharField(max_length = 4)
+	tt_se = models.CharField(max_length = 4)
+	se = models.CharField(max_length = 4)
 	#Raðeinkunn
 	ra_re = models.IntegerField()
 	rm_re = models.IntegerField()
@@ -27,6 +27,9 @@ class SamraemdMathResult(models.Model):
 	tt_sg = models.IntegerField()
 	sg = models.IntegerField()
 	ord_talna_txt = models.CharField(max_length = 128)
+	#Framfaraeinkunn	
+	fm_fl = models.IntegerField(blank=True)
+	fm_txt = models.CharField(max_length = 256, blank=True)
 	#exam fields
 	exam_code = models.CharField(max_length = 128)
 	exam_date = models.DateField()
@@ -35,7 +38,7 @@ class SamraemdMathResultForm(forms.ModelForm):
 	file = forms.FileField()
 	class Meta:
 		model = SamraemdMathResult
-		fields = ['ra_se', 'rm_se', 'tt_se', 'se', 'ra_re', 'rm_re', 'tt_re', 're', 'ra_sg', 'rm_sg', 'tt_sg', 'sg', 'ord_talna_txt', 'exam_code', 'exam_date']
+		fields = ['ra_se', 'rm_se', 'tt_se', 'se', 'ra_re', 'rm_re', 'tt_re', 're', 'ra_sg', 'rm_sg', 'tt_sg', 'sg', 'ord_talna_txt', 'fm_fl', 'fm_txt', 'exam_code', 'exam_date']
 		labels = {
 			'exam_code': 'Prófkóði',
 			'student': 'Nemandi',
@@ -52,6 +55,8 @@ class SamraemdMathResultForm(forms.ModelForm):
 			'tt_sg': 'Grunnskólaeinkunn - Tölur og talnaskilningur',
 			'sg': 'Grunnskólaeinkunn - Heild',
 			'ord_talna_txt': 'Orðadæmi og talnadæmi',
+			'fm_fl': 'Framfaraflokkur',
+			'fm_txt': 'Framfaratexti',
 			'exam_date': 'Dagsetning prófs (YYYY-MM-DD)'
 		}
 
@@ -59,10 +64,10 @@ class SamraemdISLResult(models.Model):
 	student = models.ForeignKey(Student)
 	#data fields
 	#Samræmd einkunn
-	le_se = models.IntegerField()
-	mn_se = models.IntegerField()
-	ri_se = models.IntegerField()
-	se = models.IntegerField()
+	le_se = models.CharField(max_length=4)
+	mn_se = models.CharField(max_length=4)
+	ri_se = models.CharField(max_length=4)
+	se = models.CharField(max_length=4)
 	#Raðeinkunn
 	le_re = models.IntegerField()
 	mn_re = models.IntegerField()
@@ -73,15 +78,18 @@ class SamraemdISLResult(models.Model):
 	mn_sg = models.IntegerField()
 	ri_sg = models.IntegerField()
 	sg = models.IntegerField()
+	#Framfaraeinkunn	
+	fm_fl = models.IntegerField(blank=True)
+	fm_txt = models.CharField(max_length = 256, blank=True)
 	#exam fields
-	exam_code = models.CharField(max_length = 128)
+	exam_code = models.CharField(max_length = 256)
 	exam_date = models.DateField()
 
 class SamraemdISLResultForm(forms.ModelForm):
 	file = forms.FileField()
 	class Meta:
 		model = SamraemdISLResult
-		fields = ['le_se', 'mn_se', 'ri_se', 'se', 'le_re', 'mn_re', 'ri_re', 're', 'le_sg', 'mn_sg', 'ri_sg', 'sg', 'exam_code', 'exam_date']
+		fields = ['le_se', 'mn_se', 'ri_se', 'se', 'le_re', 'mn_re', 'ri_re', 're', 'le_sg', 'mn_sg', 'ri_sg', 'sg', 'fm_fl', 'fm_txt', 'exam_code', 'exam_date']
 		labels = {
 			'exam_code': 'Prófkóði',
 			'student': 'Nemandi',
@@ -97,5 +105,7 @@ class SamraemdISLResultForm(forms.ModelForm):
 			'mn_sg': 'Grunnskólaeinkunn - Málnotkun',
 			'ri_sg': 'Grunnskólaeinkunn - Ritun',
 			'sg': 'Grunnskólaeinkunn - Heild',
+			'fm_fl': 'Framfaraflokkur',
+			'fm_txt': 'Framfaratexti',						
 			'exam_date': 'Dagsetning prófs (YYYY-MM-DD)'
 		}			

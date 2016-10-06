@@ -20,6 +20,7 @@
 					<th colspan="4">Samræmd einkunn</th>
 					<th colspan="4">Raðeinkunn</th>
 					<th colspan="4">Grunnskólaeinkunn</th>
+					<th colspan="2">Framfaraeinkunn</th>
 				</tr>
 				<tr>
 					<th>Nemandi</th>
@@ -35,6 +36,8 @@
 					<th>Málnotkun</th>
 					<th>Ritun</th>
 					<th>Heild</th>
+					<th>Framfaraflokkur</th>
+					<th>Framfaratexti</th
 				</tr>				
 			</thead>
 			<tbody>
@@ -53,6 +56,8 @@
 					<td>{{ result.mn_sg }}</td>
 					<td>{{ result.ri_sg }}</td>
 					<td>{{ result.sg }}</td>
+					<td>{{ result.fm_fl }}</td>
+					<td>{{ result.fm_txt }}</td>
 				</tr>
 			{% endfor %}
 			</tbody>
