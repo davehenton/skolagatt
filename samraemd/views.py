@@ -84,9 +84,9 @@ class SamraemdMathResultCreate(UserPassesTestMixin, CreateView):
 			data = []
 			try:
 				if extension == 'csv':
-					for row in self.request.FILES['file'].readlines()[3:]:
+					for row in self.request.FILES['file'].readlines()[1:]:
 						row = row.decode('utf-8')
-						row_data = row.split(',')
+						row_data = row.split(';')
 						data.append({
 							'student': row_data[0].strip(),
 							'ra_se': row_data[1].strip(),
@@ -116,25 +116,25 @@ class SamraemdMathResultCreate(UserPassesTestMixin, CreateView):
 					book = xlrd.open_workbook(file_contents=input_excel.read())
 					for sheetsnumber in range(book.nsheets):
 						sheet = book.sheet_by_index(sheetsnumber)
-						for row in range(3, sheet.nrows):
+						for row in range(1, sheet.nrows):
 							data.append({
-								'student': str(int(sheet.cell_value(row,0))).zfill(10),
+								'student': str(sheet.cell_value(row,0)).zfill(10),
 								'ra_se': str(sheet.cell_value(row,1)).strip(),
 								'rm_se': str(sheet.cell_value(row,2)).strip(),
 								'tt_se': str(sheet.cell_value(row,3)).strip(),
 								'se': str(sheet.cell_value(row,4)).strip(),
 								#Raðeinkunn
-								'ra_re': str(int(sheet.cell_value(row,5))).strip(),
-								'rm_re': str(int(sheet.cell_value(row,6))).strip(),
-								'tt_re': str(int(sheet.cell_value(row,7))).strip(),
-								're': str(int(sheet.cell_value(row,8))).strip(),
+								'ra_re': str(sheet.cell_value(row,5)).strip(),
+								'rm_re': str(sheet.cell_value(row,6)).strip(),
+								'tt_re': str(sheet.cell_value(row,7)).strip(),
+								're': str(sheet.cell_value(row,8)).strip(),
 								#Grunnskólaeinkunn
-								'ra_sg': str(int(sheet.cell_value(row,9))).strip(),
-								'rm_sg': str(int(sheet.cell_value(row,10))).strip(),
-								'tt_sg': str(int(sheet.cell_value(row,11))).strip(),
-								'sg': str(int(sheet.cell_value(row,12))).strip(),
+								'ra_sg': str(sheet.cell_value(row,9)).strip(),
+								'rm_sg': str(sheet.cell_value(row,10)).strip(),
+								'tt_sg': str(sheet.cell_value(row,11)).strip(),
+								'sg': str(sheet.cell_value(row,12)).strip(),
 								#Framfaraeinkunn	
-								'fm_fl': str(int(sheet.cell_value(row,13))).strip(),
+								'fm_fl': str(sheet.cell_value(row,13)).strip(),
 								'fm_txt': str(sheet.cell_value(row,14)).strip(),		
 								#exam fields
 								'ord_talna_txt': str(sheet.cell_value(row,15)).strip(),
@@ -147,8 +147,6 @@ class SamraemdMathResultCreate(UserPassesTestMixin, CreateView):
 				return render(self.request, 'samraemd/form_import.html', {'error': 'Dálkur ekki til, reyndu aftur'})
 		else:
 			student_data = json.loads(self.request.POST['students'])
-			print(student_data)
-			print(self.request.POST)
 			#iterate through the data, add students if they don't exist then create a survey_login object
 			for data in student_data:
 				student = Student.objects.filter(ssn=data['student']) #student already exists
@@ -293,9 +291,9 @@ class SamraemdISLResultCreate(UserPassesTestMixin, CreateView):
 			data = []
 			try:
 				if extension == 'csv':
-					for row in self.request.FILES['file'].readlines()[3:]:
+					for row in self.request.FILES['file'].readlines()[1:]:
 						row = row.decode('utf-8')
-						row_data = row.split(',')
+						row_data = row.split(';')
 						data.append({
 							'student': row_data[0].strip(),
 							'le_se': row_data[1].strip(),
@@ -323,24 +321,24 @@ class SamraemdISLResultCreate(UserPassesTestMixin, CreateView):
 					book = xlrd.open_workbook(file_contents=input_excel.read())
 					for sheetsnumber in range(book.nsheets):
 						sheet = book.sheet_by_index(sheetsnumber)
-						for row in range(3, sheet.nrows):
+						for row in range(1, sheet.nrows):
 							data.append({
-								'student': str(int(sheet.cell_value(row,0))).zfill(10),
+								'student': str(sheet.cell_value(row,0)).zfill(10),
 								'le_se': str(sheet.cell_value(row,1)).strip(),
 								'mn_se': str(sheet.cell_value(row,2)).strip(),
 								'ri_se': str(sheet.cell_value(row,3)).strip(),
 								'se': str(sheet.cell_value(row,4)).strip(),
 								#Raðeinkunn
-								'le_re': str(int(sheet.cell_value(row,5))).strip(),
-								'mn_re': str(int(sheet.cell_value(row,6))).strip(),
-								'ri_re': str(int(sheet.cell_value(row,7))).strip(),
-								're': str(int(sheet.cell_value(row,8))).strip(),
+								'le_re': str(sheet.cell_value(row,5)).strip(),
+								'mn_re': str(sheet.cell_value(row,6)).strip(),
+								'ri_re': str(sheet.cell_value(row,7)).strip(),
+								're': str(sheet.cell_value(row,8)).strip(),
 								#Grunnskólaeinkunn
-								'le_sg': str(int(sheet.cell_value(row,9))).strip(),
-								'mn_sg': str(int(sheet.cell_value(row,10))).strip(),
-								'ri_sg': str(int(sheet.cell_value(row,11))).strip(),
-								'sg': str(int(sheet.cell_value(row,12))).strip(),
-								'fm_fl': str(int(sheet.cell_value(row,13))).strip(),
+								'le_sg': str(sheet.cell_value(row,9)).strip(),
+								'mn_sg': str(sheet.cell_value(row,10)).strip(),
+								'ri_sg': str(sheet.cell_value(row,11)).strip(),
+								'sg': str(sheet.cell_value(row,12)).strip(),
+								'fm_fl': str(sheet.cell_value(row,13)).strip(),
 								'fm_txt': str(sheet.cell_value(row,14)).strip(),
 								#exam fields
 								'exam_code': exam_code,
