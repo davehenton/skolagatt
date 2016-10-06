@@ -83,7 +83,7 @@ class SamraemdMathResultCreate(UserPassesTestMixin, CreateView):
 
 			data = []
 			try:
-				if extension == 'csv':
+				if extension.lower() == 'csv':
 					for row in self.request.FILES['file'].readlines()[1:]:
 						row = row.decode('utf-8')
 						row = row.replace('"', '')
@@ -291,7 +291,7 @@ class SamraemdISLResultCreate(UserPassesTestMixin, CreateView):
 
 			data = []
 			try:
-				if extension == 'csv':
+				if extension.lower() == 'csv':
 					for row in self.request.FILES['file'].readlines()[1:]:
 						row = row.decode('utf-8')
 						row = row.replace('"', '')
