@@ -103,8 +103,11 @@ class SamraemdMathResultCreate(UserPassesTestMixin, CreateView):
 							'rm_sg': row_data[10].strip(),
 							'tt_sg': row_data[11].strip(),
 							'sg': row_data[12].strip(),
+							#Framfaraeinkunn	
+							'fm_fl': row_data[13].strip(),
+							'fm_txt': row_data[14].strip(),						
 							#exam fields
-							'ord_talna_txt': row_data[13].strip(),
+							'ord_talna_txt': row_data[15].strip(),
 							'exam_code': exam_code,
 							'exam_date': exam_date
 							})
@@ -114,13 +117,12 @@ class SamraemdMathResultCreate(UserPassesTestMixin, CreateView):
 					for sheetsnumber in range(book.nsheets):
 						sheet = book.sheet_by_index(sheetsnumber)
 						for row in range(3, sheet.nrows):
-							print(int(sheet.cell_value(row,0)))
 							data.append({
 								'student': str(int(sheet.cell_value(row,0))).zfill(10),
-								'ra_se': str(int(sheet.cell_value(row,1))).strip(),
-								'rm_se': str(int(sheet.cell_value(row,2))).strip(),
-								'tt_se': str(int(sheet.cell_value(row,3))).strip(),
-								'se': str(int(sheet.cell_value(row,4))).strip(),
+								'ra_se': str(sheet.cell_value(row,1)).strip(),
+								'rm_se': str(sheet.cell_value(row,2)).strip(),
+								'tt_se': str(sheet.cell_value(row,3)).strip(),
+								'se': str(sheet.cell_value(row,4)).strip(),
 								#Raðeinkunn
 								'ra_re': str(int(sheet.cell_value(row,5))).strip(),
 								'rm_re': str(int(sheet.cell_value(row,6))).strip(),
@@ -131,8 +133,11 @@ class SamraemdMathResultCreate(UserPassesTestMixin, CreateView):
 								'rm_sg': str(int(sheet.cell_value(row,10))).strip(),
 								'tt_sg': str(int(sheet.cell_value(row,11))).strip(),
 								'sg': str(int(sheet.cell_value(row,12))).strip(),
+								#Framfaraeinkunn	
+								'fm_fl': str(int(sheet.cell_value(row,13))).strip(),
+								'fm_txt': str(sheet.cell_value(row,14)).strip(),		
 								#exam fields
-								'ord_talna_txt': str(sheet.cell_value(row,13)).strip(),
+								'ord_talna_txt': str(sheet.cell_value(row,15)).strip(),
 								'exam_code': exam_code,
 								'exam_date': exam_date							
 								})
@@ -165,6 +170,8 @@ class SamraemdMathResultCreate(UserPassesTestMixin, CreateView):
 							rm_sg=data['rm_sg'],
 							tt_sg=data['tt_sg'],
 							sg=data['sg'],
+							fm_fl=data['fm_fl'],
+							fm_txt=data['fm_txt'],
 							ord_talna_txt=data['ord_talna_txt'],
 							exam_code=data['exam_code'],
 							exam_date=data['exam_date'],
@@ -184,6 +191,8 @@ class SamraemdMathResultCreate(UserPassesTestMixin, CreateView):
 							rm_sg=data['rm_sg'],
 							tt_sg=data['tt_sg'],
 							sg=data['sg'],
+							fm_fl=data['fm_fl'],
+							fm_txt=data['fm_txt'],							
 							ord_talna_txt=data['ord_talna_txt'],
 							exam_code=data['exam_code'],
 							exam_date=data['exam_date'],
@@ -289,6 +298,8 @@ class SamraemdISLResultCreate(UserPassesTestMixin, CreateView):
 							'mn_sg': row_data[10].strip(),
 							'ri_sg': row_data[11].strip(),
 							'sg': row_data[12].strip(),
+							'fm_fl': row_data[13].strip(),
+							'fm_txt': row_data[14].strip(),
 							#exam fields
 							'exam_code': exam_code,
 							'exam_date': exam_date
@@ -301,10 +312,10 @@ class SamraemdISLResultCreate(UserPassesTestMixin, CreateView):
 						for row in range(3, sheet.nrows):
 							data.append({
 								'student': str(int(sheet.cell_value(row,0))).zfill(10),
-								'le_se': str(int(sheet.cell_value(row,1))).strip(),
-								'mn_se': str(int(sheet.cell_value(row,2))).strip(),
-								'ri_se': str(int(sheet.cell_value(row,3))).strip(),
-								'se': str(int(sheet.cell_value(row,4))).strip(),
+								'le_se': str(sheet.cell_value(row,1)).strip(),
+								'mn_se': str(sheet.cell_value(row,2)).strip(),
+								'ri_se': str(sheet.cell_value(row,3)).strip(),
+								'se': str(sheet.cell_value(row,4)).strip(),
 								#Raðeinkunn
 								'le_re': str(int(sheet.cell_value(row,5))).strip(),
 								'mn_re': str(int(sheet.cell_value(row,6))).strip(),
@@ -315,6 +326,8 @@ class SamraemdISLResultCreate(UserPassesTestMixin, CreateView):
 								'mn_sg': str(int(sheet.cell_value(row,10))).strip(),
 								'ri_sg': str(int(sheet.cell_value(row,11))).strip(),
 								'sg': str(int(sheet.cell_value(row,12))).strip(),
+								'fm_fl': str(int(sheet.cell_value(row,13))).strip(),
+								'fm_txt': str(sheet.cell_value(row,14)).strip(),
 								#exam fields
 								'exam_code': exam_code,
 								'exam_date': exam_date							
@@ -346,6 +359,8 @@ class SamraemdISLResultCreate(UserPassesTestMixin, CreateView):
 							mn_sg=data['mn_sg'],
 							ri_sg=data['ri_sg'],
 							sg=data['sg'],
+							fm_fl=data['fm_fl'],
+							fm_txt=data['fm_txt'],								
 							exam_code=data['exam_code'],
 							exam_date=data['exam_date'],
 							)
@@ -364,6 +379,8 @@ class SamraemdISLResultCreate(UserPassesTestMixin, CreateView):
 							mn_sg=data['mn_sg'],
 							ri_sg=data['ri_sg'],
 							sg=data['sg'],
+							fm_fl=data['fm_fl'],
+							fm_txt=data['fm_txt'],								
 							exam_code=data['exam_code'],
 							exam_date=data['exam_date'],
 							)
