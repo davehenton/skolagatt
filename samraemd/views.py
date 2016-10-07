@@ -83,9 +83,10 @@ class SamraemdMathResultCreate(UserPassesTestMixin, CreateView):
 
 			data = []
 			try:
-				if extension == 'csv':
-					for row in self.request.FILES['file'].readlines()[3:]:
+				if extension.lower() == 'csv':
+					for row in self.request.FILES['file'].readlines()[1:]:
 						row = row.decode('utf-8')
+						row = row.replace('"', '')
 						row_data = row.split(',')
 						data.append({
 							'student': row_data[0].strip(),
@@ -116,9 +117,9 @@ class SamraemdMathResultCreate(UserPassesTestMixin, CreateView):
 					book = xlrd.open_workbook(file_contents=input_excel.read())
 					for sheetsnumber in range(book.nsheets):
 						sheet = book.sheet_by_index(sheetsnumber)
-						for row in range(3, sheet.nrows):
+						for row in range(1, sheet.nrows):
 							data.append({
-								'student': str(int(sheet.cell_value(row,0))).zfill(10),
+								'student': str(sheet.cell_value(row,0)).strip(),
 								'ra_se': str(sheet.cell_value(row,1)).strip(),
 								'rm_se': str(sheet.cell_value(row,2)).strip(),
 								'tt_se': str(sheet.cell_value(row,3)).strip(),
@@ -134,7 +135,7 @@ class SamraemdMathResultCreate(UserPassesTestMixin, CreateView):
 								'tt_sg': str(int(sheet.cell_value(row,11))).strip(),
 								'sg': str(int(sheet.cell_value(row,12))).strip(),
 								#Framfaraeinkunn	
-								'fm_fl': str(int(sheet.cell_value(row,13))).strip(),
+								'fm_fl': str(sheet.cell_value(row,13)).strip(),
 								'fm_txt': str(sheet.cell_value(row,14)).strip(),		
 								#exam fields
 								'ord_talna_txt': str(sheet.cell_value(row,15)).strip(),
@@ -147,8 +148,6 @@ class SamraemdMathResultCreate(UserPassesTestMixin, CreateView):
 				return render(self.request, 'samraemd/form_import.html', {'error': 'Dálkur ekki til, reyndu aftur'})
 		else:
 			student_data = json.loads(self.request.POST['students'])
-			print(student_data)
-			print(self.request.POST)
 			#iterate through the data, add students if they don't exist then create a survey_login object
 			for data in student_data:
 				student = Student.objects.filter(ssn=data['student']) #student already exists
@@ -292,9 +291,10 @@ class SamraemdISLResultCreate(UserPassesTestMixin, CreateView):
 
 			data = []
 			try:
-				if extension == 'csv':
-					for row in self.request.FILES['file'].readlines()[3:]:
+				if extension.lower() == 'csv':
+					for row in self.request.FILES['file'].readlines()[1:]:
 						row = row.decode('utf-8')
+						row = row.replace('"', '')
 						row_data = row.split(',')
 						data.append({
 							'student': row_data[0].strip(),
@@ -323,9 +323,9 @@ class SamraemdISLResultCreate(UserPassesTestMixin, CreateView):
 					book = xlrd.open_workbook(file_contents=input_excel.read())
 					for sheetsnumber in range(book.nsheets):
 						sheet = book.sheet_by_index(sheetsnumber)
-						for row in range(3, sheet.nrows):
+						for row in range(1, sheet.nrows):
 							data.append({
-								'student': str(int(sheet.cell_value(row,0))).zfill(10),
+								'student': str(sheet.cell_value(row,0)).strip(),
 								'le_se': str(sheet.cell_value(row,1)).strip(),
 								'mn_se': str(sheet.cell_value(row,2)).strip(),
 								'ri_se': str(sheet.cell_value(row,3)).strip(),
@@ -340,7 +340,7 @@ class SamraemdISLResultCreate(UserPassesTestMixin, CreateView):
 								'mn_sg': str(int(sheet.cell_value(row,10))).strip(),
 								'ri_sg': str(int(sheet.cell_value(row,11))).strip(),
 								'sg': str(int(sheet.cell_value(row,12))).strip(),
-								'fm_fl': str(int(sheet.cell_value(row,13))).strip(),
+								'fm_fl': str(sheet.cell_value(row,13)).strip(),
 								'fm_txt': str(sheet.cell_value(row,14)).strip(),
 								#exam fields
 								'exam_code': exam_code,
