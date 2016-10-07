@@ -1,3 +1,4 @@
+
 # -*- coding: utf-8 -*-
 import csv
 
@@ -18,6 +19,7 @@ from common.models import *
 
 from .forms import *
 from rest_framework import viewsets
+from schools.util import *
 
 # Create your views here.
 def Csv(request):
@@ -91,7 +93,7 @@ class SupportreResourceCreate(CreateView):
 		return context
 
 	def post(self, request, *args, **kwargs):
-		return HttpResponseRedirect(reverse('schools:student_detail', args=(int(self.kwargs.get('school_id')),int(self.kwargs.get('pk')),)))
+		#return HttpResponseRedirect(reverse('schools:student_detail', args=(int(self.kwargs.get('school_id')),int(self.kwargs.get('pk')),)))
 		if(request.POST.get('submit')== 'supportsave'):
 			notes = request.POST['notes']
 			expl = request.POST['explanation']
@@ -123,7 +125,8 @@ class SupportreResourceCreate(CreateView):
 			if(SupportResource.objects.filter(student = s).exists()):
 				SupportResource.objects.filter(student = s).update(explanation = expl, reading_assistance = reading_assistance, interpretation = interpretation, longer_time = longer_time)
 			else:
-				sr = SupportResource(explanation = expl, supportresourcesignature=self.request.user, reading_assistance = reading_assistance, interpretation = interpretation, longer_time = longer_time)
+				print(Manager.objects.filter(ssn=self.request.user))
+				sr = SupportResource(explanation = expl, supportresourcesignature=Manager.objects.get(user=User.objects.filter(username=self.request.user)), reading_assistance = reading_assistance, interpretation = interpretation, longer_time = longer_time)
 				sr.student = s
 				sr.save()
 			return HttpResponseRedirect(reverse('schools:student_detail', args=(int(self.kwargs.get('school_id')),int(self.kwargs.get('pk')),)))
@@ -131,15 +134,19 @@ class SupportreResourceCreate(CreateView):
 			s = Student.objects.get(pk = self.kwargs.get('pk'))
 			SupportResource.objects.filter(student = s).delete()
 			return HttpResponseRedirect(reverse('schools:student_detail', args=(int(self.kwargs.get('school_id')),int(self.kwargs.get('pk')),)))
-
+		if(request.POST.get('submit')== 'supportgothrough'):
+			return HttpResponseRedirect(reverse('schools:student_detail', args=(int(self.kwargs.get('school_id')),int(self.kwargs.get('pk')),)))
 
 
 class ExceptionCreate(CreateView):
 	model = Exceptions
 	form_class = ExceptionsForm
 
+	def test_func(self):
+		return is_school_manager(self.request, self.kwargs)
+
 	def post(self, request, *args, **kwargs):
-		return HttpResponseRedirect(reverse('schools:student_detail', args=(int(self.kwargs.get('school_id')),int(self.kwargs.get('pk')),)))
+		#return HttpResponseRedirect(reverse('schools:student_detail', args=(int(self.kwargs.get('school_id')),int(self.kwargs.get('pk')),)))
 		if(request.POST.get('submit')== 'exceptionsave'):
 			expl = request.POST.get('explanation')
 			exam = request.POST.getlist("exam")
@@ -159,23 +166,28 @@ class ExceptionCreate(CreateView):
 			if(Exceptions.objects.filter(student = s).exists()):
 				Exceptions.objects.filter(student = s).update(explanation = expl, exam = exam_list, reason = reason)
 			else:
-				exceptions = Exceptions(explanation = expl, exam = exam_list, reason = reason,exceptionssignature= str(request.user))
+				exceptions = Exceptions(explanation = expl, exam = exam_list, reason = reason,exceptionssignature= Manager.objects.get(user=User.objects.filter(username=self.request.user)))
 				exceptions.student = s
 				exceptions.save()
 			return HttpResponseRedirect(reverse('schools:student_detail', args=(int(self.kwargs.get('school_id')),int(self.kwargs.get('pk')),)))
 		if(request.POST.get('submit')== 'exceptiondelete'):
 			Exceptions.objects.filter(student = Student.objects.get(pk=self.kwargs.get('pk'))).delete()
 			return HttpResponseRedirect(reverse('schools:student_detail', args=(int(self.kwargs.get('school_id')),int(self.kwargs.get('pk')),)))
+		if(request.POST.get('submit')== 'exceptiongothrough'):
+			return HttpResponseRedirect(reverse('schools:student_detail', args=(int(self.kwargs.get('school_id')),int(self.kwargs.get('pk')),)))
 
 	def get_context_data(self, **kwargs):
 		context = super(ExceptionCreate, self).get_context_data(**kwargs)
 		student_info = Student.objects.filter(pk=self.kwargs.get('pk'))
 		student_moreinfo = StudentExceptionSupport.objects.filter(student = student_info)
+		exceptions = Exceptions.objects.filter(student = student_info)
+		#print(exceptions.exceptionssignature)
 		context['student'] = student_info.get
 		context['studentmorinfo'] = student_moreinfo.get
 		context['studentgroup'] = StudentGroup.objects.filter(students = student_info).get
-		context['exceptions'] = Exceptions.objects.filter(student = student_info).get
+		context['exceptions'] = exceptions.get
 		context['school'] = School.objects.get(pk=self.kwargs['school_id'])
+		#context['manager'] = 
 		return context
 
 class StudentWithExceptViewSet(viewsets.ModelViewSet):
