@@ -119,7 +119,7 @@ class SamraemdMathResultCreate(UserPassesTestMixin, CreateView):
 						sheet = book.sheet_by_index(sheetsnumber)
 						for row in range(1, sheet.nrows):
 							data.append({
-								'student': str(sheet.cell_value(row,0)).zfill(10),
+								'student': str(sheet.cell_value(row,0)).strip(),
 								'ra_se': str(sheet.cell_value(row,1)).strip(),
 								'rm_se': str(sheet.cell_value(row,2)).strip(),
 								'tt_se': str(sheet.cell_value(row,3)).strip(),
@@ -325,7 +325,7 @@ class SamraemdISLResultCreate(UserPassesTestMixin, CreateView):
 						sheet = book.sheet_by_index(sheetsnumber)
 						for row in range(1, sheet.nrows):
 							data.append({
-								'student': str(sheet.cell_value(row,0)).zfill(10),
+								'student': str(sheet.cell_value(row,0)).strip(),
 								'le_se': str(sheet.cell_value(row,1)).strip(),
 								'mn_se': str(sheet.cell_value(row,2)).strip(),
 								'ri_se': str(sheet.cell_value(row,3)).strip(),
