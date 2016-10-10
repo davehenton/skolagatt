@@ -80,6 +80,7 @@ class SamraemdMathResultCreate(UserPassesTestMixin, CreateView):
 			extension = u_file.split(".")[-1]
 			exam_code = self.request.POST.get('exam_code').strip()
 			exam_date = self.request.POST.get('exam_date').strip()
+			student_year = self.request.POST.get('student_year').strip()
 
 			data = []
 			try:
@@ -110,7 +111,8 @@ class SamraemdMathResultCreate(UserPassesTestMixin, CreateView):
 							#exam fields
 							'ord_talna_txt': row_data[15].strip(),
 							'exam_code': exam_code,
-							'exam_date': exam_date
+							'exam_date': exam_date,
+							'student_year': student_year
 							})
 				elif extension == 'xlsx':
 					input_excel = self.request.FILES['file']
@@ -140,7 +142,8 @@ class SamraemdMathResultCreate(UserPassesTestMixin, CreateView):
 								#exam fields
 								'ord_talna_txt': str(sheet.cell_value(row,15)).strip(),
 								'exam_code': exam_code,
-								'exam_date': exam_date							
+								'exam_date': exam_date,
+								'student_year': student_year						
 								})
 				return render(self.request, 'samraemd/math_verify_import.html', {'data': data})
 			except Exception as e:
@@ -174,6 +177,7 @@ class SamraemdMathResultCreate(UserPassesTestMixin, CreateView):
 							ord_talna_txt=data['ord_talna_txt'],
 							exam_code=data['exam_code'],
 							exam_date=data['exam_date'],
+							student_year=data['student_year'],
 							)
 					else:
 						results = SamraemdMathResult.objects.create(
@@ -195,6 +199,7 @@ class SamraemdMathResultCreate(UserPassesTestMixin, CreateView):
 							ord_talna_txt=data['ord_talna_txt'],
 							exam_code=data['exam_code'],
 							exam_date=data['exam_date'],
+							student_year=data['student_year'],
 							)
 		return redirect(self.get_success_url())
 
@@ -288,6 +293,7 @@ class SamraemdISLResultCreate(UserPassesTestMixin, CreateView):
 			extension = u_file.split(".")[-1]
 			exam_code = self.request.POST.get('exam_code').strip()
 			exam_date = self.request.POST.get('exam_date').strip()
+			student_year = self.request.POST.get('student_year').strip()
 
 			data = []
 			try:
@@ -316,7 +322,8 @@ class SamraemdISLResultCreate(UserPassesTestMixin, CreateView):
 							'fm_txt': row_data[14].strip(),
 							#exam fields
 							'exam_code': exam_code,
-							'exam_date': exam_date
+							'exam_date': exam_date,
+							'student_year': student_year
 							})
 				elif extension == 'xlsx':
 					input_excel = self.request.FILES['file']
@@ -344,7 +351,8 @@ class SamraemdISLResultCreate(UserPassesTestMixin, CreateView):
 								'fm_txt': str(sheet.cell_value(row,14)).strip(),
 								#exam fields
 								'exam_code': exam_code,
-								'exam_date': exam_date							
+								'exam_date': exam_date,
+								'student_year': student_year						
 								})
 				return render(self.request, 'samraemd/isl_verify_import.html', {'data': data})
 			except Exception as e:
@@ -377,6 +385,7 @@ class SamraemdISLResultCreate(UserPassesTestMixin, CreateView):
 							fm_txt=data['fm_txt'],								
 							exam_code=data['exam_code'],
 							exam_date=data['exam_date'],
+							student_year=data['student_year'],
 							)
 					else:
 						results = SamraemdISLResult.objects.create(
@@ -397,6 +406,7 @@ class SamraemdISLResultCreate(UserPassesTestMixin, CreateView):
 							fm_txt=data['fm_txt'],								
 							exam_code=data['exam_code'],
 							exam_date=data['exam_date'],
+							student_year=data['student_year'],
 							)
 		return redirect(self.get_success_url())
 
