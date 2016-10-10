@@ -147,7 +147,6 @@ class SamraemdMathResultCreate(UserPassesTestMixin, CreateView):
 								})
 				return render(self.request, 'samraemd/math_verify_import.html', {'data': data})
 			except Exception as e:
-				print(e)
 				return render(self.request, 'samraemd/form_import.html', {'error': 'Dálkur ekki til, reyndu aftur'})
 		else:
 			student_data = json.loads(self.request.POST['students'])
