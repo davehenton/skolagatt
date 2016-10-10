@@ -25,6 +25,7 @@
 				<li><a href="{% url 'schools:teacher_listing' school.id %}">Kennarar</a></li>
 				<li><a href="{% url 'schools:group_listing' school.id %}">Bekkir</a></li>
 				<li><a href="{% url 'schools:student_listing' school.id %}">Nemendur</a></li>
+				{% if  is_school_manager %}
 				<li class="dropdown">
 					<a class="dropdown-toggle" data-toggle="dropdown" href="#">Samræmd könnunarpróf
         				<span class="caret"></span>
@@ -36,6 +37,7 @@
 						{% endif %}
 					</ul>
 				</li>
+				{% endif %}
 				<li><a href="{% url 'schools:lesferill' school.id %}">Lesferill</a></li>
 				{% elif user.is_superuser %}
 					<li class="dropdown">
