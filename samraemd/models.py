@@ -33,12 +33,28 @@ class SamraemdMathResult(models.Model):
 	#exam fields
 	exam_code = models.CharField(max_length = 128)
 	exam_date = models.DateField()
+	YEAR_IN_SCHOOL_CHOICES = (
+		('1', '1. bekkur'),
+		('2', '2. bekkur'),
+		('3', '3. bekkur'),
+		('4', '4. bekkur'),
+		('5', '5. bekkur'),
+		('6', '6. bekkur'),
+		('7', '7. bekkur'),
+		('8', '8. bekkur'),
+		('9', '9. bekkur'),
+		('10', '10. bekkur'),
+	)	
+	student_year = models.CharField(
+        max_length=2,
+        choices=YEAR_IN_SCHOOL_CHOICES,
+    )
 
 class SamraemdMathResultForm(forms.ModelForm):
 	file = forms.FileField()
 	class Meta:
 		model = SamraemdMathResult
-		fields = ['ra_se', 'rm_se', 'tt_se', 'se', 'ra_re', 'rm_re', 'tt_re', 're', 'ra_sg', 'rm_sg', 'tt_sg', 'sg', 'ord_talna_txt', 'fm_fl', 'fm_txt', 'exam_code', 'exam_date']
+		fields = ['ra_se', 'rm_se', 'tt_se', 'se', 'ra_re', 'rm_re', 'tt_re', 're', 'ra_sg', 'rm_sg', 'tt_sg', 'sg', 'ord_talna_txt', 'fm_fl', 'fm_txt', 'exam_code', 'exam_date', 'student_year']
 		labels = {
 			'exam_code': 'Prófkóði',
 			'student': 'Nemandi',
@@ -57,7 +73,8 @@ class SamraemdMathResultForm(forms.ModelForm):
 			'ord_talna_txt': 'Orðadæmi og talnadæmi',
 			'fm_fl': 'Framfaraflokkur',
 			'fm_txt': 'Framfaratexti',
-			'exam_date': 'Dagsetning prófs (YYYY-MM-DD)'
+			'exam_date': 'Dagsetning prófs (YYYY-MM-DD)',
+			'student_year': 'Árgangur'
 		}
 
 class SamraemdISLResult(models.Model):
@@ -84,12 +101,28 @@ class SamraemdISLResult(models.Model):
 	#exam fields
 	exam_code = models.CharField(max_length = 256)
 	exam_date = models.DateField()
+	YEAR_IN_SCHOOL_CHOICES = (
+		('1', '1. bekkur'),
+		('2', '2. bekkur'),
+		('3', '3. bekkur'),
+		('4', '4. bekkur'),
+		('5', '5. bekkur'),
+		('6', '6. bekkur'),
+		('7', '7. bekkur'),
+		('8', '8. bekkur'),
+		('9', '9. bekkur'),
+		('10', '10. bekkur'),
+	)	
+	student_year = models.CharField(
+        max_length=2,
+        choices=YEAR_IN_SCHOOL_CHOICES,
+    )	
 
 class SamraemdISLResultForm(forms.ModelForm):
 	file = forms.FileField()
 	class Meta:
 		model = SamraemdISLResult
-		fields = ['le_se', 'mn_se', 'ri_se', 'se', 'le_re', 'mn_re', 'ri_re', 're', 'le_sg', 'mn_sg', 'ri_sg', 'sg', 'fm_fl', 'fm_txt', 'exam_code', 'exam_date']
+		fields = ['le_se', 'mn_se', 'ri_se', 'se', 'le_re', 'mn_re', 'ri_re', 're', 'le_sg', 'mn_sg', 'ri_sg', 'sg', 'fm_fl', 'fm_txt', 'exam_code', 'exam_date', 'student_year']
 		labels = {
 			'exam_code': 'Prófkóði',
 			'student': 'Nemandi',
@@ -107,5 +140,6 @@ class SamraemdISLResultForm(forms.ModelForm):
 			'sg': 'Grunnskólaeinkunn - Heild',
 			'fm_fl': 'Framfaraflokkur',
 			'fm_txt': 'Framfaratexti',						
-			'exam_date': 'Dagsetning prófs (YYYY-MM-DD)'
+			'exam_date': 'Dagsetning prófs (YYYY-MM-DD)',
+			'student_year': 'Árgangur'			
 		}			
