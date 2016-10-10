@@ -78,6 +78,8 @@
 	<script type='text/javascript'>
 		var data = {{data|safe}};
 		$( document ).on("click", "#save_data", function(){
+			var href = $(this).attr('href');
+			setTimeout(function() {window.location = href}, 1000);
 			$.ajax({
 				type: "POST",
 				url: '',
