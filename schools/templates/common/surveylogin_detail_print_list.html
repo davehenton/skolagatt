@@ -32,19 +32,19 @@
 							</div>
 							{% if student.exceptions_set.all and student.supportresource_set.all %}
 							<div class="col-md-4">
-								<a href="{% url 'supportandexception:exception' survey.studentgroup.school.id student.id %}" title="Undanþágur"><span class="glyphicon glyphicon-flag" style="color:#449D44"></span>&nbsp;</a> 
+								<a href="{% url 'supportandexception:exception' survey.studentgroup.school.id student.id %}" title="Undanþágur"><span class="glyphicon glyphicon-flag" style="color:red"></span>&nbsp;</a> 
 								{{ student.exceptions_set.first.exam }}
-								<a href="{% url 'supportandexception:supportresource' survey.studentgroup.school.id student.id %}" title="Stuðningsúrræði"><span class="glyphicon glyphicon-flag" style="color:#EC971F"></span>&nbsp;</a>
-								Tími: {{ student.supportresource_set.first.longer_time }} Lestur:{{ student.supportresource_set.first.reading_assistance }}
+								
+				
 							</div>
 							{% elif student.exceptions_set.all %}
 							<div class="col-md-4">
-								<a href="{% url 'supportandexception:exception' survey.studentgroup.school.id student.id %}" title="Undanþágur"><span class="glyphicon glyphicon-flag" style="color:#449D44"></span>&nbsp;</a>
+								<a href="{% url 'supportandexception:exception' survey.studentgroup.school.id student.id %}" title="Undanþágur"></a>
 								{{ student.exceptions_set.first.exam }}
 							</div>
 							{% elif student.supportresource_set.all %}							
 							<div class="col-md-4">
-								<a href="{% url 'supportandexception:supportresource' survey.studentgroup.school.id student.id %}" title="Stuðningsúrræði"><span class="glyphicon glyphicon-flag" style="color:#EC971F"></span>&nbsp;</a>
+								<a href="{% url 'supportandexception:supportresource' survey.studentgroup.school.id student.id %}" title="Stuðningsúrræði"><span class="glyphicon glyphicon-flag" style="color:red"></span>&nbsp;</a>
 								Tími: {{ student.supportresource_set.first.longer_time }} Lestur: {{ student.supportresource_set.first.reading_assistance }}
 							</div>
 							{% else %}
@@ -54,10 +54,12 @@
 						</div>
 					{% endfor %}
 					{% if data.student.exceptions_set.exists %}
-						<a href="{% url 'supportandexception:exception' data.student.school_set.first.id data.student.id %}" title="Undanþágur"><span class="glyphicon glyphicon-flag" style="color:#449D44"></span>&nbsp;</a>
+						<a href="{% url 'supportandexception:exception' data.student.school_set.first.id data.student.id %}" title="Undanþágur"><span class="glyphicon glyphicon-flag" style="color:red"></span>&nbsp;</a>
+										Tími: {{ student.supportresource_set.first.longer_time }} Lestur:{{ student.supportresource_set.first.reading_assistance }}
 					{% endif %}
 					{% if data.student.supportresource_set.exists %}
-						<a href="{% url 'supportandexception:supportresource' data.student.school_set.first.id data.student.id %}" title="Stuðningsúrræði"><span class="glyphicon glyphicon-flag" style="color:#EC971F"></span>&nbsp;</a>
+						<a href="{% url 'supportandexception:supportresource' data.student.school_set.first.id data.student.id %}" title="Stuðningsúrræði"><span class="glyphicon glyphicon-flag" style="color:red"></span>&nbsp;</a>
+						{{ student.exceptions_set.first.exam }}
 					{% endif %}
 				</td>
 				<td class="testcode">{{data.survey_code}}</td>

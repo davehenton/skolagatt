@@ -54,10 +54,10 @@
 						</div>
 					{% endfor %}
 					{% if data.student.exceptions_set.exists %}
-						<a href="{% url 'supportandexception:exception' data.student.school_set.first.id data.student.id %}" title="Undanþágur"><span class="glyphicon glyphicon-flag" style="color:#449D44"></span>&nbsp;</a>
+						<a href="{% url 'supportandexception:exception' data.student.school_set.first.id data.student.id %}" title="Undanþágur"><span class="glyphicon glyphicon-flag" style="color:red"></span>&nbsp;</a>
 					{% endif %}
 					{% if data.student.supportresource_set.exists %}
-						<a href="{% url 'supportandexception:supportresource' data.student.school_set.first.id data.student.id %}" title="Stuðningsúrræði"><span class="glyphicon glyphicon-flag" style="color:#EC971F"></span>&nbsp;</a>
+						<a href="{% url 'supportandexception:supportresource' data.student.school_set.first.id data.student.id %}" title="Stuðningsúrræði"><span class="glyphicon glyphicon-flag" style="color:red"></span>&nbsp;</a>
 					{% endif %}
 				</td>
 				<td class="testcode">{{data.survey_code}}</td>
