@@ -85,8 +85,12 @@
 	Skráningartími fyrir stuðningsúrræði er liðinn.
 </div>
 <div class="row">
-	<button class="btn btn-success" type="submit" value="exceptionsave" name="submit" disabled>Vista beiðni um undanþágu</button>
-	<button class="btn btn-danger" type="submit" value="exceptiondelete" name="submit" disabled>Eyða beiðni um undanþágu</button>
+	{% if  is_school_manager %}
+		<button class="btn btn-success" type="submit" value="exceptionsave" name="submit">Vista beiðni um undanþágu</button>
+		<button class="btn btn-danger" type="submit" value="exceptiondelete" name="submit">Eyða beiðni um undanþágu</button>
+	{% else %}
+		<button class="btn btn-success" type="submit" value="exceptiongothrough" name="submit">Til baka</button>
+	{% endif %}
 </div>
 </form>
 {% endblock %}
