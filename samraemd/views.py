@@ -13,6 +13,58 @@ from itertools import chain
 
 from schools.util import *
 
+class SamraemdResultDetail(UserPassesTestMixin, DetailView):
+	model = SamraemdMathResult
+
+	def test_func(self):
+		return is_school_manager(self.request, self.kwargs)
+
+	def get_template_names(self, **kwargs):
+		if 'print' in self.kwargs:
+			if self.kwargs['print'] == 'listi':
+				return ['samraemd/surveylogin_detail_print_list.html']
+			elif self.kwargs['print'] == 'einstaklingsblod':
+				return ['samraemd/surveylogin_detail_print_singles.html']
+		return ['samraemd/samraemdmathresult_detail.html']
+
+	def get_object(self, **kwargs):
+		return SamraemdMathResult.objects.first()
+
+	def get_context_data(self, **kwargs):
+		# xxx will be available in the template as the related objects
+		context = super(SamraemdResultDetail, self).get_context_data(**kwargs)
+		year = self.kwargs['year']
+		group = self.kwargs['group']
+		student_results = {}
+		if 'school_id' in self.kwargs:
+			school = School.objects.get(pk=self.kwargs['school_id'])
+			context['school'] = school
+			context['school_id'] = self.kwargs['school_id']
+			for result in list(chain(
+				SamraemdMathResult.objects.filter(student__in = Student.objects.filter(school=school)).filter(student_year=group).filter(exam_date__year=year),
+				SamraemdISLResult.objects.filter(student__in = Student.objects.filter(school=school)).filter(student_year=group).filter(exam_date__year=year),
+				)):
+				if result.student in student_results:
+					student_results[result.student].append(result)
+				else:
+					student_results[result.student] = [result]
+		else:
+			if self.reuest.usesr.is_superuser:
+				if 'stæ' in self.kwargs:
+					for result in SamraemdMathResult.objects.filter(student_year=group).filter(exam_date__year=year):
+						if result.student in student_results:
+							student_results[result.student].append(result)
+						else:
+							student_results[result.student] = [result]
+				else:
+					for result in SamraemdISLResult.objects.filter(student_year=group).filter(exam_date__year=year):
+						if result.student in student_results:
+							student_results[result.student].append(result)
+						else:
+							student_results[result.student] = [result]				
+		context['student_results'] = student_results
+		return context
+
 class SamraemdMathResultAdminListing(UserPassesTestMixin, ListView):
 	model = SamraemdMathResult
 	template_name = 'samraemd/samraemdmathresult_admin_list.html'
@@ -20,7 +72,7 @@ class SamraemdMathResultAdminListing(UserPassesTestMixin, ListView):
 	def get_context_data(self, **kwargs):
 		# xxx will be available in the template as the related objects
 		context = super(SamraemdMathResultAdminListing, self).get_context_data(**kwargs)
-		context['exams'] = SamraemdMathResult.objects.all().values('exam_code').distinct()
+		context['exams'] = SamraemdMathResult.objects.all().values('exam_date', 'student_year', 'exam_code').distinct()
 		return context
 
 	def test_func(self):
@@ -48,54 +100,15 @@ class SamraemdResultListing(UserPassesTestMixin, ListView):
 		# xxx will be available in the template as the related objects
 		context = super(SamraemdResultListing, self).get_context_data(**kwargs)
 		school = School.objects.get(pk=self.kwargs['school_id'])
+		context['school'] = school
 		m_exams = SamraemdMathResult.objects.filter(student__in = Student.objects.filter(school=school)).values('exam_date', 'student_year', 'exam_code').distinct()
 		i_exams = SamraemdISLResult.objects.filter(student__in = Student.objects.filter(school=school)).values('exam_date', 'student_year', 'exam_code').distinct()
 		context['exams'] = list(chain(m_exams, i_exams))
-		print(context['exams'])
 		context['school_id'] = school.id
 		return context
 
 	def test_func(self):
 		return is_school_manager(self.request, self.kwargs) or is_school_teacher(self.request, self.kwargs)
-
-class SamraemdResultDetail(UserPassesTestMixin, DetailView):
-	model = SamraemdMathResult
-
-	def test_func(self):
-		return is_school_manager(self.request, self.kwargs)
-
-	def get_template_names(self, **kwargs):
-		if 'print' in self.kwargs:
-			if self.kwargs['print'] == 'listi':
-				return ['samraemd/surveylogin_detail_print_list.html']
-			elif self.kwargs['print'] == 'einstaklingsblod':
-				return ['samraemd/surveylogin_detail_print_singles.html']
-		return ['samraemd/samraemdmathresult_detail.html']
-
-	def get_object(self, **kwargs):
-		return SamraemdMathResult.objects.first()
-
-	def get_context_data(self, **kwargs):
-		# xxx will be available in the template as the related objects
-		context = super(SamraemdResultDetail, self).get_context_data(**kwargs)
-		year = self.kwargs['year']
-		group = self.kwargs['group']
-		if 'school_id' in self.kwargs:
-			school = School.objects.get(pk=self.kwargs['school_id'])
-			context['school_id'] = self.kwargs['school_id']
-			student_results = {}
-			for result in list(chain(
-				SamraemdMathResult.objects.filter(student__in = Student.objects.filter(school=school)).filter(student_year=group).filter(exam_date__year=year),
-				SamraemdISLResult.objects.filter(student__in = Student.objects.filter(school=school)).filter(student_year=group).filter(exam_date__year=year),
-				)):
-				if result.student in student_results:
-					student_results[result.student].append(result)
-				else:
-					student_results[result.student] = [result]
-			context['student_results'] = student_results
-		#else:
-			#context['exam_results'] = SamraemdMathResult.objects.filter(exam_code=self.kwargs['exam_code'])
-		return context
 
 class SamraemdMathResultCreate(UserPassesTestMixin, CreateView):
 	model = SamraemdMathResult
@@ -257,7 +270,7 @@ class SamraemdISLResultAdminListing(UserPassesTestMixin, ListView):
 	def get_context_data(self, **kwargs):
 		# xxx will be available in the template as the related objects
 		context = super(SamraemdISLResultAdminListing, self).get_context_data(**kwargs)
-		context['exams'] = SamraemdISLResult.objects.all().values('exam_code').distinct()
+		context['exams'] = SamraemdISLResult.objects.all().values('exam_date', 'student_year', 'exam_code').distinct()
 		return context
 
 	def test_func(self):
