@@ -7,8 +7,11 @@
 		<h4>{{exam_code}}</h4>
 	</div>
 	<div class="col-md-6 hidden-print">
-		<a href="listi" class="btn btn-default" target="_blank">Prentvænn listi</a>
-		<a href="einstaklingsblod" class="btn btn-default" target="_blank">Prentvæn einstaklingsblöð</a>
+		{% if school.id %}
+			<a href="{% url 'samraemd:result_print' school.id year group %}" class="btn btn-default" target="_blank">Prentvæn einkunnablöð</a>
+		{% else %}
+			<a href="{% url 'samraemd:admin_result_print' year group %}" class="btn btn-default" target="_blank">Prentvæn einkunnablöð</a>
+		{% endif %}
 	</div>
 </div>
 <div>

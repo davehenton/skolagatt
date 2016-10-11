@@ -5,10 +5,12 @@ from .views import *
 
 app_name = 'samraemd'
 urlpatterns = [
-	url(r'^stæ/$', SamraemdMathResultAdminListing.as_view(), name='math_admin_listing'),
-	url(r'^stæ/(?P<school_id>\d+)/$', SamraemdMathResultListing.as_view(), name='math_listing'),
 	url(r'^niðurstöður/(?P<school_id>\d+)$', SamraemdResultListing.as_view(), name='result_list'),
 	url(r'^niðurstöður/(?P<school_id>\d+)/(?P<year>\d+)/(?P<group>\d+)$', SamraemdResultDetail.as_view(), name='result_detail'),
+	url(r'^niðurstöður/(?P<school_id>\d+)/(?P<year>\d+)/(?P<group>\d+)/einkunnablod/$', SamraemdResultDetail.as_view(), name='result_print'),
+	url(r'^niðurstöður/(?P<year>\d+)/(?P<group>\d+)/einkunnablod/$', SamraemdResultDetail.as_view(), name='admin_result_print'),
+	url(r'^stæ/$', SamraemdMathResultAdminListing.as_view(), name='math_admin_listing'),
+	url(r'^stæ/(?P<school_id>\d+)/$', SamraemdMathResultListing.as_view(), name='math_listing'),
 	url(r'^stæ/niðurstöður/(?P<year>\d+)/(?P<group>\d+)$', SamraemdResultDetail.as_view(), name='math_admin_result_detail'),
 	url(r'^stæ/niðurstöður/create/$', SamraemdMathResultCreate.as_view(), name='math_create'),
 	url(r'^stæ/niðurstöður/(?P<exam_code>[\w ]+)/delete/$', SamraemdMathResultDelete.as_view(), name='math_delete'),
