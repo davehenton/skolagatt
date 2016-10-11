@@ -51,7 +51,6 @@ class SamraemdResultListing(UserPassesTestMixin, ListView):
 		m_exams = SamraemdMathResult.objects.filter(student__in = Student.objects.filter(school=school)).values('exam_date', 'student_year', 'exam_code').distinct()
 		i_exams = SamraemdISLResult.objects.filter(student__in = Student.objects.filter(school=school)).values('exam_date', 'student_year', 'exam_code').distinct()
 		context['exams'] = list(chain(m_exams, i_exams))
-		print(context['exams'])
 		context['school_id'] = school.id
 		return context
 
@@ -65,11 +64,8 @@ class SamraemdResultDetail(UserPassesTestMixin, DetailView):
 		return is_school_manager(self.request, self.kwargs)
 
 	def get_template_names(self, **kwargs):
-		if 'print' in self.kwargs:
-			if self.kwargs['print'] == 'listi':
-				return ['samraemd/surveylogin_detail_print_list.html']
-			elif self.kwargs['print'] == 'einstaklingsblod':
-				return ['samraemd/surveylogin_detail_print_singles.html']
+		if 'einkunnablod' in self.request.path:
+			return ['samraemd/samraemd_detail_print_singles.html']
 		return ['samraemd/samraemdmathresult_detail.html']
 
 	def get_object(self, **kwargs):
@@ -79,14 +75,17 @@ class SamraemdResultDetail(UserPassesTestMixin, DetailView):
 		# xxx will be available in the template as the related objects
 		context = super(SamraemdResultDetail, self).get_context_data(**kwargs)
 		year = self.kwargs['year']
+		context['year'] = year
 		group = self.kwargs['group']
 		if 'school_id' in self.kwargs:
 			school = School.objects.get(pk=self.kwargs['school_id'])
+			context['group'] = StudentGroup.objects.get(pk=group)
 			context['school_id'] = self.kwargs['school_id']
+			context['school_name'] = school.name
 			student_results = {}
 			for result in list(chain(
-				SamraemdMathResult.objects.filter(student__in = Student.objects.filter(school=school)).filter(student_year=group).filter(exam_date__year=year),
 				SamraemdISLResult.objects.filter(student__in = Student.objects.filter(school=school)).filter(student_year=group).filter(exam_date__year=year),
+				SamraemdMathResult.objects.filter(student__in = Student.objects.filter(school=school)).filter(student_year=group).filter(exam_date__year=year),
 				)):
 				if result.student in student_results:
 					student_results[result.student].append(result)

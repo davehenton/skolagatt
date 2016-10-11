@@ -4,6 +4,7 @@
 /lib64
 /share
 /env
+/public
 db.sqlite3
 env.sh
 pyvenv.cfg
@@ -11,3 +12,4 @@ pyvenv.cfg
 *.sublime-workspace
 *.sublime-project
 pip-selfcheck.json
+.DS_Store
