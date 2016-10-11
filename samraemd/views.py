@@ -110,6 +110,59 @@ class SamraemdResultListing(UserPassesTestMixin, ListView):
 	def test_func(self):
 		return is_school_manager(self.request, self.kwargs) or is_school_teacher(self.request, self.kwargs)
 
+class SamraemdResultDetail(UserPassesTestMixin, DetailView):
+	model = SamraemdMathResult
+
+	def test_func(self):
+		return is_school_manager(self.request, self.kwargs)
+
+	def get_template_names(self, **kwargs):
+		if 'einkunnablod' in self.request.path:
+			return ['samraemd/samraemd_detail_print_singles.html']
+		return ['samraemd/samraemdmathresult_detail.html']
+
+	def get_object(self, **kwargs):
+		return SamraemdMathResult.objects.first()
+
+	def get_context_data(self, **kwargs):
+		# xxx will be available in the template as the related objects
+		context = super(SamraemdResultDetail, self).get_context_data(**kwargs)
+		year = self.kwargs['year']
+		context['year'] = year
+		group = self.kwargs['group']
+		context['group'] = group
+		print(context['group'])
+		student_results = {}
+		if 'school_id' in self.kwargs:
+			school = School.objects.get(pk=self.kwargs['school_id'])
+			context['school'] = school
+			context['school_id'] = self.kwargs['school_id']
+			context['school_name'] = school.name
+			for result in list(chain(
+				SamraemdISLResult.objects.filter(student__in = Student.objects.filter(school=school)).filter(student_year=group).filter(exam_date__year=year),
+				SamraemdMathResult.objects.filter(student__in = Student.objects.filter(school=school)).filter(student_year=group).filter(exam_date__year=year),
+				)):
+				if result.student in student_results:
+					student_results[result.student].append(result)
+				else:
+					student_results[result.student] = [result]
+		else:
+			if self.request.user.is_superuser:
+				if 'stæ' in self.kwargs:
+					for result in SamraemdMathResult.objects.filter(student_year=group).filter(exam_date__year=year):
+						if result.student in student_results:
+							student_results[result.student].append(result)
+						else:
+							student_results[result.student] = [result]
+				else:
+					for result in SamraemdISLResult.objects.filter(student_year=group).filter(exam_date__year=year):
+						if result.student in student_results:
+							student_results[result.student].append(result)
+						else:
+							student_results[result.student] = [result]
+		context['student_results'] = student_results
+		return context
+
 class SamraemdMathResultCreate(UserPassesTestMixin, CreateView):
 	model = SamraemdMathResult
 	form_class = SamraemdMathResultForm	
