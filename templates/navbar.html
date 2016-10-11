@@ -34,6 +34,7 @@
 						<li><a href="{% url 'supportandexception:examsupport' school.id %}">Stuðningsúrræði</a></li>
 						{% if is_school_manager %}
 						<li><a href="{% url 'schools:survey_login_listing' school.id %}">Prófkóðar</a></li>
+						<li><a href="{% url 'samraemd:result_list' school.id %}">Niðurstöður</a></li>
 						{% endif %}
 					</ul>
 				</li>

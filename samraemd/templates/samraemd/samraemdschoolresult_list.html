@@ -1,0 +1,15 @@
+{% extends 'common/index.html'%}
+{% include staticfiles%}
+{% block content %}
+	<h3>Samræmd próf</h3>
+	<div>
+		<div class="row">
+			<div class="col-md-4"><h4>Próf</h4></div>
+		</div>
+		{% for exam in exams %}
+		<div class="row">
+			<div class="col-md-4"><a href="{% url 'samraemd:result_detail' school_id exam.exam_date|date:'Y' exam.student_year %}">{{exam.exam_code}}</a></div>
+		</div>
+		{% endfor %}
+	</div>
+{% endblock %}
