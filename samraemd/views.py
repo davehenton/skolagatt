@@ -9,6 +9,7 @@ from django.views.generic import ListView, CreateView, DetailView, UpdateView, D
 from django.core.urlresolvers import reverse_lazy, reverse
 
 import xlrd
+from itertools import chain
 
 from schools.util import *
 
@@ -39,7 +40,25 @@ class SamraemdMathResultListing(UserPassesTestMixin, ListView):
 	def test_func(self):
 		return is_school_manager(self.request, self.kwargs) or is_school_teacher(self.request, self.kwargs)
 
-class SamraemdMathResultDetail(UserPassesTestMixin, DetailView):
+class SamraemdResultListing(UserPassesTestMixin, ListView):
+	model = SamraemdMathResult
+	template_name = 'samraemd/samraemdschoolresult_list.html'
+
+	def get_context_data(self, **kwargs):
+		# xxx will be available in the template as the related objects
+		context = super(SamraemdResultListing, self).get_context_data(**kwargs)
+		school = School.objects.get(pk=self.kwargs['school_id'])
+		m_exams = SamraemdMathResult.objects.filter(student__in = Student.objects.filter(school=school)).values('exam_date', 'student_year', 'exam_code').distinct()
+		i_exams = SamraemdISLResult.objects.filter(student__in = Student.objects.filter(school=school)).values('exam_date', 'student_year', 'exam_code').distinct()
+		context['exams'] = list(chain(m_exams, i_exams))
+		print(context['exams'])
+		context['school_id'] = school.id
+		return context
+
+	def test_func(self):
+		return is_school_manager(self.request, self.kwargs) or is_school_teacher(self.request, self.kwargs)
+
+class SamraemdResultDetail(UserPassesTestMixin, DetailView):
 	model = SamraemdMathResult
 
 	def test_func(self):
@@ -54,18 +73,28 @@ class SamraemdMathResultDetail(UserPassesTestMixin, DetailView):
 		return ['samraemd/samraemdmathresult_detail.html']
 
 	def get_object(self, **kwargs):
-		return SamraemdMathResult.objects.filter(exam_code=self.kwargs['exam_code']).first()
+		return SamraemdMathResult.objects.first()
 
 	def get_context_data(self, **kwargs):
 		# xxx will be available in the template as the related objects
-		context = super(SamraemdMathResultDetail, self).get_context_data(**kwargs)
-		context['exam_code'] = self.kwargs['exam_code']
+		context = super(SamraemdResultDetail, self).get_context_data(**kwargs)
+		year = self.kwargs['year']
+		group = self.kwargs['group']
 		if 'school_id' in self.kwargs:
 			school = School.objects.get(pk=self.kwargs['school_id'])
 			context['school_id'] = self.kwargs['school_id']
-			context['exam_results'] = SamraemdMathResult.objects.filter(student__in = Student.objects.filter(school=school)).filter(exam_code=self.kwargs['exam_code'])
-		else:
-			context['exam_results'] = SamraemdMathResult.objects.filter(exam_code=self.kwargs['exam_code'])
+			student_results = {}
+			for result in list(chain(
+				SamraemdMathResult.objects.filter(student__in = Student.objects.filter(school=school)).filter(student_year=group).filter(exam_date__year=year),
+				SamraemdISLResult.objects.filter(student__in = Student.objects.filter(school=school)).filter(student_year=group).filter(exam_date__year=year),
+				)):
+				if result.student in student_results:
+					student_results[result.student].append(result)
+				else:
+					student_results[result.student] = [result]
+			context['student_results'] = student_results
+		#else:
+			#context['exam_results'] = SamraemdMathResult.objects.filter(exam_code=self.kwargs['exam_code'])
 		return context
 
 class SamraemdMathResultCreate(UserPassesTestMixin, CreateView):
@@ -247,35 +276,6 @@ class SamraemdISLResultListing(UserPassesTestMixin, ListView):
 
 	def test_func(self):
 		return is_school_manager(self.request, self.kwargs) or is_school_teacher(self.request, self.kwargs)
-
-class SamraemdISLResultDetail(UserPassesTestMixin, DetailView):
-	model = SamraemdISLResult
-
-	def test_func(self):
-		return is_school_manager(self.request, self.kwargs)
-
-	def get_template_names(self, **kwargs):
-		if 'print' in self.kwargs:
-			if self.kwargs['print'] == 'listi':
-				return ['samraemd/surveylogin_detail_print_list.html']
-			elif self.kwargs['print'] == 'einstaklingsblod':
-				return ['samraemd/surveylogin_detail_print_singles.html']
-		return ['samraemd/samraemdislresult_detail.html']
-
-	def get_object(self, **kwargs):
-		return SamraemdISLResult.objects.filter(exam_code=self.kwargs['exam_code']).first()
-
-	def get_context_data(self, **kwargs):
-		# xxx will be available in the template as the related objects
-		context = super(SamraemdISLResultDetail, self).get_context_data(**kwargs)
-		context['exam_code'] = self.kwargs['exam_code']
-		if 'school_id' in self.kwargs:
-			school = School.objects.get(pk=self.kwargs['school_id'])
-			context['school_id'] = self.kwargs['school_id']
-			context['exam_results'] = SamraemdISLResult.objects.filter(student__in = Student.objects.filter(school=school)).filter(exam_code=self.kwargs['exam_code'])
-		else:
-			context['exam_results'] = SamraemdISLResult.objects.filter(exam_code=self.kwargs['exam_code'])
-		return context
 
 class SamraemdISLResultCreate(UserPassesTestMixin, CreateView):
 	model = SamraemdISLResult
