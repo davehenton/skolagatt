@@ -164,7 +164,7 @@
 		<div class="inner-border">
 			<img src="{% static 'img/logo-3litur.png'%}" class="img-responsive mms-logo"/>
 			<h1 class="text-center">Samræmd könnunarpróf</h1>
-			<h2 class="text-center">{{student.group.student_year}}. bekkur</h2>
+			<h2 class="text-center">{{group}}. bekkur</h2>
 			<div class="student col-xs-12">
 				<h3 class="text-center">{{student.name}}</h3>
 				<h4 class="text-center">
@@ -176,7 +176,7 @@
 					{{school.name}}
 				</p>
 				<p>
-					{{student.group}}
+					{{group}}. bekkur
 				</p>
 				<p>
 					Prófár: {{year}}
