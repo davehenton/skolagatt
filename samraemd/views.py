@@ -141,7 +141,6 @@ class SamraemdResultDetail(UserPassesTestMixin, DetailView):
 				SamraemdISLResult.objects.filter(student__in = Student.objects.filter(school=school)).filter(student_year=group).filter(exam_date__year=year),
 				SamraemdMathResult.objects.filter(student__in = Student.objects.filter(school=school)).filter(student_year=group).filter(exam_date__year=year),
 				)):
-				result.student.group = StudentGroup.objects.get(students=result.student)
 				if result.student in student_results:
 					student_results[result.student].append(result)
 				else:
