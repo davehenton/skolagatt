@@ -141,6 +141,7 @@
 	}
 	.backside li {
 		list-style: none;
+		padding: 0.3em 0;
 	}
 	@media print {
 	  h1, h2, .thead>td, .thead-subject>td{
@@ -156,7 +157,7 @@
 		<div class="inner-border">
 			<img src="{% static 'img/logo-3litur.png'%}" class="img-responsive mms-logo"/>
 			<h1 class="text-center">Samræmd könnunarpróf</h1>
-			<h2 class="text-center">{{group}}. bekkur</h2>
+			<h2 class="text-center">{{student.group.student_year}}. bekkur</h2>
 			<div class="student col-xs-12">
 				<h3 class="text-center">{{student.name}}</h3>
 				<h4 class="text-center">
@@ -168,7 +169,7 @@
 					{{school.name}}
 				</p>
 				<p>
-					{{group}}. bekkur
+					{{student.group}}
 				</p>
 				<p>
 					Prófár: {{year}}
@@ -211,9 +212,9 @@
 								</tr>
 								{% if group.student_year != "4" %}
 								<tr class="tbody">
-									<td>{{result.fm_fl|slice:"1:-1"}}</td>
+									<td>{{result.fm_fl}}</td>
 									<td colspan="3">
-										{{result.fm_txt|slice:"1:-1"}}
+										<small>{{result.fm_txt}}</small>
 									</td>
 								</tr>
 								{% endif %}
@@ -244,13 +245,13 @@
 								</tr>
 								<tr class="tbody">
 									<td><strong>Orða- og talnadæmi</strong></td>
-									<td colspan="3"><small>{{result.ord_talna_txt|slice:"1:-1"}}</small></td>
+									<td colspan="3"><small>{{result.ord_talna_txt}}</small></td>
 								</tr>
 								{% if group.student_year != "4" %}
 								<tr class="tbody">
-									<td>{{result.fm_fl|slice:"1:-1"}}</td>
+									<td>{{result.fm_fl}}</td>
 									<td colspan="3">
-										{{result.fm_txt|slice:"1:-1"}}
+										<small>{{result.fm_txt}}</small>
 									</td>
 								</tr>
 								{% endif %}
@@ -286,30 +287,62 @@
 	<p>
 		Grunnskólanemendur þreyta samræmd könnunarpróf þrisvar sinnum á meðan á skólagöngu stendur. Þessi próf eru frábrugðin öðru námsmati í grunnskóla að því leyti að allir nemendur á landinu þreyta sama prófið. Þau hafa einnig þá sérstöðu að spanna viðfangsefni tveggja til þriggja ára. Niðurstöðurnar gefa því annað sjónarhorn á stöðu nemenda en námsmat sem fram fer innan grunnskólans. Markmið þeirra er jafnframt frábrugðið hefðbundnu námsmati þar sem þeim er bæði ætlað að veita upplýsingar um nemendur og skólakerfið almennt. Samræmd könnunarpróf eru því mikilvæg viðbót við annað námsmat í grunnskóla.
 	</p>
-	<p>
-		Samræmd könnunarpróf í 10. bekk meta stöðu nemenda í íslensku, stærðfræði og ensku samkvæmt ákvæðum aðalnámskrár grunnskóla fyrir unglingastig. Prófin miðast einkum við kunnáttu, leikni og hæfni sem almennt er unnið með í 8. og 9. bekk. Skil milli námsefnis 9. og 10. bekkjar eru þó óljós í aðalnámskrá þannig að í öllum prófum eru atriði sem staðsetja mætti beggja vegna. Samræmdum könnunarprófum er ætlað að reyna á nemendur á öllum getustigum og því er nauðsynlegt að hafa slík atriði með í prófum. Einkunnir á samræmdum könnunarprófum eru tvenns konar:
-	</p>
-	<p>
-		<strong>Raðeinkunn</strong> er einkunn á bilinu 1 til 99 og sýnir stöðu nemandans miðað við árganginn í heild. Nemandi sem fær raðeinkunnina 60 stendur sig jafn vel eða betur en 60% nemenda á landinu öllu.
-	</p>
-	<p>
-		<strong>Hæfnieinkunn</strong> er einkunn sem gefin er í bókstöfum, A, B+, B, C+, C og D og endurspeglar að hvaða marki nemendur hafa náð matsviðmiðum aðalnámskrár grunnskóla, sem er lýst hér að neðan.
-	</p>
-	<ul>
-		<li><strong>A einkunn:</strong> Framúrskarandi hæfni og frammistaða í námi með hliðsjón af matsviðmiðum námsgreinar eða námssviðs.</li>
-		<li><strong>B einkunn:</strong> Góð hæfni og frammistaða í námi með hliðsjón af matsviðmiðum námsgreinar eða námssviðs.</li>
-		<li><strong>C einkunn:</strong> Sæmileg hæfni og frammistaða í námi með hliðsjón af matsviðmiðum námsgreinar eða námssviðs.</li>
-		<li><strong>D einkunn:</strong> Hæfni og frammistöðu i námi ábótavant með hliðsjón af matsviðmiðum námsgreinar eða námssviðs.</li>
-	</ul>
-	<p>
-		Ekki eru skilgreind sjálfstæð matsviðmið fyrir einkunnir C+ og B+. Nemendur sem fá einkunnina B+ og einkunnina C+ eru nálægt því að fá A eða B.
-	</p>
-	<p>
-		Auk ofangreindra einkunna koma fram umsagnir um framfarir í íslensku og stærðfræði á milli 7. og 10. bekkjar hjá þeim nemendum sem þreyttu bæði prófin.
-	</p>
-	<p>
-		Allir nemendur sem þreyta prófin fá hæfnieinkunn og raðeinkunn í hverri námsgrein ásamt raðeinkunn fyrir hvern námsþátt viðkomandi prófs. Með þessu móti fæst þver snið af kunnáttu nemenda í viðkomandi námsgreinum sem ætti að nýtast kennurum til að skoða styrk og veikleika nemenda í hverjum námsþætti fyrir sig. Meginþorri nemenda fær hæfnieinkunnirnar B og C. Frekari upplýsingar um matsviðmiðin og hæfnieinkunnir er að finna á slóðinni http://vefir.nams.is/namsmat/.
-	</p>
+	{% if student.group.student_year == '10' %}
+		<p>
+			Samræmd könnunarpróf í 10. bekk meta stöðu nemenda í íslensku, stærðfræði og ensku samkvæmt ákvæðum aðalnámskrár grunnskóla fyrir unglingastig. Prófin miðast einkum við kunnáttu, leikni og hæfni sem almennt er unnið með í 8. og 9. bekk. Skil milli námsefnis 9. og 10. bekkjar eru þó óljós í aðalnámskrá þannig að í öllum prófum eru atriði sem staðsetja mætti beggja vegna. Samræmdum könnunarprófum er ætlað að reyna á nemendur á öllum getustigum og því er nauðsynlegt að hafa slík atriði með í prófum. Einkunnir á samræmdum könnunarprófum eru tvenns konar:
+		</p>
+		<p>
+			<strong>Raðeinkunn</strong> er einkunn á bilinu 1 til 99 og sýnir stöðu nemandans miðað við árganginn í heild. Nemandi sem fær raðeinkunnina 60 stendur sig jafn vel eða betur en 60% nemenda á landinu öllu.
+		</p>
+		<p>
+			<strong>Hæfnieinkunn</strong> er einkunn sem gefin er í bókstöfum, A, B+, B, C+, C og D og endurspeglar að hvaða marki nemendur hafa náð matsviðmiðum aðalnámskrár grunnskóla, sem er lýst hér að neðan.
+		</p>
+		<ul>
+			<li><strong>A einkunn:</strong> Framúrskarandi hæfni og frammistaða í námi með hliðsjón af matsviðmiðum námsgreinar eða námssviðs.</li>
+			<li><strong>B einkunn:</strong> Góð hæfni og frammistaða í námi með hliðsjón af matsviðmiðum námsgreinar eða námssviðs.</li>
+			<li><strong>C einkunn:</strong> Sæmileg hæfni og frammistaða í námi með hliðsjón af matsviðmiðum námsgreinar eða námssviðs.</li>
+			<li><strong>D einkunn:</strong> Hæfni og frammistöðu i námi ábótavant með hliðsjón af matsviðmiðum námsgreinar eða námssviðs.</li>
+		</ul>
+		<p>
+			Ekki eru skilgreind sjálfstæð matsviðmið fyrir einkunnir C+ og B+. Nemendur sem fá einkunnina B+ og einkunnina C+ eru nálægt því að fá A eða B.
+		</p>
+		<p>
+			Auk ofangreindra einkunna koma fram umsagnir um framfarir í íslensku og stærðfræði á milli 7. og 10. bekkjar hjá þeim nemendum sem þreyttu bæði prófin.
+		</p>
+		<p>
+			Allir nemendur sem þreyta prófin fá hæfnieinkunn og raðeinkunn í hverri námsgrein ásamt raðeinkunn fyrir hvern námsþátt viðkomandi prófs. Með þessu móti fæst þver snið af kunnáttu nemenda í viðkomandi námsgreinum sem ætti að nýtast kennurum til að skoða styrk og veikleika nemenda í hverjum námsþætti fyrir sig. Meginþorri nemenda fær hæfnieinkunnirnar B og C. Frekari upplýsingar um matsviðmiðin og hæfnieinkunnir er að finna á slóðinni http://vefir.nams.is/namsmat/.
+		</p>
+	{% else %}
+		{% if student.group.student_year == '7' %}
+			<p>
+				Samræmd könnunarpróf í 7. bekk meta stöðu nemenda í íslensku og stærðfræði samkvæmt ákvæðum aðalnámskrár grunnskóla fyrir miðstig. Prófin afmarkast einkum við markmið sem almennt er unnið með í 5. og 6. bekk. Skil milli námsmarkmiða 6. og 7. bekkjar eru þó óljós í aðalnámskrá þannig að í öllum prófum eru atriði sem staðsetja mætti beggja vegna. Samræmdum könnunarprófum er ætlað að reyna á nemendur á öllum getustigum og því er nauðsynlegt að hafa slík atriði með í prófunum.
+			</p>
+		{% else %}
+			<p>
+				Samræmd könnunarpróf í 4. bekk meta stöðu nemenda í íslensku og stærðfræði samkvæmt ákvæðum aðalnámskrár grunnskóla fyrir yngsta stig. Prófin afmarkast einkum við markmið sem almennt er unnið með í fyrstu bekkjum grunnskólans. Skil milli námsmarkmiða 3. og 4. bekkjar er þó óljós í aðalnámskrá þannig að í öllum prófum eru atriði sem staðsetja mætti beggja vegna. Samræmdum könnunarprófum er ætlað að reyna á nemendur á öllum getustigum og því er nauðsynlegt að hafa slík atriði með í prófunum.
+			</p>
+		{% endif %}
+		<p>
+			Einkunnir á samræmdum könnunarprófum eru tvenns konar:
+		</p>
+		<ul>
+			<li>
+				<strong>Samræmd einkunn</strong> er hefðbundin einkunn á bilinu 1 til 10.
+			</li>
+			<li>
+				<strong>Raðeinkunn</strong> er einkunn á bilinu 1 til 99 og sýnir stöðu nemandans miðað við árganginn í heild. Nemandi sem fær raðeinkunnina 60 stendur sig jafnvel eða betur en 60% nemenda á landinu öllu.
+
+			</li>
+		</ul>
+		{% if student.group.student_year == '7' %}
+			<p>
+				Að auki kemur fram umsögn um framfarir nemenda milli 4. og. 7. bekkjar.
+			</p>
+		{% endif %}
+		<p>
+			Allir nemendur sem þreyta prófin fá heildareinkunn í hverri námsgrein ásamt raðeinkunn fyrir hvern námsþátt í viðkomandi prófs. Með þessu móti fæst þversnið af kunnáttu nemenda í viðkomandi námsgreinum sem ætti að nýtast kennurum til að skoða styrk og veikleika nemenda í hverjum námsþætti fyrir sig.
+		</p>
+	{% endif %}
 </div>
 </page>
 {% endfor %}
