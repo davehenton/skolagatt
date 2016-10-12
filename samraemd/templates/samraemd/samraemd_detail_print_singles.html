@@ -94,16 +94,19 @@
 		font-weight: 900;
 	}
 	.info {
-		padding: 1em 0 2em 2em;
+		padding: 1em 0 1em 2em;
 		font-family: Avenir;
 		font-weight: lighter;
 		font-size: 12pt;
 		color: #000;
 	}
+	.info p {
+		margin-bottom: 0.3em;
+	}
 	td {
 		border: none !important;
 		vertical-align: middle !important;
-		padding: 0 0 0.4em 0 !important;
+		padding: 0.3em 0 0 0 !important;
 		font-family: Avenir;
 	}
 	td:not(:first-child) {
@@ -116,10 +119,14 @@
 	.thead-subject td {
 		font-size: 14pt;
 		font-weight: bold;
+		padding-top: 0.8em !important;
 	}
 	.tbody td {
 		font-size: 12pt;
 		color: #000;
+	}
+	.ord_talna td {
+		padding-top: 0.8em !important;
 	}
 	.table-container {
 		padding: 2em;
@@ -210,9 +217,9 @@
 									<td>{{result.ri_re}}</td>
 									<td>{{result.ri_se}}</td>
 								</tr>
-								{% if group.student_year != "4" %}
+								{% if student.group.student_year != "4" %}
 								<tr class="tbody">
-									<td>{{result.fm_fl}}</td>
+									<td>Framfaraeinkunn</td>
 									<td colspan="3">
 										<small>{{result.fm_txt}}</small>
 									</td>
@@ -243,38 +250,38 @@
 									<td>{{result.tt_re}}</td>
 									<td>{{result.tt_se}}</td>
 								</tr>
+								{% if student.group.student_year != "4" %}
 								<tr class="tbody">
-									<td><strong>Orða- og talnadæmi</strong></td>
-									<td colspan="3"><small>{{result.ord_talna_txt}}</small></td>
-								</tr>
-								{% if group.student_year != "4" %}
-								<tr class="tbody">
-									<td>{{result.fm_fl}}</td>
+									<td>Framfaraeinkunn</td>
 									<td colspan="3">
 										<small>{{result.fm_txt}}</small>
 									</td>
 								</tr>
 								{% endif %}
+								<tr class="tbody ord_talna">
+									<td><strong>Orða- og talnadæmi</strong></td>
+									<td colspan="3"><small>{{result.ord_talna_txt}}</small></td>
+								</tr>
 							{% endif %}
+							<!--tr class="thead-subject">
+								<td>Enska</td>
+								<td></td>
+								<td>{{data.re}}</td>
+								<td>{{data.se}}</td>
+							</tr>
+							<tr class="tbody">
+								<td>Lesskilningur</td>
+								<td>(60%)</td>
+								<td>{{data.le_re}}</td>
+								<td>{{data.le_se}}</td>
+							</tr>
+							<tr class="tbody">
+								<td>Málnotkun og ritun</td>
+								<td>(40%)</td>
+								<td>{{data.mn_re}}</td>
+								<td>{{data.mn_se}}</td>
+							</tr-->
 						{% endfor %}
-						<!--tr class="thead-subject">
-							<td>Enska</td>
-							<td></td>
-							<td>{{data.re}}</td>
-							<td>{{data.se}}</td>
-						</tr>
-						<tr class="tbody">
-							<td>Lesskilningur</td>
-							<td>(60%)</td>
-							<td>{{data.le_re}}</td>
-							<td>{{data.le_se}}</td>
-						</tr>
-						<tr class="tbody">
-							<td>Málnotkun og ritun</td>
-							<td>(40%)</td>
-							<td>{{data.mn_re}}</td>
-							<td>{{data.mn_se}}</td>
-						</tr-->
 					</tbody>
 				</table>
 			</div>
