@@ -131,7 +131,6 @@ class SamraemdResultDetail(UserPassesTestMixin, DetailView):
 		context['year'] = year
 		group = self.kwargs['group']
 		context['group'] = group
-		print(context['group'])
 		student_results = {}
 		if 'school_id' in self.kwargs:
 			school = School.objects.get(pk=self.kwargs['school_id'])
@@ -161,6 +160,7 @@ class SamraemdResultDetail(UserPassesTestMixin, DetailView):
 						else:
 							student_results[result.student] = [result]
 		context['student_results'] = student_results
+		print(context['student_results'])
 		return context
 
 class SamraemdMathResultCreate(UserPassesTestMixin, CreateView):
