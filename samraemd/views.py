@@ -131,7 +131,6 @@ class SamraemdResultDetail(UserPassesTestMixin, DetailView):
 		context['year'] = year
 		group = self.kwargs['group']
 		context['group'] = group
-		print(context['group'])
 		student_results = {}
 		if 'school_id' in self.kwargs:
 			school = School.objects.get(pk=self.kwargs['school_id'])
@@ -142,6 +141,7 @@ class SamraemdResultDetail(UserPassesTestMixin, DetailView):
 				SamraemdISLResult.objects.filter(student__in = Student.objects.filter(school=school)).filter(student_year=group).filter(exam_date__year=year),
 				SamraemdMathResult.objects.filter(student__in = Student.objects.filter(school=school)).filter(student_year=group).filter(exam_date__year=year),
 				)):
+				result.student.group = StudentGroup.objects.get(students=result.student)
 				if result.student in student_results:
 					student_results[result.student].append(result)
 				else:
@@ -161,6 +161,7 @@ class SamraemdResultDetail(UserPassesTestMixin, DetailView):
 						else:
 							student_results[result.student] = [result]
 		context['student_results'] = student_results
+		print(context['student_results'])
 		return context
 
 class SamraemdMathResultCreate(UserPassesTestMixin, CreateView):
