@@ -7,11 +7,153 @@ from django.shortcuts import render, render_to_response, get_object_or_404, redi
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
 from django.core.urlresolvers import reverse_lazy, reverse
+from django.http import HttpResponse
 
+import csv
 import xlrd
 from itertools import chain
 
 from schools.util import *
+
+def result_csv_isl(request, school_id, year, group):
+	response = HttpResponse(content_type='text/csv')
+	school = School.objects.get(id=school_id)
+	response['Content-Disposition'] = 'attachment; filename="'+school.name+'-'+'isl-'+year+'-'+group+'-bekkur.csv"'
+	fieldnames_isl = ['Próf','Nemandi','Kennitala','Samræmd-Lestur','Samræmd-Málnotkun,'+ 'Samræmd-Ritun','Samræmd-Heild','Raðeinkunn-Lestur','Raðeinkunn-Málnotkun','Raðeinkunn-Ritun','Raðeinkunn-Heild','Grunnskólaeinkunn-Lestur','Grunnskólaeinkunn-Málnotkun','Grunnskólaeinkunn-Ritun','Grunnskólaeinkunn-Heild','Framfaraflokkur','Framfaratexti','Orðadæmi og talnadæmi']
+	writer = csv.writer(response)
+	writer.writerow(fieldnames_isl)
+
+	school = School.objects.get(id=school_id)
+
+	#prepare data
+	results = SamraemdISLResult.objects.filter(student__in = Student.objects.filter(school=school)).filter(student_year=group).filter(exam_date__year=year)
+
+	for result in results:
+		writer.writerow([
+			result.student.name,
+			result.student.ssn,
+			result.le_se,
+			result.mn_se,
+			result.ri_se,
+			result.se,
+			result.le_re,
+			result.mn_re,
+			result.ri_re,
+			result.re,
+			result.le_sg,
+			result.mn_sg,
+			result.ri_sg,
+			result.sg,
+			result.fm_fl,
+			result.fm_txt
+		])
+
+	return response
+
+def result_csv_stf(request, school_id, year, group):
+	response = HttpResponse(content_type='text/csv')
+	school = School.objects.get(id=school_id)
+	response['Content-Disposition'] = 'attachment; filename="'+school.name+'-'+'stf-'+year+'-'+group+'-bekkur.csv"'
+	fieldnames_stf = ['Próf','Nemandi','Kennitala','Samræmd-Reikningur og aðgerðir','Samræmd-Rúmfræði og mælingar','Samræmd-Tölur og talnaskilningur','Samræmd-Heild','Raðeinkunn-Reikningur og aðgerðir','Raðeinkunn-Málnotkun','Raðeinkunn-Ritun','Raðeinkunn-Heild','Grunnskólaeinkunn-Reikningur og aðgerðir','Grunnskólaeinkunn-Rúmfræði og mælingar','Grunnskólaeinkunn-Tölur og talnaskilningur','Grunnskólaeinkunn-Heild','Framfaraflokkur','Framfaratexti','Orðadæmi og talnadæmi']
+	writer = csv.writer(response)
+	writer.writerow(fieldnames_stf)
+
+	#prepare data
+	results = SamraemdMathResult.objects.filter(student__in = Student.objects.filter(school=school)).filter(student_year=group).filter(exam_date__year=year)
+
+	for result in results:
+		writer.writerow([
+			result.student.name,
+			result.student.ssn,
+			result.ra_se,
+			result.rm_se,
+			result.tt_se,
+			result.se,
+			result.ra_re,
+			result.rm_re,
+			result.tt_re,
+			result.re,
+			result.ra_sg,
+			result.rm_sg,
+			result.tt_sg,
+			result.sg,
+			result.fm_fl,
+			result.fm_txt,
+			result.ord_talna_txt
+	])
+
+	return response
+
+def admin_result_csv_stf(request, year, group):
+	if not request.user.is_superuser:
+		return HttpResponse('Ekki réttur aðgangur')		
+	response = HttpResponse(content_type='text/csv')
+	response['Content-Disposition'] = 'attachment; filename="'+'stf-'+year+'-'+group+'-bekkur.csv"'
+	fieldnames_stf = ['Próf','Nemandi','Kennitala','Samræmd-Reikningur og aðgerðir','Samræmd-Rúmfræði og mælingar','Samræmd-Tölur og talnaskilningur','Samræmd-Heild','Raðeinkunn-Reikningur og aðgerðir','Raðeinkunn-Málnotkun','Raðeinkunn-Ritun','Raðeinkunn-Heild','Grunnskólaeinkunn-Reikningur og aðgerðir','Grunnskólaeinkunn-Rúmfræði og mælingar','Grunnskólaeinkunn-Tölur og talnaskilningur','Grunnskólaeinkunn-Heild','Framfaraflokkur','Framfaratexti','Orðadæmi og talnadæmi']
+	writer = csv.writer(response)
+	writer.writerow(fieldnames_stf)
+
+	#prepare data
+	results = SamraemdMathResult.objects.filter(student_year=group).filter(exam_date__year=year)
+
+	for result in results:
+		writer.writerow([
+			result.student.name,
+			result.student.ssn,
+			result.ra_se,
+			result.rm_se,
+			result.tt_se,
+			result.se,
+			result.ra_re,
+			result.rm_re,
+			result.tt_re,
+			result.re,
+			result.ra_sg,
+			result.rm_sg,
+			result.tt_sg,
+			result.sg,
+			result.fm_fl,
+			result.fm_txt,
+			result.ord_talna_txt
+	])
+
+	return response
+
+def admin_result_csv_isl(request, year, group):
+	if not request.user.is_superuser:
+		return HttpResponse('Ekki réttur aðgangur')	
+	response = HttpResponse(content_type='text/csv')
+	response['Content-Disposition'] = 'attachment; filename="'+'isl-'+year+'-'+group+'-bekkur.csv"'
+	fieldnames_isl = ['Próf','Nemandi','Kennitala','Samræmd-Lestur','Samræmd-Málnotkun,'+ 'Samræmd-Ritun','Samræmd-Heild','Raðeinkunn-Lestur','Raðeinkunn-Málnotkun','Raðeinkunn-Ritun','Raðeinkunn-Heild','Grunnskólaeinkunn-Lestur','Grunnskólaeinkunn-Málnotkun','Grunnskólaeinkunn-Ritun','Grunnskólaeinkunn-Heild','Framfaraflokkur','Framfaratexti','Orðadæmi og talnadæmi']
+	writer = csv.writer(response)
+	writer.writerow(fieldnames_isl)
+
+	school = School.objects.get(id=school_id)
+
+	#prepare data
+	results = SamraemdISLResult.objects.filter(student_year=group).filter(exam_date__year=year)
+
+	for result in results:
+		writer.writerow([
+			result.student.name,
+			result.student.ssn,
+			result.le_se,
+			result.mn_se,
+			result.ri_se,
+			result.se,
+			result.le_re,
+			result.mn_re,
+			result.ri_re,
+			result.re,
+			result.le_sg,
+			result.mn_sg,
+			result.ri_sg,
+			result.sg,
+			result.fm_fl,
+			result.fm_txt
+		])
+
+	return response
 
 class SamraemdResultDetail(UserPassesTestMixin, DetailView):
 	model = SamraemdMathResult
@@ -20,18 +162,12 @@ class SamraemdResultDetail(UserPassesTestMixin, DetailView):
 		return is_school_manager(self.request, self.kwargs)
 
 	def get_template_names(self, **kwargs):
-		if 'print' in self.kwargs:
-			if self.kwargs['print'] == 'listi':
-				return ['samraemd/surveylogin_detail_print_list.html']
-			elif self.kwargs['print'] == 'einstaklingsblod':
-				return ['samraemd/surveylogin_detail_print_singles.html']
-		return ['samraemd/samraemdmathresult_detail.html']
+		return ['samraemd/samraemdresult_detail.html']
 
 	def get_object(self, **kwargs):
 		return SamraemdMathResult.objects.first()
 
 	def get_context_data(self, **kwargs):
-		# xxx will be available in the template as the related objects
 		context = super(SamraemdResultDetail, self).get_context_data(**kwargs)
 		year = self.kwargs['year']
 		group = self.kwargs['group']
@@ -49,8 +185,8 @@ class SamraemdResultDetail(UserPassesTestMixin, DetailView):
 				else:
 					student_results[result.student] = [result]
 		else:
-			if self.reuest.usesr.is_superuser:
-				if 'stæ' in self.kwargs:
+			if self.request.user.is_superuser:
+				if 'stæ' in self.request.path:
 					for result in SamraemdMathResult.objects.filter(student_year=group).filter(exam_date__year=year):
 						if result.student in student_results:
 							student_results[result.student].append(result)
@@ -61,13 +197,13 @@ class SamraemdResultDetail(UserPassesTestMixin, DetailView):
 						if result.student in student_results:
 							student_results[result.student].append(result)
 						else:
-							student_results[result.student] = [result]				
+							student_results[result.student] = [result]			
 		context['student_results'] = student_results
 		return context
 
 class SamraemdMathResultAdminListing(UserPassesTestMixin, ListView):
 	model = SamraemdMathResult
-	template_name = 'samraemd/samraemdmathresult_admin_list.html'
+	template_name = 'samraemd/samraemdresult_admin_list.html'
 
 	def get_context_data(self, **kwargs):
 		# xxx will be available in the template as the related objects
@@ -119,7 +255,7 @@ class SamraemdResultDetail(UserPassesTestMixin, DetailView):
 	def get_template_names(self, **kwargs):
 		if 'einkunnablod' in self.request.path:
 			return ['samraemd/samraemd_detail_print_singles.html']
-		return ['samraemd/samraemdmathresult_detail.html']
+		return ['samraemd/samraemdresult_detail.html']
 
 	def get_object(self, **kwargs):
 		return SamraemdMathResult.objects.first()
@@ -147,20 +283,19 @@ class SamraemdResultDetail(UserPassesTestMixin, DetailView):
 					student_results[result.student] = [result]
 		else:
 			if self.request.user.is_superuser:
-				if 'stæ' in self.kwargs:
+				if 'stæ' in self.request.path:
 					for result in SamraemdMathResult.objects.filter(student_year=group).filter(exam_date__year=year):
 						if result.student in student_results:
 							student_results[result.student].append(result)
 						else:
 							student_results[result.student] = [result]
-				else:
+				elif 'isl' in self.request.path:
 					for result in SamraemdISLResult.objects.filter(student_year=group).filter(exam_date__year=year):
 						if result.student in student_results:
 							student_results[result.student].append(result)
 						else:
 							student_results[result.student] = [result]
 		context['student_results'] = student_results
-		print(context['student_results'])
 		return context
 
 class SamraemdMathResultCreate(UserPassesTestMixin, CreateView):
@@ -290,7 +425,6 @@ class SamraemdMathResultCreate(UserPassesTestMixin, CreateView):
 								#student missing
 								pass #for now						
 			except Exception as e:
-				print(e)
 				return render(self.request, 'samraemd/form_import.html', {'error': 'Dálkur ekki til, reyndu aftur'})
 		return redirect(self.get_success_url())
 
@@ -318,7 +452,7 @@ class SamraemdMathResultDelete(UserPassesTestMixin, DeleteView):
 
 class SamraemdISLResultAdminListing(UserPassesTestMixin, ListView):
 	model = SamraemdISLResult
-	template_name = 'samraemd/samraemdmathresult_admin_list.html'
+	template_name = 'samraemd/samraemdresult_admin_list.html'
 
 	def get_context_data(self, **kwargs):
 		# xxx will be available in the template as the related objects
@@ -469,7 +603,6 @@ class SamraemdISLResultCreate(UserPassesTestMixin, CreateView):
 								#student not found
 								pass #for now
 			except Exception as e:
-				print(e)
 				return render(self.request, 'samraemd/form_import.html', {'error': 'Dálkur ekki til, reyndu aftur'})
 
 		return redirect(self.get_success_url())
