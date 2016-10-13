@@ -19,7 +19,7 @@ def result_csv_isl(request, school_id, year, group):
 	response = HttpResponse(content_type='text/csv')
 	school = School.objects.get(id=school_id)
 	response['Content-Disposition'] = 'attachment; filename="'+school.name+'-'+'isl-'+year+'-'+group+'-bekkur.csv"'
-	fieldnames_isl = ['Próf','Nemandi','Kennitala','Samræmd-Lestur','Samræmd-Málnotkun,'+ 'Samræmd-Ritun','Samræmd-Heild','Raðeinkunn-Lestur','Raðeinkunn-Málnotkun','Raðeinkunn-Ritun','Raðeinkunn-Heild','Grunnskólaeinkunn-Lestur','Grunnskólaeinkunn-Málnotkun','Grunnskólaeinkunn-Ritun','Grunnskólaeinkunn-Heild','Framfaraflokkur','Framfaratexti','Orðadæmi og talnadæmi']
+	fieldnames_isl = ['Nemandi','Kennitala','Samræmd-Lestur','Samræmd-Málnotkun','Samræmd-Ritun','Samræmd-Heild','Raðeinkunn-Lestur','Raðeinkunn-Málnotkun','Raðeinkunn-Ritun','Raðeinkunn-Heild','Grunnskólaeinkunn-Lestur','Grunnskólaeinkunn-Málnotkun','Grunnskólaeinkunn-Ritun','Grunnskólaeinkunn-Heild','Framfaraflokkur','Framfaratexti','Orðadæmi og talnadæmi']
 	writer = csv.writer(response)
 	writer.writerow(fieldnames_isl)
 
@@ -54,7 +54,7 @@ def result_csv_stf(request, school_id, year, group):
 	response = HttpResponse(content_type='text/csv')
 	school = School.objects.get(id=school_id)
 	response['Content-Disposition'] = 'attachment; filename="'+school.name+'-'+'stf-'+year+'-'+group+'-bekkur.csv"'
-	fieldnames_stf = ['Próf','Nemandi','Kennitala','Samræmd-Reikningur og aðgerðir','Samræmd-Rúmfræði og mælingar','Samræmd-Tölur og talnaskilningur','Samræmd-Heild','Raðeinkunn-Reikningur og aðgerðir','Raðeinkunn-Málnotkun','Raðeinkunn-Ritun','Raðeinkunn-Heild','Grunnskólaeinkunn-Reikningur og aðgerðir','Grunnskólaeinkunn-Rúmfræði og mælingar','Grunnskólaeinkunn-Tölur og talnaskilningur','Grunnskólaeinkunn-Heild','Framfaraflokkur','Framfaratexti','Orðadæmi og talnadæmi']
+	fieldnames_stf = ['Nemandi','Kennitala','Samræmd-Reikningur og aðgerðir','Samræmd-Rúmfræði og mælingar','Samræmd-Tölur og talnaskilningur','Samræmd-Heild','Raðeinkunn-Reikningur og aðgerðir','Raðeinkunn-Málnotkun','Raðeinkunn-Ritun','Raðeinkunn-Heild','Grunnskólaeinkunn-Reikningur og aðgerðir','Grunnskólaeinkunn-Rúmfræði og mælingar','Grunnskólaeinkunn-Tölur og talnaskilningur','Grunnskólaeinkunn-Heild','Framfaraflokkur','Framfaratexti','Orðadæmi og talnadæmi']
 	writer = csv.writer(response)
 	writer.writerow(fieldnames_stf)
 
