@@ -86,10 +86,10 @@ def result_csv_stf(request, school_id, year, group):
 
 def admin_result_csv_stf(request, year, group):
 	if not request.user.is_superuser:
-		return HttpResponse('Ekki réttur aðgangur')		
+		return HttpResponse('Ekki réttur aðgangur')
 	response = HttpResponse(content_type='text/csv')
 	response['Content-Disposition'] = 'attachment; filename="'+'stf-'+year+'-'+group+'-bekkur.csv"'
-	fieldnames_stf = ['Próf','Nemandi','Kennitala','Samræmd-Reikningur og aðgerðir','Samræmd-Rúmfræði og mælingar','Samræmd-Tölur og talnaskilningur','Samræmd-Heild','Raðeinkunn-Reikningur og aðgerðir','Raðeinkunn-Málnotkun','Raðeinkunn-Ritun','Raðeinkunn-Heild','Grunnskólaeinkunn-Reikningur og aðgerðir','Grunnskólaeinkunn-Rúmfræði og mælingar','Grunnskólaeinkunn-Tölur og talnaskilningur','Grunnskólaeinkunn-Heild','Framfaraflokkur','Framfaratexti','Orðadæmi og talnadæmi']
+	fieldnames_stf = ['Próf','Nemandi','Kennitala','Samræmd-Reikningur og aðgerðir','Samræmd-Rúmfræði og mælingar','Samræmd-Tölur og talnaskilningur','Samræmd-Heild','Raðeinkunn-Reikningur og aðgerðir','Raðeinkunn-Rúmfræði og mælingar','Raðeinkunn-Tölur og talnaskilningur','Raðeinkunn-Heild','Grunnskólaeinkunn-Reikningur og aðgerðir','Grunnskólaeinkunn-Rúmfræði og mælingar','Grunnskólaeinkunn-Tölur og talnaskilningur','Grunnskólaeinkunn-Heild','Framfaraflokkur','Framfaratexti','Orðadæmi og talnadæmi']
 	writer = csv.writer(response)
 	writer.writerow(fieldnames_stf)
 
@@ -121,7 +121,7 @@ def admin_result_csv_stf(request, year, group):
 
 def admin_result_csv_isl(request, year, group):
 	if not request.user.is_superuser:
-		return HttpResponse('Ekki réttur aðgangur')	
+		return HttpResponse('Ekki réttur aðgangur')
 	response = HttpResponse(content_type='text/csv')
 	response['Content-Disposition'] = 'attachment; filename="'+'isl-'+year+'-'+group+'-bekkur.csv"'
 	fieldnames_isl = ['Próf','Nemandi','Kennitala','Samræmd-Lestur','Samræmd-Málnotkun,'+ 'Samræmd-Ritun','Samræmd-Heild','Raðeinkunn-Lestur','Raðeinkunn-Málnotkun','Raðeinkunn-Ritun','Raðeinkunn-Heild','Grunnskólaeinkunn-Lestur','Grunnskólaeinkunn-Málnotkun','Grunnskólaeinkunn-Ritun','Grunnskólaeinkunn-Heild','Framfaraflokkur','Framfaratexti','Orðadæmi og talnadæmi']
