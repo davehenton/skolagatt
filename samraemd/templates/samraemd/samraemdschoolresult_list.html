@@ -6,9 +6,9 @@
 		<div class="row">
 			<div class="col-md-4"><h4>Próf</h4></div>
 		</div>
-		{% for exam in exams %}
+		{% for link in links %}
 		<div class="row">
-			<div class="col-md-4"><a href="{% url 'samraemd:result_detail' school_id exam.exam_date|date:'Y' exam.student_year %}">{{exam.exam_code}}</a></div>
+			<div class="col-md-4"><a href="{% url 'samraemd:result_detail' school_id link.exam_date|date:'Y' link.student_year %}">Próf frá: {{link.exam_date|date:'Y'}} {{link.student_year}}. bekk</a></div>
 		</div>
 		{% endfor %}
 	</div>

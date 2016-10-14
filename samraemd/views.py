@@ -240,6 +240,7 @@ class SamraemdResultListing(UserPassesTestMixin, ListView):
 		m_exams = SamraemdMathResult.objects.filter(student__in = Student.objects.filter(school=school)).values('exam_date', 'student_year', 'exam_code').distinct()
 		i_exams = SamraemdISLResult.objects.filter(student__in = Student.objects.filter(school=school)).values('exam_date', 'student_year', 'exam_code').distinct()
 		context['exams'] = list(chain(m_exams, i_exams))
+		context['links'] = m_exams
 		context['school_id'] = school.id
 		return context
 
