@@ -11,7 +11,9 @@ from django.http import HttpResponse
 
 import csv
 import xlrd
+import openpyxl
 from itertools import chain
+
 
 from schools.util import *
 
@@ -22,8 +24,6 @@ def result_csv_isl(request, school_id, year, group):
 	fieldnames_isl = ['Nemandi','Kennitala','Samræmd-Lestur','Samræmd-Málnotkun','Samræmd-Ritun','Samræmd-Heild','Raðeinkunn-Lestur','Raðeinkunn-Málnotkun','Raðeinkunn-Ritun','Raðeinkunn-Heild','Grunnskólaeinkunn-Lestur','Grunnskólaeinkunn-Málnotkun','Grunnskólaeinkunn-Ritun','Grunnskólaeinkunn-Heild','Framfaraflokkur','Framfaratexti']
 	writer = csv.writer(response)
 	writer.writerow(fieldnames_isl)
-
-	school = School.objects.get(id=school_id)
 
 	#prepare data
 	results = SamraemdISLResult.objects.filter(student__in = Student.objects.filter(school=school)).filter(student_year=group).filter(exam_date__year=year)
@@ -47,6 +47,100 @@ def result_csv_isl(request, school_id, year, group):
 			result.fm_fl,
 			result.fm_txt
 		])
+
+	return response
+
+def excel_result(request, school_id, year, group):
+	school = School.objects.get(id=school_id)
+	response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+	response['Content-Disposition'] = 'attachment; filename='+school.name+'-'+year+'-'+group+'-bekkur.xlsx'
+	wb = openpyxl.Workbook()
+	ws = wb.get_active_sheet()
+	ws.title = "Íslenska"
+
+	ws['A1']=  'Nemandi'
+	ws['B1']=  'Kennitala'
+	ws['C1']=  'Samræmd-Lestur'
+	ws['D1']=  'Samræmd-Málnotkun'
+	ws['E1']=  'Samræmd-Ritun'
+	ws['F1']=  'Samræmd-Heild'
+	ws['G1']=  'Raðeinkunn-Lestur'
+	ws['H1']=  'Raðeinkunn-Málnotkun'
+	ws['I1']=  'Raðeinkunn-Ritun'
+	ws['J1']=  'Raðeinkunn-Heild'
+	ws['K1']=  'Grunnskólaeinkunn-Lestur'
+	ws['L1']=  'Grunnskólaeinkunn-Málnotkun'
+	ws['M1']=  'Grunnskólaeinkunn-Ritun'
+	ws['N1']=  'Grunnskólaeinkunn-Heild'
+	ws['O1']=  'Framfaraflokkur'
+	ws['P1']=  'Framfaratexti'
+	#prepare data
+	results = SamraemdISLResult.objects.filter(student__in = Student.objects.filter(school=school)).filter(student_year=group).filter(exam_date__year=year)
+	
+	index = 2
+	for result in results:
+		ws.cell('A'+str(index)).value = result.student.name
+		ws.cell('B'+str(index)).value = result.student.ssn
+		ws.cell('C'+str(index)).value = result.le_se.replace('.',',')
+		ws.cell('D'+str(index)).value = result.mn_se.replace('.',',')
+		ws.cell('E'+str(index)).value = result.ri_se.replace('.',',')
+		ws.cell('F'+str(index)).value = result.se.replace('.',',')
+		ws.cell('G'+str(index)).value = result.le_re.replace('.',',')
+		ws.cell('H'+str(index)).value = result.mn_re.replace('.',',')
+		ws.cell('I'+str(index)).value = result.ri_re.replace('.',',')
+		ws.cell('J'+str(index)).value = result.re.replace('.',',')
+		ws.cell('K'+str(index)).value = result.le_sg.replace('.',',')
+		ws.cell('L'+str(index)).value = result.mn_sg.replace('.',',')
+		ws.cell('M'+str(index)).value = result.ri_sg
+		ws.cell('N'+str(index)).value = result.sg
+		ws.cell('O'+str(index)).value = result.fm_fl.replace('.0','')
+		ws.cell('P'+str(index)).value = result.fm_txt
+		index+=1
+	ws = wb.create_sheet(title='Stærðfræði')
+	
+	
+	ws['A1']=  'Nemandi'
+	ws['B1']=  'Kennitala'
+	ws['C1']=  'Samræmd-Reikningur og aðgerðir'
+	ws['D1']=  'Samræmd-Rúmfræði og mælingar'
+	ws['E1']=  'Samræmd-Tölur og talnaskilningur'
+	ws['F1']=  'Samræmd-Heild'
+	ws['G1']=  'Raðeinkunn-Reikningur og aðgerðir'
+	ws['H1']=  'Raðeinkunn-Rúmfræði og mælingar'
+	ws['I1']=  'Raðeinkunn-Tölur og talnaskilningur'
+	ws['J1']=  'Raðeinkunn-Heild'
+	ws['K1']=  'Grunnskólaeinkunn-Reikningur og aðgerðir'
+	ws['L1']=  'Grunnskólaeinkunn-Rúmfræði og mælingar'
+	ws['M1']=  'Grunnskólaeinkunn-Tölur og talnaskilningur'
+	ws['N1']=  'Grunnskólaeinkunn-Heild'
+	ws['O1']=  'Framfaraflokkur'
+	ws['P1']=  'Framfaratexti'
+	ws['Q1']=  'Orðadæmi og talnadæmi'
+	#prepare data
+	results = SamraemdMathResult.objects.filter(student__in = Student.objects.filter(school=school)).filter(student_year=group).filter(exam_date__year=year)
+
+	index = 2
+	for result in results:
+		ws.cell('A'+str(index)).value = result.student.name
+		ws.cell('B'+str(index)).value = result.student.ssn
+		ws.cell('C'+str(index)).value = result.ra_se.replace('.',',')
+		ws.cell('D'+str(index)).value = result.rm_se.replace('.',',')
+		ws.cell('E'+str(index)).value = result.tt_se.replace('.',',')
+		ws.cell('F'+str(index)).value = result.se
+		ws.cell('G'+str(index)).value = result.ra_re
+		ws.cell('H'+str(index)).value = result.rm_re
+		ws.cell('I'+str(index)).value = result.tt_re
+		ws.cell('J'+str(index)).value = result.re
+		ws.cell('K'+str(index)).value = result.ra_sg
+		ws.cell('L'+str(index)).value = result.rm_sg
+		ws.cell('M'+str(index)).value = result.tt_sg
+		ws.cell('N'+str(index)).value = result.sg
+		ws.cell('O'+str(index)).value = result.fm_fl.replace('.0','')
+		ws.cell('P'+str(index)).value = result.fm_txt
+		ws.cell('Q'+str(index)).value = result.ord_talna_txt
+		index+=1
+
+	wb.save(response)
 
 	return response
 
