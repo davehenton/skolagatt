@@ -11,6 +11,7 @@ urlpatterns = [
 	url(r'^niðurstöður/(?P<year>\d+)/(?P<group>\d+)/einkunnablod/$', SamraemdResultDetail.as_view(), name='admin_result_print'),
 	url(r'^niðurstöður/(?P<school_id>\d+)/(?P<year>\d+)/(?P<group>\d+)/csv_isl/$', result_csv_isl, name='result_csv_isl'),
 	url(r'^niðurstöður/(?P<school_id>\d+)/(?P<year>\d+)/(?P<group>\d+)/csv_stf/$', result_csv_stf, name='result_csv_stf'),
+	url(r'^niðurstöður/(?P<school_id>\d+)/(?P<year>\d+)/(?P<group>\d+)/excel$', excel_result, name='result_excel'),
 	url(r'^stæ/$', SamraemdMathResultAdminListing.as_view(), name='math_admin_listing'),
 	url(r'^stæ/(?P<school_id>\d+)/$', SamraemdMathResultListing.as_view(), name='math_listing'),
 	url(r'^stæ/niðurstöður/create/$', SamraemdMathResultCreate.as_view(), name='math_create'),
