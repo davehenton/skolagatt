@@ -73,5 +73,7 @@ urlpatterns = [
     url(r'^umsjónarmenn/próf/$', SurveyAdminListing.as_view(), name='survey_admin_listing'),
     url(r'^umsjónarmenn/próf/(?P<survey_title>[^\/]*)/$', StudentGroupAdminListing.as_view(), name='group_admin_listing'),
     url(r'^umsjónarmenn/próf/(?P<survey_title>[^\/]*)/csv/$', group_admin_listing_csv, name='group_admin_listing_csv'),
+    url(r'^umsjónarmenn/próf/(?P<survey_title>[^\/]*)/Excel/$', group_admin_listing_excel, name='group_admin_listing_excel'),
+    url(r'^umsjónarmenn/próf/(?P<survey_title>[^\/]*)/Excel-Mæting/$', group_admin_attendance_excel, name='group_admin_attendance_excel'),
 
 ]
