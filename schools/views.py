@@ -16,6 +16,7 @@ from django.views.decorators.csrf import csrf_exempt
 from uuid import uuid4
 import requests, json
 import xlrd
+import openpyxl
 from datetime import datetime, date
 from ast import literal_eval
 
@@ -1530,3 +1531,79 @@ class AdminUpdate(UserPassesTestMixin, UpdateView):
 
   def get_success_url(self):
     return reverse_lazy('schools:admin_listing') 
+
+def group_admin_listing_excel(request, survey_title):
+  
+  surveys = Survey.objects.filter(title=survey_title)
+
+  response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+  response['Content-Disposition'] = 'attachment; filename='+ survey_title +'.xlsx'
+  wb = openpyxl.Workbook()
+
+  
+  
+  for survey in surveys:
+    ws = wb.create_sheet(title=str(survey.studentgroup.school.id))
+    ws['A1']=  'Skóli'
+    ws['B1']=  'Nemandi'
+    ws['C1']=  'Kennitala'
+    ws['D1']=  'Bekkur'
+    index = 2
+    for student in survey.studentgroup.students.all():
+      ws.cell('A'+str(index)).value = survey.studentgroup.school.name
+      ws.cell('B'+str(index)).value = student.name
+      ws.cell('C'+str(index)).value = student.ssn
+      ws.cell('D'+str(index)).value = survey.studentgroup.name
+      index+=1
+      
+  wb.save(response)
+
+  return response
+
+def group_admin_attendance_excel(request, survey_title):
+  
+  surveys = Survey.objects.filter(title=survey_title)
+
+  response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+  response['Content-Disposition'] = 'attachment; filename='+ survey_title +'.xlsx'
+  wb = openpyxl.Workbook()
+
+  
+  
+  for survey in surveys:
+    ws = wb.create_sheet(title=str(survey.studentgroup.school.id))
+    ws['A1']=  'Skóli'
+    ws['B1']=  'Nemandi'
+    ws['C1']=  'Kennitala'
+    ws['D1']=  'Bekkur'
+    ws['E1']=  'Mættur'
+    ws['F1']=  'Undanþága'
+    ws['G1']=  'Veikur'
+    ws['H1']=  'Fjarverandi'
+    index = 2
+    for student in survey.studentgroup.students.all():
+      ws.cell('A'+str(index)).value = survey.studentgroup.school.name
+      ws.cell('B'+str(index)).value = student.name
+      ws.cell('C'+str(index)).value = student.ssn
+      ws.cell('D'+str(index)).value = survey.studentgroup.name
+      sr = SurveyResult.objects.filter(student=student, survey=survey)
+      student_results = ""
+      if sr:
+        r = literal_eval(sr.first().results) #get student results
+        try:
+          student_results = r['click_values']
+        except Exception as e:
+          print(e)
+      else:
+        student_results = calc_survey_results([], {})
+
+      #print(student_results[2])
+      ws.cell(row=index, column=int(student_results[2])+5).value ="1"
+
+
+        #ws.cell('E'+str(index)).value = literal_eval(sr.first().results) #get student results      
+      index+=1
+      
+  wb.save(response)
+
+  return response
