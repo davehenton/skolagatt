@@ -1597,11 +1597,8 @@ def group_admin_attendance_excel(request, survey_title):
       else:
         student_results = calc_survey_results([], {})
 
-      #print(student_results[2])
       ws.cell(row=index, column=int(student_results[2])+5).value ="1"
 
-
-        #ws.cell('E'+str(index)).value = literal_eval(sr.first().results) #get student results      
       index+=1
       
   wb.save(response)
