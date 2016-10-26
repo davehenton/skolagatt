@@ -1586,7 +1586,9 @@ def group_admin_attendance_excel(request, survey_title):
       ws.cell('B'+str(index)).value = student.name
       ws.cell('C'+str(index)).value = student.ssn
       ws.cell('D'+str(index)).value = survey.studentgroup.name
+
       sr = SurveyResult.objects.filter(student=student, survey=survey)
+      print('kalli')
       student_results = ""
       if sr:
         r = literal_eval(sr.first().results) #get student results
@@ -1595,7 +1597,7 @@ def group_admin_attendance_excel(request, survey_title):
         except Exception as e:
           print(e)
       else:
-        student_results = calc_survey_results([], {})
+        student_results = ''
 
       ws.cell(row=index, column=int(student_results[2])+5).value ="1"
 
