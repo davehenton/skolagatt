@@ -1572,7 +1572,7 @@ def group_admin_attendance_excel(request, survey_title):
   response['Content-Disposition'] = 'attachment; filename=samræmdupróf.xlsx'
   wb = openpyxl.Workbook()
   ws = wb.get_active_sheet()
-  ws.title = survey_title
+  ws.title = 'samræmdupróf'
 
   
   ws['A1']=  'Skóli'
