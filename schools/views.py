@@ -1540,20 +1540,24 @@ def group_admin_listing_excel(request, survey_title):
   response['Content-Disposition'] = 'attachment; filename='+ survey_title +'.xlsx'
   wb = openpyxl.Workbook()
 
+  ws = wb.get_active_sheet()
+  ws.title = survey_title
+  ws['A1']=  'Skóli'
+  ws['B1']=  'Kennitala sḱóla'
+  ws['C1']=  'Nemandi'
+  ws['D1']=  'Kennitala'
+  ws['E1']=  'Bekkur'
+    
   
-  
+  index = 2
   for survey in surveys:
-    ws = wb.create_sheet(title=str(survey.studentgroup.school.id))
-    ws['A1']=  'Skóli'
-    ws['B1']=  'Nemandi'
-    ws['C1']=  'Kennitala'
-    ws['D1']=  'Bekkur'
-    index = 2
+    
     for student in survey.studentgroup.students.all():
       ws.cell('A'+str(index)).value = survey.studentgroup.school.name
-      ws.cell('B'+str(index)).value = student.name
-      ws.cell('C'+str(index)).value = student.ssn
-      ws.cell('D'+str(index)).value = survey.studentgroup.name
+      ws.cell('B'+str(index)).value = survey.studentgroup.school.ssn
+      ws.cell('C'+str(index)).value = student.name
+      ws.cell('D'+str(index)).value = student.ssn
+      ws.cell('E'+str(index)).value = survey.studentgroup.name
       index+=1
       
   wb.save(response)
@@ -1567,39 +1571,43 @@ def group_admin_attendance_excel(request, survey_title):
   response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
   response['Content-Disposition'] = 'attachment; filename='+ survey_title +'.xlsx'
   wb = openpyxl.Workbook()
+  ws = wb.get_active_sheet()
+  ws.title = survey_title
 
   
+  ws['A1']=  'Skóli'
+  ws['B1']=  'Kennitala sḱóla'
+  ws['C1']=  'Nemandi'
+  ws['D1']=  'Kennitala'
+  ws['E1']=  'Bekkur'
+  ws['F1']=  'Mættur'
+  ws['G1']=  'Undanþága'
+  ws['H1']=  'Veikur'
+  ws['I1']=  'Fjarverandi'
   
+  index = 2
   for survey in surveys:
-    ws = wb.create_sheet(title=str(survey.studentgroup.school.id))
-    ws['A1']=  'Skóli'
-    ws['B1']=  'Nemandi'
-    ws['C1']=  'Kennitala'
-    ws['D1']=  'Bekkur'
-    ws['E1']=  'Mættur'
-    ws['F1']=  'Undanþága'
-    ws['G1']=  'Veikur'
-    ws['H1']=  'Fjarverandi'
-    index = 2
+    
     for student in survey.studentgroup.students.all():
       ws.cell('A'+str(index)).value = survey.studentgroup.school.name
-      ws.cell('B'+str(index)).value = student.name
-      ws.cell('C'+str(index)).value = student.ssn
-      ws.cell('D'+str(index)).value = survey.studentgroup.name
+      ws.cell('B'+str(index)).value = survey.studentgroup.school.ssn
+      ws.cell('C'+str(index)).value = student.name
+      ws.cell('D'+str(index)).value = student.ssn
+      ws.cell('E'+str(index)).value = survey.studentgroup.name
 
       sr = SurveyResult.objects.filter(student=student, survey=survey)
-      print('kalli')
       student_results = ""
       if sr:
         r = literal_eval(sr.first().results) #get student results
         try:
-          student_results = r['click_values']
+          student_results = int(r['click_values'][2])
         except Exception as e:
           print(e)
       else:
-        student_results = ''
+        student_results = -1
 
-      ws.cell(row=index, column=int(student_results[2])+5).value ="1"
+      if student_results >-1:
+        ws.cell(row=index, column=student_results+6).value ="1"
 
       index+=1
       
