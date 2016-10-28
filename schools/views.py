@@ -1569,7 +1569,7 @@ def group_admin_attendance_excel(request, survey_title):
   surveys = Survey.objects.filter(title=survey_title)
 
   response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-  response['Content-Disposition'] = 'attachment; filename='+ survey_title +'.xlsx'
+  response['Content-Disposition'] = 'attachment; filename=samræmdupróf.xlsx'
   wb = openpyxl.Workbook()
   ws = wb.get_active_sheet()
   ws.title = survey_title
