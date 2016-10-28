@@ -1604,9 +1604,9 @@ def group_admin_attendance_excel(request, survey_title):
         except Exception as e:
           print(e)
       else:
-        student_results = -1
+        student_results = ''
 
-      if student_results >-1:
+      if student_results != '':
         ws.cell(row=index, column=student_results+6).value ="1"
 
       index+=1
