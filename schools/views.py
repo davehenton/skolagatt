@@ -1537,11 +1537,11 @@ def group_admin_listing_excel(request, survey_title):
   surveys = Survey.objects.filter(title=survey_title)
 
   response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-  response['Content-Disposition'] = 'attachment; filename='+ survey_title +'.xlsx'
+  response['Content-Disposition'] = 'attachment; filename=samræmdupróf.xlsx'
   wb = openpyxl.Workbook()
 
   ws = wb.get_active_sheet()
-  ws.title = survey_title
+  ws.title = 'samræmdupróf'
   ws['A1']=  'Skóli'
   ws['B1']=  'Kennitala sḱóla'
   ws['C1']=  'Nemandi'
@@ -1567,7 +1567,7 @@ def group_admin_listing_excel(request, survey_title):
 def group_admin_attendance_excel(request, survey_title):
   
   surveys = Survey.objects.filter(title=survey_title)
-
+  print(survey_title)
   response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
   response['Content-Disposition'] = 'attachment; filename=samræmdupróf.xlsx'
   wb = openpyxl.Workbook()
@@ -1584,6 +1584,8 @@ def group_admin_attendance_excel(request, survey_title):
   ws['G1']=  'Undanþága'
   ws['H1']=  'Veikur'
   ws['I1']=  'Fjarverandi'
+  ws['J1']=  'Stuðningur í íslensku'
+  ws['K1']=  'Stuðningur í Stærðfræði'
   
   index = 2
   for survey in surveys:
@@ -1609,6 +1611,20 @@ def group_admin_attendance_excel(request, survey_title):
       if student_results != '':
         ws.cell(row=index, column=student_results+6).value ="1"
 
+      support = SupportResource.objects.filter(student=student)
+      
+      if support:
+        support_available = []
+        support_available += literal_eval(support.first().reading_assistance) #get student results
+        support_available += literal_eval(support.first().interpretation) #get student results
+        support_available += literal_eval(support.first().longer_time) #get student results
+        if 1 in support_available:
+          ws.cell(row=index, column=10).value ="1"
+        if 3 in support_available:
+          ws.cell(row=index, column=11).value ="1"
+      
+      
+      
       index+=1
       
   wb.save(response)
