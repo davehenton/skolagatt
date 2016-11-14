@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 from django.db import models
 from django import forms
+from jsonfield import JSONField
 
 from common.models import *
 
@@ -143,3 +144,49 @@ class SamraemdISLResultForm(forms.ModelForm):
 			'exam_date': 'Dagsetning prófs (YYYY-MM-DD)',
 			'student_year': 'Árgangur'			
 		}			
+
+class SamraemdResult(models.Model):
+	student = models.ForeignKey(Student)
+	CODES = (
+		(1,'Íslenska'),
+		(2,'Enska'),
+		(3,'Stærðfræði'),
+	)
+	exam_code = models.CharField(max_length=2,
+        choices= CODES,null=True)
+	exam_name = models.CharField(max_length=125,
+        null=True)
+	exam_date = models.DateField(default=timezone.now)
+	YEAR_IN_SCHOOL_CHOICES = (
+		('1', '1. bekkur'),
+		('2', '2. bekkur'),
+		('3', '3. bekkur'),
+		('4', '4. bekkur'),
+		('5', '5. bekkur'),
+		('6', '6. bekkur'),
+		('7', '7. bekkur'),
+		('8', '8. bekkur'),
+		('9', '9. bekkur'),
+		('10', '10. bekkur'),
+	)	
+	student_year = models.CharField(
+        max_length=2,
+        choices=YEAR_IN_SCHOOL_CHOICES,
+        null=True
+    )
+	result_data = JSONField()
+	result_length = models.CharField(max_length=4)
+
+class SamraemdResultForm(forms.ModelForm):
+	file = forms.FileField()
+	class Meta:
+		model = SamraemdResult
+		fields = ['student','exam_code','exam_date','exam_name','result_data','result_length']
+		labels = {
+			'student':'Nemandi',
+			'exam_code':'Próf',
+			'exam_name':'Heiti',
+			'exam_date':'Dagsetning',
+			'result_data':'Gögn',
+			'result_length':'Fjöldi spurninga'
+		}

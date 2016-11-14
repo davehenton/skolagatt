@@ -13,6 +13,7 @@ import csv
 import xlrd
 import openpyxl
 from itertools import chain
+from django.db.models import Count
 
 
 from schools.util import *
@@ -303,6 +304,7 @@ class SamraemdMathResultAdminListing(UserPassesTestMixin, ListView):
 		# xxx will be available in the template as the related objects
 		context = super(SamraemdMathResultAdminListing, self).get_context_data(**kwargs)
 		context['exams'] = SamraemdMathResult.objects.all().values('exam_date', 'student_year', 'exam_code').distinct()
+		context['raw_exams'] = SamraemdResult.objects.filter(exam_code=3).values('exam_date', 'student_year', 'exam_name', 'exam_code').distinct()
 		return context
 
 	def test_func(self):
@@ -333,8 +335,10 @@ class SamraemdResultListing(UserPassesTestMixin, ListView):
 		context['school'] = school
 		m_exams = SamraemdMathResult.objects.filter(student__in = Student.objects.filter(school=school)).values('exam_date', 'student_year', 'exam_code').distinct()
 		i_exams = SamraemdISLResult.objects.filter(student__in = Student.objects.filter(school=school)).values('exam_date', 'student_year', 'exam_code').distinct()
+		exams = SamraemdResult.objects.filter(student__in = Student.objects.filter(school=school),exam_code=3).values('exam_date', 'student_year', 'exam_code', 'exam_name').distinct()
 		context['exams'] = list(chain(m_exams, i_exams))
 		context['links'] = m_exams
+		context['rawlinks'] = exams
 		context['school_id'] = school.id
 		return context
 
@@ -391,6 +395,7 @@ class SamraemdResultDetail(UserPassesTestMixin, DetailView):
 						else:
 							student_results[result.student] = [result]
 		context['student_results'] = student_results
+
 		return context
 
 class SamraemdMathResultCreate(UserPassesTestMixin, CreateView):
@@ -531,6 +536,20 @@ class SamraemdMathResultCreate(UserPassesTestMixin, CreateView):
 	def test_func(self):
 		return self.request.user.is_superuser
 
+class SamraemdResultDelete(UserPassesTestMixin, DeleteView):
+	model = SamraemdResult
+	login_url = reverse_lazy('denied')
+	template_name = "schools/confirm_delete.html"
+
+	def test_func(self):
+		return is_school_manager(self.request, self.kwargs)
+
+	def get_success_url(self):
+		return reverse_lazy('schools:school_listing')
+
+	def get_object(self):
+		return SamraemdResult.objects.filter(exam_name=self.kwargs['exam_name'])
+
 class SamraemdMathResultDelete(UserPassesTestMixin, DeleteView):
 	model = SamraemdMathResult
 	login_url = reverse_lazy('denied')
@@ -553,6 +572,7 @@ class SamraemdISLResultAdminListing(UserPassesTestMixin, ListView):
 		# xxx will be available in the template as the related objects
 		context = super(SamraemdISLResultAdminListing, self).get_context_data(**kwargs)
 		context['exams'] = SamraemdISLResult.objects.all().values('exam_date', 'student_year', 'exam_code').distinct()
+		context['raw_exams'] = SamraemdResult.objects.filter(exam_code=1).values('exam_date', 'student_year', 'exam_name', 'exam_code').distinct()
 		return context
 
 	def test_func(self):
@@ -723,3 +743,211 @@ class SamraemdISLResultDelete(UserPassesTestMixin, DeleteView):
 
 	def get_object(self):
 		return SamraemdISLResult.objects.filter(exam_code=self.kwargs['exam_code'])
+
+
+
+class RawDataCreate(UserPassesTestMixin, CreateView):
+	model = SamraemdResult
+	form_class = SamraemdISLResultForm
+	login_url = reverse_lazy('denied')
+	template_name = "samraemd/form_import_raw.html"
+
+	def post(self, *args, **kwargs):
+		if(self.request.FILES):
+			u_file = self.request.FILES['file'].name
+			extension = u_file.split(".")[-1]
+			exam_code = self.request.POST.get('exam_code').strip()
+			exam_name = self.request.POST.get('exam_name').strip()
+			exam_date = self.request.POST.get('exam_date').strip()
+			student_year = self.request.POST.get('student_year').strip()
+			result_length = self.request.POST.get('result_length').strip()
+			
+			try:
+				input_excel = self.request.FILES['file']
+				book = xlrd.open_workbook(file_contents=input_excel.read())
+				for sheetsnumber in range(book.nsheets):
+					sheet = book.sheet_by_index(sheetsnumber)
+					for row in range(1, sheet.nrows):
+						student = Student.objects.filter(ssn=str(sheet.cell_value(row,3)).strip()) #student already exists
+						if student:
+							#check if results for student exists, create if not, otherwise update
+							results = SamraemdResult.objects.filter(student=student, exam_code=exam_code)
+							if results:
+								result_data = {}
+								try:
+									for numb in range(0,int(result_length)):
+										result_data[numb] = int(sheet.cell_value(row,numb+5))
+								except E as e:
+									print(e)
+			
+								results.update(
+									student=student.first(),
+									exam_code = exam_code,
+									exam_name = exam_name,
+									exam_date = exam_date,
+									student_year = student_year,
+									result_length = result_length,
+									result_data = result_data
+									)
+							else:
+								result_data ={}
+								try:
+									for numb in range(0,int(result_length)):
+										result_data[numb] =int(sheet.cell_value(row,numb+5))
+								except E as e:
+									print(e)
+								results = SamraemdResult.objects.create(
+									student=student.first(),
+									exam_code = exam_code,
+									exam_name = exam_name,
+									exam_date = exam_date,
+									student_year = student_year,
+									result_length = result_length,
+									result_data = result_data
+									)
+						else:
+							#student not found
+							pass #for now
+			except Exception as e:
+				return render(self.request, 'samraemd/form_import_raw.html', {'error': 'Dálkur ekki til, reyndu aftur'})
+
+		return redirect(self.get_success_url())
+
+	def get_success_url(self):
+		exam_code = self.request.POST.get('exam_code').strip()
+		if '1' in exam_code:
+			if 'school_id' in self.kwargs:
+				return reverse_lazy('samraemd:isl_listing', kwargs={'school_id': school_id},)	
+			return reverse_lazy('samraemd:isl_admin_listing')	
+		if '3' in exam_code:
+			if 'school_id' in self.kwargs:
+				return reverse_lazy('samraemd:math_listing', kwargs={'school_id': school_id},)	
+			return reverse_lazy('samraemd:math_admin_listing')	
+
+	def test_func(self):
+		return self.request.user.is_superuser
+
+
+
+class SamraemdRawResultDetail(UserPassesTestMixin, DetailView):
+	model = SamraemdResult
+	
+
+	def test_func(self):
+		return is_school_manager(self.request, self.kwargs)
+
+	def get_template_names(self, **kwargs):
+		if 'einkunnablod' in self.request.path:
+			return ['samraemd/samraemd_detail_raw_print_singles.html']
+		return ['samraemd/samraemdresult_detail_raw.html']
+
+	def get_object(self, **kwargs):
+		return SamraemdMathResult.objects.first()
+
+	def get_context_data(self, **kwargs):
+		# xxx will be available in the template as the related objects
+		context = super(SamraemdRawResultDetail, self).get_context_data(**kwargs)
+		year = self.kwargs['year']
+		context['year'] = year
+		
+		group = self.kwargs['group']
+		context['group'] = group
+		student_results = {}
+		student_group = {}
+		if 'school_id' in self.kwargs:
+			school = School.objects.get(pk=self.kwargs['school_id'])
+			context['school'] = school
+			context['school_id'] = self.kwargs['school_id']
+			context['school_name'] = school.name
+			number_of_loops =SamraemdResult.objects.all().values('result_length','exam_code','exam_name').annotate(total=Count('exam_code')).filter(exam_date__year=year)
+			for result in SamraemdResult.objects.filter(student__in = Student.objects.filter(school=school)).filter(student_year=group).filter(exam_date__year=year):
+				if result.student in student_results:
+					student_results[result.student].append(result)
+					if StudentGroup.objects.filter(students=result.student) in student_group[result.student]:
+						student_group[result.student].append(StudentGroup.objects.filter(students=result.student))
+				else:
+					student_results[result.student] = [result]
+					student_group[result.student] = StudentGroup.objects.filter(students=result.student)
+					
+		else:
+			if self.request.user.is_superuser:
+				exam_code = self.kwargs['exam_code']
+				context['exam_code'] = exam_code
+				number_of_loops =SamraemdResult.objects.values('result_length','exam_code','exam_name').filter(exam_code= exam_code,exam_date__year=year).annotate(total=Count('exam_code'))
+				for result in SamraemdResult.objects.filter(exam_code=exam_code).filter(student_year=group).filter(exam_date__year=year):
+					if result.student in student_results:
+						student_results[result.student].append(result)
+						student_group[result.student].append(StudentGroup.objects.filter(students=result.student))
+					else:
+						student_results[result.student] = [result]
+						student_group[result.student] = StudentGroup.objects.filter(students=result.student)
+		
+		for loops in number_of_loops:
+			loops['result_length'] = range(0,int(loops['result_length']))
+		
+		context['student_results'] = student_results
+		context['student_group'] = student_group
+		context['loop_times'] = number_of_loops
+		return context
+
+def admin_result_raw_excel(request, exam_code, year, group):
+	response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+	response['Content-Disposition'] = 'attachment; filename=hrániðurstöður-'+group+'.xlsx'
+	number_of_loops = SamraemdResult.objects.filter(exam_code=exam_code,student_year=group,exam_date__year=year)[:1].values('result_length','exam_name').get()
+	wb = openpyxl.Workbook()
+	ws = wb.get_active_sheet()
+	ws.title = number_of_loops['exam_name']
+
+	ws['A1']=  'Skóli'
+	ws['B1']=  'Kennitölur'
+	ws['C1']=  'Nafn'
+	ws['D1']=  'bekkur'
+	for  loop in range(1,int(number_of_loops['result_length'])+1):
+		ws.cell(row=1, column=loop+4).value =str(loop)+'. spurning'
+	
+	index = 2
+	for result in SamraemdResult.objects.filter(exam_code=exam_code).filter(student_year=group).filter(exam_date__year=year):
+		ws.cell(row=index, column=1).value = str(School.objects.get(students=result.student).name)
+		ws.cell(row=index, column=2).value = int(result.student.ssn)
+		ws.cell(row=index, column=3).value = str(result.student)
+		ws.cell(row=index, column=4).value = str(StudentGroup.objects.get(students=result.student))
+		for key, values in result.result_data.items():
+			ws.cell(row=index, column=int(key)+5).value = values
+						
+		index +=1
+
+	wb.save(response)
+
+	return response
+
+def excel_result_raw(request,school_id, year, group):
+	response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+	response['Content-Disposition'] = 'attachment; filename=hrániðurstöður-'+group+'.xlsx'
+	wb = openpyxl.Workbook()
+	number_of_loops =SamraemdResult.objects.all().values('result_length','exam_code','exam_name').annotate(total=Count('exam_code')).filter(exam_date__year=year)
+	for loops in number_of_loops:
+		ws = wb.create_sheet()
+		ws.title = loops['exam_name']
+	
+		ws['A1']=  'Skóli'
+		ws['B1']=  'Kennitölur'
+		ws['C1']=  'Nafn'
+		ws['D1']=  'bekkur'
+		for  loop in range(1,int(loops['result_length'])+1):
+			ws.cell(row=1, column=loop+4).value =str(loop)+'. spurning'
+	
+		index = 2
+		for result in SamraemdResult.objects.filter(student__in = Student.objects.filter(school=school_id)).filter(exam_code= loops['exam_code']).filter(student_year=group).filter(exam_date__year=year):
+			ws.cell(row=index, column=1).value = str(School.objects.get(students=result.student).name)
+			ws.cell(row=index, column=2).value = int(result.student.ssn)
+			ws.cell(row=index, column=3).value = str(result.student)
+			ws.cell(row=index, column=4).value = str(StudentGroup.objects.get(students=result.student))
+			for key, values in result.result_data.items():
+				ws.cell(row=index, column=int(key)+5).value = values
+						
+			index +=1
+
+	wb.save(response)
+
+	return response
+

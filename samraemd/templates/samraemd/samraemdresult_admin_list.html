@@ -35,4 +35,22 @@
 		</div>
 		{% endfor %}
 	</div>
+	<h3>Hrágögn</h3>
+	<div class="row">
+		<a href="{% url 'samraemd:rawdatacreate'%}" class="btn btn-default">
+			<span class="glyphicon glyphicon-plus"></span>&nbsp;Bæta við niðurstöðum
+		</a>
+	</div>
+	<div>
+		<div class="row">
+			<div class="col-md-4"><h4>Próf</h4></div>
+			<div class="col-md-2"><h4>Aðgerðir</h4></div>
+		</div>
+		{% for exam in raw_exams %}
+		<div class="row">
+			<div class="col-md-4"><a href="{% url 'samraemd:admin_result_detail' exam.exam_code exam.exam_date|date:'Y' exam.student_year %}">{{exam.exam_name}}</a></div>
+			<div class="col-md-2"><a href="{% url 'samraemd:raw_delete' exam.exam_name %}"><span class="glyphicon glyphicon-trash"></span></a></div>
+		</div>
+		{% endfor %}
+	</div>
 {% endblock %}
