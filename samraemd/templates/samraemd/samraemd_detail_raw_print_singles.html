@@ -1,0 +1,218 @@
+{% extends 'second_base.html'%}
+{% load staticfiles %}
+{% block stylesheet %}
+<style>
+	@font-face {
+		font-family: MinionPro;
+		src: url("/static/samraemd/css/fonts/MinionPro-Regular.otf") format("opentype");
+	}
+	@font-face {
+		font-family: MinionPro;
+		font-style: italic;
+		src: url("/static/samraemd/css/fonts/MinionPro-It.otf") format("opentype");
+	}
+	@font-face {
+		font-family: MinionPro;
+		font-weight: bolder;
+		font-style: italic;
+		src: url("/static/samraemd/css/fonts/MinionPro-MediumIt.otf") format("opentype");
+	}
+	@font-face {
+		font-family: Avenir;
+		src: url("/static/samraemd/css/fonts/Avenir-Roman.ttf") format("truetype");
+	}
+	@font-face {
+		font-family: Avenir;
+		font-weight: bolder;
+		src: url("/static/samraemd/css/fonts/Avenir-Medium.ttf") format("truetype");
+	}
+	@font-face {
+		font-family: Avenir;
+		font-weight: lighter;
+		src: url("/static/samraemd/css/fonts/Avenir-Light.ttf") format("truetype");
+	}
+	@font-face {
+		font-family: Avenir;
+		font-weight: bold;
+		src: url("/static/samraemd/css/fonts/Avenir-Heavy.ttf") format("truetype");
+	}
+	body {
+		background: #EAEAEA;
+		color: #1075a3;
+	}
+	page[size="A4"] {
+	    -webkit-print-color-adjust: exact;
+	    background: white;
+	    width: 210mm;
+	    height: 291.9mm;
+	    display: block;
+	    margin: 0 auto;
+	    margin-bottom: 5mm;
+	    padding: 3em;
+	    box-shadow: 0 0 5mm rgba(0, 0, 0, 0.5);
+	}
+	@page {
+        margin: 0;
+    }
+	.outer-border {
+		border: solid 3px #1075a3;
+		padding: 2px;
+		margin-top: 2%;
+		height: 96%;
+	}
+	.inner-border {
+		border: solid 1px #1075a3;
+		height: 100%;
+	}
+	h1 {
+		font-family: MinionPro;
+		font-size: 36pt;
+		font-style: italic;
+		font-weight: bolder;
+		padding-top: 1em;
+	}
+	h2 {
+		font-family: Avenir;
+		font-size: 18pt;
+		margin: 0;
+	}
+	h3 {
+		font-family: MinionPro;
+		font-size: 24pt;
+		font-style: italic;
+		color: #000;
+		padding-top: 1em;
+	}
+	h4 {
+		font-family: Avenir;
+		font-weight: lighter;
+		font-size: 12pt;
+		color: #000;
+		margin: 1em;
+	}
+	strong {
+		font-weight: 900;
+	}
+	.info {
+		padding: 1em 0 1em 2em;
+		font-family: Avenir;
+		font-weight: lighter;
+		font-size: 12pt;
+		color: #000;
+	}
+	.info p {
+		margin-bottom: 0.3em;
+	}
+	td {
+		border: none !important;
+		vertical-align: middle !important;
+		padding: 0.3em 0 0 0 !important;
+		font-family: Avenir;
+	}
+	td:not(:first-child) {
+		text-align: center;
+	}
+	.thead td {
+		font-size: 12pt;
+		font-weight: bolder;
+	}
+	.thead-subject td {
+		font-size: 14pt;
+		font-weight: bold;
+		padding-top: 0.8em !important;
+	}
+	.tbody td {
+		font-size: 12pt;
+		color: #000;
+	}
+	.ord_talna td {
+		padding-top: 0.8em !important;
+	}
+	.table-container {
+		padding: 1em;
+	}
+	.mms-logo {
+		margin: 0 auto;
+		padding-top: 20px;
+		width: 20%
+	}
+	.footer {
+		font-family: Avenir;
+		padding-top: 1em;
+	}
+	.backside {
+		color: #000;
+		font-family: Avenir;
+		font-size: 11pt;
+		padding-top: 6em;
+	}
+	.backside li {
+		list-style: none;
+		padding: 0.3em 0;
+	}
+	@media print {
+	  h1, h2, .thead>td, .thead-subject>td{
+	    color: #1075a3 !important;
+	  }
+	}
+
+</style>
+{% endblock %}
+{% block content %}
+{% for value in loop_times %}
+{% for student, results in student_results.items %}
+<page size="A4">
+	
+			<img src="{% static 'img/logo-3litur.png'%}" class="img-responsive mms-logo"/>
+			<h1 class="text-center">Samræmd könnunarpróf</h1>
+			<h2 class="text-center">{{group}}. bekkur</h2>
+			<div class="student col-xs-12">
+				<h3 class="text-center">{{student.name}}</h3>
+				<h4 class="text-center">
+					{{student.ssn|slice:':6'}}-{{student.ssn|slice:'6:'}}
+				</h4>
+			</div>
+			<div class="info col-xs-12">
+				<p>
+					{{school.name}}
+				</p>
+				<p>
+					{{group}}. bekkur
+				</p>
+				<p>
+					Prófár: {{year}}
+				</p>
+			</div>
+			<div class="table-container">
+			<div class="row">
+				<div class="col-md-6">
+					<table class="table">
+						<tbody>
+							<tr class="thead">
+								<td>Dæmi</td>
+								<td>Svar:<p/>1 rétt<p/>0 rangt</td>
+							</tr>
+							{% for result in results %}
+								{% if result.exam_code == value.exam_code %}
+									{% for key, values in result.result_data.items|dictsort:'0.lower' %}
+										<tr><td>{{key}}</td><td>{{values}}</td><td>{{values|length}}</td></tr>
+
+									{% endfor %}
+								{% endif %}
+								
+							{% endfor %}
+						</tbody>
+					</table>
+				</div>
+			</div>
+			</div>
+	
+	<p class="footer text-center col-xs-12">Menntamálastofnun - Víkurhvarfi 3 - 203 Kópavogi</p>
+</page>
+<page size="A4">
+<div class="col-xs-10 col-xs-offset-1 backside">
+</div>
+</page>
+{% endfor %}
+{% endfor %}
+{% endblock %}
