@@ -768,7 +768,7 @@ class RawDataCreate(UserPassesTestMixin, CreateView):
 				for sheetsnumber in range(book.nsheets):
 					sheet = book.sheet_by_index(sheetsnumber)
 					for row in range(1, sheet.nrows):
-						student = Student.objects.filter(ssn=str(sheet.cell_value(row,3)).strip()) #student already exists
+						student = Student.objects.filter(ssn=str(sheet.cell_value(row,0)).strip()) #student already exists
 						if student:
 							#check if results for student exists, create if not, otherwise update
 							results = SamraemdResult.objects.filter(student=student, exam_code=exam_code)
@@ -776,10 +776,11 @@ class RawDataCreate(UserPassesTestMixin, CreateView):
 								result_data = {}
 								try:
 									for numb in range(0,int(result_length)):
-										result_data[numb] = int(sheet.cell_value(row,numb+5))
+										attr = str(sheet.cell_value(0,numb+1)).strip()
+										result_data[attr] = int(sheet.cell_value(row,numb+1))
 								except E as e:
 									print(e)
-			
+
 								results.update(
 									student=student.first(),
 									exam_code = exam_code,
@@ -792,8 +793,10 @@ class RawDataCreate(UserPassesTestMixin, CreateView):
 							else:
 								result_data ={}
 								try:
+									print(int(result_length))
 									for numb in range(0,int(result_length)):
-										result_data[numb] =int(sheet.cell_value(row,numb+5))
+										attr = str(sheet.cell_value(0,numb+1)).strip()
+										result_data[attr] =int(sheet.cell_value(row,numb+1))
 								except E as e:
 									print(e)
 								results = SamraemdResult.objects.create(
@@ -806,6 +809,7 @@ class RawDataCreate(UserPassesTestMixin, CreateView):
 									result_data = result_data
 									)
 						else:
+							print('Dang!')
 							#student not found
 							pass #for now
 			except Exception as e:
