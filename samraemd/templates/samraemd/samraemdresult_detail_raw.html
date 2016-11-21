@@ -11,7 +11,7 @@
 			<a href="{% url 'samraemd:result_raw_print' school.id year group %}" class="btn btn-default" target="_blank">Prentvæn einkunnablöð</a>
 			<a href="{% url 'samraemd:result_raw_excel' school.id year group %}" class="btn btn-default" target="_blank">Excel</a>
 		{% else %}
-			<a href="{% url 'samraemd:admin_result_print' year group %}" class="btn btn-default" target="_blank">Prentvæn einkunnablöð</a>
+			<a href="{% url 'samraemd:admin_result_raw_print' exam_code year group %}" class="btn btn-default" target="_blank">Prentvæn einkunnablöð</a>
 			<a href="{% url 'samraemd:admin_result_raw_excel' exam_code year group %}" class="btn btn-default" target="_blank">Excel</a>
 		{% endif %}
 	</div>
@@ -24,24 +24,23 @@
 			<table class="table table-striped table-bordered table-hover table-responsive">
 				<thead class="thead-default">
 					<tr>
-						<th>skóli</th>
+						<th>Skóli</th>
 						<th>Kennitölur</th>
 						<th>Nafn</th>
-						<th>bekkur</th>
+						<th>Bekkur</th>
 						{% for student, results in student_results.items %}
 							{% if forloop.counter0 == 0 %}
 								{% with val=results|first %}
-									{% for k, v in val.result_data.items|dictsort:'0.lower' %}
-										<th>{{k}}</th>
+									{% for k, v in val.result_data.items|dictsort:"0.lower" %}
+										<th>{{v.id}}</th>
 									{% endfor %}
 								{% endwith %}
 							{% endif %}
 						{% endfor %}
-					</tr>				
+					</tr>
 				</thead>
 				<tbody>
-					{% for student, results in student_results.items %} 
-						
+					{% for student, results in student_results.items %}
 						{% for result in results %}
 							{% if result.exam_code == value.exam_code %}
 								<tr>
@@ -61,8 +60,8 @@
 											{%endfor%}
 										{% endif %}
 									{%endfor%}
-									{% for key, values in result.result_data.items|dictsort:'0.lower' %}
-									<td>{{values}}</td>
+									{% for key, val in result.result_data.items|dictsort:"0.lower" %}
+									<td>{{val.value}}</td>
 									{% endfor %}
 								</tr>
 							{% endif %}

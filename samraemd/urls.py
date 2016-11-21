@@ -32,4 +32,5 @@ urlpatterns = [
 	url(r'^umsjónarmaður/niðurstöður/(?P<year>\d+)/(?P<group>\d+)/csv/$', admin_result_csv_isl, name='admin_result_csv_isl'),
 	url(r'^umsjónarmaður/niðurstöður/(?P<year>\d+)/(?P<group>\d+)/csv/$', admin_result_csv_stf, name='admin_result_csv_stf'),
 	url(r'^umsjónarmaður/niðurstöður/(?P<exam_code>\w+)/(?P<year>\d+)/(?P<group>\d+)/rawexcel/$', admin_result_raw_excel, name='admin_result_raw_excel'),
+	url(r'^umsjónarmaður/niðurstöður/(?P<exam_code>\w+)/(?P<year>\d+)/(?P<group>\d+)/einkunnablod/$', SamraemdRawResultDetail.as_view(), name='admin_result_raw_print'),
 ]
