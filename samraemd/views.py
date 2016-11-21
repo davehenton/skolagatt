@@ -761,7 +761,7 @@ class RawDataCreate(UserPassesTestMixin, CreateView):
 			exam_date = self.request.POST.get('exam_date').strip()
 			student_year = self.request.POST.get('student_year').strip()
 			result_length = self.request.POST.get('result_length').strip()
-			
+
 			try:
 				input_excel = self.request.FILES['file']
 				book = xlrd.open_workbook(file_contents=input_excel.read())
@@ -777,7 +777,11 @@ class RawDataCreate(UserPassesTestMixin, CreateView):
 								try:
 									for numb in range(0,int(result_length)):
 										attr = str(sheet.cell_value(0,numb+1)).strip()
-										result_data[attr] = int(sheet.cell_value(row,numb+1))
+										n = str(numb) if numb >= 10 else "0" + str(numb)
+										result_data[n] = {
+											'id': attr,
+											'value': int(sheet.cell_value(row,numb+1))
+										}
 								except E as e:
 									print(e)
 
@@ -793,10 +797,13 @@ class RawDataCreate(UserPassesTestMixin, CreateView):
 							else:
 								result_data ={}
 								try:
-									print(int(result_length))
 									for numb in range(0,int(result_length)):
 										attr = str(sheet.cell_value(0,numb+1)).strip()
-										result_data[attr] =int(sheet.cell_value(row,numb+1))
+										n = str(numb) if numb >= 10 else "0" + str(numb)
+										result_data[n] = {
+											'id': attr,
+											'value': int(sheet.cell_value(row,numb+1))
+										}
 								except E as e:
 									print(e)
 								results = SamraemdResult.objects.create(
@@ -872,7 +879,7 @@ class SamraemdRawResultDetail(UserPassesTestMixin, DetailView):
 				else:
 					student_results[result.student] = [result]
 					student_group[result.student] = StudentGroup.objects.filter(students=result.student)
-					
+
 		else:
 			if self.request.user.is_superuser:
 				exam_code = self.kwargs['exam_code']
@@ -906,9 +913,11 @@ def admin_result_raw_excel(request, exam_code, year, group):
 	ws['B1']=  'Kennitölur'
 	ws['C1']=  'Nafn'
 	ws['D1']=  'bekkur'
-	for  loop in range(1,int(number_of_loops['result_length'])+1):
-		ws.cell(row=1, column=loop+4).value =str(loop)+'. spurning'
-	
+	# We need the first result just to get the keys for the columns
+	first_result = SamraemdResult.objects.filter(exam_code=exam_code).filter(student_year=group).filter(exam_date__year=year).first().result_data.items()
+	for key, result in first_result:
+		ws.cell(row=1, column=int(key)+5).value =str(result['id'])
+
 	index = 2
 	for result in SamraemdResult.objects.filter(exam_code=exam_code).filter(student_year=group).filter(exam_date__year=year):
 		ws.cell(row=index, column=1).value = str(School.objects.get(students=result.student).name)
@@ -916,8 +925,8 @@ def admin_result_raw_excel(request, exam_code, year, group):
 		ws.cell(row=index, column=3).value = str(result.student)
 		ws.cell(row=index, column=4).value = str(StudentGroup.objects.get(students=result.student))
 		for key, values in result.result_data.items():
-			ws.cell(row=index, column=int(key)+5).value = values
-						
+			ws.cell(row=index, column=int(key)+5).value = values['value']
+
 		index +=1
 
 	wb.save(response)
@@ -932,14 +941,16 @@ def excel_result_raw(request,school_id, year, group):
 	for loops in number_of_loops:
 		ws = wb.create_sheet()
 		ws.title = loops['exam_name']
-	
+
 		ws['A1']=  'Skóli'
 		ws['B1']=  'Kennitölur'
 		ws['C1']=  'Nafn'
 		ws['D1']=  'bekkur'
-		for  loop in range(1,int(loops['result_length'])+1):
-			ws.cell(row=1, column=loop+4).value =str(loop)+'. spurning'
-	
+		# We need the first result just to get the keys for the columns
+		first_result = SamraemdResult.objects.filter(exam_code=exam_code).filter(student_year=group).filter(exam_date__year=year).first().result_data.items()
+		for key, result in first_result:
+			ws.cell(row=1, column=int(key)+5).value =str(result['id'])
+
 		index = 2
 		for result in SamraemdResult.objects.filter(student__in = Student.objects.filter(school=school_id)).filter(exam_code= loops['exam_code']).filter(student_year=group).filter(exam_date__year=year):
 			ws.cell(row=index, column=1).value = str(School.objects.get(students=result.student).name)
@@ -947,7 +958,7 @@ def excel_result_raw(request,school_id, year, group):
 			ws.cell(row=index, column=3).value = str(result.student)
 			ws.cell(row=index, column=4).value = str(StudentGroup.objects.get(students=result.student))
 			for key, values in result.result_data.items():
-				ws.cell(row=index, column=int(key)+5).value = values
+				ws.cell(row=index, column=int(key)+5).value = values['value']
 						
 			index +=1
 
