@@ -304,6 +304,7 @@ class SamraemdMathResultAdminListing(UserPassesTestMixin, ListView):
 		# xxx will be available in the template as the related objects
 		context = super(SamraemdMathResultAdminListing, self).get_context_data(**kwargs)
 		context['exams'] = SamraemdMathResult.objects.all().values('exam_date', 'student_year', 'exam_code').distinct()
+		print(SamraemdResult.objects.filter(exam_code=3).values('exam_date', 'student_year', 'exam_name', 'exam_code').distinct())
 		context['raw_exams'] = SamraemdResult.objects.filter(exam_code=3).values('exam_date', 'student_year', 'exam_name', 'exam_code').distinct()
 		return context
 
@@ -870,7 +871,7 @@ class SamraemdRawResultDetail(UserPassesTestMixin, DetailView):
 			context['school'] = school
 			context['school_id'] = self.kwargs['school_id']
 			context['school_name'] = school.name
-			number_of_loops =SamraemdResult.objects.all().values('result_length','exam_code','exam_name').annotate(total=Count('exam_code')).filter(exam_date__year=year)
+			number_of_loops =SamraemdResult.objects.all().values('result_length','exam_code','exam_name').annotate(total=Count('exam_code')).filter(exam_date__year=year).filter(student_year=group)
 			for result in SamraemdResult.objects.filter(student__in = Student.objects.filter(school=school)).filter(student_year=group).filter(exam_date__year=year):
 				if result.student in student_results:
 					student_results[result.student].append(result)
@@ -888,10 +889,10 @@ class SamraemdRawResultDetail(UserPassesTestMixin, DetailView):
 				for result in SamraemdResult.objects.filter(exam_code=exam_code).filter(student_year=group).filter(exam_date__year=year):
 					if result.student in student_results:
 						student_results[result.student].append(result)
-						student_group[result.student].append(StudentGroup.objects.filter(students=result.student))
+						student_group[result.student].append(StudentGroup.objects.filter(students=result.student).first())
 					else:
 						student_results[result.student] = [result]
-						student_group[result.student] = StudentGroup.objects.filter(students=result.student)
+						student_group[result.student] = StudentGroup.objects.filter(students=result.student).first()
 		
 		for loops in number_of_loops:
 			loops['result_length'] = range(0,int(loops['result_length']))
@@ -933,24 +934,23 @@ def admin_result_raw_excel(request, exam_code, year, group):
 
 	return response
 
-def excel_result_raw(request,school_id, year, group):
+def excel_result_raw(request,school_id,   year, group):
 	response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
 	response['Content-Disposition'] = 'attachment; filename=hrániðurstöður-'+group+'.xlsx'
 	wb = openpyxl.Workbook()
-	number_of_loops =SamraemdResult.objects.all().values('result_length','exam_code','exam_name').annotate(total=Count('exam_code')).filter(exam_date__year=year)
+	number_of_loops =SamraemdResult.objects.all().values('result_length','exam_code','exam_name').annotate(total=Count('exam_code')).filter(exam_date__year=year).filter(student_year=group)
 	for loops in number_of_loops:
 		ws = wb.create_sheet()
 		ws.title = loops['exam_name']
-
+		
 		ws['A1']=  'Skóli'
 		ws['B1']=  'Kennitölur'
 		ws['C1']=  'Nafn'
 		ws['D1']=  'bekkur'
 		# We need the first result just to get the keys for the columns
-		first_result = SamraemdResult.objects.filter(exam_code=exam_code).filter(student_year=group).filter(exam_date__year=year).first().result_data.items()
-		for key, result in first_result:
-			ws.cell(row=1, column=int(key)+5).value =str(result['id'])
-
+		for result in SamraemdResult.objects.filter(student__in = Student.objects.filter(school=school_id)).filter(exam_code= loops['exam_code']).filter(student_year=group).filter(exam_date__year=year):
+			for key, values in result.result_data.items():
+				ws.cell(row=1, column=int(key)+5).value = values['id']
 		index = 2
 		for result in SamraemdResult.objects.filter(student__in = Student.objects.filter(school=school_id)).filter(exam_code= loops['exam_code']).filter(student_year=group).filter(exam_date__year=year):
 			ws.cell(row=index, column=1).value = str(School.objects.get(students=result.student).name)
