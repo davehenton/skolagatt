@@ -8,10 +8,10 @@
 	</div>
 	<div class="col-md-6 hidden-print">
 		{% if school.id %}
-			<a href="{% url 'samraemd:result_raw_print' school.id year group %}" class="btn btn-default" target="_blank">Prentvæn einkunnablöð</a>
+			<a href="{% url 'samraemd:result_raw_print' school.id year group %}" class="btn btn-default" target="_blank">Prentvæn úrlausnablöð</a>
 			<a href="{% url 'samraemd:result_raw_excel' school.id year group %}" class="btn btn-default" target="_blank">Excel</a>
 		{% else %}
-			<a href="{% url 'samraemd:admin_result_raw_print' exam_code year group %}" class="btn btn-default" target="_blank">Prentvæn einkunnablöð</a>
+			<a href="{% url 'samraemd:admin_result_raw_print' exam_code year group %}" class="btn btn-default" target="_blank">Prentvæn úrlausnablöð</a>
 			<a href="{% url 'samraemd:admin_result_raw_excel' exam_code year group %}" class="btn btn-default" target="_blank">Excel</a>
 		{% endif %}
 	</div>
@@ -46,18 +46,19 @@
 								<tr>
 									{% for gstudent, groups in student_group.items %}
 										{% if student == gstudent%}
-											{% for group in groups %}
+											{% with group=groups|first %}
 												<td>{{group.school.name}}</td>
-											{%endfor%}
+											{% endwith %}
 										{% endif %}
 									{%endfor%}
 									<td>{{ student.ssn }}</td>
 									<td>{{ student }}</td>
 									{% for gstudent, groups in student_group.items %}
 										{% if student == gstudent%}
-											{% for group in groups %}
-												<td>{{group}}</td>
-											{%endfor%}
+											{% with group=groups|first %}
+												<td>{{group.name}}</td>
+											{% endwith %}
+											
 										{% endif %}
 									{%endfor%}
 									{% for key, val in result.result_data.items|dictsort:"0.lower" %}
