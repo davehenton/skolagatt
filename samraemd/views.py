@@ -872,6 +872,7 @@ class SamraemdRawResultDetail(UserPassesTestMixin, DetailView):
 			context['school_id'] = self.kwargs['school_id']
 			context['school_name'] = school.name
 			number_of_loops =SamraemdResult.objects.all().values('result_length','exam_code','exam_name').annotate(total=Count('exam_code')).filter(exam_date__year=year).filter(student_year=group)
+			print(number_of_loops)
 			for result in SamraemdResult.objects.filter(student__in = Student.objects.filter(school=school)).filter(student_year=group).filter(exam_date__year=year):
 				if result.student in student_results:
 					student_results[result.student].append(result)
@@ -893,9 +894,6 @@ class SamraemdRawResultDetail(UserPassesTestMixin, DetailView):
 					else:
 						student_results[result.student] = [result]
 						student_group[result.student] = StudentGroup.objects.filter(students=result.student).first()
-		
-		for loops in number_of_loops:
-			loops['result_length'] = range(0,int(loops['result_length']))
 		
 		context['student_results'] = student_results
 		context['student_group'] = student_group
@@ -941,7 +939,13 @@ def excel_result_raw(request,school_id,   year, group):
 	number_of_loops =SamraemdResult.objects.all().values('result_length','exam_code','exam_name').annotate(total=Count('exam_code')).filter(exam_date__year=year).filter(student_year=group)
 	for loops in number_of_loops:
 		ws = wb.create_sheet()
-		ws.title = loops['exam_name']
+		print(loops['exam_code'])
+		if int(loops['exam_code']) == 1:
+			ws.title = 'Íslenska'
+		elif int(loops['exam_code']) == 2:
+			ws.title = 'Enska'
+		elif int(loops['exam_code']) == 3:
+			ws.title = 'Stærðfræði'
 		
 		ws['A1']=  'Skóli'
 		ws['B1']=  'Kennitölur'
