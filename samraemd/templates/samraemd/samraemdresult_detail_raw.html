@@ -29,15 +29,12 @@
 						<th>Nafn</th>
 						<th>Bekkur</th>
 
-						{% for student, results in student_results.items %}
-								{% if forloop.counter0 == 0 %}
-									{% with val=results|first %}
-									<pre>{{val.exam_code}}</pre>
-										{% for k, v in val.result_data.items|dictsort:"0.lower" %}
-											<th>{{v.id}}</th>
-										{% endfor %}
-									{% endwith %}
+						{% for xm_code, cols in columns.items %}
+							{% for i, col in cols.result_data.items|dictsort:"0.lower" %}
+								{% if xm_code == value.exam_code %}
+									<th>{{col.id}}</th>
 								{%endif%}
+							{% endfor %}
 						{% endfor %}
 					</tr>
 				</thead>
