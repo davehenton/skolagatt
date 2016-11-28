@@ -843,7 +843,6 @@ class RawDataCreate(UserPassesTestMixin, CreateView):
 
 class SamraemdRawResultDetail(UserPassesTestMixin, DetailView):
 	model = SamraemdResult
-	
 
 	def test_func(self):
 		return is_school_manager(self.request, self.kwargs)
@@ -861,18 +860,17 @@ class SamraemdRawResultDetail(UserPassesTestMixin, DetailView):
 		context = super(SamraemdRawResultDetail, self).get_context_data(**kwargs)
 		year = self.kwargs['year']
 		context['year'] = year
-		
 		group = self.kwargs['group']
 		context['group'] = group
 		student_results = {}
 		student_group = {}
+		col_names = {}
 		if 'school_id' in self.kwargs:
 			school = School.objects.get(pk=self.kwargs['school_id'])
 			context['school'] = school
 			context['school_id'] = self.kwargs['school_id']
 			context['school_name'] = school.name
 			number_of_loops =SamraemdResult.objects.all().values('result_length','exam_code','exam_name').annotate(total=Count('exam_code')).filter(exam_date__year=year).filter(student_year=group)
-			print(number_of_loops)
 			for result in SamraemdResult.objects.filter(student__in = Student.objects.filter(school=school)).filter(student_year=group).filter(exam_date__year=year):
 				if result.student in student_results:
 					student_results[result.student].append(result)
@@ -881,6 +879,8 @@ class SamraemdRawResultDetail(UserPassesTestMixin, DetailView):
 				else:
 					student_results[result.student] = [result]
 					student_group[result.student] = StudentGroup.objects.filter(students=result.student)
+				if result.exam_code not in col_names:
+					col_names[result.exam_code] = result
 
 		else:
 			if self.request.user.is_superuser:
@@ -894,10 +894,14 @@ class SamraemdRawResultDetail(UserPassesTestMixin, DetailView):
 					else:
 						student_results[result.student] = [result]
 						student_group[result.student] = StudentGroup.objects.filter(students=result.student).first()
-		
+					if result.exam_code not in col_names:
+						col_names[result.exam_code] = result
+
 		context['student_results'] = student_results
 		context['student_group'] = student_group
 		context['loop_times'] = number_of_loops
+		context['columns'] = col_names
+		print(col_names)
 		return context
 
 def admin_result_raw_excel(request, exam_code, year, group):
