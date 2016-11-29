@@ -4,52 +4,51 @@
 	<style>
 		@font-face {
 			font-family: MinionPro;
-			src: url("/static/samraemd/css/fonts/MinionPro-Regular.otf") format("opentype");
+			src        : url("/static/samraemd/css/fonts/MinionPro-Regular.otf") format("opentype");
 		}
 		@font-face {
 			font-family: MinionPro;
-			font-style: italic;
-			src: url("/static/samraemd/css/fonts/MinionPro-It.otf") format("opentype");
+			font-style : italic;
+			src        : url("/static/samraemd/css/fonts/MinionPro-It.otf") format("opentype");
 		}
 		@font-face {
 			font-family: MinionPro;
 			font-weight: bolder;
-			font-style: italic;
-			src: url("/static/samraemd/css/fonts/MinionPro-MediumIt.otf") format("opentype");
+			font-style : italic;
+			src        : url("/static/samraemd/css/fonts/MinionPro-MediumIt.otf") format("opentype");
 		}
 		@font-face {
 			font-family: Avenir;
-			src: url("/static/samraemd/css/fonts/Avenir-Roman.ttf") format("truetype");
+			src        : url("/static/samraemd/css/fonts/Avenir-Roman.ttf") format("truetype");
 		}
 		@font-face {
 			font-family: Avenir;
 			font-weight: bolder;
-			src: url("/static/samraemd/css/fonts/Avenir-Medium.ttf") format("truetype");
+			src        : url("/static/samraemd/css/fonts/Avenir-Medium.ttf") format("truetype");
 		}
 		@font-face {
 			font-family: Avenir;
 			font-weight: lighter;
-			src: url("/static/samraemd/css/fonts/Avenir-Light.ttf") format("truetype");
+			src        : url("/static/samraemd/css/fonts/Avenir-Light.ttf") format("truetype");
 		}
 		@font-face {
 			font-family: Avenir;
 			font-weight: bold;
-			src: url("/static/samraemd/css/fonts/Avenir-Heavy.ttf") format("truetype");
+			src        : url("/static/samraemd/css/fonts/Avenir-Heavy.ttf") format("truetype");
 		}
 		body {
 			background: #EAEAEA;
-			color: #1075a3;
+			color     : #1075a3;
 		}
 		page[size="A4"] {
-		    -webkit-print-color-adjust: exact;
-		    background: white;
-		    width: 210mm;
-		    height: 291.9mm;
-		    display: block;
-		    margin: 0 auto;
-		    margin-bottom: 5mm;
-		    padding: 3em;
-		    box-shadow: 0 0 5mm rgba(0, 0, 0, 0.5);
+			-webkit-print-color-adjust: exact;
+			background   : white;
+			width        : 210mm;
+			display      : block;
+			margin       : 0 auto;
+			margin-bottom: 5mm;
+			padding      : 3em;
+			box-shadow   : 0 0 5mm rgba(0, 0, 0, 0.5);
 		}
 		@page {
 	        margin: 0;
@@ -57,101 +56,116 @@
 		.outer-border {
 			padding: 2px;
 			margin-top: 2%;
-			height: 96%;
-		}
-		.inner-border {
-			border: solid 1px #1075a3;
-			height: 100%;
+			height    : 96%;
 		}
 		h1 {
 			font-family: MinionPro;
-			font-size: 36pt;
-			font-style: italic;
+			font-size  : 24pt;
+			font-style : italic;
 			font-weight: bolder;
 			padding-top: .2em;
 		}
 		h2 {
 			font-family: Avenir;
-			font-size: 18pt;
-			margin: 0;
+			font-size  : 18pt;
+			margin     : 0;
 		}
 		h3 {
 			font-family: MinionPro;
-			font-size: 24pt;
-			font-style: italic;
-			color: #000;
+			font-size  : 24pt;
+			font-style : italic;
+			color      : #000;
 			padding-top: .4em;
 		}
 		h4 {
 			font-family: Avenir;
 			font-weight: lighter;
-			font-size: 12pt;
-			color: #000;
-			margin: 1em;
+			font-size  : 12pt;
+			color      : #000;
+			margin     : 1em;
 		}
 		strong {
 			font-weight: 900;
 		}
 		.info {
-			padding: .4em 0 1em 2em;
+			padding    : .4em 0 1em 2em;
 			font-family: Avenir;
 			font-weight: lighter;
-			font-size: 12pt;
-			color: #000;
+			font-size  : 12pt;
+			color      : #000;
 		}
 		.info p {
 			margin-bottom: 0.3em;
 		}
 		td {
-			border: none !important;
+			font-size     : 10pt;
+			border        : none !important;
 			vertical-align: middle !important;
-			padding: 0.3em 0 0 0 !important;
-			font-family: Avenir;
+			padding       : 0.3em !important;
+			font-family   : Avenir;
 		}
-		td:not(:first-child) {
+		td:not(:first-child):not(:last-child), th:not(:first-child):not(:last-child) {
 			text-align: center;
 		}
-		.thead td {
-			font-size: 12pt;
-			font-weight: bolder;
+		thead th {
+			font-size    : 12pt;
+			font-weight  : bolder;
+			border-bottom: solid 1px rgba(16,117,163,1) !important;
 		}
-		.thead-subject td {
-			font-size: 14pt;
-			font-weight: bold;
-			padding-top: 0.8em !important;
+		tfoot td>small {
+			font-size: 9pt;
 		}
-		.tbody td {
-			font-size: 12pt;
-			color: #000;
+		.td2 {
+			font-size  : 14pt;
+			font-weight: 900;
 		}
-		.ord_talna td {
-			padding-top: 0.8em !important;
+		.td4 {
+			width: 120px;
+		}
+		.td5 {
+			width: 400px;
+		}
+		tbody>tr {
+			border-bottom: solid 1px rgba(16,117,163,0.2);
 		}
 		.table-container {
 			padding: 1em;
 		}
 		.mms-logo {
 			margin: 0 auto;
-			width: 20%
+			width : 20%
 		}
 		.footer {
 			font-family: Avenir;
-			padding-top: 1em;
+			padding-top: 2em;
 		}
 		.backside {
-			color: #000;
+			color      : #000;
 			font-family: Avenir;
-			font-size: 11pt;
+			font-size  : 11pt;
 			padding-top: 6em;
 		}
 		.backside li {
 			list-style: none;
-			padding: 0.3em 0;
+			padding   : 0.3em 0;
 		}
 		@media print {
-		  h1, h2, .thead>td, .thead-subject>td{
-		    color: #1075a3 !important;
-		  }
+		  	h1, h2, thead th {
+		    	color: #1075a3 !important;
+		  	}
+		  	thead th {
+		  		line-height: 3em;
+		  	}
+		  	thead:before {
+		  		content: "\00a0";
+		  		display: block;
+		  		line-height: 1em;
+		  	}
+		  	page {
+		  		page-break-after: always !important;
+		  	}
+		  	tfoot {
+		  	}
 		}
 
 	</style>
@@ -165,80 +179,65 @@
 				<div class="outer-border">
 					<img src="{% static 'img/logo-3litur.png'%}" class="img-responsive mms-logo"/>
 					<h1 class="text-center">Samræmd könnunarpróf</h1>
-					<h2 class="text-center">{{group}}. bekkur</h2>
-					<div class="student col-xs-12">
-						<h3 class="text-center">{{student.name}}</h3>
-						<h4 class="text-center">
-							{{student.ssn|slice:':6'}}-{{student.ssn|slice:'6:'}}
-						</h4>
-					</div>
-					<div class="info col-xs-12">
-						<p>
-							{{school.name}}
-						</p>
-						<p>
-							{{group}}. bekkur
-						</p>
-						<p>
-							Prófár: {{year}}
-						</p>
+					<div class="row headinfo">
+						<div class="info col-xs-6">
+							<p>
+								{{school.name}}
+							</p>
+							<p>{{ value.exam_name }}</p>
+						</div>
+						<div class="info col-xs-6">
+							<p>
+								{{student.ssn|slice:':6'}}-{{student.ssn|slice:'6:'}}
+							</p>
+							<p>
+								{{student.name}}
+							</p>
+						</div>
 					</div>
 					<div class="table-container">
 						<div class="row">
-							<div class="col-xs-6">
+							<div class="col-xs-12">
 								<table class="table">
-									<tbody>
-										<tr class="thead">
-											<td>Dæmi</td>
-											<td>Svar: <small>(1: rétt, 0: rangt)</small></td>
+									<thead>
+										<tr>
+											<th>Dæmi</th>
+											<th>Svar*</th>
+											<th>Flokkur</th>
+											<th>Innihald</th>
+											<th>Útskýring</th>
 										</tr>
+									</thead>
+									<tbody>
 										{% for result in results %}
 											{% if result.exam_code == value.exam_code %}
 												{% for key, values in result.result_data.items|dictsort:'0.lower' %}
-													{% if forloop.counter == 47 or forloop.counter == 87 %}
-													</tbody>
-												</table>
-											</div>
-										</div>
-									</div>
-								</div>
-								<p class="footer text-center col-xs-12">Menntamálastofnun - Víkurhvarfi 3 - 203 Kópavogi</p>
-							</page>
-				 			<page size="A4">
-					 			<div class="outer-border">
-						 			<div class="table-container">
-											<div class="row">
-												<div class="col-xs-6">
-													<table class="table">
-														<tbody>
-															<tr class="thead">
-																<td>Dæmi</td>
-																<td>Svar: <small>(1: rétt, 0: rangt)</small></td>
-															</tr>
-													{% elif forloop.counter|divisibleby:25 %}
-													</tbody>
-												</table>
-											</div>
-												<div class="col-xs-6">
-													<table class="table">
-														<tbody>
-															<tr class="thead">
-																<td>Dæmi</td>
-																<td>Svar: <small>(1: rétt, 0: rangt)</small></td>
-															</tr>
-													{% endif %}
-													<tr><td>{{values.id}}</td><td>{{values.value}}</td></tr>
-
+													<tr>
+														<td class="td1">{{values.id}}</td>
+														<td class="td2">{{values.value}}</td>
+														<td class="td3">{{values.category}}</td>
+														<td class="td4">{{values.context}}</td>
+														<td class="td5">{{values.description}}</td>
+													</tr>
 												{% endfor %}
 											{% endif %}
 										{% endfor %}
 									</tbody>
+									<tfoot>
+										<tr>
+											<td colspan="5"><small>*(0=rangt)</small></td>
+										</tr>
+										<tr>
+											<td colspan="5">
+												<p class="footer text-center col-xs-12">Menntamálastofnun - Víkurhvarfi 3 - 203 Kópavogi</p>
+											</td>
+										</tr>
+									</tfoot>
 								</table>
 							</div>
 						</div>
 					</div>
 				</div>
-				<p class="footer text-center col-xs-12">Menntamálastofnun - Víkurhvarfi 3 - 203 Kópavogi</p>
 			</page>
 		{% endfor %}
 	{% endfor %}

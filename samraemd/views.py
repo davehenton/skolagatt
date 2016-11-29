@@ -1,62 +1,31 @@
 from django.shortcuts import render
 
 from common.models import *
-from .models import *
+from .models       import *
 
-from django.shortcuts import render, render_to_response, get_object_or_404, redirect
+from django.shortcuts           import render, render_to_response, get_object_or_404, redirect
 from django.contrib.auth.mixins import UserPassesTestMixin
-from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
-from django.core.urlresolvers import reverse_lazy, reverse
-from django.http import HttpResponse
+from django.views.generic       import ListView, CreateView, DetailView, UpdateView, DeleteView
+from django.core.urlresolvers   import reverse_lazy, reverse
+from django.http                import HttpResponse
 
 import csv
 import xlrd
 import openpyxl
-from itertools import chain
+from itertools        import chain
 from django.db.models import Count
 
 
 from schools.util import *
+from .util        import *
 
-def result_csv_isl(request, school_id, year, group):
-	response = HttpResponse(content_type='text/csv')
-	school = School.objects.get(id=school_id)
-	response['Content-Disposition'] = 'attachment; filename="'+school.name+'-'+'isl-'+year+'-'+group+'-bekkur.csv"'
-	fieldnames_isl = ['Nemandi','Kennitala','Samræmd-Lestur','Samræmd-Málnotkun','Samræmd-Ritun','Samræmd-Heild','Raðeinkunn-Lestur','Raðeinkunn-Málnotkun','Raðeinkunn-Ritun','Raðeinkunn-Heild','Grunnskólaeinkunn-Lestur','Grunnskólaeinkunn-Málnotkun','Grunnskólaeinkunn-Ritun','Grunnskólaeinkunn-Heild','Framfaraflokkur','Framfaratexti']
-	writer = csv.writer(response)
-	writer.writerow(fieldnames_isl)
-
-	#prepare data
-	results = SamraemdISLResult.objects.filter(student__in = Student.objects.filter(school=school)).filter(student_year=group).filter(exam_date__year=year)
-
-	for result in results:
-		writer.writerow([
-			result.student.name,
-			result.student.ssn,
-			result.le_se,
-			result.mn_se,
-			result.ri_se,
-			result.se,
-			result.le_re,
-			result.mn_re,
-			result.ri_re,
-			result.re,
-			result.le_sg,
-			result.mn_sg,
-			result.ri_sg,
-			result.sg,
-			result.fm_fl,
-			result.fm_txt
-		])
-
-	return response
 
 def excel_result(request, school_id, year, group):
-	school = School.objects.get(id=school_id)
+	school   = School.objects.get(id=school_id)
 	response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
 	response['Content-Disposition'] = 'attachment; filename='+school.name+'-'+year+'-'+group+'-bekkur.xlsx'
-	wb = openpyxl.Workbook()
-	ws = wb.get_active_sheet()
+	wb       = openpyxl.Workbook()
+	ws       = wb.get_active_sheet()
 	ws.title = "Íslenska"
 
 	ws['A1']=  'Nemandi'
@@ -77,7 +46,7 @@ def excel_result(request, school_id, year, group):
 	ws['P1']=  'Framfaratexti'
 	#prepare data
 	results = SamraemdISLResult.objects.filter(student__in = Student.objects.filter(school=school)).filter(student_year=group).filter(exam_date__year=year)
-	
+
 	index = 2
 	for result in results:
 		ws.cell('A'+str(index)).value = result.student.name
@@ -98,8 +67,7 @@ def excel_result(request, school_id, year, group):
 		ws.cell('P'+str(index)).value = result.fm_txt
 		index+=1
 	ws = wb.create_sheet(title='Stærðfræði')
-	
-	
+
 	ws['A1']=  'Nemandi'
 	ws['B1']=  'Kennitala'
 	ws['C1']=  'Samræmd-Reikningur og aðgerðir'
@@ -145,111 +113,6 @@ def excel_result(request, school_id, year, group):
 
 	return response
 
-def result_csv_stf(request, school_id, year, group):
-	response = HttpResponse(content_type='text/csv')
-	school = School.objects.get(id=school_id)
-	response['Content-Disposition'] = 'attachment; filename="'+school.name+'-'+'stf-'+year+'-'+group+'-bekkur.csv"'
-	fieldnames_stf = ['Nemandi','Kennitala','Samræmd-Reikningur og aðgerðir','Samræmd-Rúmfræði og mælingar','Samræmd-Tölur og talnaskilningur','Samræmd-Heild','Raðeinkunn-Reikningur og aðgerðir','Raðeinkunn-Málnotkun','Raðeinkunn-Ritun','Raðeinkunn-Heild','Grunnskólaeinkunn-Reikningur og aðgerðir','Grunnskólaeinkunn-Rúmfræði og mælingar','Grunnskólaeinkunn-Tölur og talnaskilningur','Grunnskólaeinkunn-Heild','Framfaraflokkur','Framfaratexti','Orðadæmi og talnadæmi']
-	writer = csv.writer(response)
-	writer.writerow(fieldnames_stf)
-
-	#prepare data
-	results = SamraemdMathResult.objects.filter(student__in = Student.objects.filter(school=school)).filter(student_year=group).filter(exam_date__year=year)
-
-	for result in results:
-		writer.writerow([
-			result.student.name,
-			result.student.ssn,
-			result.ra_se,
-			result.rm_se,
-			result.tt_se,
-			result.se,
-			result.ra_re,
-			result.rm_re,
-			result.tt_re,
-			result.re,
-			result.ra_sg,
-			result.rm_sg,
-			result.tt_sg,
-			result.sg,
-			result.fm_fl,
-			result.fm_txt,
-			result.ord_talna_txt
-	])
-
-	return response
-
-def admin_result_csv_stf(request, year, group):
-	if not request.user.is_superuser:
-		return HttpResponse('Ekki réttur aðgangur')
-	response = HttpResponse(content_type='text/csv')
-	response['Content-Disposition'] = 'attachment; filename="'+'stf-'+year+'-'+group+'-bekkur.csv"'
-	fieldnames_stf = ['Próf','Nemandi','Kennitala','Samræmd-Reikningur og aðgerðir','Samræmd-Rúmfræði og mælingar','Samræmd-Tölur og talnaskilningur','Samræmd-Heild','Raðeinkunn-Reikningur og aðgerðir','Raðeinkunn-Rúmfræði og mælingar','Raðeinkunn-Tölur og talnaskilningur','Raðeinkunn-Heild','Grunnskólaeinkunn-Reikningur og aðgerðir','Grunnskólaeinkunn-Rúmfræði og mælingar','Grunnskólaeinkunn-Tölur og talnaskilningur','Grunnskólaeinkunn-Heild','Framfaraflokkur','Framfaratexti','Orðadæmi og talnadæmi']
-	writer = csv.writer(response)
-	writer.writerow(fieldnames_stf)
-
-	#prepare data
-	results = SamraemdMathResult.objects.filter(student_year=group).filter(exam_date__year=year)
-
-	for result in results:
-		writer.writerow([
-			result.student.name,
-			result.student.ssn,
-			result.ra_se,
-			result.rm_se,
-			result.tt_se,
-			result.se,
-			result.ra_re,
-			result.rm_re,
-			result.tt_re,
-			result.re,
-			result.ra_sg,
-			result.rm_sg,
-			result.tt_sg,
-			result.sg,
-			result.fm_fl,
-			result.fm_txt,
-			result.ord_talna_txt
-	])
-
-	return response
-
-def admin_result_csv_isl(request, year, group):
-	if not request.user.is_superuser:
-		return HttpResponse('Ekki réttur aðgangur')
-	response = HttpResponse(content_type='text/csv')
-	response['Content-Disposition'] = 'attachment; filename="'+'isl-'+year+'-'+group+'-bekkur.csv"'
-	fieldnames_isl = ['Próf','Nemandi','Kennitala','Samræmd-Lestur','Samræmd-Málnotkun,'+ 'Samræmd-Ritun','Samræmd-Heild','Raðeinkunn-Lestur','Raðeinkunn-Málnotkun','Raðeinkunn-Ritun','Raðeinkunn-Heild','Grunnskólaeinkunn-Lestur','Grunnskólaeinkunn-Málnotkun','Grunnskólaeinkunn-Ritun','Grunnskólaeinkunn-Heild','Framfaraflokkur','Framfaratexti','Orðadæmi og talnadæmi']
-	writer = csv.writer(response)
-	writer.writerow(fieldnames_isl)
-
-	school = School.objects.get(id=school_id)
-
-	#prepare data
-	results = SamraemdISLResult.objects.filter(student_year=group).filter(exam_date__year=year)
-
-	for result in results:
-		writer.writerow([
-			result.student.name,
-			result.student.ssn,
-			result.le_se,
-			result.mn_se,
-			result.ri_se,
-			result.se,
-			result.le_re,
-			result.mn_re,
-			result.ri_re,
-			result.re,
-			result.le_sg,
-			result.mn_sg,
-			result.ri_sg,
-			result.sg,
-			result.fm_fl,
-			result.fm_txt
-		])
-
-	return response
-
 class SamraemdResultDetail(UserPassesTestMixin, DetailView):
 	model = SamraemdMathResult
 
@@ -263,13 +126,13 @@ class SamraemdResultDetail(UserPassesTestMixin, DetailView):
 		return SamraemdMathResult.objects.first()
 
 	def get_context_data(self, **kwargs):
-		context = super(SamraemdResultDetail, self).get_context_data(**kwargs)
-		year = self.kwargs['year']
-		group = self.kwargs['group']
+		context         = super(SamraemdResultDetail, self).get_context_data(**kwargs)
+		year            = self.kwargs['year']
+		group           = self.kwargs['group']
 		student_results = {}
 		if 'school_id' in self.kwargs:
-			school = School.objects.get(pk=self.kwargs['school_id'])
-			context['school'] = school
+			school               = School.objects.get(pk=self.kwargs['school_id'])
+			context['school']    = school
 			context['school_id'] = self.kwargs['school_id']
 			for result in list(chain(
 				SamraemdMathResult.objects.filter(student__in = Student.objects.filter(school=school)).filter(student_year=group).filter(exam_date__year=year),
@@ -302,9 +165,8 @@ class SamraemdMathResultAdminListing(UserPassesTestMixin, ListView):
 
 	def get_context_data(self, **kwargs):
 		# xxx will be available in the template as the related objects
-		context = super(SamraemdMathResultAdminListing, self).get_context_data(**kwargs)
-		context['exams'] = SamraemdMathResult.objects.all().values('exam_date', 'student_year', 'exam_code').distinct()
-		print(SamraemdResult.objects.filter(exam_code=3).values('exam_date', 'student_year', 'exam_name', 'exam_code').distinct())
+		context              = super(SamraemdMathResultAdminListing, self).get_context_data(**kwargs)
+		context['exams']     = SamraemdMathResult.objects.all().values('exam_date', 'student_year', 'exam_code').distinct()
 		context['raw_exams'] = SamraemdResult.objects.filter(exam_code=3).values('exam_date', 'student_year', 'exam_name', 'exam_code').distinct()
 		return context
 
@@ -316,9 +178,9 @@ class SamraemdMathResultListing(UserPassesTestMixin, ListView):
 
 	def get_context_data(self, **kwargs):
 		# xxx will be available in the template as the related objects
-		context = super(SamraemdMathResultListing, self).get_context_data(**kwargs)
-		school = School.objects.get(pk=self.kwargs['school_id'])
-		context['exams'] = SamraemdMathResult.objects.filter(student__in = Student.objects.filter(school=school)).values('exam_code').distinct()
+		context              = super(SamraemdMathResultListing, self).get_context_data(**kwargs)
+		school               = School.objects.get(pk=self.kwargs['school_id'])
+		context['exams']     = SamraemdMathResult.objects.filter(student__in = Student.objects.filter(school=school)).values('exam_code').distinct()
 		context['school_id'] = school.id
 		return context
 
@@ -331,15 +193,15 @@ class SamraemdResultListing(UserPassesTestMixin, ListView):
 
 	def get_context_data(self, **kwargs):
 		# xxx will be available in the template as the related objects
-		context = super(SamraemdResultListing, self).get_context_data(**kwargs)
-		school = School.objects.get(pk=self.kwargs['school_id'])
-		context['school'] = school
-		m_exams = SamraemdMathResult.objects.filter(student__in = Student.objects.filter(school=school)).values('exam_date', 'student_year', 'exam_code').distinct()
-		i_exams = SamraemdISLResult.objects.filter(student__in = Student.objects.filter(school=school)).values('exam_date', 'student_year', 'exam_code').distinct()
-		exams = SamraemdResult.objects.filter(student__in = Student.objects.filter(school=school),exam_code=3).values('exam_date', 'student_year', 'exam_code', 'exam_name').distinct()
-		context['exams'] = list(chain(m_exams, i_exams))
-		context['links'] = m_exams
-		context['rawlinks'] = exams
+		context              = super(SamraemdResultListing, self).get_context_data(**kwargs)
+		school               = School.objects.get(pk=self.kwargs['school_id'])
+		context['school']    = school
+		m_exams              = SamraemdMathResult.objects.filter(student__in = Student.objects.filter(school=school)).values('exam_date', 'student_year', 'exam_code').distinct()
+		i_exams              = SamraemdISLResult.objects.filter(student__in = Student.objects.filter(school=school)).values('exam_date', 'student_year', 'exam_code').distinct()
+		exams                = SamraemdResult.objects.filter(student__in = Student.objects.filter(school=school),exam_code=3).values('exam_date', 'student_year', 'exam_code', 'exam_name').distinct()
+		context['exams']     = list(chain(m_exams, i_exams))
+		context['links']     = m_exams
+		context['rawlinks']  = exams
 		context['school_id'] = school.id
 		return context
 
@@ -424,50 +286,31 @@ class SamraemdMathResultCreate(UserPassesTestMixin, CreateView):
 						if student:
 							#check if results for student exists, create if not, otherwise update
 							results = SamraemdMathResult.objects.filter(student=student, exam_code=exam_code)
+							results_dict = {
+								'student'      : student.first(),
+								'ra_se'        : row_data[1].strip(),
+								'rm_se'        : row_data[2].strip(),
+								'tt_se'        : row_data[3].strip(),
+								'se'           : row_data[4].strip(),
+								'ra_re'        : row_data[5].strip(),
+								'rm_re'        : row_data[6].strip(),
+								'tt_re'        : row_data[7].strip(),
+								're'           : row_data[8].strip(),
+								'ra_sg'        : row_data[9].strip(),
+								'rm_sg'        : row_data[10].strip(),
+								'tt_sg'        : row_data[11].strip(),
+								'sg'           : row_data[12].strip(),
+								'fm_fl'        : row_data[13].strip(),
+								'fm_txt'       : row_data[14].strip(),
+								'ord_talna_txt': row_data[15].strip(),
+								'exam_code'    : exam_code,
+								'exam_date'    : exam_date,
+								'student_year' : student_year
+							}
 							if results:
-								results.update(
-									student=student.first(),
-									ra_se = row_data[1].strip(),
-									rm_se = row_data[2].strip(),
-									tt_se=row_data[3].strip(),
-									se=row_data[4].strip(),
-									ra_re=row_data[5].strip(),
-									rm_re=row_data[6].strip(),
-									tt_re=row_data[7].strip(),
-									re=row_data[8].strip(),
-									ra_sg=row_data[9].strip(),
-									rm_sg=row_data[10].strip(),
-									tt_sg=row_data[11].strip(),
-									sg=row_data[12].strip(),
-									fm_fl=row_data[13].strip(),
-									fm_txt=row_data[14].strip(),
-									ord_talna_txt=row_data[15].strip(),
-									exam_code=exam_code,
-									exam_date=exam_date,
-									student_year=student_year,
-									)
+								results.update(**results_dict)
 							else:
-								results = SamraemdMathResult.objects.create(
-									student=student.first(),
-									ra_se = row_data[1].strip(),
-									rm_se = row_data[2].strip(),
-									tt_se=row_data[3].strip(),
-									se=row_data[4].strip(),
-									ra_re=row_data[5].strip(),
-									rm_re=row_data[6].strip(),
-									tt_re=row_data[7].strip(),
-									re=row_data[8].strip(),
-									ra_sg=row_data[9].strip(),
-									rm_sg=row_data[10].strip(),
-									tt_sg=row_data[11].strip(),
-									sg=row_data[12].strip(),
-									fm_fl=row_data[13].strip(),
-									fm_txt=row_data[14].strip(),
-									ord_talna_txt=row_data[15].strip(),
-									exam_code=exam_code,
-									exam_date=exam_date,
-									student_year=student_year,
-									)
+								results = SamraemdMathResult.objects.create(**results_dict)
 				elif extension == 'xlsx':
 					input_excel = self.request.FILES['file']
 					book = xlrd.open_workbook(file_contents=input_excel.read())
@@ -478,53 +321,34 @@ class SamraemdMathResultCreate(UserPassesTestMixin, CreateView):
 							if student:
 								#check if results for student exists, create if not, otherwise update
 								results = SamraemdMathResult.objects.filter(student=student, exam_code=exam_code)
+								results_dict = {
+									'student'      : student.first(),
+									'ra_se'        : str(sheet.cell_value(row,1)).strip(),
+									'rm_se'        : str(sheet.cell_value(row,2)).strip(),
+									'tt_se'        : str(sheet.cell_value(row,3)).strip(),
+									'se'           : str(sheet.cell_value(row,4)).strip(),
+									'ra_re'        : str(int(sheet.cell_value(row,5))).strip(),
+									'rm_re'        : str(int(sheet.cell_value(row,6))).strip(),
+									'tt_re'        : str(int(sheet.cell_value(row,7))).strip(),
+									're'           : str(int(sheet.cell_value(row,8))).strip(),
+									'ra_sg'        : str(int(sheet.cell_value(row,9))).strip(),
+									'rm_sg'        : str(int(sheet.cell_value(row,10))).strip(),
+									'tt_sg'        : str(int(sheet.cell_value(row,11))).strip(),
+									'sg'           : str(int(sheet.cell_value(row,12))).strip(),
+									'fm_fl'        : str(sheet.cell_value(row,13)).strip(),
+									'fm_txt'       : str(sheet.cell_value(row,14)).strip(),
+									'ord_talna_txt': str(sheet.cell_value(row,15)).strip(),
+									'exam_code'    : exam_code,
+									'exam_date'    : exam_date,
+									'student_year' : student_year
+								}
 								if results:
-									results.update(
-										student=student.first(),
-										ra_se = str(sheet.cell_value(row,1)).strip(),
-										rm_se = str(sheet.cell_value(row,2)).strip(),
-										tt_se = str(sheet.cell_value(row,3)).strip(),
-										se = str(sheet.cell_value(row,4)).strip(),
-										ra_re = str(int(sheet.cell_value(row,5))).strip(),
-										rm_re = str(int(sheet.cell_value(row,6))).strip(),
-										tt_re = str(int(sheet.cell_value(row,7))).strip(),
-										re = str(int(sheet.cell_value(row,8))).strip(),
-										ra_sg = str(int(sheet.cell_value(row,9))).strip(),
-										rm_sg = str(int(sheet.cell_value(row,10))).strip(),
-										tt_sg = str(int(sheet.cell_value(row,11))).strip(),
-										sg = str(int(sheet.cell_value(row,12))).strip(),
-										fm_fl = str(sheet.cell_value(row,13)).strip(),
-										fm_txt = str(sheet.cell_value(row,14)).strip(),
-										ord_talna_txt = str(sheet.cell_value(row,15)).strip(),
-										exam_code = exam_code,
-										exam_date = exam_date,
-										student_year = student_year,
-										)
+									results.update(**results_dict)
 								else:
-									results = SamraemdMathResult.objects.create(
-										student=student.first(),
-										ra_se = str(sheet.cell_value(row,1)).strip(),
-										rm_se = str(sheet.cell_value(row,2)).strip(),
-										tt_se = str(sheet.cell_value(row,3)).strip(),
-										se = str(sheet.cell_value(row,4)).strip(),
-										ra_re = str(int(sheet.cell_value(row,5))).strip(),
-										rm_re = str(int(sheet.cell_value(row,6))).strip(),
-										tt_re = str(int(sheet.cell_value(row,7))).strip(),
-										re = str(int(sheet.cell_value(row,8))).strip(),
-										ra_sg = str(int(sheet.cell_value(row,9))).strip(),
-										rm_sg = str(int(sheet.cell_value(row,10))).strip(),
-										tt_sg = str(int(sheet.cell_value(row,11))).strip(),
-										sg = str(int(sheet.cell_value(row,12))).strip(),
-										fm_fl = str(sheet.cell_value(row,13)).strip(),
-										fm_txt = str(sheet.cell_value(row,14)).strip(),
-										ord_talna_txt = str(sheet.cell_value(row,15)).strip(),
-										exam_code = exam_code,
-										exam_date = exam_date,
-										student_year = student_year,
-										)
+									results = SamraemdMathResult.objects.create(**results_dict)
 							else:
 								#student missing
-								pass #for now						
+								pass #for now
 			except Exception as e:
 				return render(self.request, 'samraemd/form_import.html', {'error': 'Dálkur ekki til, reyndu aftur'})
 		return redirect(self.get_success_url())
@@ -618,103 +442,67 @@ class SamraemdISLResultCreate(UserPassesTestMixin, CreateView):
 						if student:
 							#check if results for student exists, create if not, otherwise update
 							results = SamraemdISLResult.objects.filter(student=student, exam_code=exam_code)
+							results_dict = {
+								'student'     : student.first(),
+								'le_se'       : row_data[1].strip(),
+								'mn_se'       : row_data[2].strip(),
+								'ri_se'       : row_data[3].strip(),
+								'se'          : row_data[4].strip(),
+								'le_re'       : row_data[5].strip(),
+								'mn_re'       : row_data[6].strip(),
+								'ri_re'       : row_data[7].strip(),
+								're'          : row_data[8].strip(),
+								'le_sg'       : row_data[9].strip(),
+								'mn_sg'       : row_data[10].strip(),
+								'ri_sg'       : row_data[11].strip(),
+								'sg'          : row_data[12].strip(),
+								'fm_fl'       : row_data[13].strip(),
+								'fm_txt'      : row_data[14].strip(),
+								'exam_code'   : exam_code,
+								'exam_date'   : exam_date,
+								'student_year': student_year
+							}
 							if results:
-								results.update(
-									student=student.first(),
-									le_se = row_data[1].strip(),
-									mn_se = row_data[2].strip(),
-									ri_se = row_data[3].strip(),
-									se = row_data[4].strip(),
-									le_re = row_data[5].strip(),
-									mn_re = row_data[6].strip(),
-									ri_re = row_data[7].strip(),
-									re = row_data[8].strip(),
-									le_sg = row_data[9].strip(),
-									mn_sg = row_data[10].strip(),
-									ri_sg = row_data[11].strip(),
-									sg = row_data[12].strip(),
-									fm_fl = row_data[13].strip(),
-									fm_txt = row_data[14].strip(),
-									exam_code = exam_code,
-									exam_date = exam_date,
-									student_year = student_year,
-									)
+								results.update(**results_dict)
 							else:
-								results = SamraemdISLResult.objects.create(
-									student=student.first(),
-									le_se = row_data[1].strip(),
-									mn_se = row_data[2].strip(),
-									ri_se = row_data[3].strip(),
-									se = row_data[4].strip(),
-									le_re = row_data[5].strip(),
-									mn_re = row_data[6].strip(),
-									ri_re = row_data[7].strip(),
-									re = row_data[8].strip(),
-									le_sg = row_data[9].strip(),
-									mn_sg = row_data[10].strip(),
-									ri_sg = row_data[11].strip(),
-									sg = row_data[12].strip(),
-									fm_fl = row_data[13].strip(),
-									fm_txt = row_data[14].strip(),
-									exam_code = exam_code,
-									exam_date = exam_date,
-									student_year = student_year,
-									)
+								results = SamraemdISLResult.objects.create(**results_dict)
 						else:
 							#student not found
-							pass #for now						
+							pass #for now
 				elif extension == 'xlsx':
 					input_excel = self.request.FILES['file']
-					book = xlrd.open_workbook(file_contents=input_excel.read())
+					book        = xlrd.open_workbook(file_contents=input_excel.read())
 					for sheetsnumber in range(book.nsheets):
 						sheet = book.sheet_by_index(sheetsnumber)
 						for row in range(1, sheet.nrows):
 							student = Student.objects.filter(ssn=str(sheet.cell_value(row,0)).strip()) #student already exists
 							if student:
 								#check if results for student exists, create if not, otherwise update
-								results = SamraemdISLResult.objects.filter(student=student, exam_code=exam_code)
+								results      = SamraemdISLResult.objects.filter(student=student, exam_code=exam_code)
+								results_dict = {
+									'student'     : student.first(),
+									'le_se'       : str(sheet.cell_value(row,1)).strip(),
+									'mn_se'       : str(sheet.cell_value(row,2)).strip(),
+									'ri_se'       : str(sheet.cell_value(row,3)).strip(),
+									'se'          : str(sheet.cell_value(row,4)).strip(),
+									'le_re'       : str(int(sheet.cell_value(row,5))).strip(),
+									'mn_re'       : str(int(sheet.cell_value(row,6))).strip(),
+									'ri_re'       : str(int(sheet.cell_value(row,7))).strip(),
+									're'          : str(int(sheet.cell_value(row,8))).strip(),
+									'le_sg'       : str(int(sheet.cell_value(row,9))).strip(),
+									'mn_sg'       : str(int(sheet.cell_value(row,10))).strip(),
+									'ri_sg'       : str(int(sheet.cell_value(row,11))).strip(),
+									'sg'          : str(int(sheet.cell_value(row,12))).strip(),
+									'fm_fl'       : str(sheet.cell_value(row,13)).strip(),
+									'fm_txt'      : str(sheet.cell_value(row,14)).strip(),
+									'exam_code'   : exam_code,
+									'exam_date'   : exam_date,
+									'student_year': student_year
+								}
 								if results:
-									results.update(
-										student=student.first(),
-										le_se = str(sheet.cell_value(row,1)).strip(),
-										mn_se = str(sheet.cell_value(row,2)).strip(),
-										ri_se = str(sheet.cell_value(row,3)).strip(),
-										se = str(sheet.cell_value(row,4)).strip(),
-										le_re = str(int(sheet.cell_value(row,5))).strip(),
-										mn_re = str(int(sheet.cell_value(row,6))).strip(),
-										ri_re = str(int(sheet.cell_value(row,7))).strip(),
-										re = str(int(sheet.cell_value(row,8))).strip(),
-										le_sg = str(int(sheet.cell_value(row,9))).strip(),
-										mn_sg = str(int(sheet.cell_value(row,10))).strip(),
-										ri_sg = str(int(sheet.cell_value(row,11))).strip(),
-										sg = str(int(sheet.cell_value(row,12))).strip(),
-										fm_fl = str(sheet.cell_value(row,13)).strip(),
-										fm_txt = str(sheet.cell_value(row,14)).strip(),
-										exam_code = exam_code,
-										exam_date = exam_date,
-										student_year = student_year,
-										)
+									results.update(**results_dict)
 								else:
-									results = SamraemdISLResult.objects.create(
-										student=student.first(),
-										le_se = str(sheet.cell_value(row,1)).strip(),
-										mn_se = str(sheet.cell_value(row,2)).strip(),
-										ri_se = str(sheet.cell_value(row,3)).strip(),
-										se = str(sheet.cell_value(row,4)).strip(),
-										le_re = str(int(sheet.cell_value(row,5))).strip(),
-										mn_re = str(int(sheet.cell_value(row,6))).strip(),
-										ri_re = str(int(sheet.cell_value(row,7))).strip(),
-										re = str(int(sheet.cell_value(row,8))).strip(),
-										le_sg = str(int(sheet.cell_value(row,9))).strip(),
-										mn_sg = str(int(sheet.cell_value(row,10))).strip(),
-										ri_sg = str(int(sheet.cell_value(row,11))).strip(),
-										sg = str(int(sheet.cell_value(row,12))).strip(),
-										fm_fl = str(sheet.cell_value(row,13)).strip(),
-										fm_txt = str(sheet.cell_value(row,14)).strip(),
-										exam_code = exam_code,
-										exam_date = exam_date,
-										student_year = student_year,
-										)
+									results = SamraemdISLResult.objects.create(**results_dict)
 							else:
 								#student not found
 								pass #for now
@@ -748,76 +536,47 @@ class SamraemdISLResultDelete(UserPassesTestMixin, DeleteView):
 
 
 class RawDataCreate(UserPassesTestMixin, CreateView):
-	model = SamraemdResult
-	form_class = SamraemdISLResultForm
-	login_url = reverse_lazy('denied')
+	model         = SamraemdResult
+	form_class    = SamraemdISLResultForm
+	login_url     = reverse_lazy('denied')
 	template_name = "samraemd/form_import_raw.html"
 
 	def post(self, *args, **kwargs):
+		row_offset = 4
 		if(self.request.FILES):
-			u_file = self.request.FILES['file'].name
-			extension = u_file.split(".")[-1]
-			exam_code = self.request.POST.get('exam_code').strip()
-			exam_name = self.request.POST.get('exam_name').strip()
-			exam_date = self.request.POST.get('exam_date').strip()
-			student_year = self.request.POST.get('student_year').strip()
+			u_file        = self.request.FILES['file'].name
+			extension     = u_file.split(".")[-1]
+			exam_code     = self.request.POST.get('exam_code').strip()
+			exam_name     = self.request.POST.get('exam_name').strip()
+			exam_date     = self.request.POST.get('exam_date').strip()
+			student_year  = self.request.POST.get('student_year').strip()
 			result_length = self.request.POST.get('result_length').strip()
 
 			try:
 				input_excel = self.request.FILES['file']
-				book = xlrd.open_workbook(file_contents=input_excel.read())
+				book        = xlrd.open_workbook(file_contents=input_excel.read())
 				for sheetsnumber in range(book.nsheets):
 					sheet = book.sheet_by_index(sheetsnumber)
-					for row in range(1, sheet.nrows):
+					for row in range(row_offset, sheet.nrows):
 						student = Student.objects.filter(ssn=str(sheet.cell_value(row,0)).strip()) #student already exists
 						if student:
 							#check if results for student exists, create if not, otherwise update
+							result_data = get_results_from_sheet(sheet, row, result_length)
 							results = SamraemdResult.objects.filter(student=student, exam_code=exam_code)
+							results_dict = {
+								'student'       : student.first(),
+								'exam_code'     : exam_code,
+								'exam_name'     : exam_name,
+								'exam_date'     : exam_date,
+								'student_year'  : student_year,
+								'result_length' : result_length,
+								'result_data'   : result_data
+							}
 							if results:
-								result_data = {}
-								try:
-									for numb in range(0,int(result_length)):
-										attr = str(sheet.cell_value(0,numb+1)).strip()
-										n = str(numb) if numb >= 10 else "0" + str(numb)
-										result_data[n] = {
-											'id': attr,
-											'value': int(sheet.cell_value(row,numb+1))
-										}
-								except E as e:
-									print(e)
-
-								results.update(
-									student=student.first(),
-									exam_code = exam_code,
-									exam_name = exam_name,
-									exam_date = exam_date,
-									student_year = student_year,
-									result_length = result_length,
-									result_data = result_data
-									)
+								results.update(**results_dict)
 							else:
-								result_data ={}
-								try:
-									for numb in range(0,int(result_length)):
-										attr = str(sheet.cell_value(0,numb+1)).strip()
-										n = str(numb) if numb >= 10 else "0" + str(numb)
-										result_data[n] = {
-											'id': attr,
-											'value': int(sheet.cell_value(row,numb+1))
-										}
-								except E as e:
-									print(e)
-								results = SamraemdResult.objects.create(
-									student=student.first(),
-									exam_code = exam_code,
-									exam_name = exam_name,
-									exam_date = exam_date,
-									student_year = student_year,
-									result_length = result_length,
-									result_data = result_data
-									)
+								results = SamraemdResult.objects.create(**results_dict)
 						else:
-							print('Dang!')
 							#student not found
 							pass #for now
 			except Exception as e:
@@ -857,51 +616,43 @@ class SamraemdRawResultDetail(UserPassesTestMixin, DetailView):
 
 	def get_context_data(self, **kwargs):
 		# xxx will be available in the template as the related objects
-		context = super(SamraemdRawResultDetail, self).get_context_data(**kwargs)
-		year = self.kwargs['year']
-		context['year'] = year
-		group = self.kwargs['group']
+		context          = super(SamraemdRawResultDetail, self).get_context_data(**kwargs)
+		year             = self.kwargs['year']
+		context['year']  = year
+		group            = self.kwargs['group']
 		context['group'] = group
-		student_results = {}
-		student_group = {}
-		col_names = {}
+		student_results  = {}
+		student_group    = {}
+		col_names        = {}
 		if 'school_id' in self.kwargs:
-			school = School.objects.get(pk=self.kwargs['school_id'])
-			context['school'] = school
-			context['school_id'] = self.kwargs['school_id']
+			school                 = School.objects.get(pk=self.kwargs['school_id'])
+			context['school']      = school
+			context['school_id']   = self.kwargs['school_id']
 			context['school_name'] = school.name
-			number_of_loops =SamraemdResult.objects.all().values('result_length','exam_code','exam_name').annotate(total=Count('exam_code')).filter(exam_date__year=year).filter(student_year=group)
-			for result in SamraemdResult.objects.filter(student__in = Student.objects.filter(school=school)).filter(student_year=group).filter(exam_date__year=year):
-				if result.student in student_results:
-					student_results[result.student].append(result)
-					if StudentGroup.objects.filter(students=result.student) in student_group[result.student]:
-						student_group[result.student].append(StudentGroup.objects.filter(students=result.student))
-				else:
-					student_results[result.student] = [result]
-					student_group[result.student] = StudentGroup.objects.filter(students=result.student)
-				if result.exam_code not in col_names:
-					col_names[result.exam_code] = result
+			number_of_loops        = SamraemdResult.objects.all().values(
+				'result_length','exam_code','exam_name').annotate(
+				total=Count('exam_code')).filter(
+				exam_date__year=year).filter(student_year=group)
+			results                = SamraemdResult.objects.filter(
+				student__in = Student.objects.filter(school=school)).filter(
+				student_year=group).filter(exam_date__year=year)
+			display_raw_results(results, student_results, student_group, col_names)
 
 		else:
 			if self.request.user.is_superuser:
-				exam_code = self.kwargs['exam_code']
+				exam_code            = self.kwargs['exam_code']
 				context['exam_code'] = exam_code
-				number_of_loops =SamraemdResult.objects.values('result_length','exam_code','exam_name').filter(exam_code= exam_code,exam_date__year=year).annotate(total=Count('exam_code'))
-				for result in SamraemdResult.objects.filter(exam_code=exam_code).filter(student_year=group).filter(exam_date__year=year):
-					if result.student in student_results:
-						student_results[result.student].append(result)
-						student_group[result.student].append(StudentGroup.objects.filter(students=result.student).first())
-					else:
-						student_results[result.student] = [result]
-						student_group[result.student] = StudentGroup.objects.filter(students=result.student).first()
-					if result.exam_code not in col_names:
-						col_names[result.exam_code] = result
+				number_of_loops      = SamraemdResult.objects.values(
+					'result_length','exam_code','exam_name').filter(
+					exam_code=exam_code,exam_date__year=year).annotate(total=Count('exam_code'))
+				results              = SamraemdResult.objects.filter(
+					exam_code=exam_code).filter(student_year=group).filter(exam_date__year=year)
+				display_raw_results(results, student_results, student_group, col_names)
 
 		context['student_results'] = student_results
-		context['student_group'] = student_group
-		context['loop_times'] = number_of_loops
-		context['columns'] = col_names
-		print(col_names)
+		context['student_group']   = student_group
+		context['loop_times']      = number_of_loops
+		context['columns']         = col_names
 		return context
 
 def admin_result_raw_excel(request, exam_code, year, group):
@@ -950,7 +701,7 @@ def excel_result_raw(request,school_id,   year, group):
 			ws.title = 'Enska'
 		elif int(loops['exam_code']) == 3:
 			ws.title = 'Stærðfræði'
-		
+
 		ws['A1']=  'Skóli'
 		ws['B1']=  'Kennitölur'
 		ws['C1']=  'Nafn'
@@ -967,7 +718,7 @@ def excel_result_raw(request,school_id,   year, group):
 			ws.cell(row=index, column=4).value = str(StudentGroup.objects.get(students=result.student))
 			for key, values in result.result_data.items():
 				ws.cell(row=index, column=int(key)+5).value = values['value']
-						
+
 			index +=1
 
 	wb.save(response)
