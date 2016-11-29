@@ -675,7 +675,7 @@ def admin_result_raw_excel(request, exam_code, year, group):
 	index = 2
 	for result in SamraemdResult.objects.filter(exam_code=exam_code).filter(student_year=group).filter(exam_date__year=year):
 		ws.cell(row=index, column=1).value = str(School.objects.get(students=result.student).name)
-		ws.cell(row=index, column=2).value = int(result.student.ssn)
+		ws.cell(row=index, column=2).value = str(result.student.ssn)
 		ws.cell(row=index, column=3).value = str(result.student)
 		ws.cell(row=index, column=4).value = str(StudentGroup.objects.get(students=result.student))
 		for key, values in result.result_data.items():
@@ -713,7 +713,7 @@ def excel_result_raw(request,school_id,   year, group):
 		index = 2
 		for result in SamraemdResult.objects.filter(student__in = Student.objects.filter(school=school_id)).filter(exam_code= loops['exam_code']).filter(student_year=group).filter(exam_date__year=year):
 			ws.cell(row=index, column=1).value = str(School.objects.get(students=result.student).name)
-			ws.cell(row=index, column=2).value = int(result.student.ssn)
+			ws.cell(row=index, column=2).value = str(result.student.ssn)
 			ws.cell(row=index, column=3).value = str(result.student)
 			ws.cell(row=index, column=4).value = str(StudentGroup.objects.get(students=result.student))
 			for key, values in result.result_data.items():
