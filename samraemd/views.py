@@ -373,7 +373,7 @@ class SamraemdResultDelete(UserPassesTestMixin, DeleteView):
 		return reverse_lazy('schools:school_listing')
 
 	def get_object(self):
-		return SamraemdResult.objects.filter(exam_name=self.kwargs['exam_name'])
+		return SamraemdResult.objects.filter(exam_code=self.kwargs['exam_code'],student_year=self.kwargs['group'],exam_date__year=self.kwargs['year'])
 
 class SamraemdMathResultDelete(UserPassesTestMixin, DeleteView):
 	model = SamraemdMathResult
@@ -419,7 +419,7 @@ class SamraemdISLResultListing(UserPassesTestMixin, ListView):
 
 class SamraemdISLResultCreate(UserPassesTestMixin, CreateView):
 	model = SamraemdISLResult
-	form_class = SamraemdISLResultForm		
+	form_class = SamraemdISLResultForm
 	template_name = "samraemd/form_import.html"
 	login_url = reverse_lazy('denied')
 
