@@ -49,7 +49,7 @@
 		{% for exam in raw_exams %}
 		<div class="row">
 			<div class="col-md-4"><a href="{% url 'samraemd:admin_result_detail' exam.exam_code exam.exam_date|date:'Y' exam.student_year %}">{{exam.exam_name}}</a></div>
-			<div class="col-md-2"><a href="{% url 'samraemd:raw_delete' exam.exam_name %}"><span class="glyphicon glyphicon-trash"></span></a></div>
+			<div class="col-md-2"><a href="{% url 'samraemd:raw_delete' exam.exam_code exam.exam_date|date:'Y' exam.student_year %}"><span class="glyphicon glyphicon-trash"></span></a></div>
 		</div>
 		{% endfor %}
 	</div>
