@@ -149,6 +149,12 @@
 			list-style: none;
 			padding   : 0.3em 0;
 		}
+		.desc-img {
+			max-width: 400px;
+			max-height: 100px;
+			display: block;
+			float: right;
+		}
 		@media print {
 		  	h1, h2, thead th {
 		    	color: #1075a3 !important;
@@ -217,7 +223,12 @@
 														<td class="td2">{{values.value}}</td>
 														<td class="td3">{{values.category}}</td>
 														<td class="td4">{{values.context}}</td>
-														<td class="td5">{{values.description}}</td>
+														<td class="td5">
+															{{values.description}}
+															{% if values.img %}
+																<img class="desc-img" src="{{values.img}}" />
+															{% endif %}
+														</td>
 													</tr>
 												{% endfor %}
 											{% endif %}

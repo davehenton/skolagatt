@@ -19,6 +19,7 @@ def get_results_from_sheet(sheet, row, result_length):
 				'category'   : str(sheet.cell_value(1,numb+1)).strip(), # Question category
 				'context'    : str(sheet.cell_value(2,numb+1)).strip(), # Context of question
 				'description': str(sheet.cell_value(3,numb+1)).strip(), # Question description
+				'img'        : str(sheet.cell_value(4,numb+1)).strip(),
 				'value'      : int(sheet.cell_value(row,numb+1))        # Student's answer to question
 			}
 	except E as e:
