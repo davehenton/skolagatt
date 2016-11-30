@@ -542,7 +542,7 @@ class RawDataCreate(UserPassesTestMixin, CreateView):
 	template_name = "samraemd/form_import_raw.html"
 
 	def post(self, *args, **kwargs):
-		row_offset = 4
+		row_offset = 5
 		if(self.request.FILES):
 			u_file        = self.request.FILES['file'].name
 			extension     = u_file.split(".")[-1]
