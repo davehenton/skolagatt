@@ -9,8 +9,6 @@
 	<div class="col-md-6 hidden-print">
 		{% if school.id %}
 			<a href="{% url 'samraemd:result_print' school.id year group %}" class="btn btn-default" target="_blank">Prentvæn einkunnablöð</a>
-			<a href="{% url 'samraemd:result_csv_stf' school.id year group %}" class="btn btn-default" target="_blank">CSV stærðfræði</a>
-			<a href="{% url 'samraemd:result_csv_isl' school.id year group %}" class="btn btn-default" target="_blank">CSV íslenska</a>
 			<a href="{% url 'samraemd:result_excel' school.id year group %}" class="btn btn-default" target="_blank">Excel</a>
 		{% else %}
 			<a href="{% url 'samraemd:admin_result_print' year group %}" class="btn btn-default" target="_blank">Prentvæn einkunnablöð</a>
