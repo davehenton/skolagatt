@@ -1,28 +1,30 @@
 # -*- coding: utf-8 -*-
 import csv
 
-from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
-from django.shortcuts import render, render_to_response, get_object_or_404, redirect
-from django.template import RequestContext, loader
-from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
-from django.core.urlresolvers import reverse_lazy, reverse
-from django.contrib.auth.mixins import UserPassesTestMixin
-from django.contrib.auth.models import User, Group
-from django.conf import settings
-from django.utils import timezone
-from django.utils.decorators import method_decorator
-from django.utils.text import slugify
+from django.http                  import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.shortcuts             import render, render_to_response, get_object_or_404, redirect
+from django.template              import RequestContext, loader
+from django.views.generic         import ListView, CreateView, DetailView, UpdateView, DeleteView
+from django.core.urlresolvers     import reverse_lazy, reverse
+from django.contrib.auth.mixins   import UserPassesTestMixin
+from django.contrib.auth.models   import User, Group
+from django.conf                  import settings
+from django.utils                 import timezone
+from django.utils.decorators      import method_decorator
+from django.utils.text            import slugify
 from django.views.decorators.csrf import csrf_exempt
-from uuid import uuid4
+from uuid                         import uuid4
+from datetime                     import datetime, date
+from ast                          import literal_eval
 import requests, json
 import xlrd
 import openpyxl
-from datetime import datetime, date
-from ast import literal_eval
 
-from common.models import *
+
+from common.models              import *
 from supportandexception.models import *
-from .util import *
+from .util                      import *
+from .mixins                    import *
 
 def lesferill(request, school_id):
   return render(request, 'common/lesferill.html', {'school_id': school_id})
@@ -65,11 +67,8 @@ class SchoolListing(ListView):
       pass
     return context
 
-class SchoolDetail(UserPassesTestMixin, DetailView):
+class SchoolDetail(SchoolEmployeeMixin, DetailView):
   model = School
-
-  def test_func(self):
-    return is_school_manager(self.request, self.kwargs) or is_school_teacher(self.request, self.kwargs)
 
   def get_context_data(self, **kwargs):
     context = super(SchoolDetail, self).get_context_data(**kwargs)
@@ -95,19 +94,13 @@ class SchoolDetail(UserPassesTestMixin, DetailView):
       
     return context
 
-class SchoolCreate(UserPassesTestMixin, CreateView):
+class SchoolCreate(SuperUserMixin, CreateView):
   model = School
   form_class = SchoolForm
-  success_url = reverse_lazy('schools:school_listing')
-  login_url = reverse_lazy('denied')
 
-  def test_func(self):
-    return self.request.user.is_superuser
-
-class SchoolCreateImport(UserPassesTestMixin, CreateView):
+class SchoolCreateImport(SchoolManagerMixin, CreateView):
   model = School
   form_class = SchoolForm
-  login_url = reverse_lazy('denied')
   template_name = "common/school_form_import.html"
 
   def get_context_data(self, **kwargs):
@@ -153,31 +146,18 @@ class SchoolCreateImport(UserPassesTestMixin, CreateView):
 
     return HttpResponseRedirect(self.get_success_url())
 
-  def test_func(self):
-    return is_school_manager(self.request, self.kwargs)
-
   def get_success_url(self):
       return reverse_lazy('schools:school_listing')
 
-class SchoolUpdate(UserPassesTestMixin, UpdateView):
+class SchoolUpdate(SuperUserMixin, UpdateView):
   model = School
   form_class = SchoolForm
-  success_url = reverse_lazy('schools:school_listing')
-  login_url = reverse_lazy('denied')
 
-  def test_func(self):
-    return self.request.user.is_superuser
-
-class SchoolDelete(UserPassesTestMixin, DeleteView):
+class SchoolDelete(SuperUserMixin, DeleteView):
   model = School
-  success_url = reverse_lazy('schools:school_listing')
-  login_url = reverse_lazy('denied')
   template_name = "schools/confirm_delete.html"
 
-  def test_func(self):
-    return self.request.user.is_superuser
-
-class ManagerListing(UserPassesTestMixin, ListView):
+class ManagerListing(SchoolEmployeeMixin, ListView):
   model = Manager
 
   def get_context_data(self, **kwargs):
@@ -187,14 +167,8 @@ class ManagerListing(UserPassesTestMixin, ListView):
     context['managers'] = Manager.objects.filter(school=school)
     return context
 
-  def test_func(self):
-    return is_school_manager(self.request, self.kwargs) or is_school_teacher(self.request, self.kwargs)
-
-class ManagerDetail(UserPassesTestMixin, DetailView):
+class ManagerDetail(SchoolEmployeeMixin, DetailView):
   model = Manager
-
-  def test_func(self):
-    return is_school_manager(self.request, self.kwargs) or is_school_teacher(self.request, self.kwargs)
 
   def get_context_data(self, **kwargs):
     context = super(ManagerDetail, self).get_context_data(**kwargs)
@@ -217,18 +191,14 @@ class ManagerOverview(UserPassesTestMixin, DetailView):
     context['school'] = School.objects.filter(managers=Manager.objects.filter(pk=self.kwargs['pk'])).first()
     return context
 
-class ManagerCreate(UserPassesTestMixin, CreateView):
+class ManagerCreate(SchoolManagerMixin, CreateView):
   model = Manager
   form_class = ManagerForm
-  login_url = reverse_lazy('denied')
-  
+
   def get_context_data(self, **kwargs):
     context = super(ManagerCreate, self).get_context_data(**kwargs)
     context['school'] = School.objects.get(pk=self.kwargs['school_id'])
     return context
-
-  def test_func(self):
-    return is_school_manager(self.request, self.kwargs)
 
   def post(self, *args, **kwargs):
     self.object = Manager.objects.filter(user__username=self.request.POST.get('ssn')).first()
@@ -264,10 +234,9 @@ class ManagerCreate(UserPassesTestMixin, CreateView):
       'school': school,
     }
 
-class ManagerCreateImport(UserPassesTestMixin, CreateView):
+class ManagerCreateImport(SchoolManagerMixin, CreateView):
   model = School
   form_class = SchoolForm
-  login_url = reverse_lazy('denied')
   template_name = "common/manager_form_import.html"
 
   def get_context_data(self, **kwargs):
@@ -319,20 +288,13 @@ class ManagerCreateImport(UserPassesTestMixin, CreateView):
 
     return HttpResponseRedirect(self.get_success_url())
 
-  def test_func(self):
-    return is_school_manager(self.request, self.kwargs)
-
   def get_success_url(self):
       return reverse_lazy('schools:school_listing')
 
 
-class ManagerUpdate(UserPassesTestMixin, UpdateView):
+class ManagerUpdate(SchoolManagerMixin, UpdateView):
   model = Manager
   form_class = ManagerForm
-  login_url = reverse_lazy('denied')
-
-  def test_func(self):
-    return is_school_manager(self.request, self.kwargs)
 
   def get_context_data(self, **kwargs):
     context = super(ManagerUpdate, self).get_context_data(**kwargs)
@@ -365,13 +327,9 @@ class ManagerUpdate(UserPassesTestMixin, UpdateView):
     except:
       return reverse_lazy('schools:school_listing')
 
-class ManagerDelete(UserPassesTestMixin, DeleteView):
+class ManagerDelete(SchoolManagerMixin, DeleteView):
   model = Manager
-  login_url = reverse_lazy('denied')
   template_name = "schools/confirm_delete.html"
-
-  def test_func(self):
-    return is_school_manager(self.request, self.kwargs)
 
   def delete(self, request, *args, **kwargs):
     self.object = self.get_object()
@@ -386,7 +344,7 @@ class ManagerDelete(UserPassesTestMixin, DeleteView):
     except:
       return reverse_lazy('schools:school_listing')
 
-class TeacherListing(UserPassesTestMixin, ListView):
+class TeacherListing(SchoolEmployeeMixin, ListView):
   model = Teacher
 
   def get_context_data(self, **kwargs):
@@ -398,14 +356,8 @@ class TeacherListing(UserPassesTestMixin, ListView):
     """context['teachers_in_group'] = Teacher.group_managers.all()"""
     return context
 
-  def test_func(self):
-    return is_school_manager(self.request, self.kwargs) or is_school_teacher(self.request, self.kwargs)
-
-class TeacherDetail(UserPassesTestMixin, DetailView):
+class TeacherDetail(SchoolEmployeeMixin, DetailView):
   model = Teacher
-
-  def test_func(self):
-    return is_school_manager(self.request, self.kwargs) or is_school_teacher(self.request, self.kwargs)
 
   def get_context_data(self, **kwargs):
     context = super(TeacherDetail, self).get_context_data(**kwargs)
@@ -429,13 +381,9 @@ class TeacherOverview(UserPassesTestMixin, DetailView):
     context['school'] = School.objects.filter(teachers=Teacher.objects.filter(pk=self.kwargs['pk'])).first()
     return context
 
-class TeacherCreate(UserPassesTestMixin, CreateView):
+class TeacherCreate(SchoolManagerMixin, CreateView):
   model = Teacher
   form_class = TeacherForm
-  login_url = reverse_lazy('denied')
-
-  def test_func(self):
-    return is_school_manager(self.request, self.kwargs)
 
   def get_context_data(self, **kwargs):
     context = super(TeacherCreate, self).get_context_data(**kwargs)
@@ -472,10 +420,9 @@ class TeacherCreate(UserPassesTestMixin, CreateView):
     except:
       return reverse_lazy('schools:school_listing')
 
-class TeacherCreateImport(UserPassesTestMixin, CreateView):
+class TeacherCreateImport(SchoolManagerMixin, CreateView):
   model = Teacher
   form_class = TeacherForm
-  login_url = reverse_lazy('denied')
   template_name = "common/teacher_form_import.html"
 
   def get_context_data(self, **kwargs):
@@ -541,9 +488,6 @@ class TeacherCreateImport(UserPassesTestMixin, CreateView):
           pass #teacher already exists
     return HttpResponseRedirect(self.get_success_url())
 
-  def test_func(self):
-    return is_school_manager(self.request, self.kwargs)
-
   def get_success_url(self):
     try:
       return reverse_lazy('schools:school_detail',
@@ -551,13 +495,9 @@ class TeacherCreateImport(UserPassesTestMixin, CreateView):
     except:
       return reverse_lazy('schools:school_listing')
 
-class TeacherUpdate(UserPassesTestMixin, UpdateView):
+class TeacherUpdate(SchoolManagerMixin, UpdateView):
   model = Teacher
   form_class = TeacherForm
-  login_url = reverse_lazy('denied')
-
-  def test_func(self):
-    return is_school_manager(self.request, self.kwargs)
 
   def get_context_data(self, **kwargs):
     context = super(TeacherUpdate, self).get_context_data(**kwargs)
@@ -590,13 +530,9 @@ class TeacherUpdate(UserPassesTestMixin, UpdateView):
     except:
       return reverse_lazy('schools:school_listing')
 
-class TeacherDelete(UserPassesTestMixin, DeleteView):
+class TeacherDelete(SchoolManagerMixin, DeleteView):
   model = Teacher
-  login_url = reverse_lazy('denied')
   template_name = "schools/confirm_delete.html"
-
-  def test_func(self):
-    return is_school_manager(self.request, self.kwargs)
 
   def delete(self, request, *args, **kwargs):
     self.object = self.get_object()
@@ -611,7 +547,7 @@ class TeacherDelete(UserPassesTestMixin, DeleteView):
     except:
       return reverse_lazy('schools:school_listing')
 
-class StudentListing(UserPassesTestMixin, ListView):
+class StudentListing(SchoolEmployeeMixin, ListView):
   model = Student
 
   def get_context_data(self, **kwargs):
@@ -622,14 +558,8 @@ class StudentListing(UserPassesTestMixin, ListView):
     context['students_outside_groups'] = slug_sort(Student.objects.filter(school=school).exclude(studentgroup__in=StudentGroup.objects.filter(school=school)), 'name')
     return context
 
-  def test_func(self):
-    return is_school_manager(self.request, self.kwargs) or is_school_teacher(self.request, self.kwargs)
-
-class StudentDetail(UserPassesTestMixin, DetailView):
+class StudentDetail(SchoolEmployeeMixin, DetailView):
   model = Student
-
-  def test_func(self):
-    return is_school_manager(self.request, self.kwargs) or is_school_teacher(self.request, self.kwargs)
 
   def get_context_data(self, **kwargs):
     # xxx will be available in the template as the related objects
@@ -650,21 +580,15 @@ def StudentNotes(request, school_id, pk):
       ses.save()
     return JsonResponse({"message": "success"})
 
-class StudentCreateImport(UserPassesTestMixin, CreateView):
+class StudentCreateImport(SchoolManagerMixin, CreateView):
   model = Student
   form_class = StudentForm
-  login_url = reverse_lazy('denied')
   template_name = "common/student_form_import.html"
 
   def get_context_data(self, **kwargs):
     # xxx will be available in the template as the related objects
     context = super(StudentCreateImport, self).get_context_data(**kwargs)
     context['school'] = School.objects.get(pk=self.kwargs['school_id'])
-    return context
-
-  def get_context_data(self, **kwargs):
-    context = super(StudentCreateImport, self).get_context_data(**kwargs)
-    context['school']=School.objects.get(pk=self.kwargs['school_id'])
     return context
 
   def post(self, *args, **kwargs):
@@ -713,9 +637,6 @@ class StudentCreateImport(UserPassesTestMixin, CreateView):
 
     return HttpResponseRedirect(self.get_success_url())
 
-  def test_func(self):
-    return is_school_manager(self.request, self.kwargs)
-
   def get_success_url(self):
     try:
       school_id = self.kwargs['school_id']
@@ -725,13 +646,9 @@ class StudentCreateImport(UserPassesTestMixin, CreateView):
     except:
       return reverse_lazy('schools:school_listing')
 
-class StudentCreate(UserPassesTestMixin, CreateView):
+class StudentCreate(SchoolManagerMixin, CreateView):
   model = Student
   form_class = StudentForm
-  login_url = reverse_lazy('denied')
-
-  def test_func(self):
-    return is_school_manager(self.request, self.kwargs)
 
   def post(self, *args, **kwargs):
     self.object = Student.objects.filter(ssn=self.request.POST.get('ssn')).first()
@@ -756,7 +673,7 @@ class StudentCreate(UserPassesTestMixin, CreateView):
     context = super(StudentCreate, self).get_context_data(**kwargs)
     context['school']=School.objects.get(pk=self.kwargs['school_id'])
     return context
-    
+
   def get_success_url(self):
     try:
       school_id = self.kwargs['school_id']
@@ -766,13 +683,9 @@ class StudentCreate(UserPassesTestMixin, CreateView):
     except:
       return reverse_lazy('schools:school_listing')
 
-class StudentUpdate(UserPassesTestMixin, UpdateView):
+class StudentUpdate(SchoolManagerMixin, UpdateView):
   model = Student
   form_class = StudentForm
-  login_url = reverse_lazy('denied')
-
-  def test_func(self):
-    return is_school_manager(self.request, self.kwargs)
 
   def get_context_data(self, **kwargs):
     context = super(StudentUpdate, self).get_context_data(**kwargs)
@@ -787,13 +700,9 @@ class StudentUpdate(UserPassesTestMixin, UpdateView):
     except:
       return reverse_lazy('schools:school_listing')
 
-class StudentDelete(UserPassesTestMixin, DeleteView):
+class StudentDelete(SchoolManagerMixin, DeleteView):
   model = Student
-  login_url = reverse_lazy('denied')
   template_name = "schools/confirm_delete.html"
-
-  def test_func(self):
-    return is_school_manager(self.request, self.kwargs)
 
   def delete(self, request, *args, **kwargs):
     self.object = self.get_object()
@@ -812,7 +721,7 @@ class StudentDelete(UserPassesTestMixin, DeleteView):
     except:
       return reverse_lazy('schools:school_listing')
 
-class StudentGroupListing(UserPassesTestMixin, ListView):
+class StudentGroupListing(SchoolEmployeeMixin, ListView):
   model = StudentGroup
 
   def get_context_data(self, **kwargs):
@@ -822,14 +731,8 @@ class StudentGroupListing(UserPassesTestMixin, ListView):
     context['studentgroups'] = slug_sort(StudentGroup.objects.filter(school=school), 'name')
     return context
 
-  def test_func(self):
-    return is_school_manager(self.request, self.kwargs) or is_school_teacher(self.request, self.kwargs)
-
-class StudentGroupDetail(UserPassesTestMixin, DetailView):
+class StudentGroupDetail(SchoolEmployeeMixin, DetailView):
   model = StudentGroup
-
-  def test_func(self):
-    return is_school_manager(self.request, self.kwargs) or is_school_teacher(self.request, self.kwargs)
 
   def get_context_data(self, **kwargs):
     # xxx will be available in the template as the related objects
@@ -914,7 +817,7 @@ def group_admin_listing_csv(request, survey_title):
 
     return response
 
-class StudentGroupAdminListing(UserPassesTestMixin, ListView):
+class StudentGroupAdminListing(SuperUserMixin, ListView):
   model = StudentGroup
   template_name = "common/studentgroup_admin_list.html"
 
@@ -927,14 +830,9 @@ class StudentGroupAdminListing(UserPassesTestMixin, ListView):
       context['error'] = str(e)
     return context
 
-
-  def test_func(self):
-    return self.request.user.is_superuser
-
-class StudentGroupCreate(UserPassesTestMixin, CreateView):
+class StudentGroupCreate(SchoolEmployeeMixin, CreateView):
   model = StudentGroup
   form_class = StudentGroupForm
-  login_url = reverse_lazy('denied')
 
   def get_context_data(self, **kwargs):
     # xxx will be available in the template as the related objects
@@ -956,9 +854,6 @@ class StudentGroupCreate(UserPassesTestMixin, CreateView):
     else:
       return self.form_invalid(form)
 
-  def test_func(self):
-    return is_school_manager(self.request, self.kwargs) or is_school_teacher(self.request, self.kwargs)
-
   def get_success_url(self):
     try:
       school_id = self.kwargs['school_id']
@@ -968,10 +863,9 @@ class StudentGroupCreate(UserPassesTestMixin, CreateView):
       return reverse_lazy('schools:school_listing')
 
 
-class StudentGroupUpdate(UserPassesTestMixin, UpdateView):
+class StudentGroupUpdate(SchoolEmployeeMixin, UpdateView):
   model = StudentGroup
   form_class = StudentGroupForm
-  login_url = reverse_lazy('denied')
 
 
   def get_context_data(self, **kwargs):
@@ -998,9 +892,6 @@ class StudentGroupUpdate(UserPassesTestMixin, UpdateView):
     else:
       return self.form_invalid(form)
 
-  def test_func(self):
-    return is_school_manager(self.request, self.kwargs) or is_school_teacher(self.request, self.kwargs) #TODO: manager or (teacher and group_manager)
-
   def get_success_url(self):
     try:
       school_id = self.kwargs['school_id']
@@ -1009,13 +900,9 @@ class StudentGroupUpdate(UserPassesTestMixin, UpdateView):
     except:
       return reverse_lazy('schools:school_listing')
 
-class StudentGroupDelete(UserPassesTestMixin, DeleteView):
+class StudentGroupDelete(SchoolEmployeeMixin, DeleteView):
   model = StudentGroup
-  login_url = reverse_lazy('denied')
   template_name = "schools/confirm_delete.html"
-
-  def test_func(self):
-    return is_school_manager(self.request, self.kwargs) or is_school_teacher(self.request, self.kwargs) #TODO: manager or (teacher and group_manager)
 
   def get_success_url(self):
     try:
@@ -1025,7 +912,7 @@ class StudentGroupDelete(UserPassesTestMixin, DeleteView):
     except:
       return reverse_lazy('schools:school_listing')
 
-class SurveyListing(UserPassesTestMixin, ListView):
+class SurveyListing(SchoolEmployeeMixin, ListView):
   model = Survey
 
   def get_context_data(self, **kwargs):
@@ -1035,10 +922,7 @@ class SurveyListing(UserPassesTestMixin, ListView):
     context['surveylisting_list'] = slug_sort(Survey.objects.filter(studentgroup__in=school.object.studentgroup_set.all()), 'title')
     return context
 
-  def test_func(self):
-    return is_school_manager(self.request, self.kwargs) or is_school_teacher(self.request, self.kwargs)
-
-class SurveyAdminListing(UserPassesTestMixin, ListView):
+class SurveyAdminListing(SuperUserMixin, ListView):
   model = Survey
   template_name = "common/survey_admin_list.html"
 
@@ -1051,10 +935,7 @@ class SurveyAdminListing(UserPassesTestMixin, ListView):
       context['error'] = str(e)
     return context
 
-  def test_func(self):
-    return self.request.user.is_superuser
-
-class SurveyDetail(UserPassesTestMixin, DetailView):
+class SurveyDetail(SchoolEmployeeMixin, DetailView):
   model = Survey
 
   def get_survey_data(self):
@@ -1065,9 +946,6 @@ class SurveyDetail(UserPassesTestMixin, DetailView):
         return r.json()
     except Exception as e:
       return []
-
-  def test_func(self):
-    return is_school_manager(self.request, self.kwargs) or is_school_teacher(self.request, self.kwargs)
 
   def get_context_data(self, **kwargs):
     # xxx will be available in the template as the related objects
@@ -1095,10 +973,9 @@ class SurveyDetail(UserPassesTestMixin, DetailView):
     context['field_types'] = ['text', 'number', 'text-list', 'number-list']
     return context
 
-class SurveyCreate(UserPassesTestMixin, CreateView):
+class SurveyCreate(SchoolEmployeeMixin, CreateView):
   model = Survey
   form_class = SurveyForm
-  login_url = reverse_lazy('denied')
 
   def get_survey(self):
     """Get all surveys from profagrunnur to provide a list to survey create"""
@@ -1125,9 +1002,6 @@ class SurveyCreate(UserPassesTestMixin, CreateView):
       context['survey_list'] = self.get_survey()
       return context
 
-  def test_func(self):
-    return is_group_manager(self.request, self.kwargs) or is_school_manager(self.request, self.kwargs) #TODO: manager or (teacher and group_manager)
-
   def get_success_url(self):
     try:
       school_id = self.kwargs['school_id']
@@ -1137,13 +1011,9 @@ class SurveyCreate(UserPassesTestMixin, CreateView):
     except:
       return reverse_lazy('schools:school_listing')
 
-class SurveyUpdate(UserPassesTestMixin, UpdateView):
+class SurveyUpdate(SchoolEmployeeMixin, UpdateView):
   model = Survey
   form_class = SurveyForm
-  login_url = reverse_lazy('denied')
-
-  def test_func(self):
-    return is_school_manager(self.request, self.kwargs) or is_school_teacher(self.request, self.kwargs) #TODO: manager or (teacher and group_manager)
 
   def get_survey(self):
     try:
@@ -1171,13 +1041,9 @@ class SurveyUpdate(UserPassesTestMixin, UpdateView):
     except:
       return reverse_lazy('schools:school_listing')
 
-class SurveyDelete(UserPassesTestMixin, DeleteView):
+class SurveyDelete(SchoolEmployeeMixin, DeleteView):
   model = Survey
-  login_url = reverse_lazy('denied')
   template_name = "schools/confirm_delete.html"
-
-  def test_func(self):
-    return is_school_manager(self.request, self.kwargs) or is_school_teacher(self.request, self.kwargs) #TODO: manager or (teacher and group_manager)
 
   def delete(self, request, *args, **kwargs):
     self.object = self.get_object()
@@ -1205,10 +1071,9 @@ def get_survey_data(kwargs):
   except Exception as e:
     return []
 
-class SurveyResultCreate(UserPassesTestMixin, CreateView):
+class SurveyResultCreate(SchoolEmployeeMixin, CreateView):
   model = SurveyResult
   form_class = SurveyResultForm
-  login_url = reverse_lazy('denied')
 
   def get_context_data(self, **kwargs):
     # xxx will be available in the template as the related objects
@@ -1262,9 +1127,6 @@ class SurveyResultCreate(UserPassesTestMixin, CreateView):
     survey_results.results = json.dumps(survey_results_data)
     return super(SurveyResultCreate, self).form_valid(form)
 
-  def test_func(self):
-    return is_school_manager(self.request, self.kwargs) or is_group_manager(self.request, self.kwargs)
-
   def get_success_url(self):
     try:
       return reverse_lazy('schools:survey_detail',
@@ -1275,13 +1137,9 @@ class SurveyResultCreate(UserPassesTestMixin, CreateView):
     except:
       return reverse_lazy('schools:school_listing')
 
-class SurveyResultUpdate(UserPassesTestMixin, UpdateView):
+class SurveyResultUpdate(SchoolEmployeeMixin, UpdateView):
   model = SurveyResult
   form_class = SurveyResultForm
-  login_url = reverse_lazy('denied')
-
-  def test_func(self):
-    return is_school_manager(self.request, self.kwargs) or is_group_manager(self.request, self.kwargs)
 
   def form_valid(self, form):
     survey_results = form.save(commit=False)
@@ -1320,13 +1178,9 @@ class SurveyResultUpdate(UserPassesTestMixin, UpdateView):
     except:
       return reverse_lazy('schools:school_listing')
 
-class SurveyResultDelete(UserPassesTestMixin, DeleteView):
+class SurveyResultDelete(SchoolEmployeeMixin, DeleteView):
   model = SurveyResult
-  login_url = reverse_lazy('denied')
   template_name = "schools/confirm_delete.html"
-
-  def test_func(self):
-    return is_school_manager(self.request, self.kwargs) or is_group_manager(self.request, self.kwargs)
 
   def get_success_url(self):
     try:
@@ -1336,7 +1190,7 @@ class SurveyResultDelete(UserPassesTestMixin, DeleteView):
     except:
       return reverse_lazy('schools:school_listing')
 
-class SurveyLoginListing(UserPassesTestMixin, ListView):
+class SurveyLoginListing(SchoolEmployeeMixin, ListView):
   model = SurveyLogin
 
   def get_context_data(self, **kwargs):
@@ -1347,12 +1201,10 @@ class SurveyLoginListing(UserPassesTestMixin, ListView):
     context['survey_login_list'] = SurveyLogin.objects.filter(student__in = Student.objects.filter(school=school)).values('survey_id').distinct()
     return context
 
-  def test_func(self):
-    return is_school_manager(self.request, self.kwargs) or is_school_teacher(self.request, self.kwargs)
-
-class SurveyLoginAdminListing(UserPassesTestMixin, ListView):
+class SurveyLoginAdminListing(SuperUserMixin, ListView):
   model = SurveyLogin
   template_name = "common/surveylogin_admin_list.html"
+  # Success url?
 
   def get_context_data(self, **kwargs):
     # xxx will be available in the template as the related objects
@@ -1360,14 +1212,8 @@ class SurveyLoginAdminListing(UserPassesTestMixin, ListView):
     context['survey_login_list'] = SurveyLogin.objects.all().values('survey_id').distinct()
     return context
 
-  def test_func(self):
-    return self.request.user.is_superuser
-
-class SurveyLoginDetail(UserPassesTestMixin, DetailView):
+class SurveyLoginDetail(SchoolManagerMixin, DetailView):
   model = SurveyLogin
-
-  def test_func(self):
-    return is_school_manager(self.request, self.kwargs)
 
   def get_object(self, **kwargs):
     return SurveyLogin.objects.filter(survey_id=self.kwargs['survey_id']).first()
@@ -1397,11 +1243,10 @@ class SurveyLoginDetail(UserPassesTestMixin, DetailView):
       context['exam'] = '3'
     return context
 
-class SurveyLoginCreate(UserPassesTestMixin, CreateView):
+class SurveyLoginCreate(SuperUserMixin, CreateView):
   model = SurveyLogin
   form_class = SurveyLoginForm
   template_name = "common/password_form_import.html"
-  login_url = reverse_lazy('denied')
 
   def post(self, *args, **kwargs):
     if(self.request.FILES):
@@ -1461,16 +1306,9 @@ class SurveyLoginCreate(UserPassesTestMixin, CreateView):
   def get_success_url(self):
     return reverse_lazy('schools:survey_login_admin_listing')
 
-  def test_func(self):
-    return self.request.user.is_superuser
-
-class SurveyLoginDelete(UserPassesTestMixin, DeleteView):
+class SurveyLoginDelete(SuperUserMixin, DeleteView):
   model = SurveyLogin
-  login_url = reverse_lazy('denied')
   template_name = "schools/confirm_delete.html"
-
-  def test_func(self):
-    return self.request.user.is_superuser
 
   def get_success_url(self):
     return reverse_lazy('schools:survey_login_admin_listing')
@@ -1478,13 +1316,9 @@ class SurveyLoginDelete(UserPassesTestMixin, DeleteView):
   def get_object(self):
     return SurveyLogin.objects.filter(survey_id=self.kwargs['survey_id'])
 
-class AdminListing(UserPassesTestMixin, ListView):
+class AdminListing(SuperUserMixin, ListView):
   model = User
-  login_url = reverse_lazy('denied')
   template_name = "common/admin_list.html"
-
-  def test_func(self):
-    return self.request.user.is_superuser
 
   def get_success_url(self):
     return reverse_lazy('schools:admin_listing')
@@ -1495,14 +1329,10 @@ class AdminListing(UserPassesTestMixin, ListView):
     context['user_list'] = User.objects.filter(is_superuser=True)
     return context
 
-class AdminCreate(UserPassesTestMixin, CreateView):
+class AdminCreate(SuperUserMixin, CreateView):
   model = User
   form_class = SuperUserForm
-  login_url = reverse_lazy('denied')
   template_name = "common/admin_form.html"
-
-  def test_func(self):
-    return self.request.user.is_superuser
 
   def post(self, *args, **kwargs):
     username = self.request.POST.get('username')
@@ -1520,20 +1350,15 @@ class AdminCreate(UserPassesTestMixin, CreateView):
   def get_success_url(self):
     return reverse_lazy('schools:admin_listing')
 
-class AdminUpdate(UserPassesTestMixin, UpdateView):
+class AdminUpdate(SuperUserMixin, UpdateView):
   model = User
   form_class = SuperUserForm
-  login_url = reverse_lazy('denied')
   template_name = "common/admin_form.html"
-
-  def test_func(self):
-    return self.request.user.is_superuser
 
   def get_success_url(self):
     return reverse_lazy('schools:admin_listing') 
 
 def group_admin_listing_excel(request, survey_title):
-  
   surveys = Survey.objects.filter(title=survey_title)
 
   response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
@@ -1547,11 +1372,10 @@ def group_admin_listing_excel(request, survey_title):
   ws['C1']=  'Nemandi'
   ws['D1']=  'Kennitala'
   ws['E1']=  'Bekkur'
-    
-  
+
   index = 2
   for survey in surveys:
-    
+
     for student in survey.studentgroup.students.all():
       ws.cell('A'+str(index)).value = survey.studentgroup.school.name
       ws.cell('B'+str(index)).value = survey.studentgroup.school.ssn
@@ -1559,13 +1383,13 @@ def group_admin_listing_excel(request, survey_title):
       ws.cell('D'+str(index)).value = student.ssn
       ws.cell('E'+str(index)).value = survey.studentgroup.name
       index+=1
-      
+
   wb.save(response)
 
   return response
 
 def group_admin_attendance_excel(request, survey_title):
-  
+
   surveys = Survey.objects.filter(title=survey_title)
   print(survey_title)
   response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
@@ -1574,7 +1398,6 @@ def group_admin_attendance_excel(request, survey_title):
   ws = wb.get_active_sheet()
   ws.title = 'samræmdupróf'
 
-  
   ws['A1']=  'Skóli'
   ws['B1']=  'Kennitala sḱóla'
   ws['C1']=  'Nemandi'
@@ -1586,10 +1409,10 @@ def group_admin_attendance_excel(request, survey_title):
   ws['I1']=  'Fjarverandi'
   ws['J1']=  'Stuðningur í íslensku'
   ws['K1']=  'Stuðningur í Stærðfræði'
-  
+
   index = 2
   for survey in surveys:
-    
+
     for student in survey.studentgroup.students.all():
       ws.cell('A'+str(index)).value = survey.studentgroup.school.name
       ws.cell('B'+str(index)).value = survey.studentgroup.school.ssn
@@ -1612,7 +1435,7 @@ def group_admin_attendance_excel(request, survey_title):
         ws.cell(row=index, column=student_results+6).value ="1"
 
       support = SupportResource.objects.filter(student=student)
-      
+
       if support:
         support_available = []
         support_available += literal_eval(support.first().reading_assistance) #get student results
@@ -1622,11 +1445,9 @@ def group_admin_attendance_excel(request, survey_title):
           ws.cell(row=index, column=10).value ="1"
         if 3 in support_available:
           ws.cell(row=index, column=11).value ="1"
-      
-      
-      
+
       index+=1
-      
+
   wb.save(response)
 
   return response
