@@ -45,15 +45,15 @@ longer_time = (
 	(3,'Stærðfræði'),
 	)
 class SupportResourceForm(forms.ModelForm):
-	support_title = forms.ChoiceField(required = False, widget = forms.CheckboxSelectMultiple, choices = support_title)
+	support_title      = forms.ChoiceField(required = False, widget = forms.CheckboxSelectMultiple, choices = support_title)
 	reading_assistance = forms.ChoiceField(required = False, widget = forms.CheckboxSelectMultiple, choices = reading_assistance)
-	interpretation = forms.ChoiceField(required = False, widget = forms.CheckboxSelectMultiple, choices = interpretation)
-	longer_time = forms.ChoiceField(required = False, widget = forms.CheckboxSelectMultiple, choices = longer_time)
-	
+	interpretation     = forms.ChoiceField(required = False, widget = forms.CheckboxSelectMultiple, choices = interpretation)
+	longer_time        = forms.ChoiceField(required = False, widget = forms.CheckboxSelectMultiple, choices = longer_time)
+
 	class Meta:
-		model = SupportResource
+		model  = SupportResource
 		fields = '__all__'
-		
+
 
 exam_choices = (
 	(1,'Íslenska'),
@@ -67,19 +67,19 @@ reason_choices = (
  )
 
 class ExceptionsForm(forms.ModelForm):
-	exam = forms.ChoiceField(required = False, widget = forms.CheckboxSelectMultiple(attrs= {'inline': True,},), choices = exam_choices)
+	exam   = forms.ChoiceField(required = False, widget = forms.CheckboxSelectMultiple(attrs= {'inline': True,},), choices = exam_choices)
 	reason = forms.ChoiceField(required = False, widget = forms.RadioSelect, choices = reason_choices)
 	class Meta:
-		model = Exceptions
+		model  = Exceptions
 		fields = '__all__'
 		labels = {
-			'student': 'Nemandi',
-			'reason': 'Ástæða',
-			'exam': 'Próf',
+			'student'    : 'Nemandi',
+			'reason'     : 'Ástæða',
+			'exam'       : 'Próf',
 			'explanation': 'Skýringar',
-			'signature': 'Undirskrift',
-			'date': 'Dagsetning',
+			'signature'  : 'Undirskrift',
+			'date'       : 'Dagsetning',
 		}
-		
+
 
 SupportResourceFormSet = formset_factory(SupportResourceForm)

@@ -1,4 +1,4 @@
-from common.models import *
+from common.models  import *
 from rest_framework import serializers
 import json
 

@@ -1,4 +1,4 @@
-from .models  import *
+from .models import *
 
 def get_results_from_sheet(sheet, row, result_length):
 	"""

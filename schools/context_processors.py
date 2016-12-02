@@ -1,5 +1,5 @@
 from django.template import RequestContext
-from .util import *
+from common.util     import *
 
 def user_school_permissions(request):
     response = {
