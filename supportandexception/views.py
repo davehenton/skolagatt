@@ -129,7 +129,6 @@ class SupportreResourceCreate(CreateView):
 					longer_time        = longer_time
 					)
 			else:
-				print(Manager.objects.filter(ssn=self.request.user))
 				sr = SupportResource(
 					explanation              = expl,
 					supportresourcesignature = Manager.objects.get(user=User.objects.filter(username=self.request.user)),
