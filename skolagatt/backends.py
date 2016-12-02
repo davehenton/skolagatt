@@ -1,6 +1,6 @@
-from django.conf import settings
+from django.conf                import settings
 from django.contrib.auth.models import User
-from uuid import uuid4
+from uuid                       import uuid4
 
 class IceKeyAuth(object):
     """

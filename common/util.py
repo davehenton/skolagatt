@@ -1,12 +1,16 @@
-from common.models import *
-from django.conf import settings
+from common.models     import *
+from django.conf       import settings
 from django.utils.text import slugify
 import requests
 
 def get_messages():
   """Get all messages from innrivefur"""
   try:
-      r = requests.get(settings.INNRI_SKILABOD_URL+'&json_api_key='+settings.INNRI_SKILABOD_JSON_KEY)
+      r = requests.get(
+        '{0}&json_api_key={1}'.format(
+          settings.INNRI_SKILABOD_URL,
+          settings.INNRI_SKILABOD_JSON_KEY)
+      )
       return r.json()
   except Exception as e:
     return []
@@ -28,7 +32,10 @@ def is_school_manager(request, kwargs):
 
   try:
     school_id = get_current_school(kwargs)
-    if school_id and School.objects.filter(pk=school_id).filter(managers=Manager.objects.filter(user=request.user)):
+    if school_id and School.objects.filter(
+      pk       = school_id,
+      managers = Manager.objects.filter(user=request.user)
+      ):
       return True
   except Exception as e:
     pass
@@ -49,7 +56,10 @@ def is_school_teacher(request, kwargs):
     return False
   try:
     school_id = get_current_school(kwargs)
-    if school_id and School.objects.filter(pk=school_id).filter(teachers=Teacher.objects.filter(user=request.user)):
+    if school_id and School.objects.filter(
+      pk       = school_id,
+      teachers = Teacher.objects.filter(user=request.user)
+      ):
       return True
   except:
     pass
@@ -71,14 +81,20 @@ def is_group_manager(request, kwargs):
     return False
   try:
     try:
-      if StudentGroup.objects.filter(pk=kwargs['student_group']).filter(group_managers=Teacher.objects.filter(user=request.user)):# user=context.request.user)):
+      if StudentGroup.objects.filter(
+      pk             = kwargs['student_group'],
+      group_managers = Teacher.objects.filter(user=request.user)
+      ):
         return True
     except:
       if 'survey_id' in kwargs:
         survey_id = kwargs['survey_id']
       else:
         survey_id = kwargs['pk']
-      if StudentGroup.objects.filter(pk=Survey.objects.get(pk=survey_id).studentgroup.id).filter(group_managers=Teacher.objects.filter(user=request.user)):# user=context.request.user)):
+      if StudentGroup.objects.filter(
+      pk             = Survey.objects.get(pk=survey_id).studentgroup.id,
+      group_managers = Teacher.objects.filter(user=request.user)
+      ):
         return True
   except:
     pass
@@ -92,7 +108,7 @@ def calc_survey_results(survey_identifier, click_values, input_values):
     if 'b_LF_' in survey_identifier:
       try:
         words_read = int(click_values[-1].split(',')[0]) - len(click_values)
-        time_read = 120
+        time_read  = 120
         try:
           time_read = int(input_values.get('b1_LF_timi', 120))
         except:

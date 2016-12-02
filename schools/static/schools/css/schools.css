@@ -3,40 +3,44 @@
 }
 
 .removeable {
-	padding: 2px;
-	margin-right: 2px;
+    margin-right: 2px;
+    padding     : 2px;
 }
 
 span.selected {
-	background: yellow;
-	border: thin solid black;
-	padding-left: 5px;
-	padding-right: 5px;
+    padding-right: 5px;
+    padding-left : 5px;
+
+    border       : thin solid black;
+    background   : yellow;
 }
 
 span.click_values {
-    padding-left: 5px;
-    padding-right: 5px;    
+    padding-right: 5px;
+    padding-left : 5px;
 }
 
-.student-list{
-	border: none;
+.student-list {
+    border: none;
 }
 
 ul.form_elements {
+    margin         :0;
+    padding        :0;
+
     list-style-type:none;
-    padding:0px;
-    margin:0px;
 }
 
 .form_elements li label {
     display: inline-block;
-    width: 200px;
+
+    width  : 200px;
 }
 
 .align label {
     display: inline-block;
-    width: 50px;
+
+    width  : 50px;
 }
 
 .md-display li {
@@ -48,20 +52,25 @@ ul.form_elements {
 }
 
 .small-message {
-    max-height: 9em;    
+    max-height: 9em;
 }
 .textarea {
-    -moz-appearance: textfield-multiline;
+    font              : medium -moz-fixed;
+    font              : -webkit-small-control;
+
+    overflow          : none;
+
+    width             : 600px;
+    height            : 280px;
+    padding           : 2px;
+
+    resize            : none;
+    white-space       : pre-wrap;
+
+    border            : none;
+
+       -moz-appearance: textfield-multiline;
     -webkit-appearance: textarea;
-    border: none;
-    font: medium -moz-fixed;
-    font: -webkit-small-control;
-    height: 280px;
-    overflow: none;
-    padding: 2px;
-    resize: none;
-    width: 600px;
-    white-space: pre-wrap;
 }
 
 .striped div.row:nth-child(even) {
@@ -72,8 +81,9 @@ ul.form_elements {
 }
 @media print {
     .removeme {
-        display: block;
         font-weight: 700;
+
+        display    : block;
     }
     a[href]:after {
         content: none !important;
@@ -100,6 +110,6 @@ ul.form_elements {
         page-break-after: always !important;
     }
 }
-.group_students{
+.group_students {
     background-color: white!important;
 }
