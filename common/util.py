@@ -3,6 +3,7 @@ from django.conf       import settings
 from django.utils.text import slugify
 import requests
 
+
 def get_messages():
   """Get all messages from innrivefur"""
   try:
@@ -15,6 +16,7 @@ def get_messages():
   except Exception as e:
     return []
 
+
 def get_current_school(path_variables):
   try:
     try:
@@ -23,6 +25,7 @@ def get_current_school(path_variables):
       return path_variables['pk']
   except:
     return None
+
 
 def is_school_manager(request, kwargs):
   if request.user.is_superuser:
@@ -41,6 +44,7 @@ def is_school_manager(request, kwargs):
     pass
   return False
 
+
 def is_manager(request):
   if not request.user.is_authenticated:
     return False
@@ -50,6 +54,7 @@ def is_manager(request):
   except:
     pass
   return False
+
 
 def is_school_teacher(request, kwargs):
   if not request.user.is_authenticated:
@@ -64,6 +69,7 @@ def is_school_teacher(request, kwargs):
   except:
     pass
   return False
+
 
 def is_teacher(request):
   if not request.user.is_authenticated:
@@ -100,8 +106,10 @@ def is_group_manager(request, kwargs):
     pass
   return False
 
+
 def slug_sort(q, attr):
   return sorted(q, key=lambda x: slugify(getattr(x,attr)))
+
 
 def calc_survey_results(survey_identifier, click_values, input_values):
   if survey_identifier:
