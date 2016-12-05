@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-import csv
-
 from django.http                  import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts             import render, get_object_or_404, redirect
 from django.views.generic         import ListView, CreateView, DetailView, UpdateView, DeleteView
@@ -11,18 +9,22 @@ from django.conf                  import settings
 from django.utils                 import timezone
 from django.utils.decorators      import method_decorator
 from django.views.decorators.csrf import csrf_exempt
-from uuid                         import uuid4
-from datetime                     import datetime, date
-from ast                          import literal_eval
+
+from uuid     import uuid4
+from datetime import datetime, date
+from ast      import literal_eval
+
 import requests
 import json
 import xlrd
 import openpyxl
-import common.mixins as common_mixins
-import common.models as common_models
-import common.util   as common_util
-from supportandexception.models import *
+import csv
 
+import common.mixins as common_mixins
+import common.models as cm_models
+import common.util   as common_util
+
+import supportandexception.models as sae_models
 
 
 def lesferill(request, school_id):
@@ -30,7 +32,7 @@ def lesferill(request, school_id):
 
 
 class NotificationCreate(UserPassesTestMixin, CreateView):
-    model = common_models.Notification
+    model = cm_models.Notification
 
     @method_decorator(csrf_exempt)
     def dispatch(self, request, *args, **kwargs):
@@ -45,7 +47,7 @@ class NotificationCreate(UserPassesTestMixin, CreateView):
             notification_id   = self.request.POST.get('id', None)
 
             if notification_type and notification_id:
-                common_models.Notification.objects.create(
+                cm_models.Notification.objects.create(
                     user              = self.request.user,
                     notification_type = notification_type,
                     notification_id   = notification_id)
@@ -56,19 +58,19 @@ class NotificationCreate(UserPassesTestMixin, CreateView):
 
 
 class SchoolListing(ListView):
-    model = common_models.School
+    model = cm_models.School
 
     def get_context_data(self, **kwargs):
         context = super(SchoolListing, self).get_context_data(**kwargs)
         try:
             if self.request.user.is_superuser:
                 context['school_list'] = common_util.slug_sort(
-                    common_models.School.objects.all(), 'name')
+                    cm_models.School.objects.all(), 'name')
             else:
-                manager_schools        = common_models.School.objects.filter(
-                    managers=common_models.Manager.objects.filter(user=self.request.user))
-                teacher_schools        = common_models.School.objects.filter(
-                    teachers=common_models.Teacher.objects.filter(user=self.request.user))
+                manager_schools        = cm_models.School.objects.filter(
+                    managers=cm_models.Manager.objects.filter(user=self.request.user))
+                teacher_schools        = cm_models.School.objects.filter(
+                    teachers=cm_models.Teacher.objects.filter(user=self.request.user))
                 context['school_list'] = list(
                     set(common_util.slug_sort(manager_schools | teacher_schools, 'name')))
         except Exception as e:
@@ -77,7 +79,7 @@ class SchoolListing(ListView):
 
 
 class SchoolDetail(common_mixins.SchoolEmployeeMixin, DetailView):
-    model = common_models.School
+    model = cm_models.School
 
     def get_context_data(self, **kwargs):
         context                      = super(SchoolDetail, self).get_context_data(**kwargs)
@@ -88,7 +90,7 @@ class SchoolDetail(common_mixins.SchoolEmployeeMixin, DetailView):
         context['teachers']          = common_util.slug_sort(
             self.object.teachers.all(), 'name')
         context['surveys']           = common_util.slug_sort(
-            common_models.Survey.objects.filter(
+            cm_models.Survey.objects.filter(
                 studentgroup__in=self.object.studentgroup_set.all()), 'title')
         context['students']          = self.object.students.all()
 
@@ -102,7 +104,9 @@ class SchoolDetail(common_mixins.SchoolEmployeeMixin, DetailView):
             messages.append(message)
 
         if common_util.is_school_teacher(self.request, self.kwargs):
-            context['messages'] = [message for message in messages if message['teachers_allow'] == True]
+            context['messages'] = [
+                message for message in messages if message['teachers_allow'] is True
+            ]
         else:
             context['messages'] = messages
 
@@ -110,14 +114,14 @@ class SchoolDetail(common_mixins.SchoolEmployeeMixin, DetailView):
 
 
 class SchoolCreate(common_mixins.SuperUserMixin, CreateView):
-    model       = common_models.School
-    form_class  = common_models.SchoolForm
+    model       = cm_models.School
+    form_class  = cm_models.SchoolForm
     success_url = reverse_lazy('schools:school_listing')
 
 
 class SchoolCreateImport(common_mixins.SchoolManagerMixin, CreateView):
-    model         = common_models.School
-    form_class    = common_models.SchoolForm
+    model         = cm_models.School
+    form_class    = cm_models.SchoolForm
     template_name = "common/school_form_import.html"
 
     def get_context_data(self, **kwargs):
@@ -159,7 +163,7 @@ class SchoolCreateImport(common_mixins.SchoolManagerMixin, CreateView):
             # iterate through students, add them if they don't exist then add to school
             for school in school_data:
                 try:
-                    common_models.School.objects.create(**school)
+                    cm_models.School.objects.create(**school)
                 except:
                     pass  # student already exists
 
@@ -170,43 +174,43 @@ class SchoolCreateImport(common_mixins.SchoolManagerMixin, CreateView):
 
 
 class SchoolUpdate(common_mixins.SuperUserMixin, UpdateView):
-    model       = common_models.School
-    form_class  = common_models.SchoolForm
+    model       = cm_models.School
+    form_class  = cm_models.SchoolForm
     success_url = reverse_lazy('schools:school_listing')
 
 
 class SchoolDelete(common_mixins.SuperUserMixin, DeleteView):
-    model         = common_models.School
+    model         = cm_models.School
     template_name = "schools/confirm_delete.html"
     success_url   = reverse_lazy('schools:school_listing')
 
 
 class ManagerListing(common_mixins.SchoolEmployeeMixin, ListView):
-    model = common_models.Manager
+    model = cm_models.Manager
 
     def get_context_data(self, **kwargs):
         context             = super(ManagerListing, self).get_context_data(**kwargs)
-        school              = common_models.School.objects.get(pk=self.kwargs['school_id'])
+        school              = cm_models.School.objects.get(pk=self.kwargs['school_id'])
         context['school']   = school
-        context['managers'] = common_models.Manager.objects.filter(school=school)
+        context['managers'] = cm_models.Manager.objects.filter(school=school)
         return context
 
 
 class ManagerDetail(common_mixins.SchoolEmployeeMixin, DetailView):
-    model = common_models.Manager
+    model = cm_models.Manager
 
     def get_context_data(self, **kwargs):
         context           = super(ManagerDetail, self).get_context_data(**kwargs)
-        context['school'] = common_models.School.objects.get(pk=self.kwargs['school_id'])
+        context['school'] = cm_models.School.objects.get(pk=self.kwargs['school_id'])
         return context
 
 
 class ManagerOverview(UserPassesTestMixin, DetailView):
-    model = common_models.Manager
+    model = cm_models.Manager
 
     def test_func(self):
         try:
-            if self.request.user.id == common_models.Manager.objects.get(pk=self.kwargs['pk']).user.id:
+            if self.request.user.id == cm_models.Manager.objects.get(pk=self.kwargs['pk']).user.id:
                 return True
         except:
             return False
@@ -214,23 +218,23 @@ class ManagerOverview(UserPassesTestMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context           = super(ManagerOverview, self).get_context_data(**kwargs)
-        context['school'] = common_models.School.objects.filter(
-            managers=common_models.Manager.objects.filter(
+        context['school'] = cm_models.School.objects.filter(
+            managers=cm_models.Manager.objects.filter(
                 pk=self.kwargs['pk'])).first()
         return context
 
 
 class ManagerCreate(common_mixins.SchoolManagerMixin, CreateView):
-    model      = common_models.Manager
-    form_class = common_models.ManagerForm
+    model      = cm_models.Manager
+    form_class = cm_models.ManagerForm
 
     def get_context_data(self, **kwargs):
         context           = super(ManagerCreate, self).get_context_data(**kwargs)
-        context['school'] = common_models.School.objects.get(pk=self.kwargs['school_id'])
+        context['school'] = cm_models.School.objects.get(pk=self.kwargs['school_id'])
         return context
 
     def post(self, *args, **kwargs):
-        self.object = common_models.Manager.objects.filter(
+        self.object = cm_models.Manager.objects.filter(
             user__username=self.request.POST.get('ssn')).first()
         if self.object:
             return HttpResponseRedirect(self.get_success_url())
@@ -255,7 +259,7 @@ class ManagerCreate(common_mixins.SchoolManagerMixin, CreateView):
         try:
             school_id = self.kwargs['school_id']
             # Try getting the School object. If it doesn't exist it should return an error
-            common_models.School.objects.get(pk=school_id).managers.add(self.object)
+            cm_models.School.objects.get(pk=school_id).managers.add(self.object)
             return reverse_lazy(
                 'schools:school_detail',
                 kwargs={'pk': school_id})
@@ -263,15 +267,15 @@ class ManagerCreate(common_mixins.SchoolManagerMixin, CreateView):
             return reverse_lazy('schools:school_listing')
 
     def get_initial(self):
-        school = get_object_or_404(common_models.School, pk=self.kwargs.get('school_id'))
+        school = get_object_or_404(cm_models.School, pk=self.kwargs.get('school_id'))
         return {
             'school': school,
         }
 
 
 class ManagerCreateImport(common_mixins.SchoolManagerMixin, CreateView):
-    model         = common_models.School
-    form_class    = common_models.SchoolForm
+    model         = cm_models.School
+    form_class    = cm_models.SchoolForm
     template_name = "common/manager_form_import.html"
 
     def get_context_data(self, **kwargs):
@@ -321,7 +325,7 @@ class ManagerCreateImport(common_mixins.SchoolManagerMixin, CreateView):
             # iterate through managers, add them if they don't exist then add to school
             for manager in manager_data:
                 try:
-                    common_models.School.objects.get(
+                    cm_models.School.objects.get(
                         ssn=manager['school_ssn']
                     ).managers.add(**manager)
                 except:
@@ -334,17 +338,17 @@ class ManagerCreateImport(common_mixins.SchoolManagerMixin, CreateView):
 
 
 class ManagerUpdate(common_mixins.SchoolManagerMixin, UpdateView):
-    model      = common_models.Manager
-    form_class = common_models.ManagerForm
+    model      = cm_models.Manager
+    form_class = cm_models.ManagerForm
 
     def get_context_data(self, **kwargs):
         context           = super(ManagerUpdate, self).get_context_data(**kwargs)
-        context['school'] = common_models.School.objects.get(pk=self.kwargs['school_id'])
+        context['school'] = cm_models.School.objects.get(pk=self.kwargs['school_id'])
         return context
 
     def post(self, request, **kwargs):
         # get Manager to be updated
-        self.object = common_models.Manager.objects.get(pk=self.kwargs['pk'])
+        self.object = cm_models.Manager.objects.get(pk=self.kwargs['pk'])
         # get user by ssn
         try:
             user = User.objects.get(username=self.request.POST.get('ssn'))
@@ -372,13 +376,13 @@ class ManagerUpdate(common_mixins.SchoolManagerMixin, UpdateView):
 
 
 class ManagerDelete(common_mixins.SchoolManagerMixin, DeleteView):
-    model         = common_models.Manager
+    model         = cm_models.Manager
     template_name = "schools/confirm_delete.html"
 
     def delete(self, request, *args, **kwargs):
         self.object = self.get_object()
         # delete manager_school entry
-        common_models.School.objects.get(
+        cm_models.School.objects.get(
             pk=self.kwargs.get('school_id')
         ).managers.remove(self.object)
         return HttpResponseRedirect(self.get_success_url())
@@ -394,27 +398,27 @@ class ManagerDelete(common_mixins.SchoolManagerMixin, DeleteView):
 
 
 class TeacherListing(common_mixins.SchoolEmployeeMixin, ListView):
-    model = common_models.Teacher
+    model = cm_models.Teacher
 
     def get_context_data(self, **kwargs):
         context             = super(TeacherListing, self).get_context_data(**kwargs)
-        school              = common_models.School.objects.get(pk=self.kwargs['school_id'])
+        school              = cm_models.School.objects.get(pk=self.kwargs['school_id'])
         context['school']   = school
-        context['teachers'] = common_models.Teacher.objects.filter(school=school)
+        context['teachers'] = cm_models.Teacher.objects.filter(school=school)
         context['groups']   = common_util.slug_sort(
-            common_models.StudentGroup.objects.filter(school=school), 'name')
+            cm_models.StudentGroup.objects.filter(school=school), 'name')
         return context
 
 
 class TeacherDetail(common_mixins.SchoolEmployeeMixin, DetailView):
-    model = common_models.Teacher
+    model = cm_models.Teacher
 
     def get_context_data(self, **kwargs):
         context           = super(TeacherDetail, self).get_context_data(**kwargs)
-        context['school'] = common_models.School.objects.get(pk=self.kwargs['school_id'])
+        context['school'] = cm_models.School.objects.get(pk=self.kwargs['school_id'])
         context['groups'] = common_util.slug_sort(
-            common_models.StudentGroup.objects.filter(
-                group_managers = common_models.Teacher.objects.filter(
+            cm_models.StudentGroup.objects.filter(
+                group_managers = cm_models.Teacher.objects.filter(
                     user = self.request.user)
             ), 'name'
         )
@@ -422,11 +426,11 @@ class TeacherDetail(common_mixins.SchoolEmployeeMixin, DetailView):
 
 
 class TeacherOverview(UserPassesTestMixin, DetailView):
-    model = common_models.Teacher
+    model = cm_models.Teacher
 
     def test_func(self):
         try:
-            if self.request.user.id == common_models.Teacher.objects.get(
+            if self.request.user.id == cm_models.Teacher.objects.get(
                 pk=self.kwargs['pk']
             ).user.id:
                 return True
@@ -436,8 +440,8 @@ class TeacherOverview(UserPassesTestMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context           = super(TeacherOverview, self).get_context_data(**kwargs)
-        context['school'] = common_models.School.objects.filter(
-            teachers=common_models.Teacher.objects.filter(
+        context['school'] = cm_models.School.objects.filter(
+            teachers=cm_models.Teacher.objects.filter(
                 pk=self.kwargs['pk']
             )
         ).first()
@@ -445,16 +449,16 @@ class TeacherOverview(UserPassesTestMixin, DetailView):
 
 
 class TeacherCreate(common_mixins.SchoolManagerMixin, CreateView):
-    model      = common_models.Teacher
-    form_class = common_models.TeacherForm
+    model      = cm_models.Teacher
+    form_class = cm_models.TeacherForm
 
     def get_context_data(self, **kwargs):
         context           = super(TeacherCreate, self).get_context_data(**kwargs)
-        context['school'] = common_models.School.objects.get(pk=self.kwargs['school_id'])
+        context['school'] = cm_models.School.objects.get(pk=self.kwargs['school_id'])
         return context
 
     def post(self, *args, **kwargs):
-        self.object = common_models.Teacher.objects.filter(
+        self.object = cm_models.Teacher.objects.filter(
             ssn=self.request.POST.get('ssn')
         ).first()
         if self.object:
@@ -481,7 +485,7 @@ class TeacherCreate(common_mixins.SchoolManagerMixin, CreateView):
     def get_success_url(self):
         try:
             school_id = self.kwargs['school_id']
-            common_models.School.objects.get(pk=school_id).teachers.add(self.object)
+            cm_models.School.objects.get(pk=school_id).teachers.add(self.object)
             return reverse_lazy(
                 'schools:school_detail',
                 kwargs={'pk': school_id}
@@ -491,14 +495,14 @@ class TeacherCreate(common_mixins.SchoolManagerMixin, CreateView):
 
 
 class TeacherCreateImport(common_mixins.SchoolManagerMixin, CreateView):
-    model         = common_models.Teacher
-    form_class    = common_models.TeacherForm
+    model         = cm_models.Teacher
+    form_class    = cm_models.TeacherForm
     template_name = "common/teacher_form_import.html"
 
     def get_context_data(self, **kwargs):
         # xxx will be available in the template as the related objects
         context           = super(TeacherCreateImport, self).get_context_data(**kwargs)
-        context['school'] = common_models.School.objects.get(pk=self.kwargs['school_id'])
+        context['school'] = cm_models.School.objects.get(pk=self.kwargs['school_id'])
         return context
 
     def post(self, *args, **kwargs):
@@ -549,7 +553,7 @@ class TeacherCreateImport(common_mixins.SchoolManagerMixin, CreateView):
                 'common/teacher_verify_import.html',
                 {
                     'data': data,
-                    'school': common_models.School.objects.get(pk=self.kwargs['school_id'])
+                    'school': cm_models.School.objects.get(pk=self.kwargs['school_id'])
                 }
             )
         else:
@@ -558,9 +562,9 @@ class TeacherCreateImport(common_mixins.SchoolManagerMixin, CreateView):
             for teacher in teacher_data:
                 try:
                     u, c = User.objects.get_or_create(username=teacher['ssn'])
-                    t, c = common_models.Teacher.objects.get_or_create(
+                    t, c = cm_models.Teacher.objects.get_or_create(
                         ssn=teacher['ssn'], name=teacher['name'], user=u)
-                    common_models.School.objects.get(pk=self.kwargs['school_id']).teachers.add(t)
+                    cm_models.School.objects.get(pk=self.kwargs['school_id']).teachers.add(t)
                 except Exception as e:
                     pass  # teacher already exists
         return HttpResponseRedirect(self.get_success_url())
@@ -576,25 +580,25 @@ class TeacherCreateImport(common_mixins.SchoolManagerMixin, CreateView):
 
 
 class TeacherUpdate(common_mixins.SchoolManagerMixin, UpdateView):
-    model      = Teacher
-    form_class = TeacherForm
+    model      = cm_models.Teacher
+    form_class = cm_models.TeacherForm
 
     def get_context_data(self, **kwargs):
         context           = super(TeacherUpdate, self).get_context_data(**kwargs)
-        context['school'] = School.objects.get(pk=self.kwargs['school_id'])
+        context['school'] = cm_models.School.objects.get(pk=self.kwargs['school_id'])
         return context
 
     def post(self, request, **kwargs):
-        #get Teacher to be updated
-        self.object = Teacher.objects.get(pk=self.kwargs['pk'])
-        #get user by ssn
+        # get Teacher to be updated
+        self.object = cm_models.Teacher.objects.get(pk=self.kwargs['pk'])
+        # get user by ssn
         try:
             user = User.objects.get(username=self.request.POST.get('ssn'))
         except:
             user = User.objects.create(username=self.request.POST.get('ssn'), password=str(uuid4()))
 
         if self.object.user == user:
-            #no changes
+            # no changes
             pass
         else:
             request.POST         = request.POST.copy()
@@ -605,75 +609,89 @@ class TeacherUpdate(common_mixins.SchoolManagerMixin, UpdateView):
     def get_success_url(self):
         try:
             school_id = self.kwargs['school_id']
-            return reverse_lazy('schools:school_detail',
-                                                            kwargs={'pk': school_id})
+            return reverse_lazy(
+                'schools:school_detail',
+                kwargs={'pk': school_id}
+            )
         except:
             return reverse_lazy('schools:school_listing')
 
 
 class TeacherDelete(common_mixins.SchoolManagerMixin, DeleteView):
-    model         = Teacher
+    model         = cm_models.Teacher
     template_name = "schools/confirm_delete.html"
 
     def delete(self, request, *args, **kwargs):
         self.object = self.get_object()
-        #delete teacher_school entry
-        School.objects.get(pk=self.kwargs.get('school_id')).teachers.remove(self.object)
+        # delete teacher_school entry
+        cm_models.School.objects.get(
+            pk=self.kwargs.get('school_id')
+        ).teachers.remove(self.object)
         return HttpResponseRedirect(self.get_success_url())
 
     def get_success_url(self):
         try:
-            return reverse_lazy('schools:school_detail',
-                                                            kwargs={'pk': self.kwargs['school_id']})
+            return reverse_lazy(
+                'schools:school_detail',
+                kwargs={'pk': self.kwargs['school_id']}
+            )
         except:
             return reverse_lazy('schools:school_listing')
 
 
 class StudentListing(common_mixins.SchoolEmployeeMixin, ListView):
-    model = Student
+    model = cm_models.Student
 
     def get_context_data(self, **kwargs):
-        context                            = super(StudentListing, self).get_context_data(**kwargs)
-        school                             = School.objects.get(pk=self.kwargs['school_id'])
-        context['school']                  = school
-        context['students']                = common_util.slug_sort(Student.objects.filter(school=school), 'name')
-        context['students_outside_groups'] = common_util.slug_sort(Student.objects.filter(school=school).exclude(
-            studentgroup__in=StudentGroup.objects.filter(school=school)), 'name')
+        context = super(StudentListing, self).get_context_data(**kwargs)
+        school  = cm_models.School.objects.get(pk=self.kwargs['school_id'])
+
+        context['school']   = school
+        context['students'] = common_util.slug_sort(
+            cm_models.Student.objects.filter(school=school), 'name')
+        context['students_outside_groups'] = common_util.slug_sort(
+            cm_models.Student.objects.filter(school=school).exclude(
+                studentgroup__in=cm_models.StudentGroup.objects.filter(school=school)
+            ), 'name')
         return context
 
 
 class StudentDetail(common_mixins.SchoolEmployeeMixin, DetailView):
-    model = Student
+    model = cm_models.Student
 
     def get_context_data(self, **kwargs):
         # xxx will be available in the template as the related objects
         context                     = super(StudentDetail, self).get_context_data(**kwargs)
-        context['school']           = School.objects.get(pk=self.kwargs['school_id'])
-        context['student_moreinfo'] = StudentExceptionSupport.objects.filter(student=self.kwargs.get('pk')).get
+        context['school']           = cm_models.School.objects.get(pk=self.kwargs['school_id'])
+        context['student_moreinfo'] = sae_models.StudentExceptionSupport.objects.filter(
+            student=self.kwargs.get('pk')).get
         return context
 
 
 def StudentNotes(request, school_id, pk):
     if request.method == 'POST':
         notes = request.POST.get('notes')
-        if (StudentExceptionSupport.objects.filter(student = Student.objects.get(pk=int(pk))).exists()):
-            StudentExceptionSupport.objects.filter(student = Student.objects.get(pk=int(pk))).update(notes=notes)
+        if (sae_models.StudentExceptionSupport.objects.filter(
+            student = cm_models.Student.objects.get(pk=int(pk))
+        ).exists()):
+            sae_models.StudentExceptionSupport.objects.filter(
+                student = cm_models.Student.objects.get(pk=int(pk))).update(notes=notes)
         else:
-            ses         = StudentExceptionSupport(notes=notes)
-            ses.student = Student.objects.get(pk=int(pk))
+            ses         = sae_models.StudentExceptionSupport(notes=notes)
+            ses.student = cm_models.Student.objects.get(pk=int(pk))
             ses.save()
         return JsonResponse({"message": "success"})
 
 
 class StudentCreateImport(common_mixins.SchoolManagerMixin, CreateView):
-    model         = Student
-    form_class    = StudentForm
+    model         = cm_models.Student
+    form_class    = cm_models.StudentForm
     template_name = "common/student_form_import.html"
 
     def get_context_data(self, **kwargs):
         # xxx will be available in the template as the related objects
         context           = super(StudentCreateImport, self).get_context_data(**kwargs)
-        context['school'] = School.objects.get(pk=self.kwargs['school_id'])
+        context['school'] = cm_models.School.objects.get(pk=self.kwargs['school_id'])
         return context
 
     def post(self, *args, **kwargs):
@@ -694,7 +712,10 @@ class StudentCreateImport(common_mixins.SchoolManagerMixin, CreateView):
                     student_ssn  = row.split(',')[int(ssn)]
                     student_name = row.split(',')[int(name)]
                     if len(student_ssn.strip()) == 10:
-                        data.append({'name': student_name.strip(), 'ssn': student_ssn.strip().zfill(10)})
+                        data.append({
+                            'name': student_name.strip(),
+                            'ssn': student_ssn.strip().zfill(10)
+                        })
                     else:
                         return render(self.request, 'common/student_error_import.html')
             elif extension == 'xlsx':
@@ -703,28 +724,31 @@ class StudentCreateImport(common_mixins.SchoolManagerMixin, CreateView):
                 for sheetsnumber in range(book.nsheets):
                     sheet = book.sheet_by_index(sheetsnumber)
                     for row in range(first, sheet.nrows):
-                        if len(str(sheet.cell_value(row,int(ssn))).strip()) == 10:
+                        if len(str(sheet.cell_value(row, int(ssn))).strip()) == 10:
                             data.append({
-                                'name': str(sheet.cell_value(row,int(name))).strip(),
-                                'ssn' : str(sheet.cell_value(row,int(ssn))).strip().zfill(10)
-                                })
+                                'name': str(sheet.cell_value(row, int(name))).strip(),
+                                'ssn' : str(sheet.cell_value(row, int(ssn))).strip().zfill(10)
+                            })
                         else:
                             return render(self.request, 'common/student_error_import.html')
             return render(
                 self.request,
                 'common/student_verify_import.html',
-                {'data': data, 'school': School.objects.get(pk=self.kwargs['school_id'])}
-                )
+                {
+                    'data': data,
+                    'school': cm_models.School.objects.get(pk=self.kwargs['school_id'])
+                }
+            )
         else:
             student_data = json.loads(self.request.POST['students'])
-            school       = School.objects.get(pk=self.kwargs['school_id'])
-            #iterate through students, add them if they don't exist then add to school
+            school       = cm_models.School.objects.get(pk=self.kwargs['school_id'])
+            # iterate through students, add them if they don't exist then add to school
             for data in student_data:
                 student = None
                 try:
-                    student = Student.objects.create(**data)
+                    student = cm_models.Student.objects.create(**data)
                 except:
-                    student = Student.objects.get(ssn=data['ssn'])
+                    student = cm_models.Student.objects.get(ssn=data['ssn'])
                 school.students.add(student)
 
         return HttpResponseRedirect(self.get_success_url())
@@ -732,25 +756,27 @@ class StudentCreateImport(common_mixins.SchoolManagerMixin, CreateView):
     def get_success_url(self):
         try:
             school_id = self.kwargs['school_id']
-            School.objects.get(pk=school_id).students.add(self.object)
-            return reverse_lazy('schools:school_detail',
-                                                            kwargs={'pk': school_id})
+            cm_models.School.objects.get(pk=school_id).students.add(self.object)
+            return reverse_lazy(
+                'schools:school_detail',
+                kwargs={'pk': school_id}
+            )
         except:
             return reverse_lazy('schools:school_listing')
 
 
 class StudentCreate(common_mixins.SchoolManagerMixin, CreateView):
-    model      = Student
-    form_class = StudentForm
+    model      = cm_models.Student
+    form_class = cm_models.StudentForm
 
     def post(self, *args, **kwargs):
-        self.object = Student.objects.filter(ssn=self.request.POST.get('ssn')).first()
+        self.object = cm_models.Student.objects.filter(ssn=self.request.POST.get('ssn')).first()
         if self.object:
             return HttpResponseRedirect(self.get_success_url())
         form = self.get_form()
-        #make data mutable
+        # make data mutable
         form.data = self.request.POST.copy()
-        #set or create user
+        # set or create user
         user = User.objects.filter(username=self.request.POST.get('ssn'))
         if user:
             form.data['user'] = user
@@ -758,7 +784,7 @@ class StudentCreate(common_mixins.SchoolManagerMixin, CreateView):
             form.data['user'] = User.objects.create(
                 username=self.request.POST.get('ssn'),
                 password=str(uuid4())
-                )
+            )
 
         if form.is_valid():
             return self.form_valid(form)
@@ -767,79 +793,88 @@ class StudentCreate(common_mixins.SchoolManagerMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context           = super(StudentCreate, self).get_context_data(**kwargs)
-        context['school'] =School.objects.get(pk=self.kwargs['school_id'])
+        context['school'] = cm_models.School.objects.get(pk=self.kwargs['school_id'])
         return context
 
     def get_success_url(self):
         try:
             school_id = self.kwargs['school_id']
-            School.objects.get(pk=school_id).students.add(self.object)
-            return reverse_lazy('schools:school_detail',
-                                                            kwargs={'pk': school_id})
+            cm_models.School.objects.get(pk=school_id).students.add(self.object)
+            return reverse_lazy(
+                'schools:school_detail',
+                kwargs={'pk': school_id}
+            )
         except:
             return reverse_lazy('schools:school_listing')
 
 
 class StudentUpdate(common_mixins.SchoolManagerMixin, UpdateView):
-    model      = Student
-    form_class = StudentForm
+    model      = cm_models.Student
+    form_class = cm_models.StudentForm
 
     def get_context_data(self, **kwargs):
         context           = super(StudentUpdate, self).get_context_data(**kwargs)
-        context['school'] = School.objects.get(pk=self.kwargs['school_id'])
+        context['school'] = cm_models.School.objects.get(pk=self.kwargs['school_id'])
         return context
 
     def get_success_url(self):
         try:
             school_id = self.kwargs['school_id']
-            return reverse_lazy('schools:school_detail',
-                                                            kwargs={'pk': school_id})
+            return reverse_lazy(
+                'schools:school_detail',
+                kwargs={'pk': school_id}
+            )
         except:
             return reverse_lazy('schools:school_listing')
 
 
 class StudentDelete(common_mixins.SchoolManagerMixin, DeleteView):
-    model         = Student
+    model         = cm_models.Student
     template_name = "schools/confirm_delete.html"
 
     def delete(self, request, *args, **kwargs):
         self.object = self.get_object()
-        #delete student_school entry
-        School.objects.get(pk=self.kwargs.get('school_id')).students.remove(self.object)
-        #remove student from all studentgroups in school
-        for group in StudentGroup.objects.filter(school=self.kwargs.get('school_id')):
+        # delete student_school entry
+        cm_models.School.objects.get(
+            pk=self.kwargs.get('school_id')
+        ).students.remove(self.object)
+        # remove student from all studentgroups in school
+        for group in cm_models.StudentGroup.objects.filter(school=self.kwargs.get('school_id')):
             group.students.remove(self.object)
         return HttpResponseRedirect(self.get_success_url())
 
     def get_success_url(self):
         try:
             school_id = self.kwargs['school_id']
-            return reverse_lazy('schools:school_detail',
-                                                            kwargs={'pk': school_id})
+            return reverse_lazy(
+                'schools:school_detail',
+                kwargs={'pk': school_id}
+            )
         except:
             return reverse_lazy('schools:school_listing')
 
 
 class StudentGroupListing(common_mixins.SchoolEmployeeMixin, ListView):
-    model = StudentGroup
+    model = cm_models.StudentGroup
 
     def get_context_data(self, **kwargs):
         context                  = super(StudentGroupListing, self).get_context_data(**kwargs)
-        school                   = School.objects.get(pk=self.kwargs['school_id'])
+        school                   = cm_models.School.objects.get(pk=self.kwargs['school_id'])
         context['school']        = school
-        context['studentgroups'] = common_util.slug_sort(StudentGroup.objects.filter(school=school), 'name')
+        context['studentgroups'] = common_util.slug_sort(
+            cm_models.StudentGroup.objects.filter(school=school), 'name')
         return context
 
 
 class StudentGroupDetail(common_mixins.SchoolEmployeeMixin, DetailView):
-    model = StudentGroup
+    model = cm_models.StudentGroup
 
     def get_context_data(self, **kwargs):
         # xxx will be available in the template as the related objects
         context                = super(StudentGroupDetail, self).get_context_data(**kwargs)
-        context['school']      = School.objects.get(pk=self.kwargs['school_id'])
-        context['exceptions']  = Exceptions.objects.all()
-        context['supports']    = SupportResource.objects.all()
+        context['school']      = cm_models.School.objects.get(pk=self.kwargs['school_id'])
+        context['exceptions']  = sae_models.Exceptions.objects.all()
+        context['supports']    = sae_models.SupportResource.objects.all()
         context['surveys']     = self.object.survey_set.filter(active_to__gte=datetime.now())
         context['old_surveys'] = self.object.survey_set.filter(active_to__lt=datetime.now())
         context['students']    = common_util.slug_sort(self.object.students.all(), 'name')
@@ -851,10 +886,10 @@ def group_admin_listing_csv(request, survey_title):
         from ast import literal_eval
         # Create the HttpResponse object with the appropriate CSV header.
         response                        = HttpResponse(content_type='text/csv')
-        response['Content-Disposition'] = 'attachment; filename="'+survey_title+'.csv"'
+        response['Content-Disposition'] = 'attachment; filename="' + survey_title + '.csv"'
         fieldnames = [
-        'FIRST', 'LAST', 'RESULTS EMAIL', 'EXTERNAL ID',
-        'CODE EMAIL', 'TEST NAME', 'GROUP PATH', 'EXTRA TIME'
+            'FIRST', 'LAST', 'RESULTS EMAIL', 'EXTERNAL ID',
+            'CODE EMAIL', 'TEST NAME', 'GROUP PATH', 'EXTRA TIME'
         ]
         writer = csv.writer(response)
         writer.writerow(fieldnames)
@@ -865,7 +900,7 @@ def group_admin_listing_csv(request, survey_title):
             3: 'stærðfræði'
         }
 
-        surveys = Survey.objects.filter(title=survey_title)
+        surveys = cm_models.Survey.objects.filter(title=survey_title)
         for survey in surveys:
             for student in survey.studentgroup.students.all():
                 # find last name by finding last space
@@ -875,12 +910,17 @@ def group_admin_listing_csv(request, survey_title):
 
                 student_processed = False
                 if student.supportresource_set.exists():
-                    longer_time        = literal_eval(student.supportresource_set.first().longer_time)
-                    reading_assistance = literal_eval(student.supportresource_set.first().reading_assistance)
+                    longer_time        = literal_eval(
+                        student.supportresource_set.first().longer_time)
+                    reading_assistance = literal_eval(
+                        student.supportresource_set.first().reading_assistance)
                     """Fyrir öll stuðningsúrræði, ath hvort stuðningsúrræðið sé fyrir þetta próf"""
                     for i in longer_time + reading_assistance:
                         if KEY.get(i, '') in survey.identifier and not student_processed:
-                            """Próftaki með lengdan tíma og engan stuðning á að fá venjulegt próf með lengdum tíma"""
+                            """
+                                Próftaki með lengdan tíma og engan stuðning á að fá venjulegt
+                                próf með lengdum tíma
+                            """
                             if i in longer_time and i not in reading_assistance:
                                 writer.writerow([
                                     student_first_names,
@@ -900,7 +940,7 @@ def group_admin_listing_csv(request, survey_title):
                                     '',
                                     student.ssn,
                                     '',
-                                    survey.identifier+'_stuðningur',
+                                    survey.identifier + '_stuðningur',
                                     '',
                                     'Y'
                                 ])
@@ -923,38 +963,40 @@ def group_admin_listing_csv(request, survey_title):
 
 
 class StudentGroupAdminListing(common_mixins.SuperUserMixin, ListView):
-    model         = StudentGroup
+    model         = cm_models.StudentGroup
     template_name = "common/studentgroup_admin_list.html"
 
     def get_context_data(self, **kwargs):
         try:
             context            = super(StudentGroupAdminListing, self).get_context_data(**kwargs)
-            context['schools'] = common_util.slug_sort(School.objects.all(), 'name')
-            context['surveys'] = Survey.objects.filter(title=self.kwargs['survey_title'])
+            context['schools'] = common_util.slug_sort(cm_models.School.objects.all(), 'name')
+            context['surveys'] = cm_models.Survey.objects.filter(title=self.kwargs['survey_title'])
         except Exception as e:
             context['error'] = str(e)
         return context
 
 
 class StudentGroupCreate(common_mixins.SchoolEmployeeMixin, CreateView):
-    model = StudentGroup
-    form_class = StudentGroupForm
+    model = cm_models.StudentGroup
+    form_class = cm_models.StudentGroupForm
 
     def get_context_data(self, **kwargs):
         # xxx will be available in the template as the related objects
         context             = super(StudentGroupCreate, self).get_context_data(**kwargs)
-        context['school']   = School.objects.get(pk=self.kwargs['school_id'])
-        context['students'] = common_util.slug_sort(Student.objects.filter(school=self.kwargs['school_id']), 'name')
-        context['teachers'] = common_util.slug_sort(Teacher.objects.filter(school=self.kwargs['school_id']), 'name')
+        context['school']   = cm_models.School.objects.get(pk=self.kwargs['school_id'])
+        context['students'] = common_util.slug_sort(
+            cm_models.Student.objects.filter(school=self.kwargs['school_id']), 'name')
+        context['teachers'] = common_util.slug_sort(
+            cm_models.Teacher.objects.filter(school=self.kwargs['school_id']), 'name')
 
         return context
 
     def post(self, request, *args, **kwargs):
         self.object         = None
         form                = self.get_form()
-        #make data mutable
+        # make data mutable
         form.data           = self.request.POST.copy()
-        form.data['school'] = School.objects.get(pk=self.kwargs['school_id']).pk
+        form.data['school'] = cm_models.School.objects.get(pk=self.kwargs['school_id']).pk
         if form.is_valid():
             return self.form_valid(form)
         else:
@@ -963,36 +1005,39 @@ class StudentGroupCreate(common_mixins.SchoolEmployeeMixin, CreateView):
     def get_success_url(self):
         try:
             school_id = self.kwargs['school_id']
-            return reverse_lazy('schools:school_detail',
-                                                            kwargs={'pk': school_id})
+            return reverse_lazy(
+                'schools:school_detail',
+                kwargs={'pk': school_id}
+            )
         except:
             return reverse_lazy('schools:school_listing')
 
 
 class StudentGroupUpdate(common_mixins.SchoolEmployeeMixin, UpdateView):
-    model      = StudentGroup
-    form_class = StudentGroupForm
-
+    model      = cm_models.StudentGroup
+    form_class = cm_models.StudentGroupForm
 
     def get_context_data(self, **kwargs):
         # xxx will be available in the template as the related objects
         context                   = super(StudentGroupUpdate, self).get_context_data(**kwargs)
-        context['school']         = School.objects.get(pk=self.kwargs['school_id'])
-        context['students']       = common_util.slug_sort(Student.objects.filter(school=self.kwargs['school_id']), 'name')
-        context['teachers']       = common_util.slug_sort(Teacher.objects.filter(school=self.kwargs['school_id']), 'name')
-        context['group_managers'] = Teacher.objects.filter(studentgroup=self.kwargs['pk'])
+        context['school']         = cm_models.School.objects.get(pk=self.kwargs['school_id'])
+        context['students']       = common_util.slug_sort(
+            cm_models.Student.objects.filter(school=self.kwargs['school_id']), 'name')
+        context['teachers']       = common_util.slug_sort(
+            cm_models.Teacher.objects.filter(school=self.kwargs['school_id']), 'name')
+        context['group_managers'] = cm_models.Teacher.objects.filter(studentgroup=self.kwargs['pk'])
         return context
 
     def post(self, request, *args, **kwargs):
         self.object         = None
         form                = self.get_form()
-        #make data mutable
+        # make data mutable
         form.data           = self.request.POST.copy()
-        form.data['school'] = School.objects.get(pk=self.kwargs['school_id']).pk
-        form                = StudentGroupForm(
+        form.data['school'] = cm_models.School.objects.get(pk=self.kwargs['school_id']).pk
+        form                = cm_models.StudentGroupForm(
             form.data or None,
-            instance = StudentGroup.objects.get(id=self.kwargs['pk'])
-            )
+            instance = cm_models.StudentGroup.objects.get(id=self.kwargs['pk'])
+        )
         if form.is_valid():
             form.save()
             return self.form_valid(form)
@@ -1005,53 +1050,55 @@ class StudentGroupUpdate(common_mixins.SchoolEmployeeMixin, UpdateView):
             return reverse_lazy(
                 'schools:group_detail',
                 kwargs={'school_id': school_id, 'pk': self.kwargs['pk']}
-                )
+            )
         except:
             return reverse_lazy('schools:school_listing')
 
 
 class StudentGroupDelete(common_mixins.SchoolEmployeeMixin, DeleteView):
-    model         = StudentGroup
+    model         = cm_models.StudentGroup
     template_name = "schools/confirm_delete.html"
 
     def get_success_url(self):
         try:
             school_id = self.kwargs['school_id']
-            return reverse_lazy('schools:school_detail',
-                                                            kwargs={'pk': school_id})
+            return reverse_lazy(
+                'schools:school_detail',
+                kwargs={'pk': school_id}
+            )
         except:
             return reverse_lazy('schools:school_listing')
 
 
 class SurveyListing(common_mixins.SchoolEmployeeMixin, ListView):
-    model = Survey
+    model = cm_models.Survey
 
     def get_context_data(self, **kwargs):
         # xxx will be available in the template as the related objects
         context                       = super(SurveyListing, self).get_context_data(**kwargs)
-        school                        = School.objects.get(pk=self.kwargs['school_id'])
-        context['surveylisting_list'] = common_util.slug_sort(Survey.objects.filter(
+        school                        = cm_models.School.objects.get(pk=self.kwargs['school_id'])
+        context['surveylisting_list'] = common_util.slug_sort(cm_models.Survey.objects.filter(
             studentgroup__in = school.object.studentgroup_set.all()
-            ), 'title')
+        ), 'title')
         return context
 
 
 class SurveyAdminListing(common_mixins.SuperUserMixin, ListView):
-    model         = Survey
+    model         = cm_models.Survey
     template_name = "common/survey_admin_list.html"
 
     def get_context_data(self, **kwargs):
         # xxx will be available in the template as the related objects
         try:
             context            = super(SurveyAdminListing, self).get_context_data(**kwargs)
-            context['surveys'] = Survey.objects.values('title').distinct()
+            context['surveys'] = cm_models.Survey.objects.values('title').distinct()
         except Exception as e:
             context['error'] = str(e)
         return context
 
 
 class SurveyDetail(common_mixins.SchoolEmployeeMixin, DetailView):
-    model = Survey
+    model = cm_models.Survey
 
     def get_survey_data(self):
         """Get survey details"""
@@ -1063,8 +1110,8 @@ class SurveyDetail(common_mixins.SchoolEmployeeMixin, DetailView):
                         self.object.survey,
                         uri_list[1],
                         settings.PROFAGRUNNUR_JSON_KEY
-                        )
                     )
+                )
                 return r.json()
         except Exception as e:
             return []
@@ -1077,34 +1124,37 @@ class SurveyDetail(common_mixins.SchoolEmployeeMixin, DetailView):
             context['survey_details'] = self.get_survey_data()[0]
         else:
             context['survey_details'] = ''
-        context['school']   = School.objects.get(pk=self.kwargs['school_id'])
+        context['school']   = cm_models.School.objects.get(pk=self.kwargs['school_id'])
         context['students'] = self.object.studentgroup.students.all()
         context['expired']  = True if self.object.active_to < date.today() else False
         student_results     = {}
         for student in context['students']:
-            sr = SurveyResult.objects.filter(student=student, survey=self.object)
+            sr = cm_models.SurveyResult.objects.filter(student=student, survey=self.object)
             if sr:
-                r = literal_eval(sr.first().results) # get student results
+                r = literal_eval(sr.first().results)  # get student results
                 try:
-                    student_results[student] = calc_survey_results(
+                    student_results[student] = common_util.calc_survey_results(
                         self.object.identifier, literal_eval(r['click_values']), r['input_values'])
                 except Exception as e:
-                    student_results[student] = calc_survey_results(self.object.identifier, [], r['input_values'])
+                    student_results[student] = common_util.calc_survey_results(
+                        self.object.identifier, [], r['input_values'])
             else:
-                student_results[student] = calc_survey_results(self.object.identifier, [], {})
+                student_results[student] = common_util.calc_survey_results(
+                    self.object.identifier, [], {})
         context['student_results'] = student_results
         context['field_types']     = ['text', 'number', 'text-list', 'number-list']
         return context
 
 
 class SurveyCreate(common_mixins.SchoolEmployeeMixin, CreateView):
-    model      = Survey
-    form_class = SurveyForm
+    model      = cm_models.Survey
+    form_class = cm_models.SurveyForm
 
     def get_survey(self):
         """Get all surveys from profagrunnur to provide a list to survey create"""
         try:
-                r = requests.get(settings.PROFAGRUNNUR_URL+'&json_api_key='+settings.PROFAGRUNNUR_JSON_KEY)
+                r = requests.get(
+                    settings.PROFAGRUNNUR_URL + '&json_api_key=' + settings.PROFAGRUNNUR_JSON_KEY)
                 return r.json()
         except Exception as e:
             return []
@@ -1112,9 +1162,10 @@ class SurveyCreate(common_mixins.SchoolEmployeeMixin, CreateView):
     def post(self, *args, **kwargs):
         self.object               = None
         form                      = self.get_form()
-        #make data mutable
+        # make data mutable
         form.data                 = self.request.POST.copy()
-        form.data['studentgroup'] = StudentGroup.objects.filter(pk=self.kwargs['student_group'])
+        form.data['studentgroup'] = cm_models.StudentGroup.objects.filter(
+            pk=self.kwargs['student_group'])
         if form.is_valid():
             return self.form_valid(form)
         else:
@@ -1130,26 +1181,30 @@ class SurveyCreate(common_mixins.SchoolEmployeeMixin, CreateView):
         try:
             school_id     = self.kwargs['school_id']
             student_group = self.kwargs['student_group']
-            return reverse_lazy('schools:group_detail',
-                                                            kwargs={'school_id': school_id, 'pk': student_group})
+            return reverse_lazy(
+                'schools:group_detail',
+                kwargs={'school_id': school_id, 'pk': student_group}
+            )
         except:
             return reverse_lazy('schools:school_listing')
 
 
 class SurveyUpdate(common_mixins.SchoolEmployeeMixin, UpdateView):
-    model      = Survey
-    form_class = SurveyForm
+    model      = cm_models.Survey
+    form_class = cm_models.SurveyForm
 
     def get_survey(self):
         try:
-                r = requests.get(settings.PROFAGRUNNUR_URL+'&json_api_key='+settings.PROFAGRUNNUR_JSON_KEY)
-                return r.json()
+            r = requests.get(
+                settings.PROFAGRUNNUR_URL + '&json_api_key=' + settings.PROFAGRUNNUR_JSON_KEY)
+            return r.json()
         except Exception as e:
             return []
 
     def get_form(self):
         form                                 = super(SurveyUpdate, self).get_form(self.form_class)
-        form.fields['studentgroup'].queryset = StudentGroup.objects.filter(school=self.kwargs['school_id'])
+        form.fields['studentgroup'].queryset = cm_models.StudentGroup.objects.filter(
+            school=self.kwargs['school_id'])
         return form
 
     def get_context_data(self, **kwargs):
@@ -1161,29 +1216,33 @@ class SurveyUpdate(common_mixins.SchoolEmployeeMixin, UpdateView):
     def get_success_url(self):
         try:
             school_id = self.kwargs['school_id']
-            return reverse_lazy('schools:school_detail',
-                                                            kwargs={'pk': school_id})
+            return reverse_lazy(
+                'schools:school_detail',
+                kwargs={'pk': school_id}
+            )
         except:
             return reverse_lazy('schools:school_listing')
 
 
 class SurveyDelete(common_mixins.SchoolEmployeeMixin, DeleteView):
-    model         = Survey
+    model         = cm_models.Survey
     template_name = "schools/confirm_delete.html"
 
     def delete(self, request, *args, **kwargs):
         self.object = self.get_object()
         success_url = self.get_success_url()
-        #delete SurveyResults
-        SurveyResult.objects.filter(survey=self.object).delete()
+        # delete SurveyResults
+        cm_models.SurveyResult.objects.filter(survey=self.object).delete()
         self.object.delete()
         return HttpResponseRedirect(success_url)
 
     def get_success_url(self):
         try:
             school_id = self.kwargs['school_id']
-            return reverse_lazy('schools:school_detail',
-                                                            kwargs={'pk': school_id})
+            return reverse_lazy(
+                'schools:school_detail',
+                kwargs={'pk': school_id}
+            )
         except:
             return reverse_lazy('schools:school_listing')
 
@@ -1191,7 +1250,7 @@ class SurveyDelete(common_mixins.SchoolEmployeeMixin, DeleteView):
 def get_survey_data(kwargs):
     """Get survey details"""
     try:
-        survey   = Survey.objects.get(pk=kwargs['survey_id']).survey
+        survey   = cm_models.Survey.objects.get(pk=kwargs['survey_id']).survey
         uri_list = settings.PROFAGRUNNUR_URL.split('?')
         r        = requests.get(
             '{0}/{1}?{2}&json_api_key={3}'.format(
@@ -1199,27 +1258,27 @@ def get_survey_data(kwargs):
                 survey,
                 uri_list[1],
                 settings.PROFAGRUNNUR_JSON_KEY
-                )
             )
+        )
         return r.json()
     except Exception as e:
         return []
 
 
 class SurveyResultCreate(common_mixins.SchoolEmployeeMixin, CreateView):
-    model      = SurveyResult
-    form_class = SurveyResultForm
+    model      = cm_models.SurveyResult
+    form_class = cm_models.SurveyResultForm
 
     def get_context_data(self, **kwargs):
         # xxx will be available in the template as the related objects
         context                = super(SurveyResultCreate, self).get_context_data(**kwargs)
         context['data_result'] = "''"
-        context['student']     = Student.objects.filter(pk=self.kwargs['student_id'])
-        context['survey']      = Survey.objects.filter(pk=self.kwargs['survey_id'])
+        context['student']     = cm_models.Student.objects.filter(pk=self.kwargs['student_id'])
+        context['survey']      = cm_models.Survey.objects.filter(pk=self.kwargs['survey_id'])
         try:
             data = get_survey_data(self.kwargs)
             if len(data) == 0:
-                #survey is expired
+                # survey is expired
                 context['grading_template'] = ""
                 context['info']             = ""
                 context['input_fields']     = ""
@@ -1234,10 +1293,10 @@ class SurveyResultCreate(common_mixins.SchoolEmployeeMixin, CreateView):
     def post(self, *args, **kwargs):
         self.object          = None
         form                 = self.get_form()
-        #make data mutable
+        # make data mutable
         form.data            = self.request.POST.copy()
-        form.data['student'] = Student.objects.get(pk=self.kwargs['student_id']).pk
-        form.data['survey']  = Survey.objects.get(pk=self.kwargs['survey_id']).pk
+        form.data['student'] = cm_models.Student.objects.get(pk=self.kwargs['student_id']).pk
+        form.data['survey']  = cm_models.Survey.objects.get(pk=self.kwargs['survey_id']).pk
         if form.is_valid():
             return self.form_valid(form)
         else:
@@ -1245,18 +1304,18 @@ class SurveyResultCreate(common_mixins.SchoolEmployeeMixin, CreateView):
 
     def form_valid(self, form):
         survey_results             = form.save(commit=False)
-        survey_results.reported_by =Teacher.objects.get(user_id=self.request.user.pk)
-        survey_results.student     = Student.objects.get(pk=self.kwargs['student_id'])
-        survey_results.survey      = Survey.objects.get(pk=self.kwargs['survey_id'])
+        survey_results.reported_by = cm_models.Teacher.objects.get(user_id=self.request.user.pk)
+        survey_results.student     = cm_models.Student.objects.get(pk=self.kwargs['student_id'])
+        survey_results.survey      = cm_models.Survey.objects.get(pk=self.kwargs['survey_id'])
         survey_results.created_at  = timezone.now()
-        data_results               = {}
-        #extract data
-        #survey_results.results = json.dumps(self.request.POST.getlist('data_results[]'))
+        # extract data
         survey_results_data = {'click_values': [], 'input_values': {}}
         for k in self.request.POST:
             if k != 'csrfmiddlewaretoken':
                 if k == 'data_results[]':
-                    survey_results_data['click_values'] = json.dumps(self.request.POST.getlist('data_results[]'))
+                    survey_results_data['click_values'] = json.dumps(
+                        self.request.POST.getlist('data_results[]')
+                    )
                 else:
                     survey_results_data['input_values'][k] = self.request.POST[k]
         survey_results.results = json.dumps(survey_results_data)
@@ -1264,29 +1323,32 @@ class SurveyResultCreate(common_mixins.SchoolEmployeeMixin, CreateView):
 
     def get_success_url(self):
         try:
-            return reverse_lazy('schools:survey_detail',
-                                                            kwargs={
-                                                                'pk': self.kwargs['survey_id'],
-                                                                'school_id': self.kwargs['school_id']
-                                                            })
+            return reverse_lazy(
+                'schools:survey_detail',
+                kwargs={
+                    'pk'       : self.kwargs['survey_id'],
+                    'school_id': self.kwargs['school_id']
+                }
+            )
         except:
             return reverse_lazy('schools:school_listing')
 
 
 class SurveyResultUpdate(common_mixins.SchoolEmployeeMixin, UpdateView):
-    model      = SurveyResult
-    form_class = SurveyResultForm
+    model      = cm_models.SurveyResult
+    form_class = cm_models.SurveyResultForm
 
     def form_valid(self, form):
         survey_results            = form.save(commit=False)
         survey_results.created_at = timezone.now()
-        data_results              = {}
-        #extract data
+        # extract data
         survey_results_data       = {'click_values': [], 'input_values': {}}
         for k in self.request.POST:
             if k != 'csrfmiddlewaretoken':
                 if k == 'data_results[]':
-                    survey_results_data['click_values'] = json.dumps(self.request.POST.getlist('data_results[]'))
+                    survey_results_data['click_values'] = json.dumps(
+                        self.request.POST.getlist('data_results[]')
+                    )
                 else:
                     survey_results_data['input_values'][k] = self.request.POST[k]
         survey_results.results = json.dumps(survey_results_data)
@@ -1295,9 +1357,11 @@ class SurveyResultUpdate(common_mixins.SchoolEmployeeMixin, UpdateView):
     def get_context_data(self, **kwargs):
         # xxx will be available in the template as the related objects
         context                     = super(SurveyResultUpdate, self).get_context_data(**kwargs)
-        context['student']          = Student.objects.filter(pk=self.kwargs['student_id'])
-        context['survey']           = Survey.objects.filter(pk=self.kwargs['survey_id'])
-        context['data_result']      = json.loads(SurveyResult.objects.get(pk=self.kwargs['pk']).results) or "''"
+        context['student']          = cm_models.Student.objects.filter(pk=self.kwargs['student_id'])
+        context['survey']           = cm_models.Survey.objects.filter(pk=self.kwargs['survey_id'])
+        context['data_result']      = json.loads(
+            cm_models.SurveyResult.objects.get(pk=self.kwargs['pk']).results
+        ) or "''"
         data                        = get_survey_data(self.kwargs)
         context['grading_template'] = data[0]['grading_template'][0]['md']
         context['input_fields']     = data[0]['input_fields']
@@ -1306,58 +1370,65 @@ class SurveyResultUpdate(common_mixins.SchoolEmployeeMixin, UpdateView):
 
     def get_success_url(self):
         try:
-            return reverse_lazy('schools:survey_detail',
-                                                            kwargs={
-                                                                'pk': self.kwargs['survey_id'],
-                                                                'school_id': self.kwargs['school_id']
-                                                            })
+            return reverse_lazy(
+                'schools:survey_detail',
+                kwargs={
+                    'pk'       : self.kwargs['survey_id'],
+                    'school_id': self.kwargs['school_id']
+                }
+            )
         except:
             return reverse_lazy('schools:school_listing')
 
 
 class SurveyResultDelete(common_mixins.SchoolEmployeeMixin, DeleteView):
-    model         = SurveyResult
+    model         = cm_models.SurveyResult
     template_name = "schools/confirm_delete.html"
 
     def get_success_url(self):
         try:
             school_id = self.kwargs['school_id']
-            return reverse_lazy('schools:school_detail',
-                                                            kwargs={'pk': school_id})
+            return reverse_lazy(
+                'schools:school_detail',
+                kwargs={'pk': school_id}
+            )
         except:
             return reverse_lazy('schools:school_listing')
 
 
 class SurveyLoginListing(common_mixins.SchoolEmployeeMixin, ListView):
-    model = SurveyLogin
+    model = cm_models.SurveyLogin
 
     def get_context_data(self, **kwargs):
         # xxx will be available in the template as the related objects
         context                      = super(SurveyLoginListing, self).get_context_data(**kwargs)
-        school                       = School.objects.get(pk=self.kwargs['school_id'])
+        school                       = cm_models.School.objects.get(pk=self.kwargs['school_id'])
         context['school_id']         = school.id
-        context['survey_login_list'] = SurveyLogin.objects.filter(
-            student__in = Student.objects.filter(school=school)).values('survey_id').distinct()
+        context['survey_login_list'] = cm_models.SurveyLogin.objects.filter(
+            student__in = cm_models.Student.objects.filter(school=school)
+        ).values('survey_id').distinct()
         return context
 
 
 class SurveyLoginAdminListing(common_mixins.SuperUserMixin, ListView):
-    model = SurveyLogin
+    model = cm_models.SurveyLogin
     template_name = "common/surveylogin_admin_list.html"
     # Success url?
 
     def get_context_data(self, **kwargs):
         # xxx will be available in the template as the related objects
-        context                      = super(SurveyLoginAdminListing, self).get_context_data(**kwargs)
-        context['survey_login_list'] = SurveyLogin.objects.all().values('survey_id').distinct()
+        context = super(SurveyLoginAdminListing, self).get_context_data(**kwargs)
+
+        context['survey_login_list'] = cm_models.SurveyLogin.objects.all(
+        ).values('survey_id').distinct()
         return context
 
 
 class SurveyLoginDetail(common_mixins.SchoolManagerMixin, DetailView):
-    model = SurveyLogin
+    model = cm_models.SurveyLogin
 
     def get_object(self, **kwargs):
-        return SurveyLogin.objects.filter(survey_id=self.kwargs['survey_id']).first()
+        return cm_models.SurveyLogin.objects.filter(survey_id=self.kwargs['survey_id']).first()
 
     def get_template_names(self, **kwargs):
         if 'print' in self.kwargs:
@@ -1372,11 +1443,16 @@ class SurveyLoginDetail(common_mixins.SchoolManagerMixin, DetailView):
         context              = super(SurveyLoginDetail, self).get_context_data(**kwargs)
         context['survey_id'] = self.kwargs['survey_id']
         if 'school_id' in self.kwargs:
-            school                           = School.objects.get(pk=self.kwargs['school_id'])
-            context['survey_login_students'] = SurveyLogin.objects.filter(
-                student__in = Student.objects.filter(school=school)).filter(survey_id=self.kwargs['survey_id'])
+            school = cm_models.School.objects.get(pk=self.kwargs['school_id'])
+
+            context['survey_login_students'] = cm_models.SurveyLogin.objects.filter(
+                student__in = cm_models.Student.objects.filter(school=school),
+                survey_id   = self.kwargs['survey_id']
+            )
         else:
-            context['survey_login_students'] = SurveyLogin.objects.filter(survey_id=self.kwargs['survey_id'])
+            context['survey_login_students'] = cm_models.SurveyLogin.objects.filter(
+                survey_id=self.kwargs['survey_id']
+            )
         if 'íslenska' in self.kwargs['survey_id']:
             context['exam'] = '1'
         elif 'enska' in self.kwargs['survey_id']:
@@ -1387,8 +1463,8 @@ class SurveyLoginDetail(common_mixins.SchoolManagerMixin, DetailView):
 
 
 class SurveyLoginCreate(common_mixins.SuperUserMixin, CreateView):
-    model         = SurveyLogin
-    form_class    = SurveyLoginForm
+    model         = cm_models.SurveyLogin
+    form_class    = cm_models.SurveyLoginForm
     template_name = "common/password_form_import.html"
 
     def post(self, *args, **kwargs):
@@ -1438,16 +1514,20 @@ class SurveyLoginCreate(common_mixins.SuperUserMixin, CreateView):
 
         else:
             student_data = json.loads(self.request.POST['students'])
-            #iterate through the data, add students if they don't exist then create a survey_login object
+            # Iterate through the data
+            # Add students if they don't exist then create a survey_login object
             for data in student_data:
-                student = Student.objects.get(ssn=data['ssn']) #student already exists
+                student = cm_models.Student.objects.get(ssn=data['ssn'])  # student already exists
 
                 # check if survey_login for student exists, create if not, otherwise update
-                survey_login = SurveyLogin.objects.filter(student=student, survey_id=data['survey_id'])
+                survey_login = cm_models.SurveyLogin.objects.filter(
+                    student   = student,
+                    survey_id = data['survey_id']
+                )
                 if survey_login:
                     survey_login.update(survey_code=data['password'])
                 else:
-                    survey_login = SurveyLogin.objects.create(
+                    survey_login = cm_models.SurveyLogin.objects.create(
                         student     = student,
                         survey_id   = data['survey_id'],
                         survey_code = data['password']
@@ -1459,14 +1539,14 @@ class SurveyLoginCreate(common_mixins.SuperUserMixin, CreateView):
 
 
 class SurveyLoginDelete(common_mixins.SuperUserMixin, DeleteView):
-    model         = SurveyLogin
+    model         = cm_models.SurveyLogin
     template_name = "schools/confirm_delete.html"
 
     def get_success_url(self):
         return reverse_lazy('schools:survey_login_admin_listing')
 
     def get_object(self):
-        return SurveyLogin.objects.filter(survey_id=self.kwargs['survey_id'])
+        return cm_models.SurveyLogin.objects.filter(survey_id=self.kwargs['survey_id'])
 
 
 class AdminListing(common_mixins.SuperUserMixin, ListView):
@@ -1485,7 +1565,7 @@ class AdminListing(common_mixins.SuperUserMixin, ListView):
 
 class AdminCreate(common_mixins.SuperUserMixin, CreateView):
     model         = User
-    form_class    = SuperUserForm
+    form_class    = cm_models.SuperUserForm
     template_name = "common/admin_form.html"
 
     def post(self, *args, **kwargs):
@@ -1507,7 +1587,7 @@ class AdminCreate(common_mixins.SuperUserMixin, CreateView):
 
 class AdminUpdate(common_mixins.SuperUserMixin, UpdateView):
     model         = User
-    form_class    = SuperUserForm
+    form_class    = cm_models.SuperUserForm
     template_name = "common/admin_form.html"
 
     def get_success_url(self):
@@ -1515,7 +1595,7 @@ class AdminUpdate(common_mixins.SuperUserMixin, UpdateView):
 
 
 def group_admin_listing_excel(request, survey_title):
-    surveys = Survey.objects.filter(title=survey_title)
+    surveys = cm_models.Survey.objects.filter(title=survey_title)
 
     response                        = HttpResponse(
         content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
@@ -1548,7 +1628,7 @@ def group_admin_listing_excel(request, survey_title):
 
 def group_admin_attendance_excel(request, survey_title):
 
-    surveys  = Survey.objects.filter(title=survey_title)
+    surveys  = cm_models.Survey.objects.filter(title=survey_title)
     response = HttpResponse(
         content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
     response['Content-Disposition'] = 'attachment; filename=samræmdupróf.xlsx'
@@ -1579,7 +1659,7 @@ def group_admin_attendance_excel(request, survey_title):
             ws.cell('D' + str(index)).value = student.ssn
             ws.cell('E' + str(index)).value = survey.studentgroup.name
 
-            sr              = SurveyResult.objects.filter(student=student, survey=survey)
+            sr              = cm_models.SurveyResult.objects.filter(student=student, survey=survey)
             student_results = ""
             if sr:
                 r = literal_eval(sr.first().results)  # get student results
@@ -1593,7 +1673,7 @@ def group_admin_attendance_excel(request, survey_title):
             if student_results != '':
                 ws.cell(row=index, column=student_results + 6).value = "1"
 
-            support = SupportResource.objects.filter(student=student)
+            support = sae_models.SupportResource.objects.filter(student=student)
 
             if support:
                 support_available = []
