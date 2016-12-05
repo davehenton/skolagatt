@@ -4,11 +4,10 @@ from __future__ import unicode_literals
 from django.db                  import models
 from django                     import forms
 from django.contrib.auth.models import User
-from django.contrib.auth.models import Group
 from django.utils               import timezone
 
-from datetime import datetime
 import json
+
 
 class Notification(models.Model):
     notification_type = models.CharField(max_length = 128)
@@ -165,11 +164,11 @@ class StudentGroupForm(forms.ModelForm):
 
 class Survey(models.Model):
     studentgroup = models.ForeignKey('StudentGroup')
-    survey       = models.CharField(max_length = 1024) #survey id from profagrunnur
-    title        = models.CharField(max_length = 256) #value from profagrunnur
-    identifier   = models.CharField(max_length = 256,null=True) #value from profagrunnur
-    active_from  = models.DateField(default=timezone.now) #value from profagrunnur
-    active_to    = models.DateField(default=timezone.now) #value from profagrunnur
+    survey       = models.CharField(max_length = 1024)            # survey id from profagrunnur
+    title        = models.CharField(max_length = 256)             # value from profagrunnur
+    identifier   = models.CharField(max_length = 256, null=True)  # value from profagrunnur
+    active_from  = models.DateField(default=timezone.now)         # value from profagrunnur
+    active_to    = models.DateField(default=timezone.now)         # value from profagrunnur
 
     def is_expired(self):
         if timezone.now().date() > self.active_to:
@@ -186,7 +185,7 @@ class Survey(models.Model):
 class SurveyForm(forms.ModelForm):
     class Meta:
         model   = Survey
-        fields  = ['studentgroup', 'survey', 'title', 'identifier','active_from', 'active_to']
+        fields  = ['studentgroup', 'survey', 'title', 'identifier', 'active_from', 'active_to']
         widgets = {
             'studentgroup': forms.HiddenInput(),
             'survey'      : forms.HiddenInput(),
@@ -210,7 +209,7 @@ class SurveyResult(models.Model):
     created_at  = models.DateTimeField(default=timezone.now)
     results     = models.TextField()
     reported_by = models.ForeignKey('Teacher')
-    survey      = models.ForeignKey('Survey') #url to survey
+    survey      = models.ForeignKey('Survey')  # url to survey
     created_at  = models.DateField(default=timezone.now)
 
     @classmethod
@@ -233,12 +232,13 @@ class SurveyResultForm(forms.ModelForm):
 
 class SurveyLogin(models.Model):
     student     = models.ForeignKey(Student)
-    survey_id   = models.CharField(max_length = 256) #external survey identity
+    survey_id   = models.CharField(max_length = 256)  # external survey identity
     survey_code = models.CharField(max_length = 16)
 
 
 class SurveyLoginForm(forms.ModelForm):
     file = forms.FileField()
+
     class Meta:
         model  = SurveyLogin
         fields = ['student', 'survey_id', 'survey_code']
