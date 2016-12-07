@@ -75,7 +75,7 @@ class TeacherForm(forms.ModelForm):
 
 
 class Student(models.Model):
-    ssn  = models.CharField(max_length = 10, unique=True)
+    ssn  = models.CharField(max_length = 32, unique=True)
     name = models.CharField(max_length = 128)
 
     class Meta:

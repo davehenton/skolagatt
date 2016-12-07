@@ -17,7 +17,7 @@ class StudentExceptionSupport(models.Model):
 class Exceptions(models.Model):
     student             = models.ForeignKey(Student)
     reason              = models.CharField(max_length = 1)
-    exam                = models.CharField(max_length = 1)
+    exam                = models.CharField(max_length = 32)
     explanation         = models.CharField(max_length = 500)
     exceptionssignature = models.ForeignKey(Manager)
     exceptionsdate      = models.DateField(auto_now=False, auto_now_add=True, null=True)
