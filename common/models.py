@@ -33,19 +33,6 @@ class Manager(models.Model):
 	def __str__(self):
 		return self.name
 
-class ManagerForm(forms.ModelForm):
-	class Meta:
-		model = Manager
-		fields = ['ssn', 'name', 'email', 'phone', 'position', 'user']
-		widgets = {'user': forms.HiddenInput()}
-		labels = {
-			'ssn': 'Kennitala',
-			'name': 'Nafn',
-			'email': 'Tölvupóstfang',
-			'phone': 'Símanúmer',
-			'position': 'Staða',
-			'user': 'Notendur',
-		}
 
 class Teacher(models.Model):
 	ssn = models.CharField(max_length = 10, unique=True)
@@ -59,17 +46,6 @@ class Teacher(models.Model):
 	def __str__(self):
 		return self.name
 
-class TeacherForm(forms.ModelForm):
-	class Meta:
-		model = Teacher
-		fields =  ['ssn', 'name', 'position', 'user']
-		widgets = {'user': forms.HiddenInput()}
-		labels = {
-			'ssn': 'Kennitala',
-			'name': 'Nafn',
-			'position': 'Staða',			
-			'user': 'Notendur',
-		}
 
 class Student(models.Model):
 	ssn = models.CharField(max_length = 10, unique=True)
@@ -81,14 +57,7 @@ class Student(models.Model):
 	def __str__(self):
 		return self.name
 
-class StudentForm(forms.ModelForm):
-	class Meta:
-		model = Student
-		fields =  ['ssn', 'name']
-		labels = {
-			'ssn': 'Kennitala',
-			'name': 'Nafn',
-		}
+
 
 class School(models.Model):
 	name = models.CharField(max_length = 128)
@@ -104,18 +73,6 @@ class School(models.Model):
 		ordering = ["name"]
 
 
-class SchoolForm(forms.ModelForm):
-	class Meta:
-		model = School
-		fields = '__all__'
-		widgets = {'group': forms.HiddenInput()}
-		labels = {
-			'name': 'Nafn',
-			'ssn': 'Kennitala',
-			'managers': 'Stjórnendur',
-			'teachers': 'Kennarar',
-			'students': 'Nemendur',
-		}
 
 class StudentGroup(models.Model):
 	name = models.CharField(max_length = 128)
@@ -140,19 +97,6 @@ class StudentGroup(models.Model):
 	def __str__(self):
 		return self.name
 
-class StudentGroupForm(forms.ModelForm):
-	class Meta:
-		model = StudentGroup
-		fields =  ['name', 'student_year', 'group_managers', 'school', 'students']
-		widgets = {'school': forms.HiddenInput()}
-		labels = {
-			'name': 'Nafn',
-			'student_year': 'Árgangur',
-			'group_managers': 'Kennarar',
-			'school': 'Skóli',
-			'students': 'Nemendur',
-		}
-
 class Survey(models.Model):
 	studentgroup = models.ForeignKey('StudentGroup')
 	survey = models.CharField(max_length = 1024) #survey id from profagrunnur
@@ -172,26 +116,6 @@ class Survey(models.Model):
 	def __str__(self):
 		return self.title + " (" + self.survey + ")"
 
-class SurveyForm(forms.ModelForm):
-	class Meta:
-		model = Survey
-		fields =  ['studentgroup', 'survey', 'title', 'identifier','active_from', 'active_to']
-		widgets= {
-			'studentgroup': forms.HiddenInput(),
-			'survey': forms.HiddenInput(),
-			'identifier': forms.HiddenInput(),
-			'title': forms.HiddenInput(),
-			'active_from': forms.HiddenInput(),
-			'active_to': forms.HiddenInput(),
-		}
-		labels = {
-			'studentgroup': 'Nemendahópur',
-			'survey': 'Könnun',
-			'identifier': 'Auðkenniskóði',
-			'title': 'Titill',
-			'active_from': 'Virkt frá',
-			'active_to': 'Virkt til',
-		}
 
 
 class SurveyResult(models.Model):
@@ -206,39 +130,8 @@ class SurveyResult(models.Model):
 	def get_results(cls, id):
 		return json.loads(cls(pk=id).results)
 
-class SurveyResultForm(forms.ModelForm):
-	class Meta:
-		model = SurveyResult
-		fields = []
-		labels = {
-			'student': 'Nemandi',
-			'created_at': 'Búið til',
-			'results': 'Niðurstöður',
-			'reported_by': 'Skýrsla frá',
-			'survey': 'Könnun',
-		}
-
 class SurveyLogin(models.Model):
 	student = models.ForeignKey(Student)
 	survey_id = models.CharField(max_length = 256) #external survey identity
 	survey_code = models.CharField(max_length = 16)
 
-class SurveyLoginForm(forms.ModelForm):
-	file = forms.FileField()
-	class Meta:
-		model = SurveyLogin
-		fields = ['student', 'survey_id', 'survey_code']
-		labels = {
-			'student': 'Nemandi',
-			'survey_id': 'Könnunarnúmer',
-			'survey_code': 'Könnunarkóði',
-		}
-
-class SuperUserForm(forms.ModelForm):
-	class Meta:
-		model = User
-		fields = ['username', 'is_superuser']
-		labels = {
-			'username': 'Kennitala',
-			'is_superuser': 'Umsjónarmaður',
-		}		

@@ -19,8 +19,15 @@ import xlrd
 import openpyxl
 from datetime import datetime, date
 from ast import literal_eval
+from common.forms import (
+          ManagerForm, TeacherForm, StudentForm, SchoolForm,
+          StudentGroupForm, SurveyForm, SurveyResultForm,
+          SurveyLoginForm, SuperUserForm)
 
-from common.models import *
+from common.models import (
+          Notification, Manager, Teacher,
+          Student, School, StudentGroup, Survey,
+          SurveyResult, SurveyLogin)
 from supportandexception.models import *
 from .util import *
 
