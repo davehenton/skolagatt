@@ -9,7 +9,8 @@ from django.contrib.auth.models import User
 from rest_framework import viewsets
 
 from .             import models
-from common.models import StudentForm, Student, StudentGroup, School, Manager
+from common.models import Student, StudentGroup, School, Manager
+from common.forms  import StudentForm
 from .             import forms
 from common.util   import is_school_manager
 
