@@ -24,6 +24,7 @@ import csv
 import common.mixins as common_mixins
 import common.models as cm_models
 import common.util   as common_util
+import common.fomrs  as cm_forms
 
 import supportandexception.models as sae_models
 
@@ -116,13 +117,13 @@ class SchoolDetail(common_mixins.SchoolEmployeeMixin, DetailView):
 
 class SchoolCreate(common_mixins.SuperUserMixin, CreateView):
     model       = cm_models.School
-    form_class  = cm_models.SchoolForm
+    form_class  = cm_forms.SchoolForm
     success_url = reverse_lazy('schools:school_listing')
 
 
 class SchoolCreateImport(common_mixins.SchoolManagerMixin, CreateView):
     model         = cm_models.School
-    form_class    = cm_models.SchoolForm
+    form_class    = cm_forms.SchoolForm
     template_name = "common/school_form_import.html"
 
     def get_context_data(self, **kwargs):
@@ -176,7 +177,7 @@ class SchoolCreateImport(common_mixins.SchoolManagerMixin, CreateView):
 
 class SchoolUpdate(common_mixins.SuperUserMixin, UpdateView):
     model       = cm_models.School
-    form_class  = cm_models.SchoolForm
+    form_class  = cm_forms.SchoolForm
     success_url = reverse_lazy('schools:school_listing')
 
 
@@ -227,7 +228,7 @@ class ManagerOverview(UserPassesTestMixin, DetailView):
 
 class ManagerCreate(common_mixins.SchoolManagerMixin, CreateView):
     model      = cm_models.Manager
-    form_class = cm_models.ManagerForm
+    form_class = cm_forms.ManagerForm
 
     def get_context_data(self, **kwargs):
         context           = super(ManagerCreate, self).get_context_data(**kwargs)
@@ -276,7 +277,7 @@ class ManagerCreate(common_mixins.SchoolManagerMixin, CreateView):
 
 class ManagerCreateImport(common_mixins.SchoolManagerMixin, CreateView):
     model         = cm_models.School
-    form_class    = cm_models.SchoolForm
+    form_class    = cm_forms.SchoolForm
     template_name = "common/manager_form_import.html"
 
     def get_context_data(self, **kwargs):
@@ -340,7 +341,7 @@ class ManagerCreateImport(common_mixins.SchoolManagerMixin, CreateView):
 
 class ManagerUpdate(common_mixins.SchoolManagerMixin, UpdateView):
     model      = cm_models.Manager
-    form_class = cm_models.ManagerForm
+    form_class = cm_forms.ManagerForm
 
     def get_context_data(self, **kwargs):
         context           = super(ManagerUpdate, self).get_context_data(**kwargs)
@@ -451,7 +452,7 @@ class TeacherOverview(UserPassesTestMixin, DetailView):
 
 class TeacherCreate(common_mixins.SchoolManagerMixin, CreateView):
     model      = cm_models.Teacher
-    form_class = cm_models.TeacherForm
+    form_class = cm_forms.TeacherForm
 
     def get_context_data(self, **kwargs):
         context           = super(TeacherCreate, self).get_context_data(**kwargs)
@@ -497,7 +498,7 @@ class TeacherCreate(common_mixins.SchoolManagerMixin, CreateView):
 
 class TeacherCreateImport(common_mixins.SchoolManagerMixin, CreateView):
     model         = cm_models.Teacher
-    form_class    = cm_models.TeacherForm
+    form_class    = cm_forms.TeacherForm
     template_name = "common/teacher_form_import.html"
 
     def get_context_data(self, **kwargs):
@@ -582,7 +583,7 @@ class TeacherCreateImport(common_mixins.SchoolManagerMixin, CreateView):
 
 class TeacherUpdate(common_mixins.SchoolManagerMixin, UpdateView):
     model      = cm_models.Teacher
-    form_class = cm_models.TeacherForm
+    form_class = cm_forms.TeacherForm
 
     def get_context_data(self, **kwargs):
         context           = super(TeacherUpdate, self).get_context_data(**kwargs)
@@ -686,7 +687,7 @@ def StudentNotes(request, school_id, pk):
 
 class StudentCreateImport(common_mixins.SchoolManagerMixin, CreateView):
     model         = cm_models.Student
-    form_class    = cm_models.StudentForm
+    form_class    = cm_forms.StudentForm
     template_name = "common/student_form_import.html"
 
     def get_context_data(self, **kwargs):
@@ -768,7 +769,7 @@ class StudentCreateImport(common_mixins.SchoolManagerMixin, CreateView):
 
 class StudentCreate(common_mixins.SchoolManagerMixin, CreateView):
     model      = cm_models.Student
-    form_class = cm_models.StudentForm
+    form_class = cm_forms.StudentForm
 
     def post(self, *args, **kwargs):
         self.object = cm_models.Student.objects.filter(ssn=self.request.POST.get('ssn')).first()
@@ -811,7 +812,7 @@ class StudentCreate(common_mixins.SchoolManagerMixin, CreateView):
 
 class StudentUpdate(common_mixins.SchoolManagerMixin, UpdateView):
     model      = cm_models.Student
-    form_class = cm_models.StudentForm
+    form_class = cm_forms.StudentForm
 
     def get_context_data(self, **kwargs):
         context           = super(StudentUpdate, self).get_context_data(**kwargs)
@@ -979,7 +980,7 @@ class StudentGroupAdminListing(common_mixins.SuperUserMixin, ListView):
 
 class StudentGroupCreate(common_mixins.SchoolEmployeeMixin, CreateView):
     model = cm_models.StudentGroup
-    form_class = cm_models.StudentGroupForm
+    form_class = cm_forms.StudentGroupForm
 
     def get_context_data(self, **kwargs):
         # xxx will be available in the template as the related objects
@@ -1016,7 +1017,7 @@ class StudentGroupCreate(common_mixins.SchoolEmployeeMixin, CreateView):
 
 class StudentGroupUpdate(common_mixins.SchoolEmployeeMixin, UpdateView):
     model      = cm_models.StudentGroup
-    form_class = cm_models.StudentGroupForm
+    form_class = cm_forms.StudentGroupForm
 
     def get_context_data(self, **kwargs):
         # xxx will be available in the template as the related objects
@@ -1035,7 +1036,7 @@ class StudentGroupUpdate(common_mixins.SchoolEmployeeMixin, UpdateView):
         # make data mutable
         form.data           = self.request.POST.copy()
         form.data['school'] = cm_models.School.objects.get(pk=self.kwargs['school_id']).pk
-        form                = cm_models.StudentGroupForm(
+        form                = cm_forms.StudentGroupForm(
             form.data or None,
             instance = cm_models.StudentGroup.objects.get(id=self.kwargs['pk'])
         )
@@ -1149,7 +1150,7 @@ class SurveyDetail(common_mixins.SchoolEmployeeMixin, DetailView):
 
 class SurveyCreate(common_mixins.SchoolEmployeeMixin, CreateView):
     model      = cm_models.Survey
-    form_class = cm_models.SurveyForm
+    form_class = cm_forms.SurveyForm
 
     def get_survey(self):
         """Get all surveys from profagrunnur to provide a list to survey create"""
@@ -1192,7 +1193,7 @@ class SurveyCreate(common_mixins.SchoolEmployeeMixin, CreateView):
 
 class SurveyUpdate(common_mixins.SchoolEmployeeMixin, UpdateView):
     model      = cm_models.Survey
-    form_class = cm_models.SurveyForm
+    form_class = cm_forms.SurveyForm
 
     def get_survey(self):
         try:
@@ -1268,7 +1269,7 @@ def get_survey_data(kwargs):
 
 class SurveyResultCreate(common_mixins.SchoolEmployeeMixin, CreateView):
     model      = cm_models.SurveyResult
-    form_class = cm_models.SurveyResultForm
+    form_class = cm_forms.SurveyResultForm
 
     def get_context_data(self, **kwargs):
         # xxx will be available in the template as the related objects
@@ -1337,7 +1338,7 @@ class SurveyResultCreate(common_mixins.SchoolEmployeeMixin, CreateView):
 
 class SurveyResultUpdate(common_mixins.SchoolEmployeeMixin, UpdateView):
     model      = cm_models.SurveyResult
-    form_class = cm_models.SurveyResultForm
+    form_class = cm_forms.SurveyResultForm
 
     def form_valid(self, form):
         survey_results            = form.save(commit=False)
@@ -1465,7 +1466,7 @@ class SurveyLoginDetail(common_mixins.SchoolManagerMixin, DetailView):
 
 class SurveyLoginCreate(common_mixins.SuperUserMixin, CreateView):
     model         = cm_models.SurveyLogin
-    form_class    = cm_models.SurveyLoginForm
+    form_class    = cm_forms.SurveyLoginForm
     template_name = "common/password_form_import.html"
 
     def post(self, *args, **kwargs):
@@ -1566,7 +1567,7 @@ class AdminListing(common_mixins.SuperUserMixin, ListView):
 
 class AdminCreate(common_mixins.SuperUserMixin, CreateView):
     model         = User
-    form_class    = cm_models.SuperUserForm
+    form_class    = cm_forms.SuperUserForm
     template_name = "common/admin_form.html"
 
     def post(self, *args, **kwargs):
@@ -1588,7 +1589,7 @@ class AdminCreate(common_mixins.SuperUserMixin, CreateView):
 
 class AdminUpdate(common_mixins.SuperUserMixin, UpdateView):
     model         = User
-    form_class    = cm_models.SuperUserForm
+    form_class    = cm_forms.SuperUserForm
     template_name = "common/admin_form.html"
 
     def get_success_url(self):
