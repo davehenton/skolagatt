@@ -8,7 +8,11 @@ class SchoolEmployeeMixin(UserPassesTestMixin):
     login_url = reverse_lazy('denied')
 
     def test_func(self):
-        return is_school_manager(self.request, self.kwargs) or is_school_teacher(self.request, self.kwargs)
+        return is_school_manager(
+            self.request, self.kwargs
+        ) or is_school_teacher(
+            self.request, self.kwargs
+        )
 
 
 class SchoolManagerMixin(UserPassesTestMixin):
