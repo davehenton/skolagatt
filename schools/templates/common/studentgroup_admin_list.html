@@ -3,7 +3,6 @@
 {% block content %}
 	<div class="alert-danger">{{error}}</div>
 	<div class="row">
-		<div class="col-md-3"><a href="{% url 'schools:group_admin_listing_csv' surveys.first.title %}">CSV útgáfa</a></div>
 		<div class="col-md-2"><a href="{% url 'schools:group_admin_listing_excel' surveys.first.title %}">Excel útgáfa</a></div>
 		<div class="col-md-2"><a href="{% url 'schools:group_admin_attendance_excel' surveys.first.title %}">Mætingarlisti</a></div>
 		<div class="col-md-3">Lykill: ísl(1),ens(2),stæ(3)</div>
