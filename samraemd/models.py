@@ -29,7 +29,7 @@ class SamraemdMathResult(models.Model):
     sg            = models.CharField(max_length=4)
     ord_talna_txt = models.CharField(max_length = 128)
     # Framfaraeinkunn
-    fm_fl  = models.CharField(max_length=4, blank=True)
+    fm_fl  = models.CharField(max_length = 32, blank=True)
     fm_txt = models.CharField(max_length = 256, blank=True)
     # exam fields
     exam_code = models.CharField(max_length = 128)
@@ -104,7 +104,7 @@ class SamraemdISLResult(models.Model):
     ri_sg = models.CharField(max_length=4)
     sg    = models.CharField(max_length=4)
     # Framfaraeinkunn
-    fm_fl  = models.CharField(max_length=4, blank=True)
+    fm_fl  = models.CharField(max_length = 32, blank=True)
     fm_txt = models.CharField(max_length = 256, blank=True)
     # exam fields
     exam_code = models.CharField(max_length = 256)
