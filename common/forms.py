@@ -1,5 +1,5 @@
 from django                     import forms
-
+from django.contrib.auth.models import User
 from common.models import (
     Manager, Teacher, Student,
     School, StudentGroup, Survey,
@@ -93,6 +93,7 @@ class SurveyForm(forms.ModelForm):
             'active_to': 'Virkt til',
         }
 
+
 class SurveyResultForm(forms.ModelForm):
     class Meta:
         model = SurveyResult
@@ -104,6 +105,7 @@ class SurveyResultForm(forms.ModelForm):
             'reported_by': 'Skýrsla frá',
             'survey': 'Könnun',
         }
+
 
 class SurveyLoginForm(forms.ModelForm):
     file = forms.FileField()
