@@ -4,8 +4,4 @@ $(document).ready(function() {
         return false;
     });
 
-    $("#kalli").click(function(){
-    	alert("I am an alert box!");
-    });
-
 });

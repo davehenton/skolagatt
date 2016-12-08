@@ -3,11 +3,11 @@ from django import template
 from django.template.defaultfilters import stringfilter
 from common.models import Manager, Teacher, School, SurveyResult
 from itertools import chain
-from datetime import datetime
-import re, json, ast
+from datetime  import datetime
 from markdown2 import markdown
+import re, json, ast
 
-from schools.util import *
+from common.util import *
 
 register = template.Library()
 
@@ -70,10 +70,10 @@ def get_current_school(context):
 @register.inclusion_tag('common/_school_list.html', takes_context=True)
 def get_user_schools(context):
 	try:
-		user = context['request'].user
+		user            = context['request'].user
 		manager_schools = School.objects.filter(managers=Manager.objects.filter(user=user))
 		teacher_schools = School.objects.filter(teachers=Teacher.objects.filter(user=user))
-		schools = list(set(chain(manager_schools, teacher_schools)))
+		schools         = list(set(chain(manager_schools, teacher_schools)))
 		return {'schools': schools}
 	except:
 		return {'schools': []}
@@ -81,17 +81,17 @@ def get_user_schools(context):
 @register.inclusion_tag('common/_message_list.html', takes_context=True)
 def get_user_messages(context, **kwargs):
 	try:
-		user = context['request'].user
+		user            = context['request'].user
 		manager_schools = School.objects.filter(managers=Manager.objects.filter(user=user))
 		teacher_schools = School.objects.filter(teachers=Teacher.objects.filter(user=user))
-		schools = list(set(chain(manager_schools, teacher_schools)))
+		schools         = list(set(chain(manager_schools, teacher_schools)))
 
-		messages = []
+		messages     = []
 		all_messages = get_messages()
 		for message in all_messages:
 			if message['file'] != None:
-				file_name = message['file'].split('/')[-1]
-				file_name = file_name.encode('utf-8')
+				file_name            = message['file'].split('/')[-1]
+				file_name            = file_name.encode('utf-8')
 				message['file_name'] = file_name
 			messages.append(message)
 
@@ -107,7 +107,7 @@ def get_user_messages(context, **kwargs):
 @register.simple_tag(takes_context=True)
 def get_nr_notifications(context, messages):
 	message_ids = [m['pk'] for m in messages]
-	n = Notification.objects.filter(user=context.request.user).filter(notification_type='message').filter(notification_id__in=message_ids)
+	n           = Notification.objects.filter(user=context.request.user).filter(notification_type='message').filter(notification_id__in=message_ids)
 	return len(messages) - len(n)
 
 @register.simple_tag(takes_context=True)
@@ -121,7 +121,7 @@ def get_school_name(context):
 
 @register.assignment_tag
 def get_survey_results(student, survey):
-	sr=SurveyResult.objects.filter(survey=survey, student=student)
+	sr = SurveyResult.objects.filter(survey=survey, student=student)
 	if sr:
 		return sr.first()
 	return []
