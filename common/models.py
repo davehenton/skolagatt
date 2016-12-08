@@ -75,6 +75,8 @@ class TeacherForm(forms.ModelForm):
 
 
 class Student(models.Model):
+    # Although Icelandic kt are all just 10 characters, some schools have students that
+    # don't seem to have icelandic kt's. Hence, the 32 char max_length for ssn
     ssn  = models.CharField(max_length = 32, unique=True)
     name = models.CharField(max_length = 128)
 

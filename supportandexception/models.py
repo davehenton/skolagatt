@@ -18,7 +18,7 @@ class Exceptions(models.Model):
     student             = models.ForeignKey(Student)
     reason              = models.CharField(max_length = 1)
     exam                = models.CharField(max_length = 32)
-    explanation         = models.CharField(max_length = 500)
+    explanation         = models.CharField(max_length = 1024)
     exceptionssignature = models.ForeignKey(Manager)
     exceptionsdate      = models.DateField(auto_now=False, auto_now_add=True, null=True)
 
@@ -30,7 +30,7 @@ class Exceptions(models.Model):
 
 class SupportResource(models.Model):
     student                  = models.ForeignKey(Student)
-    explanation              = models.CharField(max_length = 500)
+    explanation              = models.CharField(max_length = 1024)
     supportresourcesignature = models.ForeignKey(Manager)
     supportresourcedate      = models.DateField(auto_now = True, null = True)
     support_title            = models.CharField(max_length = 1, null=True)
