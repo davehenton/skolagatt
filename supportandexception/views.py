@@ -70,13 +70,13 @@ class Detail(CreateView):
         return context
 
 
-class SupportreResourceCreate(CreateView):
+class SupportResourceCreate(CreateView):
     model      = models.SupportResource
     form_class = forms.SupportResourceForm
     formset    = forms.SupportResourceFormSet
 
     def get_context_data(self, **kwargs):
-        context          = super(SupportreResourceCreate, self).get_context_data(**kwargs)
+        context          = super(SupportResourceCreate, self).get_context_data(**kwargs)
         student_info     = Student.objects.filter(pk=self.kwargs.get('pk'))
         student_moreinfo = models.StudentExceptionSupport.objects.filter(student = student_info)
 
