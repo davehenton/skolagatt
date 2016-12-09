@@ -1,29 +1,28 @@
 # -*- coding: utf-8 -*-
 from django.conf.urls        import url, include
 from django.contrib          import admin
-from django.conf             import settings
 from .                       import views
 
 urlpatterns = [
-    url(r'^' + settings.SUBDIRECTORY + '$',
+    url(r'^$',
         views.index,
         name='index'),
-    url(r'^' + settings.SUBDIRECTORY + 'denied$',
+    url(r'^denied$',
         views.denied,
         name='denied'),
-    url(r'^' + settings.SUBDIRECTORY + 'admin/',
+    url(r'^admin/',
         admin.site.urls,
         name='admin'),
-    url(r'^' + settings.SUBDIRECTORY + 'accounts/login',
+    url(r'^accounts/login',
         views.login,
         name='auth_login'),
-    url(r'^' + settings.SUBDIRECTORY + 'accounts/logout',
+    url(r'^accounts/logout',
         views.logout,
         name='auth_logout'),
-    url(r'^' + settings.SUBDIRECTORY + 'skoli/',
+    url(r'^skoli/',
         include('schools.urls')),
-    url(r'^' + settings.SUBDIRECTORY + 'stuðningur/',
+    url(r'^stuðningur/',
         include('supportandexception.urls')),
-    url(r'^' + settings.SUBDIRECTORY + 'samræmd/',
+    url(r'^samræmd/',
         include('samraemd.urls')),
 ]

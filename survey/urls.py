@@ -1,0 +1,85 @@
+from django.conf.urls import url
+
+from . import views
+
+app_name = 'survey'
+urlpatterns = [
+    # ================ SURVEY ================ #
+    url(r'^$',
+        views.SurveyListing.as_view(),
+        name='survey_list'),
+    url(r'^(?P<pk>\d+)/$',
+        views.SurveyDetail.as_view(),
+        name='survey_detail'),
+    url(r'^api$',
+        views.SurveyViewSet.as_view({'get': 'list'}),
+        name='json'),
+    url(r'^api/(?P<survey_id>\d+)$',
+        views.SurveyViewSetDetail.as_view({'get': 'list'}),
+        name='json_detail'),
+    url(r'^create/$',
+        views.SurveyCreate.as_view(),
+        name='survey_create'),
+    url(r'^(?P<pk>\d+)/update/$',
+        views.SurveyUpdate.as_view(),
+        name='survey_update'),
+    url(r'^(?P<pk>\d+)/delete/$',
+        views.SurveyDelete.as_view(),
+        name='survey_delete'),
+
+    # ============== SURVEY TEXT ============= #
+    url(r'^(?P<survey_id>\d+)/text/(?P<pk>\d+)/$',
+        views.SurveyTextDetail.as_view(),
+        name='survey_text_detail'),
+    url(r'^(?P<survey_id>\d+)/text/create/$',
+        views.SurveyTextCreate.as_view(),
+        name='survey_text_create'),
+    url(r'^(?P<survey_id>\d+)/text/(?P<pk>\d+)/update/$',
+        views.SurveyTextUpdate.as_view(),
+        name='survey_text_update'),
+    url(r'^(?P<survey_id>\d+)/text/(?P<pk>\d+)/delete/$',
+        views.SurveyTextDelete.as_view(),
+        name='survey_text_delete'),
+
+    # =========== SURVEY RESOURCE ============ #
+    url(r'^(?P<survey_id>\d+)/resource/(?P<pk>\d+)/$',
+        views.SurveyResourceDetail.as_view(),
+        name='survey_resource_detail'),
+    url(r'^(?P<survey_id>\d+)/resource/create/$',
+        views.SurveyResourceCreate.as_view(),
+        name='survey_resource_create'),
+    url(r'^(?P<survey_id>\d+)/resource/(?P<pk>\d+)/update/$',
+        views.SurveyResourceUpdate.as_view(),
+        name='survey_resource_update'),
+    url(r'^(?P<survey_id>\d+)/resource/(?P<pk>\d+)/delete/$',
+        views.SurveyResourceDelete.as_view(),
+        name='survey_resource_delete'),
+
+    # ======= SURVEY GRADING TEMPLATE ======== #
+    url(r'^(?P<survey_id>\d+)/template/(?P<pk>\d+)/$',
+        views.SurveyGradingTemplateDetail.as_view(),
+        name='survey_template_detail'),
+    url(r'^(?P<survey_id>\d+)/template/create/$',
+        views.SurveyGradingTemplateCreate.as_view(),
+        name='survey_template_create'),
+    url(r'^(?P<survey_id>\d+)/template/(?P<pk>\d+)/update/$',
+        views.SurveyGradingTemplateUpdate.as_view(),
+        name='survey_template_update'),
+    url(r'^(?P<survey_id>\d+)/template/(?P<pk>\d+)/delete/$',
+        views.SurveyGradingTemplateDelete.as_view(),
+        name='survey_template_delete'),
+
+    # ========== SURVEY INPUT FIELD ========== #
+    url(r'^(?P<survey_id>\d+)/input/(?P<pk>\d+)/$',
+        views.SurveyInputFieldDetail.as_view(),
+        name='survey_input_detail'),
+    url(r'^(?P<survey_id>\d+)/input/create/$',
+        views.SurveyInputFieldCreate.as_view(),
+        name='survey_input_create'),
+    url(r'^(?P<survey_id>\d+)/input/(?P<pk>\d+)/update/$',
+        views.SurveyInputFieldUpdate.as_view(),
+        name='survey_input_update'),
+    url(r'^(?P<survey_id>\d+)/input/(?P<pk>\d+)/delete/$',
+        views.SurveyInputFieldDelete.as_view(),
+        name='survey_input_delete'),
+]

@@ -1,0 +1,17 @@
+{% extends 'survey/index.html'%}
+
+{% block content %}
+<div class="row">
+	<div class="col-md-9">
+		<h1>{{surveydata.field_name}}</h1>
+	</div>
+	<div class="col-md-3">
+		<a href="{% url 'survey:survey_data_update' survey.id surveydata.id %}" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span>&nbsp;Breyta</a>
+		<a href="{% url 'survey:survey_data_delete' survey.id surveydata.id %}" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span>&nbsp;Eyða</a>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-2">Tegund gagna</div>
+	<div class="col-md-10">{{surveydata.field_type}}</div>
+</div>
+{% endblock %}
