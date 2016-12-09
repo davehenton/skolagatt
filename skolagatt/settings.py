@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     'schools',
     'supportandexception',
     'samraemd',
+    'survey'
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -127,6 +128,7 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'schools/static'),
     os.path.join(BASE_DIR, 'supportandexception/static'),
     os.path.join(BASE_DIR, 'samraemd/static'),
+    os.path.join(BASE_DIR, 'survey/static'),
     os.path.join(BASE_DIR, 'vendor'),
 )
 

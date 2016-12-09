@@ -52,7 +52,7 @@ class SurveyInputGroup(models.Model):
 
 
 class SurveyInputField(models.Model):
-    survey      = models.ForeignKey(SurveyInputGroup)
+    input_group = models.ForeignKey(SurveyInputGroup)
     name        = models.CharField(max_length=128)
     label       = models.CharField(max_length=128)
 

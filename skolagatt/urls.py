@@ -25,4 +25,6 @@ urlpatterns = [
         include('supportandexception.urls')),
     url(r'^samræmd/',
         include('samraemd.urls')),
+    url(r'^profagrunnur/',
+        include('survey.urls')),
 ]
