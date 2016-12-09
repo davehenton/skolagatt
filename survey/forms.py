@@ -72,9 +72,20 @@ class SurveyGradingTemplateForm(forms.ModelForm):
 class SurveyInputFieldForm(forms.ModelForm):
     class Meta:
         model  = models.SurveyInputField
-        fields = ['name', 'label', 'description']
+        fields = ['input_group', 'name', 'label']
         labels = {
+            'input_group': 'Flokkur',
             'name'       : 'Tæknilegt heiti',
             'label'      : 'Sýnilegt heiti',
-            'description': 'Lýsing',
+        }
+
+
+class SurveyInputGroupForm(forms.ModelForm):
+    class Meta:
+        model  = models.SurveyInputGroup
+        fields = ['survey', 'title', 'description']
+        labels = {
+            'survey'     : 'Próf',
+            'title'      : 'Heiti',
+            'description': 'Lýsing'
         }
