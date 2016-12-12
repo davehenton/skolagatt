@@ -27,6 +27,20 @@ urlpatterns = [
         views.SurveyDelete.as_view(),
         name='survey_delete'),
 
+    # ============== SURVEY TYPE ============= #
+    url(r'^type/(?P<pk>\d+)/$',
+        views.SurveyTypeDetail.as_view(),
+        name='survey_type_detail'),
+    url(r'^type/create/$',
+        views.SurveyTypeCreate.as_view(),
+        name='survey_type_create'),
+    url(r'^type/(?P<pk>\d+)/update/$',
+        views.SurveyTypeUpdate.as_view(),
+        name='survey_type_update'),
+    url(r'^type/(?P<pk>\d+)/delete/$',
+        views.SurveyTypeDelete.as_view(),
+        name='survey_type_delete'),
+
     # ============== SURVEY TEXT ============= #
     url(r'^(?P<survey_id>\d+)/text/(?P<pk>\d+)/$',
         views.SurveyTextDetail.as_view(),

@@ -10,7 +10,7 @@ from rest_framework import viewsets
 from .            import forms
 from .serializers import SurveySerializer
 from .models      import (
-    Survey, SurveyText, SurveyResource,
+    Survey, SurveyType, SurveyText, SurveyResource,
     SurveyGradingTemplate, SurveyInputField
 )
 from .mixins      import (
@@ -76,6 +76,59 @@ class SurveyViewSetDetail(viewsets.ModelViewSet):
         except:
             pass
         return Survey.objects.none()
+
+
+class SurveyTypeDetail(UserPassesTestMixin, DetailView):
+    model = SurveyType
+
+    def get_context_data(self, **kwargs):
+        context                = super(SurveyTypeDetail, self).get_context_data(**kwargs)
+        context['survey_type'] = SurveyType.objects.get(pk=self.kwargs['pk'])
+        return context
+
+    def test_func(self, **kwargs):
+        return self.request.user.is_authenticated()
+
+
+class SurveyTypeCreate(SurveyCreateSuperSuccessMixin, CreateView):
+    model      = SurveyType
+    form_class = forms.SurveyTypeForm
+
+    def form_valid(self, form):
+        survey            = form.save(commit=False)
+        survey.created_by = self.request.user
+        return super(SurveyTypeCreate, self).form_valid(form)
+
+    def get_success_url(self):
+        try:
+            return reverse_lazy(
+                'survey:survey_type_detail',
+                kwargs={'pk': self.object.pk})
+        except:
+            return reverse_lazy('survey:survey_list')
+
+
+class SurveyTypeUpdate(SurveySuperSuccessMixin, UpdateView):
+    model      = SurveyType
+    form_class = forms.SurveyTypeForm
+
+    def get_success_url(self):
+        try:
+            return reverse_lazy(
+                'survey:survey_type_detail',
+                kwargs={'pk': self.kwargs['pk']})
+        except:
+            return reverse_lazy('survey:survey_list')
+
+
+class SurveyTypeDelete(UserPassesTestMixin, DeleteView):
+    model         = SurveyType
+    success_url   = reverse_lazy('survey:survey_list')
+    login_url     = reverse_lazy('denied')
+    template_name = "survey/confirm_delete.html"
+
+    def test_func(self):
+        return self.request.user.is_superuser
 
 
 class SurveyCreate(SurveyCreateSuperSuccessMixin, CreateView):
