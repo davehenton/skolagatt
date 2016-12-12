@@ -276,6 +276,16 @@ class SurveyInputFieldUpdate(SurveySuperSuccessMixin, UpdateView):
     model      = SurveyInputField
     form_class = forms.SurveyInputFieldForm
 
+    def get_context_data(self, **kwargs):
+        context           = super(SurveyInputFieldUpdate, self).get_context_data(**kwargs)
+        survey            = Survey.objects.get(pk=self.kwargs['survey_id'])
+        context['survey'] = survey
+        # Only get input groups related to the survey object for the select menu
+        context['form'].fields['input_group'].queryset = SurveyInputGroup.objects.filter(
+            survey=survey
+        )
+        return context
+
 
 class SurveyInputFieldDelete(SurveyDeleteSuperSuccessMixin, DeleteView):
     model         = SurveyInputField
