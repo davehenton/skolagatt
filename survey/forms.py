@@ -96,9 +96,8 @@ class SurveyInputFieldForm(forms.ModelForm):
 class SurveyInputGroupForm(forms.ModelForm):
     class Meta:
         model  = models.SurveyInputGroup
-        fields = ['survey', 'title', 'description']
+        fields = ['title', 'description']
         labels = {
-            'survey'     : 'Próf',
             'title'      : 'Heiti',
             'description': 'Lýsing'
         }
