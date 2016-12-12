@@ -5,6 +5,18 @@ from django.utils.translation   import ugettext_lazy as _
 from . import models
 
 
+class SurveyTypeForm(forms.ModelForm):
+    """docstring for SurveyTypeForm"""
+    class Meta:
+        model  = models.SurveyType
+        fields = ['identifier', 'title', 'description']
+        labels = {
+            'idendifier' : 'Auðkenni',
+            'title'      : 'Heiti',
+            'description': 'Lýsing'
+        }
+
+
 class SurveyForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(SurveyForm, self).__init__(*args, **kwargs)
@@ -28,10 +40,11 @@ class SurveyForm(forms.ModelForm):
 
     class Meta:
         model  = models.Survey
-        fields = ['identifier', 'title', 'description', 'active_from', 'active_to']
+        fields = ['identifier', 'title', 'survey_type', 'description', 'active_from', 'active_to']
         labels = {
             'identifier' : 'Auðkenni',
             'title'      : 'Heiti',
+            'survey_type': 'Tegund',
             'description': 'Lýsing',
             'active_from': 'Virkt frá',
             'active_to'  : 'Virkt til',
@@ -53,7 +66,7 @@ class SurveyResourceForm(forms.ModelForm):
         model  = models.SurveyResource
         fields = ['title', 'resource_url', 'description']
         labels = {
-            'title'       :  'Titill',
+            'title'       : 'Titill',
             'resource_url': 'Vefslóð',
             'description' : 'Lýsing',
         }
