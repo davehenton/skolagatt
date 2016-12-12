@@ -43,9 +43,12 @@ class SurveyDetail(UserPassesTestMixin, DetailView):
         context['survey_template_list']      = SurveyGradingTemplate.objects.filter(survey=survey)
         input_groups                         = SurveyInputGroup.objects.filter(survey=survey)
         context['survey_input_field_groups'] = input_groups
-        context['survey_input_field_list']   = SurveyInputField.objects.filter(
-            input_group=input_groups
-        )
+        inputs = []
+        for group in input_groups:
+            inputs.extend(SurveyInputField.objects.filter(
+                input_group=group
+            ))
+        context['survey_input_field_list']   = inputs
         return context
 
     def test_func(self, **kwargs):
@@ -299,7 +302,11 @@ class SurveyInputFieldCreate(SurveySuperSuccessMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context           = super(SurveyInputFieldCreate, self).get_context_data(**kwargs)
-        context['survey'] = Survey.objects.get(pk=self.kwargs['survey_id'])
+        survey            = Survey.objects.get(pk=self.kwargs['survey_id'])
+        context['survey'] = survey
+        context['form'].fields['input_group'].queryset = SurveyInputGroup.objects.filter(
+            survey=survey
+        )
         return context
 
 
