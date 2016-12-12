@@ -25,11 +25,17 @@ class Survey(models.Model):
     created_by  = models.ForeignKey(User)
     old_version = models.ForeignKey('Survey', null=True, blank=True)
 
+    def __str__(self):
+        return self.title
+
 
 class SurveyText(models.Model):
     survey = models.ForeignKey(Survey)
     title  = models.CharField(max_length=128)
     text   = models.TextField(null=True, blank=True)
+
+    def __str__(self):
+        return self.title
 
 
 class SurveyResource(models.Model):
@@ -37,6 +43,9 @@ class SurveyResource(models.Model):
     title        = models.CharField(max_length=128)
     resource_url = models.CharField(max_length=1024)
     description  = models.TextField(null=True, blank=True)
+
+    def __str__(self):
+        return self.title
 
 
 class SurveyGradingTemplate(models.Model):
@@ -53,11 +62,17 @@ class SurveyInputGroup(models.Model):
     title       = models.CharField(max_length=128)
     description = models.TextField(null=True, blank=True)
 
+    def __str__(self):
+        return self.title
+
 
 class SurveyInputField(models.Model):
     input_group = models.ForeignKey(SurveyInputGroup)
     name        = models.CharField(max_length=128)
     label       = models.CharField(max_length=128)
+
+    def __str__(self):
+        return self.title
 
 
 class SurveyAttendance(models.Model):
@@ -65,16 +80,25 @@ class SurveyAttendance(models.Model):
     student = models.ForeignKey(Student)
     attendance = models.IntegerField()
 
+    def __str__(self):
+        return self.student.name + ': ' + self.survey.title
+
 
 class SurveyException(models.Model):
     survey      = models.ForeignKey(Survey)
     student     = models.ForeignKey(Student)
     description = models.CharField(max_length=1024, null=True, blank=True)
 
+    def __str__(self):
+        return self.student.name + ': ' + self.survey.title
+
 
 class SurveySupportType(models.Model):
     support_type = models.CharField(max_length=128)
     description  = models.CharField(max_length=1024, null=True, blank=True)
+
+    def __str__(self):
+        return self.title
 
 
 class SurveySupport(models.Model):
@@ -82,3 +106,6 @@ class SurveySupport(models.Model):
     student     = models.ForeignKey(Student)
     support     = models.ForeignKey(SurveySupportType)
     description = models.CharField(max_length=1024, null=True, blank=True)
+
+    def __str__(self):
+        return self.student.name + ': ' + self.survey.title
