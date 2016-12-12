@@ -72,7 +72,7 @@ class SurveyInputField(models.Model):
     label       = models.CharField(max_length=128)
 
     def __str__(self):
-        return self.title
+        return self.input_group.title + ': ' + self.name
 
 
 class SurveyAttendance(models.Model):
