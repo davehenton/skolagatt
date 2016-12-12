@@ -1,0 +1,86 @@
+{% extends 'survey/index.html'%}
+
+{% block content %}
+<div class="row">
+	<div class="col-md-9">
+		<h1>{{survey.title}}</h1>
+	</div>
+	<div class="col-md-3">
+		<a href="{% url 'survey:survey_update' survey.id %}" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span>&nbsp;Breyta</a>
+		<a href="{% url 'survey:survey_delete' survey.id %}" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span>&nbsp;Eyða</a>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-2">Auðkenni</div>
+	<div class="col-md-10">{{survey.identifier}}</div>
+</div>
+<div class="row">
+	<div class="col-md-2">Lýsing</div>
+	<div class="col-md-10 md">{{survey.description}}</div>
+</div>
+<div class="row">
+	<div class="col-md-2">Búið til</div>
+	<div class="col-md-10">{{survey.created_at}}</div>
+</div>
+<div class="row">
+	<div class="col-md-2">Virkt frá</div>
+	<div class="col-md-10">{{survey.active_from}}</div>
+</div>
+<div class="row">
+	<div class="col-md-2">Virkt til</div>
+	<div class="col-md-10">{{survey.active_to}}</div>
+</div>
+<div class="row">
+	<div class="col-md-2">Höfundur</div>
+	<div class="col-md-10">{{survey.created_by}}</div>
+</div>
+<div class="row">
+	<div class="col-md-3"><a href="{% url 'survey:survey_resource_create' survey.id %}" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span>Bæta við</a></div>
+	<div class="col-md-3"><a href="{% url 'survey:survey_template_create' survey.id %}" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span>Bæta við</a></div>
+	<div class="col-md-3"><a href="{% url 'survey:survey_input_group_create' survey.id %}" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span>Bæta við</a></div>
+	<div class="col-md-3"><a href="{% url 'survey:survey_input_create' survey.id %}" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span>Bæta við</a></div>
+</div>
+<div class="row">
+	<div class="col-md-3">
+		<div class="row">
+			<div class="col-md-12"><h4>Nánari upplýsingar</h4></div>
+		</div>
+		{% for survey_resource in survey_resource_list %}
+		<div class="row">
+			<div class="col-md-12"><a href="{% url 'survey:survey_resource_detail' survey.id survey_resource.id %}" >{{survey_resource.title}}</a></div>
+		</div>
+	{% endfor %}
+	</div>
+	<div class="col-md-3">
+		<div class="row">
+			<div class="col-md-12"><h4>Prófviðmót</h4></div>
+		</div>
+		{% for survey_template in survey_template_list %}
+		<div class="row">
+			<div class="col-md-12"><a href="{% url 'survey:survey_template_detail' survey.id survey_template.id %}" >{{survey_template.md|slice:":30"}}</a></div>
+		</div>
+	{% endfor %}
+	</div>
+	<div class="col-md-3">
+		<div class="row">
+			<div class="col-md-12"><h4>Tegund innsláttarsvæða</h4></div>
+		</div>
+		{% for survey_input_group in survey_input_field_groups %}
+		<div class="row">
+			<div class="col-md-12"><a href="{% url 'survey:survey_input_group_detail' survey.id survey_input_group.id %}" >{{survey_input_group.title}}</a></div>
+		</div>
+	{% endfor %}
+	</div>
+	<div class="col-md-3">
+		<div class="row">
+			<div class="col-md-12"><h4>Innsláttarsvæði</h4></div>
+		</div>
+		{% for survey_input in survey_input_field_list %}
+			<div class="row">
+				<div class="col-md-12"><a href="{% url 'survey:survey_input_detail' survey.id survey_input.id %}" >{{survey_input}}</a></div>
+			</div>
+		{% endfor %}
+	</div>
+	
+</div>
+{% endblock %}

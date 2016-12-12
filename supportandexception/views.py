@@ -9,7 +9,8 @@ from django.contrib.auth.models import User
 from rest_framework import viewsets
 
 from .             import models
-from common.models import StudentForm, Student, StudentGroup, School, Manager
+from common.models import Student, StudentGroup, School, Manager
+from common.forms  import StudentForm
 from .             import forms
 from common.util   import is_school_manager
 
@@ -69,13 +70,13 @@ class Detail(CreateView):
         return context
 
 
-class SupportreResourceCreate(CreateView):
+class SupportResourceCreate(CreateView):
     model      = models.SupportResource
     form_class = forms.SupportResourceForm
     formset    = forms.SupportResourceFormSet
 
     def get_context_data(self, **kwargs):
-        context          = super(SupportreResourceCreate, self).get_context_data(**kwargs)
+        context          = super(SupportResourceCreate, self).get_context_data(**kwargs)
         student_info     = Student.objects.filter(pk=self.kwargs.get('pk'))
         student_moreinfo = models.StudentExceptionSupport.objects.filter(student = student_info)
 
