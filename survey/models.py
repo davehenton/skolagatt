@@ -10,6 +10,9 @@ class SurveyType(models.Model):
     title       = models.CharField(max_length = 128)
     description = models.CharField(max_length = 1024, null=True, blank=True)
 
+    def __str__(self):
+        return self.title
+
 
 class Survey(models.Model):
     identifier  = models.CharField(max_length = 128)
