@@ -11,7 +11,7 @@ from .            import forms
 from .serializers import SurveySerializer
 from .models      import (
     Survey, SurveyType, SurveyText, SurveyResource,
-    SurveyGradingTemplate, SurveyInputField
+    SurveyGradingTemplate, SurveyInputField, SurveyInputGroup
 )
 from .mixins      import (
     SurveySuperSuccessMixin,
@@ -35,13 +35,17 @@ class SurveyDetail(UserPassesTestMixin, DetailView):
     model = Survey
 
     def get_context_data(self, **kwargs):
-        context                            = super(SurveyDetail, self).get_context_data(**kwargs)
-        survey                             = Survey.objects.get(pk=self.kwargs['pk'])
-        context['survey']                  = survey
-        context['survey_text_list']        = SurveyText.objects.filter(survey=survey)
-        context['survey_resource_list']    = SurveyResource.objects.filter(survey=survey)
-        context['survey_template_list']    = SurveyGradingTemplate.objects.filter(survey=survey)
-        context['survey_input_field_list'] = SurveyInputField.objects.filter(survey=survey)
+        context                             = super(SurveyDetail, self).get_context_data(**kwargs)
+        survey                              = Survey.objects.get(pk=self.kwargs['pk'])
+        context['survey']                   = survey
+        context['survey_text_list']         = SurveyText.objects.filter(survey=survey)
+        context['survey_resource_list']     = SurveyResource.objects.filter(survey=survey)
+        context['survey_template_list']     = SurveyGradingTemplate.objects.filter(survey=survey)
+        input_groups                        = SurveyInputGroup.objects.filter(survey=survey)
+        context['survey_input_field_group'] = input_groups
+        context['survey_input_field_list']  = SurveyInputField.objects.filter(
+            input_group=input_groups
+        )
         return context
 
     def test_func(self, **kwargs):
