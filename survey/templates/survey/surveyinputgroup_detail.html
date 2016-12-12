@@ -1,0 +1,17 @@
+{% extends 'survey/index.html'%}
+
+{% block content %}
+<div class="row">
+	<div class="col-md-9">
+		<h1>{{surveyinputgroup.title}}</h1>
+	</div>
+	<div class="col-md-3">
+		<a href="{% url 'survey:survey_input_group_update' survey.id surveyinputgroup.id %}" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span>&nbsp;Breyta</a>
+		<a href="{% url 'survey:survey_input_group_delete' survey.id surveyinputgroup.id %}" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span>&nbsp;Eyða</a>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-2">Lýsing</div>
+	<div class="col-md-10">{{surveyinputgroup.description}}</div>
+</div>
+{% endblock %}

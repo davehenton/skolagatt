@@ -3,7 +3,7 @@
 {% block content %}
 <div class="row">
 	<div class="col-md-9">
-		<h1>{{survey_type.field_name}}</h1>
+		<h1>{{survey_type.title}}</h1>
 	</div>
 	<div class="col-md-3">
 		<a href="{% url 'survey:survey_type_update' survey_type.id %}" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span>&nbsp;Breyta</a>
@@ -11,7 +11,11 @@
 	</div>
 </div>
 <div class="row">
-	<div class="col-md-2">Tegund</div>
-	<div class="col-md-10">{{survey_type.field_type}}</div>
+	<div class="col-md-2">Auðkenni</div>
+	<div class="col-md-10">{{survey_type.identifier}}</div>
+	<div class="col-md-2">Heiti</div>
+	<div class="col-md-10">{{survey_type.title}}</div>
+	<div class="col-md-2">Lýsing</div>
+	<div class="col-md-10">{{survey_type.description}}</div>
 </div>
 {% endblock %}

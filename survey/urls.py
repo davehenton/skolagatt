@@ -83,6 +83,20 @@ urlpatterns = [
         views.SurveyGradingTemplateDelete.as_view(),
         name='survey_template_delete'),
 
+    # ========== SURVEY INPUT GROUP FIELD ========== #
+    url(r'^(?P<survey_id>\d+)/group/(?P<pk>\d+)/$',
+        views.SurveyInputGroupDetail.as_view(),
+        name='survey_input_group_detail'),
+    url(r'^(?P<survey_id>\d+)/group/create/$',
+        views.SurveyInputGroupCreate.as_view(),
+        name='survey_input_group_create'),
+    url(r'^(?P<survey_id>\d+)/group/(?P<pk>\d+)/update/$',
+        views.SurveyInputGroupUpdate.as_view(),
+        name='survey_input_group_update'),
+    url(r'^(?P<survey_id>\d+)/group/(?P<pk>\d+)/delete/$',
+        views.SurveyInputGroupDelete.as_view(),
+        name='survey_input_group_delete'),
+
     # ========== SURVEY INPUT FIELD ========== #
     url(r'^(?P<survey_id>\d+)/input/(?P<pk>\d+)/$',
         views.SurveyInputFieldDetail.as_view(),
