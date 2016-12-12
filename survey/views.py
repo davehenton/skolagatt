@@ -10,7 +10,7 @@ from rest_framework import viewsets
 from .            import forms
 from .serializers import SurveySerializer
 from .models      import (
-    Survey, SurveyType, SurveyText, SurveyResource,
+    Survey, SurveyType, SurveyResource,
     SurveyGradingTemplate, SurveyInputField, SurveyInputGroup
 )
 from .mixins      import (
@@ -38,7 +38,6 @@ class SurveyDetail(UserPassesTestMixin, DetailView):
         context                              = super(SurveyDetail, self).get_context_data(**kwargs)
         survey                               = Survey.objects.get(pk=self.kwargs['pk'])
         context['survey']                    = survey
-        context['survey_text_list']          = SurveyText.objects.filter(survey=survey)
         context['survey_resource_list']      = SurveyResource.objects.filter(survey=survey)
         context['survey_template_list']      = SurveyGradingTemplate.objects.filter(survey=survey)
         input_groups                         = SurveyInputGroup.objects.filter(survey=survey)
@@ -163,44 +162,6 @@ class SurveyDelete(UserPassesTestMixin, DeleteView):
         return self.request.user.is_superuser
 
 
-class SurveyTextDetail(UserPassesTestMixin, DetailView):
-    model = SurveyText
-
-    def test_func(self, **kwargs):
-        return True
-
-    def get_context_data(self, **kwargs):
-        # xxx will be available in the template as the related objects
-        context           = super(SurveyTextDetail, self).get_context_data(**kwargs)
-        context['survey'] = Survey.objects.get(pk=self.kwargs['survey_id'])
-        return context
-
-
-class SurveyTextCreate(SurveySuperSuccessMixin, CreateView):
-    model      = SurveyText
-    form_class = forms.SurveyTextForm
-
-    def form_valid(self, form):
-        survey            = form.save(commit=False)
-        survey.created_by = self.request.user
-        survey.survey     = Survey.objects.get(pk=self.kwargs['survey_id'])
-        return super(SurveyTextCreate, self).form_valid(form)
-
-    def get_context_data(self, **kwargs):
-        context           = super(SurveyTextCreate, self).get_context_data(**kwargs)
-        context['survey'] = Survey.objects.get(pk=self.kwargs['survey_id'])
-        return context
-
-
-class SurveyTextUpdate(SurveySuperSuccessMixin, UpdateView):
-    model      = SurveyText
-    form_class = forms.SurveyTextForm
-
-
-class SurveyTextDelete(SurveyDeleteSuperSuccessMixin, DeleteView):
-    model         = SurveyText
-
-
 class SurveyResourceDetail(UserPassesTestMixin, DetailView):
     model = SurveyResource
 
@@ -304,6 +265,7 @@ class SurveyInputFieldCreate(SurveySuperSuccessMixin, CreateView):
         context           = super(SurveyInputFieldCreate, self).get_context_data(**kwargs)
         survey            = Survey.objects.get(pk=self.kwargs['survey_id'])
         context['survey'] = survey
+        # Only get input groups related to the survey object for the select menu
         context['form'].fields['input_group'].queryset = SurveyInputGroup.objects.filter(
             survey=survey
         )

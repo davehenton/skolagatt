@@ -20,12 +20,6 @@ class SurveyResourceSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('title', 'resource_url', 'description')
 
 
-class SurveyTextSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model  = models.SurveyText
-        fields = ('text', 'title')
-
-
 class SurveySerializer(serializers.ModelSerializer):
     texts            = serializers.SerializerMethodField('get_survey_texts')
     resources        = serializers.SerializerMethodField('get_survey_resources')
@@ -42,11 +36,6 @@ class SurveySerializer(serializers.ModelSerializer):
     def get_survey_data(self, container):
         data       = models.SurveyData.objects.filter(survey=container)
         serializer = SurveyDataSerializer(instance=data, many=True)
-        return serializer.data
-
-    def get_survey_texts(self, container):
-        data       = models.SurveyText.objects.filter(survey=container)
-        serializer = SurveyTextSerializer(instance=data, many=True)
         return serializer.data
 
     def get_survey_resources(self, container):
