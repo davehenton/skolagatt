@@ -51,6 +51,7 @@ class SurveyGradingTemplate(models.Model):
 class SurveyInputGroup(models.Model):
     survey      = models.ForeignKey(Survey)
     title       = models.CharField(max_length=128)
+    identifier  = models.CharField(max_length=32)
     description = models.TextField(null=True, blank=True)
 
     def __str__(self):
