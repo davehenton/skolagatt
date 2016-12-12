@@ -35,15 +35,15 @@ class SurveyDetail(UserPassesTestMixin, DetailView):
     model = Survey
 
     def get_context_data(self, **kwargs):
-        context                             = super(SurveyDetail, self).get_context_data(**kwargs)
-        survey                              = Survey.objects.get(pk=self.kwargs['pk'])
-        context['survey']                   = survey
-        context['survey_text_list']         = SurveyText.objects.filter(survey=survey)
-        context['survey_resource_list']     = SurveyResource.objects.filter(survey=survey)
-        context['survey_template_list']     = SurveyGradingTemplate.objects.filter(survey=survey)
-        input_groups                        = SurveyInputGroup.objects.filter(survey=survey)
-        context['survey_input_field_group'] = input_groups
-        context['survey_input_field_list']  = SurveyInputField.objects.filter(
+        context                              = super(SurveyDetail, self).get_context_data(**kwargs)
+        survey                               = Survey.objects.get(pk=self.kwargs['pk'])
+        context['survey']                    = survey
+        context['survey_text_list']          = SurveyText.objects.filter(survey=survey)
+        context['survey_resource_list']      = SurveyResource.objects.filter(survey=survey)
+        context['survey_template_list']      = SurveyGradingTemplate.objects.filter(survey=survey)
+        input_groups                         = SurveyInputGroup.objects.filter(survey=survey)
+        context['survey_input_field_groups'] = input_groups
+        context['survey_input_field_list']   = SurveyInputField.objects.filter(
             input_group=input_groups
         )
         return context
@@ -310,3 +310,41 @@ class SurveyInputFieldUpdate(SurveySuperSuccessMixin, UpdateView):
 
 class SurveyInputFieldDelete(SurveyDeleteSuperSuccessMixin, DeleteView):
     model         = SurveyInputField
+
+
+class SurveyInputGroupDetail(UserPassesTestMixin, DetailView):
+    model = SurveyInputGroup
+
+    def test_func(self, **kwargs):
+        return True
+
+    def get_context_data(self, **kwargs):
+        # xxx will be available in the template as the related objects
+        context           = super(SurveyInputGroupDetail, self).get_context_data(**kwargs)
+        context['survey'] = Survey.objects.get(pk=self.kwargs['survey_id'])
+        return context
+
+
+class SurveyInputGroupCreate(SurveySuperSuccessMixin, CreateView):
+    model      = SurveyInputGroup
+    form_class = forms.SurveyInputGroupForm
+
+    def form_valid(self, form):
+        survey            = form.save(commit=False)
+        survey.created_by = self.request.user
+        survey.survey     = Survey.objects.get(pk=self.kwargs['survey_id'])
+        return super(SurveyInputGroupCreate, self).form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context           = super(SurveyInputGroupCreate, self).get_context_data(**kwargs)
+        context['survey'] = Survey.objects.get(pk=self.kwargs['survey_id'])
+        return context
+
+
+class SurveyInputGroupUpdate(SurveySuperSuccessMixin, UpdateView):
+    model      = SurveyInputGroup
+    form_class = forms.SurveyInputGroupForm
+
+
+class SurveyInputGroupDelete(SurveyDeleteSuperSuccessMixin, DeleteView):
+    model         = SurveyInputGroup

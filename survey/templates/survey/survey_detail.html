@@ -35,13 +35,12 @@
 	<div class="col-md-10">{{survey.created_by}}</div>
 </div>
 <div class="row">
-	
 	<div class="col-md-3"><a href="{% url 'survey:survey_resource_create' survey.id %}" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span>Bæta við upplýsingum</a></div>
 	<div class="col-md-3"><a href="{% url 'survey:survey_template_create' survey.id %}" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span>Bæta við einkunnaviðmóti</a></div>
+	<div class="col-md-3"><a href="{% url 'survey:survey_input_group_create' survey.id %}" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span>Tegund innsláttarsvæða</a></div>
 	<div class="col-md-3"><a href="{% url 'survey:survey_input_create' survey.id %}" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span>Bæta við innsláttarsvæði</a></div>
 </div>
 <div class="row">
-	
 	<div class="col-md-3">
 		<div class="row">
 			<div class="col-md-12"><h4>Nánari upplýsingar</h4></div>
@@ -59,6 +58,16 @@
 		{% for survey_template in survey_template_list %}
 		<div class="row">
 			<div class="col-md-12"><a href="{% url 'survey:survey_template_detail' survey.id survey_template.id %}" >{{survey_template.md|slice:":30"}}</a></div>
+		</div>
+	{% endfor %}
+	</div>
+	<div class="col-md-3">
+		<div class="row">
+			<div class="col-md-12"><h4>Tegund innsláttarsvæða</h4></div>
+		</div>
+		{% for survey_input_group in survey_input_field_groups %}
+		<div class="row">
+			<div class="col-md-12"><a href="{% url 'survey:survey_input_group_detail' survey.id survey_input_group.id %}" >{{survey_input_group.title}}</a></div>
 		</div>
 	{% endfor %}
 	</div>
