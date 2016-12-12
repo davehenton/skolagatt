@@ -33,10 +33,10 @@ class SupportResource(models.Model):
     explanation              = models.CharField(max_length = 1024)
     supportresourcesignature = models.ForeignKey(Manager)
     supportresourcedate      = models.DateField(auto_now = True, null = True)
-    support_title            = models.CharField(max_length = 1, null=True)
-    reading_assistance       = models.CharField(max_length = 1, null=True)
-    interpretation           = models.CharField(max_length = 1, null=True)
-    longer_time              = models.CharField(max_length = 1, null=True)
+    support_title            = models.CharField(max_length = 32, null=True)
+    reading_assistance       = models.CharField(max_length = 32, null=True)
+    interpretation           = models.CharField(max_length = 32, null=True)
+    longer_time              = models.CharField(max_length = 32, null=True)
 
     def __str__(self):
         return self.explanation

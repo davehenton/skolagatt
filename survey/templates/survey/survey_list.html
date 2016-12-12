@@ -1,0 +1,28 @@
+{% extends 'survey/index.html'%}
+
+{% block content %}
+<h1>Próf</h1>
+<div>
+	<a href="{% url 'survey:survey_create'%}" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span>Bæta við prófi</a>
+	<a href="{% url 'survey:survey_type_create'%}" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span>Bæta við próftegund</a>
+	<div id="school_list" class="table table-hover">
+		<div class="row">
+			<div class="col-md-3"><h4>Titill</h4></div>
+			<div class="col-md-3"><h4>Virkt frá</h4></div>
+			<div class="col-md-3"><h4>Virkt til</h4></div>
+			<div class="col-md-1"><h4>Aðgerðir</h4></div>
+		</div>
+		{% for survey in survey_list %}
+		<div class="row">
+			<div class="col-md-3"><a href="{% url 'survey:survey_detail' survey.id %}">{{survey.title}}</a></div>
+			<div class="col-md-3">{{survey.active_from}}</div>
+			<div class="col-md-3">{{survey.active_to}}</div>
+			<div class="col-md-1">
+				<a href="{% url 'survey:survey_update' survey.id %}" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
+				<a href="{% url 'survey:survey_delete' survey.id %}" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-trash"></span></a>
+			</div>
+		</div>
+		{% endfor %}
+	</div>
+</div>
+{% endblock %}
