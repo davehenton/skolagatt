@@ -29,15 +29,6 @@ class Survey(models.Model):
         return self.title
 
 
-class SurveyText(models.Model):
-    survey = models.ForeignKey(Survey)
-    title  = models.CharField(max_length=128)
-    text   = models.TextField(null=True, blank=True)
-
-    def __str__(self):
-        return self.title
-
-
 class SurveyResource(models.Model):
     survey       = models.ForeignKey(Survey)
     title        = models.CharField(max_length=128)

@@ -51,16 +51,6 @@ class SurveyForm(forms.ModelForm):
         }
 
 
-class SurveyTextForm(forms.ModelForm):
-    class Meta:
-        model  = models.SurveyText
-        fields = ['title', 'text']
-        labels = {
-            'title':  'Titill',
-            'text' :  'Texti',
-        }
-
-
 class SurveyResourceForm(forms.ModelForm):
     class Meta:
         model  = models.SurveyResource
