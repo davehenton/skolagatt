@@ -3,9 +3,9 @@
 
 {% block content %}
 <script>
-	var survey_data = {{survey.data_fields|get_json|safe}};
+	var survey_data = {{groupsurvey.data_fields|get_json|safe}};
 </script>
-<h1>{{survey.title}}</h1>
+<h1>{{survey_details.title}}</h1>
 <div class="row">
 	<div class="row">
 		<div class="col-md-4">
@@ -13,27 +13,27 @@
 				<div class="col-md-12">
 				{% if expired %}
 					Lokið
-				{% else %}
-					<a href="{% url 'schools:survey_update' school.id survey.id %}" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span>&nbsp;Breyta</a>
-					<a href="{% url 'schools:survey_delete' school.id survey.id %}" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span>&nbsp;Eyða</a>
+				{% elif is_group_manager or is_school_manager %}
+					<a href="{% url 'schools:survey_update' school.id groupsurvey.id %}" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span>&nbsp;Breyta</a>
+					<a href="{% url 'schools:survey_delete' school.id groupsurvey.id %}" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span>&nbsp;Eyða</a>
 				{% endif %}
 				</div>
 			</div>
 			<div class="row">
 				<div class="col-md-12">
-					Skráning virk frá: {{survey.active_from|parse_date:"%Y-%m-%d"|date:"d-m-Y" }}
+					Skráning virk frá: {{survey_details.active_from|parse_date:"%Y-%m-%d"|date:"d-m-Y" }}
 				</div>
 			</div>
 			<div class="row">
 				<div class="col-md-12">
-					Skráning virkt til: {{survey.active_to|parse_date:"%Y-%m-%d"|date:"d-m-Y" }}
+					Skráning virkt til: {{survey_details.active_to|parse_date:"%Y-%m-%d"|date:"d-m-Y" }}
 				</div>
 			</div>
 		</div>
 		<div class="col-md-4"></div>
 		<div class="col-md-4 alert-info">
-			{% if is_group_manager %}
-				Þú ert umsjónarmaður í þessum hóp og getur skráð niðurstöður prófa.
+			{% if is_group_manager or is_school_manager %}
+				Þú ert umsjónarmaður í þessum hóp eða skóla og getur skráð niðurstöður prófa.
 			{% else %}
 				Aðeins umsjónarmaður hóps getur skráð niðurstöður prófa.
 			{% endif %}
@@ -69,14 +69,14 @@
 					{% endfor %}
 					</div>
 				</div>
-			</div>			
+			</div>
 		</div>
 		<div class="col-md-6">
 			<h3>Nemendur</h3>
 			<div class="row">
 				<div class="col-md-12">
 					{% for student in students %}
-						{% get_survey_results student survey as student_result %}
+						{% get_survey_results student groupsurvey as student_result %}
 						<div class="row">
 							<div class="col-md-2">{{student.ssn}}</div>
 							<div class="col-md-5"><a href="{% url 'schools:student_detail' school.id student.id %}">{{student.name}}</a></div>
@@ -84,9 +84,9 @@
 							<div class="col-md-3">{{ student_results|get_item:student }}<!-- sparkline to be added --></div>
 							<div class="col-md-2">
 								{% if is_group_manager or is_school_manager %}
-									{% if survey.is_expired %}
+									{% if groupsurvey.is_expired %}
 									{% else %}
-									<a href="{% url 'schools:survey_result_update' school.id student.id survey.id student_result.id %}" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
+									<a href="{% url 'schools:survey_result_update' school.id student.id groupsurvey.id student_result.id %}" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
 									{% endif %}
 								{% endif %}
 								<button href="" class="btn btn-default btn-xs" type="button" data-toggle="collapse" data-target="#results-{{student_result.id}}" aria-expanded="false" aria-controls="collapseExample">
@@ -96,9 +96,9 @@
 							{% else %}
 							<div class="col-md-3">
 								{% if is_group_manager or is_school_manager %}
-									{% if survey.is_expired %}
+									{% if groupsurvey.is_expired %}
 									{% else %}
-									<a href="{% url 'schools:survey_result_create' school.id student.id survey.id %}" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span>&nbsp;Skrá</a>
+									<a href="{% url 'schools:survey_result_create' school.id student.id groupsurvey.id %}" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span>&nbsp;Skrá</a>
 									{% endif %}
 								{% endif %}
 							</div>
@@ -111,16 +111,19 @@
 									<div class='row'>
 										<div class='col-md-12'>
 											<div>
-												Valin orð: 
+												<strong>Valin orð:</strong>
 												{% for val in results.click_values|literal_eval %}
 													<p class="click_values">{{val}}</p>
 												{% endfor %}
 											</div>
-											<div>Innsláttur: 
+											<div><strong>Innsláttur:</strong>
 												{% for val in results.input_values %}
 													<p class="click_values">{{val}}: {{results.input_values|get_item:val}}</p>
 												{% endfor %}
 											</div>
+											{% if is_group_manager or is_school_manager %}
+											<div><strong>Skráð af:</strong> {{student_result.reported_by}}</div>
+											{% endif %}
 										</div>
 									</div>
 								{% endwith %}

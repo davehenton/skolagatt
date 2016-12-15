@@ -84,7 +84,7 @@ class SupportResourceCreate(CreateView):
         context['studentmorinfo']  = student_moreinfo.get
         context['supportresource'] = models.SupportResource.objects.filter(
             student = student_info).get or "''"
-        context['studentgroup']    = models.StudentGroup.objects.filter(students = student_info).get
+        context['studentgroup']    = StudentGroup.objects.filter(students = student_info).get
         context['school']          = School.objects.get(pk=self.kwargs['school_id'])
 
         return context

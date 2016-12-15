@@ -8,6 +8,8 @@ from django.utils               import timezone
 
 import json
 
+from survey.models import Survey
+
 
 class Notification(models.Model):
     notification_type = models.CharField(max_length = 128)
@@ -97,16 +99,14 @@ class StudentGroup(models.Model):
         return self.name
 
 
-class Survey(models.Model):
-    studentgroup = models.ForeignKey('StudentGroup')
-    survey       = models.CharField(max_length = 1024)            # survey id from profagrunnur
-    title        = models.CharField(max_length = 256)             # value from profagrunnur
-    identifier   = models.CharField(max_length = 256, null=True)  # value from profagrunnur
-    active_from  = models.DateField(default=timezone.now)         # value from profagrunnur
-    active_to    = models.DateField(default=timezone.now)         # value from profagrunnur
+class GroupSurvey(models.Model):
+    studentgroup = models.ForeignKey(
+        'StudentGroup', null=True, blank=True, on_delete=models.SET_NULL
+    )
+    survey       = models.ForeignKey(Survey)
 
     def is_expired(self):
-        if timezone.now().date() > self.active_to:
+        if timezone.now().date() > self.survey.active_to:
             return True
         return False
 
@@ -114,15 +114,19 @@ class Survey(models.Model):
         return SurveyResult.objects.filter(survey=self)
 
     def __str__(self):
-        return self.title + " (" + self.survey + ")"
+        return self.survey.title
 
 
 class SurveyResult(models.Model):
     student     = models.ForeignKey('Student')
     created_at  = models.DateTimeField(default=timezone.now)
     results     = models.TextField()
-    reported_by = models.ForeignKey('Teacher')
-    survey      = models.ForeignKey('Survey')  # url to survey
+    reported_by = models.ForeignKey(
+        'Teacher', null=True, blank=True, on_delete=models.SET_NULL
+    )
+    survey      = models.ForeignKey(
+        'GroupSurvey', null=True, blank=True, on_delete=models.SET_NULL
+    )
     created_at  = models.DateField(default=timezone.now)
 
     @classmethod

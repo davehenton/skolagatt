@@ -36,7 +36,11 @@
 </div>
 <div class="row">
 	<div class="col-md-3"><a href="{% url 'survey:survey_resource_create' survey.id %}" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span>Bæta við</a></div>
-	<div class="col-md-3"><a href="{% url 'survey:survey_template_create' survey.id %}" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span>Bæta við</a></div>
+	<div class="col-md-3">
+		{% if survey_template_list|length < 1 %}
+			<a href="{% url 'survey:survey_template_create' survey.id %}" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span>Bæta við</a>
+		{% endif %}
+	</div>
 	<div class="col-md-3"><a href="{% url 'survey:survey_input_group_create' survey.id %}" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span>Bæta við</a></div>
 	<div class="col-md-3"><a href="{% url 'survey:survey_input_create' survey.id %}" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span>Bæta við</a></div>
 </div>
@@ -56,10 +60,10 @@
 			<div class="col-md-12"><h4>Prófviðmót</h4></div>
 		</div>
 		{% for survey_template in survey_template_list %}
-		<div class="row">
-			<div class="col-md-12"><a href="{% url 'survey:survey_template_detail' survey.id survey_template.id %}" >{{survey_template.md|slice:":30"}}</a></div>
-		</div>
-	{% endfor %}
+			<div class="row">
+				<div class="col-md-12"><a href="{% url 'survey:survey_template_detail' survey.id survey_template.id %}" >{{survey_template.title}}</a></div>
+			</div>
+		{% endfor %}
 	</div>
 	<div class="col-md-3">
 		<div class="row">

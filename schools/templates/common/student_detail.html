@@ -29,7 +29,7 @@
 		<div class="col-md-6">
 			<form action="" method="POST">{% csrf_token %}
 				<h3>Athugasemd</h3>
-				{% if  is_school_manager %}
+				{% if is_school_manager %}
 				<a  id="notes" class="btn btn-info"><span class="glyphicon glyphicon-plus">
 					</span>&nbsp;Uppfæra athugasemd
 				</a>
@@ -51,31 +51,29 @@
 			<div class="row">
 			{% for surveyresults in student.surveyresult_set.all %}
 				{% get_survey_results student surveyresults.survey as student_result %}
-				<div class="row">
-					<div class="col-md-9">
-						<a href="{% url 'schools:survey_detail' school.id surveyresults.survey.id %}">{{surveyresults.survey.title}}</a>
-					</div>
-					{% if student_result %}
-					<div class="col-md-3">
-						{% if is_group_manager %}
-						<a href="{% url 'schools:survey_result_update' school.id student.id surveyresults.survey.id student_result.id %}" class="btn btn-default btn-xs">
-							<span class="glyphicon glyphicon-pencil"></span>
-						</a>
-						{% endif %}
-						<button href="" class="btn btn-default btn-xs" type="button" data-toggle="collapse" data-target="#results-{{student_result.id}}" aria-expanded="false" aria-controls="collapseExample">
-							<span class="caret"></span>
-						</button>
-					</div>
-					{% else %}
-					<div class="col-md-3">
-						{% if is_group_manager %}
-						<a href="{% url 'schools:survey_result_create' school.id student.id surveyresults.survey.id %}" class="btn btn-default btn-xs">
-							<span class="glyphicon glyphicon-plus"></span>&nbsp;Skrá
-						</a>
-						{% endif %}
-					</div>
+				<div class="col-md-9">
+					<a href="{% url 'schools:survey_detail' school.id surveyresults.survey.id %}">{{surveyresults.survey.survey.title}}</a>
+				</div>
+				{% if student_result %}
+				<div class="col-md-3">
+					{% if is_group_manager %}
+					<a href="{% url 'schools:survey_result_update' school.id student.id surveyresults.survey.id student_result.id %}" class="btn btn-default btn-xs">
+						<span class="glyphicon glyphicon-pencil"></span>
+					</a>
+					{% endif %}
+					<button href="" class="btn btn-default btn-xs" type="button" data-toggle="collapse" data-target="#results-{{student_result.id}}" aria-expanded="false" aria-controls="collapseExample">
+						<span class="caret"></span>
+					</button>
+				</div>
+				{% else %}
+				<div class="col-md-3">
+					{% if is_group_manager %}
+					<a href="{% url 'schools:survey_result_create' school.id student.id surveyresults.survey.id %}" class="btn btn-default btn-xs">
+						<span class="glyphicon glyphicon-plus"></span>&nbsp;Skrá
+					</a>
 					{% endif %}
 				</div>
+				{% endif %}
 				{% if student_result %}
 				<div class="collapse row" id="results-{{student_result.id}}">
 					<div class="well col-md-12">

@@ -1,7 +1,6 @@
 from django.contrib.auth.models import User
 from django.db                  import models
 from django.utils               import timezone
-from common.models              import Student
 
 
 class SurveyType(models.Model):
@@ -18,12 +17,26 @@ class Survey(models.Model):
     identifier  = models.CharField(max_length = 128)
     title       = models.CharField(max_length = 256)
     survey_type = models.ForeignKey(SurveyType)
-    description = models.TextField()
-    created_at  = models.DateTimeField(default=timezone.now)
-    active_from = models.DateField(default=timezone.now)
-    active_to   = models.DateField(default=timezone.now)
-    created_by  = models.ForeignKey(User)
-    old_version = models.ForeignKey('Survey', null=True, blank=True)
+    YEARS       = (
+        ('0', 'Blandaður árgangur'),
+        ('1', '1. bekkur'),
+        ('2', '2. bekkur'),
+        ('3', '3. bekkur'),
+        ('4', '4. bekkur'),
+        ('5', '5. bekkur'),
+        ('6', '6. bekkur'),
+        ('7', '7. bekkur'),
+        ('8', '8. bekkur'),
+        ('9', '9. bekkur'),
+        ('10', '10. bekkur'),
+    )
+    student_year = models.CharField(max_length = 2, choices=YEARS, null=True, blank=True)
+    description  = models.TextField()
+    created_at   = models.DateTimeField(default=timezone.now)
+    active_from  = models.DateField(default=timezone.now)
+    active_to    = models.DateField(default=timezone.now)
+    created_by   = models.ForeignKey(User)
+    old_version  = models.ForeignKey('Survey', null=True, blank=True)
 
     def __str__(self):
         return self.title
@@ -44,8 +57,9 @@ class SurveyGradingTemplate(models.Model):
         Survey,
         on_delete=models.CASCADE,
     )
-    md   = models.TextField()
-    info = models.TextField()
+    title = models.CharField(max_length=32)
+    md    = models.TextField(null=True, blank=True)
+    info  = models.TextField()
 
 
 class SurveyInputGroup(models.Model):
@@ -66,38 +80,5 @@ class SurveyInputField(models.Model):
     def __str__(self):
         return self.input_group.title + ': ' + self.name
 
-
-class SurveyAttendance(models.Model):
-    survey = models.ForeignKey(Survey)
-    student = models.ForeignKey(Student)
-    attendance = models.IntegerField()
-
-    def __str__(self):
-        return self.student.name + ': ' + self.survey.title
-
-
-class SurveyException(models.Model):
-    survey      = models.ForeignKey(Survey)
-    student     = models.ForeignKey(Student)
-    description = models.CharField(max_length=1024, null=True, blank=True)
-
-    def __str__(self):
-        return self.student.name + ': ' + self.survey.title
-
-
-class SurveySupportType(models.Model):
-    support_type = models.CharField(max_length=128)
-    description  = models.CharField(max_length=1024, null=True, blank=True)
-
-    def __str__(self):
-        return self.title
-
-
-class SurveySupport(models.Model):
-    survey      = models.ForeignKey(Survey)
-    student     = models.ForeignKey(Student)
-    support     = models.ForeignKey(SurveySupportType)
-    description = models.CharField(max_length=1024, null=True, blank=True)
-
-    def __str__(self):
-        return self.student.name + ': ' + self.survey.title
+    def get_id(self):
+        return self.input_group.identifier + '_' + self.name

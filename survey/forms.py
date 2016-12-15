@@ -40,14 +40,18 @@ class SurveyForm(forms.ModelForm):
 
     class Meta:
         model  = models.Survey
-        fields = ['identifier', 'title', 'survey_type', 'description', 'active_from', 'active_to']
+        fields = [
+            'identifier', 'title', 'survey_type', 'student_year',
+            'description', 'active_from', 'active_to'
+        ]
         labels = {
-            'identifier' : 'Auðkenni',
-            'title'      : 'Heiti',
-            'survey_type': 'Tegund',
-            'description': 'Lýsing',
-            'active_from': 'Virkt frá',
-            'active_to'  : 'Virkt til',
+            'identifier'  : 'Auðkenni',
+            'title'       : 'Heiti',
+            'survey_type' : 'Tegund',
+            'student_year': 'Árgangur',
+            'description' : 'Lýsing',
+            'active_from' : 'Virkt frá',
+            'active_to'   : 'Virkt til',
         }
 
 
@@ -65,10 +69,11 @@ class SurveyResourceForm(forms.ModelForm):
 class SurveyGradingTemplateForm(forms.ModelForm):
     class Meta:
         model  = models.SurveyGradingTemplate
-        fields = ['md', 'info']
+        fields = ['title', 'md', 'info']
         labels = {
-            'md'  :  'MarkDown kóði',
-            'info': 'Leiðbeiningar',
+            'title': 'Titill',
+            'md'   : 'MarkDown kóði',
+            'info' : 'Leiðbeiningar',
         }
 
 
@@ -86,8 +91,9 @@ class SurveyInputFieldForm(forms.ModelForm):
 class SurveyInputGroupForm(forms.ModelForm):
     class Meta:
         model  = models.SurveyInputGroup
-        fields = ['title', 'description']
+        fields = ['title', 'identifier', 'description']
         labels = {
             'title'      : 'Heiti',
+            'identifier' : 'Kenni',
             'description': 'Lýsing'
         }

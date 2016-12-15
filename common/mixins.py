@@ -25,6 +25,9 @@ class SchoolManagerMixin(UserPassesTestMixin):
 class SchoolTeacherMixin(UserPassesTestMixin):
     login_url = reverse_lazy('denied')
 
+    def test_func(self):
+        return is_school_teacher(self.request, self.kwargs)
+
 
 class SuperUserMixin(UserPassesTestMixin):
     login_url = reverse_lazy('denied')
