@@ -5,10 +5,7 @@ from django.contrib.auth.mixins import UserPassesTestMixin
 
 from django.core.urlresolvers import reverse_lazy
 
-from rest_framework import viewsets
-
 from .            import forms
-from .serializers import SurveySerializer
 from .models      import (
     Survey, SurveyType, SurveyResource,
     SurveyGradingTemplate, SurveyInputField, SurveyInputGroup
@@ -18,10 +15,6 @@ from .mixins      import (
     SurveyCreateSuperSuccessMixin,
     SurveyDeleteSuperSuccessMixin
 )
-
-from datetime  import datetime
-
-from django.conf import settings
 
 
 class SurveyListing(UserPassesTestMixin, ListView):
@@ -52,36 +45,6 @@ class SurveyDetail(UserPassesTestMixin, DetailView):
 
     def test_func(self, **kwargs):
         return self.request.user.is_authenticated()
-
-
-class SurveyViewSet(viewsets.ModelViewSet):
-    queryset = Survey.objects.all()
-    serializer_class = SurveySerializer
-
-    def get_queryset(self):
-        try:
-            if settings.JSON_API_KEY in self.request.GET.get('json_api_key'):
-                return Survey.objects.filter(
-                    active_to__gte   = datetime.now(),
-                    active_from__lte = datetime.now()
-                )
-        except Exception as e:
-            print(e)
-            pass
-        return Survey.objects.none()
-
-
-class SurveyViewSetDetail(viewsets.ModelViewSet):
-    queryset         = Survey.objects.all()
-    serializer_class = SurveySerializer
-
-    def get_queryset(self):
-        try:
-            if settings.JSON_API_KEY in self.request.GET.get('json_api_key'):
-                return Survey.objects.filter(pk=self.kwargs['survey_id'])
-        except:
-            pass
-        return Survey.objects.none()
 
 
 class SurveyTypeDetail(UserPassesTestMixin, DetailView):

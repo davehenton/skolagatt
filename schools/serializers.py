@@ -1,4 +1,4 @@
-from common.models  import Student, SurveyResult, Survey, School, StudentGroup
+from common.models  import Student, SurveyResult, GroupSurvey, School, StudentGroup
 from rest_framework import serializers
 import json
 
@@ -29,7 +29,7 @@ class SurveySerializer(serializers.ModelSerializer):
     results = SurveyResultSerializer(many=True)
 
     class Meta:
-        model  = Survey
+        model  = GroupSurvey
         fields = ('survey', 'results')
 
 
@@ -42,6 +42,6 @@ class SchoolSerializer(serializers.ModelSerializer):
 
     def school_surveys(self, container):
         school_student_groups = StudentGroup.objects.filter(school=container)
-        school_surveys        = Survey.objects.filter(studentgroup__in=school_student_groups)
+        school_surveys        = GroupSurvey.objects.filter(studentgroup__in=school_student_groups)
         serializer            = SurveySerializer(instance=school_surveys, many=True)
         return serializer.data

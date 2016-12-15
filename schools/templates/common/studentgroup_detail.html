@@ -59,10 +59,10 @@
 			{% for survey in surveys %}
 				<div class="row">
 					<div class="col-md-6">
-						<a href="{% url 'schools:survey_detail' school.id survey.id %}">{{ survey.title }}</a>
+						<a href="{% url 'schools:survey_detail' school.id survey.id %}">{{ survey.survey.title }}</a>
 					</div>
 					<div class="col-md-6">
-						{{ survey.active_to|date:"d-m-y"|lower }}
+						{{ survey.survey.active_to|date:"d-m-y"|lower }}
 					</div>
 				</div>
 			{% endfor %}
@@ -77,10 +77,10 @@
 			{% for survey in old_surveys %}
 				<div class="row">
 					<div class="col-md-6">
-						<a href="{% url 'schools:survey_detail' school.id survey.id %}">{{ survey.title }}</a>
+						<a href="{% url 'schools:survey_detail' school.id survey.id %}">{{ survey.survey.title }}</a>
 					</div>
 					<div class="col-md-6">
-						{{ survey.active_to|date:"d-m-y"|lower }}
+						{{ survey.survey.active_to|date:"d-m-y"|lower }}
 					</div>
 				</div>
 			{% endfor %}

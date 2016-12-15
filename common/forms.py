@@ -1,13 +1,21 @@
 from django                     import forms
-
+from kennitala import Kennitala
 from django.contrib.auth.models import User
 from common.models import (
     Manager, Teacher, Student,
-    School, StudentGroup, Survey,
+    School, StudentGroup, GroupSurvey,
     SurveyResult, SurveyLogin)
 
 
 class ManagerForm(forms.ModelForm):
+    def clean(self):
+        cleaned_data = super(ManagerForm, self).clean()
+        kt = Kennitala(cleaned_data.get('ssn'))
+        if not kt.validate():
+            raise forms.ValidationError(
+                "Kennitala ekki rétt slegin inn"
+            )
+
     class Meta:
         model = Manager
         fields = ['ssn', 'name', 'email', 'phone', 'position', 'user']
@@ -23,6 +31,14 @@ class ManagerForm(forms.ModelForm):
 
 
 class TeacherForm(forms.ModelForm):
+    def clean(self):
+        cleaned_data = super(TeacherForm, self).clean()
+        kt = Kennitala(cleaned_data.get('ssn'))
+        if not kt.validate():
+            raise forms.ValidationError(
+                "Kennitala ekki rétt slegin inn"
+            )
+
     class Meta:
         model = Teacher
         fields =  ['ssn', 'name', 'position', 'user']
@@ -36,6 +52,14 @@ class TeacherForm(forms.ModelForm):
 
 
 class StudentForm(forms.ModelForm):
+    def clean(self):
+        cleaned_data = super(StudentForm, self).clean()
+        kt = Kennitala(cleaned_data.get('ssn'))
+        if not kt.validate():
+            raise forms.ValidationError(
+                "Kennitala ekki rétt slegin inn"
+            )
+
     class Meta:
         model = Student
         fields =  ['ssn', 'name']
@@ -75,23 +99,14 @@ class StudentGroupForm(forms.ModelForm):
 
 class SurveyForm(forms.ModelForm):
     class Meta:
-        model = Survey
-        fields =  ['studentgroup', 'survey', 'title', 'identifier', 'active_from', 'active_to']
+        model = GroupSurvey
+        fields =  ['studentgroup', 'survey']
         widgets = {
-            'studentgroup': forms.HiddenInput(),
-            'survey': forms.HiddenInput(),
-            'identifier': forms.HiddenInput(),
-            'title': forms.HiddenInput(),
-            'active_from': forms.HiddenInput(),
-            'active_to': forms.HiddenInput(),
+            'studentgroup': forms.HiddenInput()
         }
         labels = {
             'studentgroup': 'Nemendahópur',
             'survey': 'Könnun',
-            'identifier': 'Auðkenniskóði',
-            'title': 'Titill',
-            'active_from': 'Virkt frá',
-            'active_to': 'Virkt til',
         }
 
 

@@ -5,30 +5,42 @@
 {% block content %}
 <div class="row">
 	<div class="col-md-6"><h4>Nemandi: {{student.first.name}}</h4></div>
+</div>
 <form action="" method="post" id="survey_result_form">
-	<h4>Skráningareyðublað</h4>
+	<h2>Skráningareyðublað</h2>
 	<hr />
+	<h4>Leiðbeiningar:</h4>
 	<div id="selected_words" class="row alert alert-info">
-		<p>{{info|safe}}</p>
+		<p>{{grading_template.info|safe}}</p>
 	</div>
-	<div class='md' id="grading_template">{{grading_template|safe}}</div>
+	<div class='md' id="grading_template">{{grading_template.md|safe}}</div>
 	<div id="selected_words" class="row"></div>
 	<hr />
-	{% if input_fields %}
-	<h4>Innsláttarsvæði</h4>
+	{% if input_groups %}
+	<div class="row">
+		<div class="col-xs-6 col-md-4"><h3>Innsláttarsvæði</h3></div>
+		<div class="col-xs-6 col-md-8"><h3><small>Lýsing</small></h3></div>
+	</div>
 	<div id="input_fields">
-		{% for field in input_fields %}
-			<div class="row">
-				<div class="col-md-1">
-					{{ field.label }}
-				</div>
-				<div class="col-md-3">
-					<input type="text" name="{{ field.name }}" id="{{ field.name }}" />
-				</div>
-				<div class="col-md-4 alert-info">
-					{{ field.description }}
-				</div>
-			</div>
+		{% for ig in input_groups %}
+			<fieldset name="ig.group">
+				<legend>
+					{{ ig.group }}
+				</legend>
+				{% for input in ig.inputs %}
+					<div class="row">
+						<div class="col-xs-2 col-md-1">
+							{{ input.get_id }}
+						</div>
+						<div class="col-xs-4 col-md-3">
+							<input type="text" name="{{ input.get_id }}" id="{{ input.get_id }}" />
+						</div>
+						<div class="col-xs-6 col-md-8 alert-info">
+							{{ ig.group.description }}
+						</div>
+					</div>
+				{% endfor %}
+			</fieldset>
 		{% endfor %}
 	</div>
 	{% endif %}
@@ -47,13 +59,6 @@
 			try {
 				var click_values = JSON.parse(data_results['click_values']);
 				for(i in click_values){
-					//data_results = {
-						//'click_values': ['number,value', 'number,value', ...],
-						//'input_values': {
-							//'input_field_1': 'value',
-							//'input_field_2': 'value',
-						//}
-					//}
 					update.push(click_values[i].split(',')[0]);
 				}
 				var input_values = data_results['input_values'];

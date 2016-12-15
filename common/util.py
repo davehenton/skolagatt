@@ -89,6 +89,7 @@ def is_group_manager(request, kwargs):
         return False
     try:
         try:
+            print(request.path)
             if cm_models.StudentGroup.objects.filter(
                 pk             = kwargs['student_group'],
                 group_managers = cm_models.Teacher.objects.filter(user=request.user)
@@ -96,11 +97,24 @@ def is_group_manager(request, kwargs):
                 return True
         except:
             if 'survey_id' in kwargs:
-                survey_id = kwargs['survey_id']
-            else:
-                survey_id = kwargs['pk']
+                survey_id = cm_models.GroupSurvey.objects.get(
+                    pk=kwargs['survey_id']
+                ).studentgroup.id
+            elif 'próf' in request.path:
+                survey_id = cm_models.GroupSurvey.objects.get(
+                    pk=kwargs['pk']
+                ).studentgroup.id
+            elif 'bekkur' in request.path:
+                survey_id = cm_models.GroupSurvey.objects.get(
+                    studentgroup=kwargs['pk']
+                ).studentgroup.id
+            elif 'nemandi' in request.path:
+                group = cm_models.StudentGroup.objects.filter(students=kwargs['pk'])
+                survey_id = cm_models.GroupSurvey.objects.get(
+                    studentgroup=group
+                ).studentgroup.id
             if cm_models.StudentGroup.objects.filter(
-                pk             = cm_models.Survey.objects.get(pk=survey_id).studentgroup.id,
+                pk             = survey_id,
                 group_managers = cm_models.Teacher.objects.filter(user=request.user)
             ):
                 return True
