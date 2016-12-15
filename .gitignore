@@ -5,7 +5,7 @@
 /share
 /env
 /public
-migrations/
+*/migrations/
 db.sqlite3
 env.sh
 pyvenv.cfg
