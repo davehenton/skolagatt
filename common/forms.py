@@ -11,7 +11,7 @@ class ManagerForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super(ManagerForm, self).clean()
         kt = Kennitala(cleaned_data.get('ssn'))
-        if not kt.validate():
+        if not kt.validate() or not kt.is_personal(cleaned_data.get('ssn')):
             raise forms.ValidationError(
                 "Kennitala ekki rétt slegin inn"
             )
@@ -34,7 +34,7 @@ class TeacherForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super(TeacherForm, self).clean()
         kt = Kennitala(cleaned_data.get('ssn'))
-        if not kt.validate():
+        if not kt.validate() or not kt.is_personal(cleaned_data.get('ssn')):
             raise forms.ValidationError(
                 "Kennitala ekki rétt slegin inn"
             )
@@ -55,7 +55,7 @@ class StudentForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super(StudentForm, self).clean()
         kt = Kennitala(cleaned_data.get('ssn'))
-        if not kt.validate():
+        if not kt.validate() or not kt.is_personal(cleaned_data.get('ssn')):
             raise forms.ValidationError(
                 "Kennitala ekki rétt slegin inn"
             )
@@ -70,6 +70,14 @@ class StudentForm(forms.ModelForm):
 
 
 class SchoolForm(forms.ModelForm):
+    def clean(self):
+        cleaned_data = super(SchoolForm, self).clean()
+        kt = Kennitala(cleaned_data.get('ssn'))
+        if not kt.validate() or kt.is_personal(cleaned_data.get('ssn')):
+            raise forms.ValidationError(
+                "Kennitala ekki rétt slegin inn"
+            )
+
     class Meta:
         model = School
         fields = '__all__'
@@ -137,6 +145,14 @@ class SurveyLoginForm(forms.ModelForm):
 
 
 class SuperUserForm(forms.ModelForm):
+    def clean(self):
+        cleaned_data = super(SuperUserForm, self).clean()
+        kt = Kennitala(cleaned_data.get('username'))
+        if not kt.validate() or not kt.is_personal(cleaned_data.get('username')):
+            raise forms.ValidationError(
+                "Kennitala ekki rétt slegin inn"
+            )
+
     class Meta:
         model = User
         fields = ['username', 'is_superuser']

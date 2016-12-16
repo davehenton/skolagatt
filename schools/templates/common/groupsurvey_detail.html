@@ -14,8 +14,8 @@
 				{% if expired %}
 					Lokið
 				{% elif is_group_manager or is_school_manager %}
-					<a href="{% url 'schools:survey_update' school.id groupsurvey.id %}" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span>&nbsp;Breyta</a>
-					<a href="{% url 'schools:survey_delete' school.id groupsurvey.id %}" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span>&nbsp;Eyða</a>
+					<a href="{% url 'schools:survey_update' school.id studentgroup.id groupsurvey.id %}" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span>&nbsp;Breyta</a>
+					<a href="{% url 'schools:survey_delete' school.id studentgroup.id groupsurvey.id %}" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span>&nbsp;Eyða</a>
 				{% endif %}
 				</div>
 			</div>

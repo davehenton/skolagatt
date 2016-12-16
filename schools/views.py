@@ -881,8 +881,12 @@ class StudentGroupDetail(common_mixins.SchoolEmployeeMixin, DetailView):
         context['school']      = School.objects.get(pk=self.kwargs['school_id'])
         context['exceptions']  = sae_models.Exceptions.objects.all()
         context['supports']    = sae_models.SupportResource.objects.all()
-        context['surveys']     = self.object.groupsurvey_set.filter(survey__active_to__gte=datetime.now())
-        context['old_surveys'] = self.object.groupsurvey_set.filter(survey__active_to__lt=datetime.now())
+        context['surveys']     = self.object.groupsurvey_set.filter(
+            survey__active_to__gte=datetime.now()
+        )
+        context['old_surveys'] = self.object.groupsurvey_set.filter(
+            survey__active_to__lt=datetime.now()
+        )
         context['students']    = common_util.slug_sort(self.object.students.all(), 'name')
         context['teachers']    = common_util.slug_sort(self.object.group_managers.all(), 'name')
         return context
@@ -976,7 +980,7 @@ class StudentGroupAdminListing(common_mixins.SuperUserMixin, ListView):
         try:
             context            = super(StudentGroupAdminListing, self).get_context_data(**kwargs)
             context['schools'] = common_util.slug_sort(School.objects.all(), 'name')
-            context['surveys'] = GroupSurvey.objects.filter(title=self.kwargs['survey_title'])
+            context['surveys'] = GroupSurvey.objects.filter(survey__title=self.kwargs['survey_title'])
         except Exception as e:
             context['error'] = str(e)
         return context
@@ -1081,11 +1085,11 @@ class SurveyListing(common_mixins.SchoolEmployeeMixin, ListView):
 
     def get_context_data(self, **kwargs):
         # xxx will be available in the template as the related objects
-        context                       = super(SurveyListing, self).get_context_data(**kwargs)
-        school                        = School.objects.get(pk=self.kwargs['school_id'])
-        context['surveylisting_list'] = common_util.slug_sort(GroupSurvey.objects.filter(
-            studentgroup__in = school.object.studentgroup_set.all()
-        ), 'title')
+        context                 = super(SurveyListing, self).get_context_data(**kwargs)
+        context['school']       = School.objects.get(pk=self.kwargs['school_id'])
+        group                   = StudentGroup.objects.get(pk=self.kwargs['student_group'])
+        context['studentgroup'] = group
+        context['surveys']      = GroupSurvey.objects.filter(studentgroup = group)
         return context
 
 
@@ -1097,7 +1101,7 @@ class SurveyAdminListing(common_mixins.SuperUserMixin, ListView):
         # xxx will be available in the template as the related objects
         try:
             context            = super(SurveyAdminListing, self).get_context_data(**kwargs)
-            context['surveys'] = GroupSurvey.objects.values('title').distinct()
+            context['surveys'] = GroupSurvey.objects.all()
         except Exception as e:
             context['error'] = str(e)
         return context
@@ -1111,6 +1115,7 @@ class SurveyDetail(common_mixins.SchoolEmployeeMixin, DetailView):
         context = super(SurveyDetail, self).get_context_data(**kwargs)
         context['survey_details'] = Survey.objects.filter(pk=self.object.survey.id)[0]
         context['school']   = School.objects.get(pk=self.kwargs['school_id'])
+        context['studentgroup'] = StudentGroup.objects.get(pk=self.kwargs['student_group'])
         try:
             context['students'] = self.object.studentgroup.students.all()
             context['expired']  = True if self.object.survey.active_to < date.today() else False
@@ -1154,11 +1159,13 @@ class SurveyCreate(common_mixins.SchoolEmployeeMixin, CreateView):
         else:
             return self.form_invalid(form)
 
-    def get_context_data(self, **kwargs):
-            # xxx will be available in the template as the related objects
-            context                = super(SurveyCreate, self).get_context_data(**kwargs)
-            context['survey_list'] = Survey.objects.all()
-            return context
+    def get_form(self):
+        form       = super(SurveyCreate, self).get_form(self.form_class)
+        group_year = StudentGroup.objects.get(
+            pk=self.kwargs['student_group']).student_year
+        survey_set = Survey.objects.filter(student_year=group_year)
+        form.fields['survey'].queryset = survey_set
+        return form
 
     def get_success_url(self):
         try:
@@ -1186,8 +1193,12 @@ class SurveyUpdate(common_mixins.SchoolEmployeeMixin, UpdateView):
 
     def get_form(self):
         form                                 = super(SurveyUpdate, self).get_form(self.form_class)
-        form.fields['studentgroup'].queryset = StudentGroup.objects.filter(
-            school=self.kwargs['school_id'])
+        student_groups = StudentGroup.objects.filter(
+            school=self.kwargs['school_id']
+        ).values_list('student_year')
+        form.fields['studentgroup'].queryset = student_groups
+        survey_set = Survey.objects.filter(student_year__in=student_groups)
+        form.fields['survey'].queryset = survey_set
         return form
 
     def get_context_data(self, **kwargs):
@@ -1299,14 +1310,17 @@ class SurveyResultCreate(common_mixins.SchoolEmployeeMixin, CreateView):
 
     def get_success_url(self):
         try:
+            survey = GroupSurvey.objects.get(pk=self.kwargs['survey_id'])
             return reverse_lazy(
                 'schools:survey_detail',
                 kwargs={
-                    'pk'       : self.kwargs['survey_id'],
-                    'school_id': self.kwargs['school_id']
+                    'pk'           : self.kwargs['survey_id'],
+                    'school_id'    : self.kwargs['school_id'],
+                    'student_group': survey.studentgroup.id
                 }
             )
         except:
+            print('fail')
             return reverse_lazy('schools:school_listing')
 
 
@@ -1327,7 +1341,6 @@ class SurveyResultUpdate(common_mixins.SchoolEmployeeMixin, UpdateView):
                     )
                 else:
                     survey_results_data['input_values'][k] = self.request.POST[k]
-                    print(survey_results_data['input_values'][k])
         survey_results.results = json.dumps(survey_results_data)
         return super(SurveyResultUpdate, self).form_valid(form)
 
@@ -1359,14 +1372,17 @@ class SurveyResultUpdate(common_mixins.SchoolEmployeeMixin, UpdateView):
 
     def get_success_url(self):
         try:
+            survey = GroupSurvey.objects.get(pk=self.kwargs['survey_id'])
             return reverse_lazy(
                 'schools:survey_detail',
                 kwargs={
-                    'pk'       : self.kwargs['survey_id'],
-                    'school_id': self.kwargs['school_id']
+                    'pk'           : self.kwargs['survey_id'],
+                    'school_id'    : self.kwargs['school_id'],
+                    'student_group': survey.studentgroup.id
                 }
             )
         except:
+            print('fail')
             return reverse_lazy('schools:school_listing')
 
 
@@ -1584,7 +1600,7 @@ class AdminUpdate(common_mixins.SuperUserMixin, UpdateView):
 
 
 def group_admin_listing_excel(request, survey_title):
-    surveys = GroupSurvey.objects.filter(title=survey_title)
+    surveys = GroupSurvey.objects.filter(survey__title=survey_title)
 
     response                        = HttpResponse(
         content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
@@ -1601,14 +1617,14 @@ def group_admin_listing_excel(request, survey_title):
 
     index = 2
     for survey in surveys:
-
-        for student in survey.studentgroup.students.all():
-            ws.cell('A' + str(index)).value = survey.studentgroup.school.name
-            ws.cell('B' + str(index)).value = survey.studentgroup.school.ssn
-            ws.cell('C' + str(index)).value = student.name
-            ws.cell('D' + str(index)).value = student.ssn
-            ws.cell('E' + str(index)).value = survey.studentgroup.name
-            index += 1
+        if survey.studentgroup:
+            for student in survey.studentgroup.students.all():
+                ws.cell('A' + str(index)).value = survey.studentgroup.school.name
+                ws.cell('B' + str(index)).value = survey.studentgroup.school.ssn
+                ws.cell('C' + str(index)).value = student.name
+                ws.cell('D' + str(index)).value = student.ssn
+                ws.cell('E' + str(index)).value = survey.studentgroup.name
+                index += 1
 
     wb.save(response)
 
@@ -1617,7 +1633,7 @@ def group_admin_listing_excel(request, survey_title):
 
 def group_admin_attendance_excel(request, survey_title):
 
-    surveys  = GroupSurvey.objects.filter(title=survey_title)
+    surveys  = GroupSurvey.objects.filter(survey__title=survey_title)
     response = HttpResponse(
         content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
     response['Content-Disposition'] = 'attachment; filename=samræmdupróf.xlsx'
@@ -1640,41 +1656,41 @@ def group_admin_attendance_excel(request, survey_title):
 
     index = 2
     for survey in surveys:
+        if survey.studentgroup:
+            for student in survey.studentgroup.students.all():
+                ws.cell('A' + str(index)).value = survey.studentgroup.school.name
+                ws.cell('B' + str(index)).value = survey.studentgroup.school.ssn
+                ws.cell('C' + str(index)).value = student.name
+                ws.cell('D' + str(index)).value = student.ssn
+                ws.cell('E' + str(index)).value = survey.studentgroup.name
 
-        for student in survey.studentgroup.students.all():
-            ws.cell('A' + str(index)).value = survey.studentgroup.school.name
-            ws.cell('B' + str(index)).value = survey.studentgroup.school.ssn
-            ws.cell('C' + str(index)).value = student.name
-            ws.cell('D' + str(index)).value = student.ssn
-            ws.cell('E' + str(index)).value = survey.studentgroup.name
+                sr              = SurveyResult.objects.filter(student=student, survey=survey)
+                student_results = ""
+                if sr:
+                    r = literal_eval(sr.first().results)  # get student results
+                    try:
+                        student_results = int(r['click_values'][2])
+                    except Exception as e:
+                        print(e)
+                else:
+                    student_results = ''
 
-            sr              = SurveyResult.objects.filter(student=student, survey=survey)
-            student_results = ""
-            if sr:
-                r = literal_eval(sr.first().results)  # get student results
-                try:
-                    student_results = int(r['click_values'][2])
-                except Exception as e:
-                    print(e)
-            else:
-                student_results = ''
+                if student_results != '':
+                    ws.cell(row=index, column=student_results + 6).value = "1"
 
-            if student_results != '':
-                ws.cell(row=index, column=student_results + 6).value = "1"
+                support = sae_models.SupportResource.objects.filter(student=student)
 
-            support = sae_models.SupportResource.objects.filter(student=student)
+                if support:
+                    support_available = []
+                    support_available += literal_eval(support.first().reading_assistance)
+                    support_available += literal_eval(support.first().interpretation)
+                    support_available += literal_eval(support.first().longer_time)
+                    if 1 in support_available:
+                        ws.cell(row=index, column=10).value = "1"
+                    if 3 in support_available:
+                        ws.cell(row=index, column=11).value = "1"
 
-            if support:
-                support_available = []
-                support_available += literal_eval(support.first().reading_assistance)
-                support_available += literal_eval(support.first().interpretation)
-                support_available += literal_eval(support.first().longer_time)
-                if 1 in support_available:
-                    ws.cell(row=index, column=10).value = "1"
-                if 3 in support_available:
-                    ws.cell(row=index, column=11).value = "1"
-
-            index += 1
+                index += 1
 
     wb.save(response)
 

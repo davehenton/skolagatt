@@ -89,7 +89,6 @@ def is_group_manager(request, kwargs):
         return False
     try:
         try:
-            print(request.path)
             if cm_models.StudentGroup.objects.filter(
                 pk             = kwargs['student_group'],
                 group_managers = cm_models.Teacher.objects.filter(user=request.user)
