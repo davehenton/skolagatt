@@ -104,9 +104,11 @@ class GroupSurvey(models.Model):
         'StudentGroup', null=True, blank=True, on_delete=models.SET_NULL
     )
     survey       = models.ForeignKey(Survey)
+    active_from  = models.DateField(default=timezone.now)
+    active_to    = models.DateField(default=timezone.now)
 
     def is_expired(self):
-        if timezone.now().date() > self.survey.active_to:
+        if timezone.now().date() > self.active_to:
             return True
         return False
 

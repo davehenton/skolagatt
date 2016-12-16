@@ -1,13 +1,13 @@
 <h3>Kennarar</h3>
-<div>
-	<div id="teacher_list" class="table table-hover">
-		<div class="row">
-			<div class="col-md-12"><h4>Nafn</h4></div>
-		</div>
+<table id="teacher_list" class="table table-hover table-striped">
+	<thead>
+		<th class="col-md-12"><h4>Nafn</h4></th>
+	</thead>
+	<tbody>
 		{% for teacher in teachers %}
-		<div class="row">
-			<div class="col-md-12"><a href="{% url 'schools:teacher_detail' school.id teacher.id %}">{{teacher.name}}</a></div>
-		</div>
+		<tr>
+			<td class="col-md-12"><a href="{% url 'schools:teacher_detail' school.id teacher.id %}">{{teacher.name}}</a></td>
+		</tr>
 		{% endfor %}
-	</div>
-</div>
+	</tbody>
+</table>

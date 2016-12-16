@@ -1,13 +1,13 @@
 <h3>Skólastjórnendur</h3>
-<div>
-	<div id="manager_list" class="table table-hover">
-		<div class="row">
-			<div class="col-md-12"><h4>Nafn</h4></div>
-		</div>
+<table class="table table-hover table-striped">
+		<thead>
+			<th class="col-md-12"><h4>Nafn</h4></th>
+		</thead>
+		<tbody>
 		{% for manager in managers %}
-		<div class="row">
-			<div class="col-md-12"><a href="{% url 'schools:manager_detail' school.id manager.id %}">{{manager.name}}</a></div>
-		</div>
+		<tr>
+			<td class="col-md-12"><a href="{% url 'schools:manager_detail' school.id manager.id %}">{{manager.name}}</a></td>
+		</tr>
 		{% endfor %}
-	</div>
-</div>
+		</tbody>
+</table>

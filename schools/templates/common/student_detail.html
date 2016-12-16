@@ -52,7 +52,13 @@
 			{% for surveyresults in student.surveyresult_set.all %}
 				{% get_survey_results student surveyresults.survey as student_result %}
 				<div class="col-md-9">
-					<a href="{% url 'schools:survey_detail' school.id surveyresults.survey.id %}">{{surveyresults.survey.survey.title}}</a>
+					{% if surveyresults.survey.studentgroup.id %}
+						<a href="{% url 'schools:survey_detail' school.id surveyresults.survey.studentgroup.id surveyresults.survey.id %}">
+							{{surveyresults.survey.survey.student_year}}. bekkur - {{surveyresults.survey.survey.title}}
+						</a>
+					{% else %}
+						{{surveyresults.survey.survey.student_year}}. bekkur - {{surveyresults.survey.survey.title}}
+					{% endif %}
 				</div>
 				{% if student_result %}
 				<div class="col-md-3">

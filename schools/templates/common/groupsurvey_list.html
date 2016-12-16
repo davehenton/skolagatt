@@ -1,3 +1,6 @@
+{% extends 'common/index.html'%}
+
+{% block content %}
 <h3>Bekkir og hópar</h3>
 <div>
 	<div id="survey_list" class="table table-hover">
@@ -7,9 +10,10 @@
 		</div>
 		{% for survey in surveys %}
 		<div class="row">
-			<div class="col-md-6"><a href="{% url 'schools:survey_detail' school.id studentgroup.id groupsurvey.id %}">{{survey.title}}</a></div>
+			<div class="col-md-6"><a href="{% url 'schools:survey_detail' school.id studentgroup.id survey.id %}">{{survey.survey.title}}</a></div>
 			<div class="col-md-6">{{survey.studentgroup}}</div>
 		</div>
 		{% endfor %}
 	</div>
 </div>
+{% endblock %}

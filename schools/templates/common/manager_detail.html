@@ -73,7 +73,7 @@
 					{% for survey in group.survey_set.all %}
 						<div class="row" >
 							<div class="col-md-8">
-								<a href="{% url 'schools:survey_detail' school.id survey.id %}">{{ survey.title }}</a>
+								<a href="{% url 'schools:survey_detail' school.id group.id survey.id %}">{{ survey.title }}</a>
 							</div>
 							<div class="col-md-4">
 								{{ survey.active_to|date:"d-m-y"|lower }}
