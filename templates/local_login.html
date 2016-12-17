@@ -5,24 +5,24 @@
 	{% if form.errors %}
 		<p>Your username and password didn't match. Please try again.</p>
 	{% endif %}
-	<div id="login">
-		<form class="form-horizontal" name="LoginForm" method="post">
+	<div id="login" class="col-md-6 col-xs-12">
+		<form name="LoginForm" method="post" class="form-horizontal">
 			{% csrf_token %}
-			<div class="control-group">
-				<label class="control-label" for="user_ssn">Username</label>
-				<div class="controls">
-					<input type="text" id="user_ssn" name="user_ssn"  placeholder="Kennitala">
+			<div class="form-group">
+				<label for="user_ssn" class="col-md-3 col-xs-12">Notandanafn</label>
+				<div class="col-md-9 col-xs-12">
+					<input type="text" id="user_ssn" name="user_ssn" placeholder="Kennitala" class="form-control input-lg">
 				</div>
 			</div>
-			<div class="control-group">
-				<label class="control-label" for="password">Password</label>
-				<div class="controls">
-					<input type="password" name="password" id="password" placeholder="Lykilorð">
+			<div class="form-group">
+				<label for="password" class="col-md-3 col-xs-12">Lykilorð</label>
+				<div class="col-md-9 col-xs-12">
+					<input type="password" name="password" id="password" placeholder="Lykilorð" class="form-control input-lg">
 				</div>
 			</div>
-			<div class="control-group">
-				<div class="controls">
-					<button type="submit" class="btn">Login</button>
+			<div class="form-group">
+				<div class="col-md-offset-3 col-xs-12">
+					<button type="submit" class="btn btn-success btn-lg ">Innskrá</button>
 				</div>
 			</div>
 		</form>

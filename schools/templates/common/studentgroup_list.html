@@ -2,30 +2,52 @@
 
 {% block content %}
 <h3>Bekkir og hópar</h3>
-<div class="striped col-md-6">
-	<a href="{% url 'schools:group_create' school.id %}" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span>Bæta við hóp</a>
-	<div id="teacher_list" class="table table-hover">
-		<div class="row">
-			<div class="col-md-2"><h4>Nafn</h4></div>
-			<div class="col-md-3"><h4>Árgangur</h4></div>
-			<div class="col-md-4"><h4>Kennarar</h4></div>
-			<div class="col-md-2"><h4>Aðgerðir</h4></div>
-		</div>
+<div class="col-md-8">
+	<table id="teacher_list" class="table table-striped table-hover">
+		<thead class="row">
+			<tr>
+				<th><h4>Nafn</h4></th>
+				<th><h4>Árgangur</h4></th>
+				<th><h4>Kennarar</h4></th>
+				<th></th>
+			</tr>
+		</thead>
+		<tfoot>
+			<tr>
+				<td colspan="4">
+					<a href="{% url 'schools:group_create' school.id %}" class="btn btn-default btn-sm btn-block" >
+						<span class="glyphicon glyphicon-plus"></span>&nbsp;Bæta við hóp
+					</a>
+				</td>
+			</tr>
+		</tfoot>
+		<tbody>
 		{% for group in studentgroups %}
-		<div class="row">
-			<div class="col-md-2"><a href="{% url 'schools:group_detail' school.id group.id %}">{{group.name}}</a></div>
-			<div class="col-md-3">{{group.student_year}}</div>
-			<div class="col-md-4">
-			{% for manager in group.group_managers.all %}
-			<a href="{% url 'schools:teacher_detail' school.id manager.id %}">{{ manager.name }}</a>
-			{% endfor %}
-			</div>
-			<div class="col-md-2">
-				<a href="{% url 'schools:group_update' group.school.id group.id%}" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
-				<a href="{% url 'schools:group_delete' group.school.id group.id%}" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-trash"></span></a>
-			</div>
-		</div>
+		<tr>
+			<td>
+				<a href="{% url 'schools:group_detail' school.id group.id %}">{{group.name}}</a>
+			</td>
+			<td>
+				{{group.student_year}}
+			</td>
+			<td>
+				{% for manager in group.group_managers.all %}
+					<a href="{% url 'schools:teacher_detail' school.id manager.id %}">{{ manager.name }}</a>
+				{% endfor %}
+			</td>
+			<td>
+				<div class="btn-group" style="float: right;">
+					<a href="{% url 'schools:group_update' group.school.id group.id%}" class="btn btn-default btn-xs">
+						<span class="glyphicon glyphicon-pencil"></span>
+					</a>
+					<a href="{% url 'schools:group_delete' group.school.id group.id%}" class="btn btn-danger btn-xs">
+						<span class="glyphicon glyphicon-trash"></span>
+					</a>
+				</div>
+			</td>
+		</tr>
 		{% endfor %}
-	</div>
+		</tbody>
+	</table>
 </div>
 {% endblock %}

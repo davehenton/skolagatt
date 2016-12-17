@@ -6,37 +6,36 @@
 	<div class="col-md-6">
 		<form action="" method="post" enctype="multipart/form-data">
 			{% csrf_token %}
-			<ul class="form_elements">
-				<li>
-					<label for="file">Veldu skrá</label>
-					<input type="file" name="file" id="file" class="btn btn-default"/>
-				</li>
-				<li>
-					<label for="student_ssn">Prófkóði</label>
-					<input type="text" name="exam_code" id="exam_code" />
-				</li>
-				<li>
-					<label for="student_name">Dagsetnings prófs</label>
-					<input type="text" name="exam_date" id="exam_date" placeholder='YYYY-MM-DD'/>
-				</li>
-				<li>
-					<label for="student_year">Bekkur</label>
-					<select id="student_year" name="student_year">
-						<option value="1">1. bekkur</option>
-						<option value="2">2. bekkur</option>
-						<option value="3">3. bekkur</option>
-						<option value="4">4. bekkur</option>
-						<option value="5">5. bekkur</option>
-						<option value="6">6. bekkur</option>
-						<option value="7">7. bekkur</option>
-						<option value="8">8. bekkur</option>
-						<option value="9">9. bekkur</option>
-						<option value="10">10. bekkur</option>
-					</select>				
-				</li>
-				<li>
-					<input type="submit" value="Vista" class="btn btn-default"/>
-				</li>
+			<div class="form-group">
+				<label for="file">Veldu skrá</label>
+				<input type="file" name="file" id="file" class="btn btn-default"/>
+			</div>
+			<div class="form-group">
+				<label for="student_ssn">Prófkóði</label>
+				<input type="text" name="exam_code" id="exam_code" class="form-control input-lg" />
+			</div>
+			<div class="form-group">
+				<label for="student_name">Dagsetnings prófs</label>
+				<input type="text" name="exam_date" id="exam_date" placeholder='YYYY-MM-DD' class="form-control input-lg"/>
+			</div>
+			<div class="form-group">
+				<label for="student_year">Bekkur</label>
+				<select id="student_year" name="student_year" class="form-control input-lg">
+					<option value="1">1. bekkur</option>
+					<option value="2">2. bekkur</option>
+					<option value="3">3. bekkur</option>
+					<option value="4">4. bekkur</option>
+					<option value="5">5. bekkur</option>
+					<option value="6">6. bekkur</option>
+					<option value="7">7. bekkur</option>
+					<option value="8">8. bekkur</option>
+					<option value="9">9. bekkur</option>
+					<option value="10">10. bekkur</option>
+				</select>				
+			</div>
+			<div class="form-group">
+				<input type="submit" value="Vista" class="btn btn-success btn-lg"/>
+			</div>
 		</form>
 	</div>
 	<div class="col-md-6 alert-info">

@@ -19,33 +19,12 @@
 <div class="row">
 	<div class="row">
 		<div class="col-md-3">
-			{% if is_school_manager %}
-			<a href="{% url 'schools:manager_create' school.id %}" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span>&nbsp;Bæta við skólastjórnanda</a>
-			{% endif %}
 			{% include 'common/_manager_list.html' %}
 		</div>
 		<div class="col-md-3">
-			<div class="btn-group" role="group">
-				<a href="{% url 'schools:student_create' school.id %}" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-					<span class="caret"></span>&nbsp;Bæta við kennurum
-				</a>
-				<ul class="dropdown-menu">
-					<li>
-						<a href="{% url 'schools:teacher_create' school.id %}">
-							<span class="glyphicon glyphicon-plus"></span>&nbsp;Bæta við einum
-						</a>
-					</li>
-					<li>
-						<a href="{% url 'schools:teacher_create_import' school.id %}">
-							<span class="glyphicon glyphicon-plus"></span>&nbsp;Bæta við mörgum
-						</a>
-					</li>
-				</ul>
-			</div>		
 			{% include 'common/_teacher_list.html' %}
 		</div>
 		<div class="col-md-5">
-			<a href="{% url 'schools:group_create' school.id %}" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span>&nbsp;Bæta við hóp</a>
 			{% include 'common/_group_list.html' %}
 		</div>
 	</div>

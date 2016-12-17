@@ -1,31 +1,31 @@
 {% extends 'common/index.html'%}
-{% include staticfiles%}
+{% include staticfiles %}
 
 {% block content %}
-<script type='text/javascript'>
-	var survey_list = {{ groupsurvey_list|safe }};
-</script>
-
 <div class="row">
+	<h3>Könnun</h3>
 	<div class="col-md-6">
 		<form action="" method="post">
-			{% csrf_token %}
-			{{ form.as_p }}
-			<p>
-				<input type="submit" class="btn btn-success" value="Vista" />
-			</p>
+			{% include 'common/_generic_form.html' %}
+			<button type="submit" class="btn btn-success">Vista</button>
 		</form>
 	</div>
 	<div class="col-md-6">
 		<div class="row">
 			<div class="col-md-12 alert-info">
+				<h4>Leiðbeiningar</h4>
 				<p>Veljið próf úr prófagrunni Menntamálastofnunnar. Ef engin próf er virk þá er listinn tómur.</p>
 				<p>Vinsamlegast sendið spurningar á <a href="mailto:skolagatt@mms.is">vefpóst skólagáttarinnar</a></p>
 			</div>
 		</div>
+		<hr />
 		<div class="row">
-			<h4>Lýsing prófs</h4>
-			<div class="col-md-12 md" id="survey_description">Veldu próf ...</div>
+			<div class="col-md-12">
+				<h4>Lýsing prófs</h4>
+				<div id="survey_description">
+					{{survey_description}}
+				</div>
+			</div>
 		</div>
 	</div>
 </div>

@@ -882,10 +882,10 @@ class StudentGroupDetail(common_mixins.SchoolEmployeeMixin, DetailView):
         context['exceptions']  = sae_models.Exceptions.objects.all()
         context['supports']    = sae_models.SupportResource.objects.all()
         context['surveys']     = self.object.groupsurvey_set.filter(
-            survey__active_to__gte=datetime.now()
+            active_to__gte=datetime.now()
         )
         context['old_surveys'] = self.object.groupsurvey_set.filter(
-            survey__active_to__lt=datetime.now()
+            active_to__lt=datetime.now()
         )
         context['students']    = common_util.slug_sort(self.object.students.all(), 'name')
         context['teachers']    = common_util.slug_sort(self.object.group_managers.all(), 'name')
@@ -980,7 +980,9 @@ class StudentGroupAdminListing(common_mixins.SuperUserMixin, ListView):
         try:
             context            = super(StudentGroupAdminListing, self).get_context_data(**kwargs)
             context['schools'] = common_util.slug_sort(School.objects.all(), 'name')
-            context['surveys'] = GroupSurvey.objects.filter(survey__title=self.kwargs['survey_title'])
+            context['surveys'] = GroupSurvey.objects.filter(
+                survey__title=self.kwargs['survey_title']
+            )
         except Exception as e:
             context['error'] = str(e)
         return context
@@ -1147,6 +1149,14 @@ class SurveyCreate(common_mixins.SchoolEmployeeMixin, CreateView):
     model      = GroupSurvey
     form_class = cm_forms.SurveyForm
 
+    def get_form(self):
+        form       = super(SurveyCreate, self).get_form(self.form_class)
+        group_year = StudentGroup.objects.get(
+            pk=self.kwargs['student_group']).student_year
+        survey_set = Survey.objects.filter(student_year=group_year)
+        form.fields['survey'].queryset = survey_set
+        return form
+
     def post(self, *args, **kwargs):
         self.object               = None
         form                      = self.get_form()
@@ -1158,14 +1168,6 @@ class SurveyCreate(common_mixins.SchoolEmployeeMixin, CreateView):
             return self.form_valid(form)
         else:
             return self.form_invalid(form)
-
-    def get_form(self):
-        form       = super(SurveyCreate, self).get_form(self.form_class)
-        group_year = StudentGroup.objects.get(
-            pk=self.kwargs['student_group']).student_year
-        survey_set = Survey.objects.filter(student_year=group_year)
-        form.fields['survey'].queryset = survey_set
-        return form
 
     def get_success_url(self):
         try:
@@ -1183,28 +1185,22 @@ class SurveyUpdate(common_mixins.SchoolEmployeeMixin, UpdateView):
     model      = GroupSurvey
     form_class = cm_forms.SurveyForm
 
-    def get_survey(self):
-        try:
-            r = requests.get(
-                settings.PROFAGRUNNUR_URL + '&json_api_key=' + settings.PROFAGRUNNUR_JSON_KEY)
-            return r.json()
-        except Exception as e:
-            return []
-
     def get_form(self):
-        form                                 = super(SurveyUpdate, self).get_form(self.form_class)
-        student_groups = StudentGroup.objects.filter(
-            school=self.kwargs['school_id']
-        ).values_list('student_year')
-        form.fields['studentgroup'].queryset = student_groups
-        survey_set = Survey.objects.filter(student_year__in=student_groups)
+        form           = super(SurveyUpdate, self).get_form(self.form_class)
+        group_year = StudentGroup.objects.get(
+            pk=self.kwargs['student_group']).student_year
+
+        survey_set                     = Survey.objects.filter(student_year=group_year)
         form.fields['survey'].queryset = survey_set
         return form
 
     def get_context_data(self, **kwargs):
             # xxx will be available in the template as the related objects
             context                = super(SurveyUpdate, self).get_context_data(**kwargs)
-            context['survey_list'] = self.get_survey()
+            try:
+                context['survey_description'] = self.object.survey.description
+            except:
+                context['survey_description'] = "Veldu próf..."
             return context
 
     def get_success_url(self):

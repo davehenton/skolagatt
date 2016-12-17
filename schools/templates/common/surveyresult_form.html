@@ -6,16 +6,15 @@
 <div class="row">
 	<div class="col-md-6"><h4>Nemandi: {{student.first.name}}</h4></div>
 </div>
-<form action="" method="post" id="survey_result_form">
-	<h2>Skráningareyðublað</h2>
+<h2>Skráningareyðublað</h2>
 	<hr />
 	<h4>Leiðbeiningar:</h4>
 	<div id="selected_words" class="row alert alert-info">
 		<p>{{grading_template.info|safe}}</p>
 	</div>
 	<div class='md' id="grading_template">{{grading_template.md|safe}}</div>
-	<div id="selected_words" class="row"></div>
 	<hr />
+<form action="" method="post" id="survey_result_form" class="form-horizontal">
 	{% if input_groups %}
 	<div class="row">
 		<div class="col-xs-6 col-md-4"><h3>Innsláttarsvæði</h3></div>
@@ -30,10 +29,10 @@
 				{% for input in ig.inputs %}
 					<div class="row">
 						<div class="col-xs-2 col-md-1">
-							{{ input.get_id }}
+							<label for="{{ input.get_id }}">{{ input.get_id }}</label>
 						</div>
 						<div class="col-xs-4 col-md-3">
-							<input type="text" name="{{ input.get_id }}" id="{{ input.get_id }}" />
+							<input type="text" name="{{ input.get_id }}" id="{{ input.get_id }}" class="form-control" />
 						</div>
 						<div class="col-xs-6 col-md-8 alert-info">
 							{{ ig.group.description }}
@@ -46,7 +45,7 @@
 	{% endif %}
 	{% csrf_token %}
 	{{ form.as_p }}
-	<input type="submit" class="btn btn-success" value="Vista" />
+	<button type="submit" class="btn btn-success">Vista</button>
 </form>
 {% endblock %}
 

@@ -5,27 +5,25 @@
 	<div class="col-md-6">
 		<form action="" method="post" enctype="multipart/form-data">
 			{% csrf_token %}
-			<ul class="form_elements">
-				<li>
+				<div class="form-group">
 					<label for="file">Filename:</label>
 					<input type="file" name="file" id="file" class="btn btn-default"/>
-				</li>
-				<li>
+				</div>
+				<div class="form-group">
 					<label for="school_ssn">Númer dálks fyrir kennitölu</label>
-					<input type="number" min="0" value="0" name="school_ssn" id="school_ssn" />
-				</li>
-				<li>
+					<input type="number" min="0" value="0" name="school_ssn" id="school_ssn" class="form-control input-lg" />
+				</div>
+				<div class="form-group">
 					<label for="school_name">Númer dálks fyrir nafn</label>
-					<input type="number" min="0" value="0" name="school_name" id="school_name" />
-				</li>
-				<li>
+					<input type="number" min="0" value="0" name="school_name" id="school_name" class="form-control input-lg" />
+				</div>
+				<div class="form-group">
 					<label for="title">Er fyrsta línan með titli</label>
-					<input type="checkbox" id="title" name="title" value="yes">
-				</li>
-				<li>
-					<input type="submit" value="Vista" class="btn btn-default"/>
-				</li>
-			</ul>
+					<input type="checkbox" id="title" name="title" value="yes" />
+				</div>
+				<div class="form-group">
+					<input type="submit" value="Vista" class="btn btn-success btn-lg"/>
+				</div>
 		</form>
 	</div>
 	<div class="col-md-6 alert-info">
