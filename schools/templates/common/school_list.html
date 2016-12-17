@@ -27,35 +27,41 @@
 			</div>
 		</div>
 		{% endif %}
-		<div id="school_list" class="table table-hover">
-			<div class="row">
-				<div class="col-md-2"><h4>Kennitala</h4></div>
-				<div class="col-md-4"><h4>Nafn</h4></div>
+		<table id="school_list" class="table table-hover table-striped row">
+			<thead>
+				<th><h4>Kennitala</h4></th>
+				<th><h4>Nafn</h4></th>
 				{% if request.user.is_superuser %}
-				<div class="col-md-2"><h4>#</h4></div>
-				<div class="col-md-2"><h4>Nemendur</h4></div>
-				<div class="col-md-2"><h4>Aðgerðir</h4></div>
+				<th><h4>Stjórnendur</h4></th>
+				<th><h4>Nemendur</h4></th>
+				<th><h4></h4></th>
 				{% endif %}
-			</div>
-			{% for school in school_list %}
-			<div class="row">
-				<div class="col-md-2"><a href="{% url 'schools:school_detail' school.id %}">{{school.ssn}}</a></div>
-				<div class="col-md-4"><a href="{% url 'schools:school_detail' school.id %}">{{school.name}}</a></div>
-				{% if request.user.is_superuser %}
-				<div class="col-md-2">
-				{{ school.managers.count }}
-				</div>
-				<div class="col-md-2">
-				{{ school.students.count }}
-				</div>
-				<div class="col-md-2">
-					<a href="{% url 'schools:school_update' school.id %}" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
-					<a href="{% url 'schools:school_delete' school.id %}" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-trash"></span></a>
-				</div>
-				{% endif %}
-			</div>
-			{% endfor %}
-		</div>
+			</thead>
+			<tbody>
+				{% for school in school_list %}
+				<tr>
+					<td>
+						<a href="{% url 'schools:school_detail' school.id %}">{{school.ssn}}</a>
+					</td>
+					<td>
+						<a href="{% url 'schools:school_detail' school.id %}">{{school.name}}</a>
+					</td>
+					{% if request.user.is_superuser %}
+					<td>
+						{{ school.managers.count }}
+					</td>
+					<td>
+						{{ school.students.count }}
+					</td>
+					<td>
+						<a href="{% url 'schools:school_update' school.id %}" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
+						<a href="{% url 'schools:school_delete' school.id %}" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-trash"></span></a>
+					</td>
+					{% endif %}
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
 		{% else %}
 			<p>Vinsamlegast skráðu þig inn.</p>
 		{% endif %}

@@ -14,74 +14,22 @@
 	<div class="row">
 		<h3><a href="{% url 'schools:school_detail' school.id %}">{{ school }}</a></h3>
 		<div class="col-md-4">
-			<a href="{% url 'schools:teacher_create' school.id %}" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span>&nbsp;Bæta við kennara</a>
-			<div class="row">
-				<div class="col-md-12"><h4>Nafn</h4></div>
-				</div>
-				{% for teacher in school.teachers.all %}
-				<div class="row">
-					<div class="col-md-12"><a href="{% url 'schools:teacher_detail' school.id teacher.id %}">{{teacher.name}}</a></div>
-				</div>
-				{% endfor %}
-			</div>
+			{% with school.teachers.all as teachers %}
+				{% include 'common/_teacher_list.html' %}
+			{% endwith %}
+		</div>
 		<div class="col-md-4">
 		{% for school in  manager.school_set.all %}
-			<a href="{% url 'schools:group_create' school.id %}" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span>&nbsp;Bæta við hóp</a>
-			<div class="row">
-				<div class="col-md-4">	Hópar</div>
-				<div class="col-md-1">Ár</div>
-				<div class="col-md-1">#</div>
-				<div class="col-md-6">Kennarar</div>
-			</div>
-			{% for group in school.studentgroup_set.all %}
-			<div class="row">
-				<div class="col-md-4">
-					<a href="{% url 'schools:group_detail' school.id group.id %}">{{ group }}</a>
-				</div>
-				<div class="col-md-1">{{ group.student_year }}</div>
-				<div class="col-md-1">{{ group.students.count }}</div>
-				<div class="col-md-6">
-					<small>
-						{% for teacher in group.group_managers.all %}
-						<a href="{% url schools:teacher_detail% school.id teacher.id}">{{ teacher.name }}</a>
-						{% endfor %}
-					</small>
-				</div>
-			</div>
-			{% endfor %}
+			{% with school.studentgroup_set.all as studentgroup_list %}
+				{% include 'common/_group_list.html' %}
+			{% endwith %}
 		{% endfor %}
 		</div>
 		<div class="col-md-4">
-			<h4>Kannanir</h4>
-			<div class="row">
-				<div class="col-md-8">Könnun</div>
-				<div class="col-md-4">Lýkur</div>
-			</div>
 			{% for group in school.studentgroup_set.all %}
-				<div class="row">
-					<div class="col-md-8">
-						<h6><a href="{% url 'schools:group_detail' school.id group.id %}">{{ group }}</a></h6>
-					</div>
-					<div class="col-md-4">
-						<a class="btn btn-default btn-xs" type="button" data-toggle="collapse" data-target="#results-{{group.id}}" aria-expanded="false" aria-controls="collapseExample">
-						<span class="caret"></span>&nbsp;{{ group.survey_set.count}}
-					</a>
-					</div>
-				</div>
-				<div class="collapse row"  id="results-{{group.id}}">
-					<div class="col-md-12">
-					{% for survey in group.survey_set.all %}
-						<div class="row" >
-							<div class="col-md-8">
-								<a href="{% url 'schools:survey_detail' school.id group.id survey.id %}">{{ survey.title }}</a>
-							</div>
-							<div class="col-md-4">
-								{{ survey.active_to|date:"d-m-y"|lower }}
-							</div>
-						</div>
-					{% endfor %}
-					</div>
-				</div>
+				{% with group.groupsurvey_set.all as surveys and group as studentgroup %}
+					{% include 'common/_survey_list.html' %}
+				{% endwith %}
 			{% endfor %}
 		</div>
 	</div>

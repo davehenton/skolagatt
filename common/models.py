@@ -107,6 +107,12 @@ class GroupSurvey(models.Model):
     active_from  = models.DateField(default=timezone.now)
     active_to    = models.DateField(default=timezone.now)
 
+    def save(self, *args, **kwargs):
+        if self.survey:
+            self.active_from = self.survey.active_from
+            self.active_to   = self.survey.active_to
+        super(GroupSurvey, self).save(*args, **kwargs)
+
     def is_expired(self):
         if timezone.now().date() > self.active_to:
             return True
