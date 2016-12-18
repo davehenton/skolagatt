@@ -42,6 +42,9 @@ div.wrapper {
 	bottom: 5px;
 	font-size: 16pt;
 }
+.bg-logout {
+	background-color: #d9534f;
+}
 div.main {
 	margin-top: 80px;
 	clear: both;
