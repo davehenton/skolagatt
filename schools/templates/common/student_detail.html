@@ -5,114 +5,158 @@
 	<script type="text/javascript">
 		var studentpk = {{student.pk}};
 	</script>
-
-	<h1>{{student.name}}</h1>
 	<div class="row">
-		<div class="col-md-12">
+		<div class="col-xs-8">
+			<h1>
+				{{student.name}} <small>({{ student.ssn }})</small>
+				{% if is_school_manager %}
+				<div class="btn-group">
+					<a href="{% url 'schools:student_update' school.id student.id %}" class="btn btn-default btn-sm" data-action='save_notes'>
+						<span class="glyphicon glyphicon-pencil"></span>
+					</a>
+					<a href="{% url 'schools:student_delete' school.id student.id %}" class="btn btn-danger btn-sm" data-action='delete'>
+						<span class="glyphicon glyphicon-trash"></span>
+					</a>
+				</div>
+				{% endif %}
+			</h1>
+		</div>
+		<div class="col-xs-4">
 			{% if  is_school_manager %}
-			<a href="{% url 'schools:student_update' school.id student.id %}" class="btn btn-default" data-action='save_notes'>
-				<span class="glyphicon glyphicon-pencil"></span>&nbsp;Breyta
-			</a>
-			<a href="{% url 'schools:student_delete' school.id student.id %}" class="btn btn-danger" data-action='delete'>
-				<span class="glyphicon glyphicon-trash"></span>&nbsp;Eyða
-			</a>
-			<a href="{% url 'supportandexception:exception' school.id student.id %}" class="btn btn-success" data-action='save_notes'>
-				<span class="glyphicon glyphicon-bookmark"></span>&nbsp;Undanþágur
-			</a>
-			<a href="{% url 'supportandexception:supportresource' school.id student.id %}" class="btn btn-warning" data-action='save_notes'>
-				<span class="glyphicon glyphicon-bookmark"></span>&nbsp;Stuðningsúrræði
-			</a>
+			<div class="pull-right">
+				<a href="{% url 'supportandexception:exception' school.id student.id %}" class="btn btn-success" data-action='save_notes'>
+					<span class="glyphicon glyphicon-bookmark"></span>&nbsp;Undanþágur
+				</a>
+				<a href="{% url 'supportandexception:supportresource' school.id student.id %}" class="btn btn-warning" data-action='save_notes'>
+					<span class="glyphicon glyphicon-bookmark"></span>&nbsp;Stuðningsúrræði
+				</a>
+			</div>
 			{% endif %}
 		</div>
 	</div>
 	<div class="row">
 		<div class="col-md-6">
 			<form action="" method="POST">{% csrf_token %}
-				<h3>Athugasemd</h3>
-				{% if is_school_manager %}
-				<a  id="notes" class="btn btn-info"><span class="glyphicon glyphicon-plus">
-					</span>&nbsp;Uppfæra athugasemd
-				</a>
-				{% endif %}
+				<h3>
+					Athugasemd
+					{% if is_school_manager %}
+						<a id="notes" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-pencil">
+							</span>
+						</a>
+					{% endif %}
+				</h3>
 				<div class="row">
-					<div id="notesshow">
+					<div  class="col-xs-12">
 					{% if student_moreinfo.notes != null %}
-						{{student_moreinfo.notes}}
+					<p id="notesshow" class="well">{{student_moreinfo.notes}}</p>
 					{% endif %}
 					</div>
-					<div id="textareashow" style="display:none;">
-						<textarea rows="5" cols="50" id="textareaid">{% if student_moreinfo.notes != null %}{{student_moreinfo.notes}}{% endif %}</textarea>
+					<div id="textareashow" class="col-xs-12 input-lg" style="display:none;">
+						<div class="col-xs-12">
+							<textarea rows="5" cols="58" id="textareaid">
+								{% if student_moreinfo.notes != null %}{{student_moreinfo.notes}}{% endif %}
+							</textarea>
+						</div>
+						<div class="col-xs-1 col-xs-offset-11">
+							<a id="notes2" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-ok"></span></a>
+						</div>
 					</div>
 				</div>
 			</form>
 		</div>
 		<div class="col-md-6">
-			<h3>Kannanir</h3>
-			<div class="row">
-			{% for surveyresults in student.surveyresult_set.all %}
-				{% get_survey_results student surveyresults.survey as student_result %}
-				<div class="col-md-9">
-					{% if surveyresults.survey.studentgroup.id %}
-						<a href="{% url 'schools:survey_detail' school.id surveyresults.survey.studentgroup.id surveyresults.survey.id %}">
-							{{surveyresults.survey.survey.student_year}}. bekkur - {{surveyresults.survey.survey.title}}
-						</a>
-					{% else %}
-						{{surveyresults.survey.survey.student_year}}. bekkur - {{surveyresults.survey.survey.title}}
-					{% endif %}
-				</div>
-				{% if student_result %}
-				<div class="col-md-3">
-					{% if is_group_manager %}
-					<a href="{% url 'schools:survey_result_update' school.id student.id surveyresults.survey.id student_result.id %}" class="btn btn-default btn-xs">
-						<span class="glyphicon glyphicon-pencil"></span>
-					</a>
-					{% endif %}
-					<button href="" class="btn btn-default btn-xs" type="button" data-toggle="collapse" data-target="#results-{{student_result.id}}" aria-expanded="false" aria-controls="collapseExample">
-						<span class="caret"></span>
-					</button>
-				</div>
-				{% else %}
-				<div class="col-md-3">
-					{% if is_group_manager %}
-					<a href="{% url 'schools:survey_result_create' school.id student.id surveyresults.survey.id %}" class="btn btn-default btn-xs">
-						<span class="glyphicon glyphicon-plus"></span>&nbsp;Skrá
-					</a>
-					{% endif %}
-				</div>
-				{% endif %}
-				{% if student_result %}
-				<div class="collapse row" id="results-{{student_result.id}}">
-					<div class="well col-md-12">
-						{% with results=student_result.results|get_json %}
-							<div class='row'>
-								<div class='col-md-12'>{{ results }}</div>
-							</div>
-						{% endwith %}
-					</div>
-				</div>
-				{% endif %}
-			{% endfor %}
-			</div>
+			<h3>Próf</h3>
+			<table class="table table-hover">
+				<thead>
+					<tr>
+						<th><h4>Próf</h4></th>
+						<th>Niðurstöður</th>
+						<th class="col-xs-1"></th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for surveyresults in student.get_distinct_survey_results %}
+						<tr>
+							{% get_survey_results student surveyresults.survey as student_result %}
+							<td>
+								{% if surveyresults.survey.studentgroup.id %}
+									<a href="{% url 'schools:survey_detail' school.id surveyresults.survey.studentgroup.id surveyresults.survey.id %}">
+										{{surveyresults.survey.survey.student_year}}. bekkur - {{surveyresults.survey.survey.title}}
+									</a>
+								{% else %}
+									{{surveyresults.survey.survey.student_year}}. bekkur - {{surveyresults.survey.survey.title}}
+								{% endif %}
+							</td>
+							{% if student_result %}
+							<td>
+								{% if student_results|get_item:student != None %}
+								{{ student_results|get_item:student }}
+								{% endif %}
+							</td>
+							<td>
+								{% if is_group_manager %}
+								<a href="{% url 'schools:survey_result_update' school.id student.id surveyresults.survey.id student_result.id %}" class="btn btn-default btn-xs">
+									<span class="glyphicon glyphicon-pencil"></span>
+								</a>
+								{% endif %}
+								<button href="" class="btn btn-default btn-xs pull-right" type="button" data-toggle="collapse" data-target="#results-{{student_result.id}}" aria-expanded="false" aria-controls="collapseExample">
+									<span class="caret"></span>
+								</button>
+							</td>
+							{% else %}
+							<td>
+								{% if is_group_manager %}
+								<a href="{% url 'schools:survey_result_create' school.id student.id surveyresults.survey.id %}" class="btn btn-default btn-xs">
+									<span class="glyphicon glyphicon-plus"></span>&nbsp;Skrá
+								</a>
+								{% endif %}
+							</td>
+							{% endif %}
+							{% if student_result %}
+							<tr class="collapse" id="results-{{student_result.id}}">
+								<td colspan="3" class="warning">
+									{% with results=student_result.results|get_json %}
+										{{ results }}
+									{% endwith %}
+								</td>
+							</tr>
+							{% endif %}
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
 		</div>
 	</div>
 	{% if request.user.is_superuser %}
 		<h3>Skólar sem nemandi er í</h3>
+		<hr>
 		{% for school in student.school_set.all %}
 			<div class="row">
 				<div class="col-md-6">
 					<h3><a href="{% url 'schools:school_detail' school.id %}">{{school.name}}</a></h3>
 				</div>
 				<div class="col-md-6">
-					<h3>Hópar</h3>
-					{% for group in school.studentgroup_set.all %}
-						<div class="row">
-							<div class="col-md-12">
-								<a href="{% url 'schools:group_detail' school.id group.id %}">{{ group.name }}
-							</div>
-						</div>
-					{% endfor %}
+					<table class="table table-hover table-striped">
+						<thead>
+							<tr>
+								<th><h3>Hópar</h3></th>
+								<th><h3>Ár</h3></th>
+							</tr>
+						</thead>
+						<tbody>
+							{% for group in student.studentgroup_set.all %}
+								<tr>
+									<td>
+										<a href="{% url 'schools:group_detail' school.id group.id %}">{{ group.name }}</a>
+									</td>
+									<td>{{ group.student_year }}</td>
+								</tr>
+							{% endfor %}
+						</tbody>
+					</table>
 				</div>
 			</div>
+			<hr>
 		{% endfor %}
 	{% endif %}
 

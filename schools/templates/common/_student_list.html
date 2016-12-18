@@ -9,8 +9,8 @@
 	<tbody>
 	{% for student in students %}
 	<tr>
-		<td class="col-md-4">{{student.ssn}}</td>
-		<td class="col-md-8"><a href="{% url 'schools:student_detail' school.id student.id %}">{{student.name}}</a></td>
+		<td>{{student.ssn}}</td>
+		<td><a href="{% url 'schools:student_detail' school.id student.id %}">{{student.name}}</a></td>
 	</tr>
 	{% endfor %}
 	</tbody>

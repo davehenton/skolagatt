@@ -54,6 +54,14 @@ class Student(models.Model):
     ssn  = models.CharField(max_length = 32, unique=True)
     name = models.CharField(max_length = 128)
 
+    def get_distinct_surveys(self):
+        groups = self.studentgroup_set.all().values_list('groupsurvey__pk', flat=True)
+        surveys = GroupSurvey.objects.filter(pk__in=[x for x in groups if x is not None]).distinct()
+        return surveys
+
+    def get_distinct_survey_results(self):
+        return self.surveyresult_set.all()
+
     class Meta:
         ordering = ["name"]
 
@@ -70,6 +78,11 @@ class School(models.Model):
 
     def __str__(self):
         return self.name + " (" + self.ssn + ")"
+
+    def get_school_surveys(self):
+        surveys = GroupSurvey.objects.filter(studentgroup__in=self.studentgroup_set.all())
+        print(surveys)
+        return surveys
 
     class Meta:
         ordering = ["name"]

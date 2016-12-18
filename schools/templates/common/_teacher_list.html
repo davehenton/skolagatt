@@ -1,31 +1,27 @@
-<h3>Kennarar</h3>
+<h3>
+	Kennarar
+	<div class="btn-group" role="group" style="padding: 0;">
+		<a href="{% url 'schools:student_create' school.id %}" type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+			<span class="glyphicon glyphicon-plus"></span>
+		</a>
+		<ul class="dropdown-menu col-xs-12">
+			<li>
+				<a href="{% url 'schools:teacher_create' school.id %}">
+					<span class="glyphicon glyphicon-plus"></span>&nbsp;Bæta við einum
+				</a>
+			</li>
+			<li>
+				<a href="{% url 'schools:teacher_create_import' school.id %}">
+					<span class="glyphicon glyphicon-plus"></span>&nbsp;Bæta við mörgum
+				</a>
+			</li>
+		</ul>
+	</div>
+</h3>
 <table id="teacher_list" class="table table-hover table-striped">
 	<thead>
 		<th class="col-md-12"><h4>Nafn</h4></th>
 	</thead>
-	<tfoot>
-		<tr>
-			<td>
-				<div class="btn-group col-xs-12" role="group" style="padding: 0;">
-					<a href="{% url 'schools:student_create' school.id %}" type="button" class="btn btn-default btn-xs dropdown-toggle col-xs-12" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-						<span class="caret"></span>&nbsp;Bæta við kennurum
-					</a>
-					<ul class="dropdown-menu col-xs-12">
-						<li>
-							<a href="{% url 'schools:teacher_create' school.id %}">
-								<span class="glyphicon glyphicon-plus"></span>&nbsp;Bæta við einum
-							</a>
-						</li>
-						<li>
-							<a href="{% url 'schools:teacher_create_import' school.id %}">
-								<span class="glyphicon glyphicon-plus"></span>&nbsp;Bæta við mörgum
-							</a>
-						</li>
-					</ul>
-				</div>
-			</td>
-		</tr>
-	</tfoot>
 	<tbody>
 		{% for teacher in teachers %}
 		<tr>

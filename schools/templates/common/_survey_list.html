@@ -10,8 +10,8 @@
 	<tbody>
 		{% for survey in surveys %}
 		<tr>
-			<td><a href="{% url 'schools:group_detail' school.id studentgroup.id %}">{{studentgroup.name}}</a></td>
-			<td><a href="{% url 'schools:survey_detail' school.id studentgroup.id survey.id %}">{{ survey }}</a></td>
+			<td><a href="{% url 'schools:group_detail' school.id survey.studentgroup.id %}">{{survey.studentgroup.name}}</a></td>
+			<td><a href="{% url 'schools:survey_detail' school.id survey.studentgroup.id survey.id %}">{{ survey }}</a></td>
 			<td>{{ survey.active_to|date:"d-m-y"|lower }}</td>
 		</tr>
 		{% endfor %}

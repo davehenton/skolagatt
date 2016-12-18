@@ -2,17 +2,19 @@
 
 {% block content %}
 <div class="row">
-	<div class="col-md-9">
-		<h1>{{studentgroup.name}} <small>{{studentgroup.student_year}}. árgangur</small></h1>
-	</div>
-	<div class="col-md-3 btn-group" role="group" aria-label="...">
-		<a href="{% url 'schools:group_update' studentgroup.school.id studentgroup.id%}" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span>&nbsp;Breyta</a>
-		<a href="{% url 'schools:group_delete' studentgroup.school.id studentgroup.id%}" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span>&nbsp;Eyða</a>
+	<div class="col-md-12">
+		<h1>
+			{{studentgroup.name}} <small>{{studentgroup.student_year}}. árgangur</small>
+			<div class="btn-group" role="group" aria-label="...">
+				<a href="{% url 'schools:group_update' studentgroup.school.id studentgroup.id%}" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-pencil"></span></a>
+				<a href="{% url 'schools:group_delete' studentgroup.school.id studentgroup.id%}" class="btn btn-danger btn-sm"><span class="glyphicon glyphicon-trash"></span></a>
+			</div>
+		</h1>
 	</div>
 </div>
 <div class="row">
 	<div class="col-md-3">
-		<h4>Umsjónarmenn</h4>
+		<h3>Umsjónarmenn</h3>
 		<table class="table table-striped table-hover">
 			<thead>
 				<tr>
@@ -31,13 +33,13 @@
 		</table>
 	</div>
 	<div class="col-md-5">
-		<h4>Nemendur</h4>
+		<h3>Nemendur</h3>
 		<table class="table table-striped table-hover">
 			<thead>
 				<tr>
 					<th>Kt.</th>
 					<th>Nafn</th>
-					<th>Undanþágur/Stuðningur</th>
+					<th>Undanþágur/ Stuðningur</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -68,7 +70,10 @@
 	</div>
 	<div class="col-md-4">
 		<div class="row">
-			<h4>Próf</h4>
+			<h3>
+				Próf
+				<a href="{% url 'schools:survey_create' school.id studentgroup.id %}" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></a>
+			</h3>
 			<table class="table table-striped table-hover">
 				<thead>
 					<tr>
@@ -76,13 +81,6 @@
 						<th>Lýkur</th>
 					</tr>
 				</thead>
-				<tfoot>
-					<tr>
-						<td colspan="2">
-							<a href="{% url 'schools:survey_create' school.id studentgroup.id %}" class="btn btn-default btn-xs btn-block"><span class="glyphicon glyphicon-plus"></span>&nbsp;Bæta við prófi</a>
-						</td>
-					</tr>
-				</tfoot>
 				<tbody>
 					{% for survey in surveys %}
 					<tr>

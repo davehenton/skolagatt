@@ -9,7 +9,8 @@ import json
 import ast
 
 from common.models import (
-    Manager, Teacher, School, SurveyResult, Notification
+    Manager, Teacher, School, SurveyResult,
+    Notification, GroupSurvey, StudentGroup
 )
 from common.util import get_messages, is_school_teacher
 

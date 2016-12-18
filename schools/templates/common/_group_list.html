@@ -1,4 +1,7 @@
-<h3>Bekkir og hópar</h3>
+<h3>
+	Bekkir og hópar
+	<a href="{% url 'schools:group_create' school.id %}" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></a>
+</h3>
 <table class="table table-striped table-hover">
 	<thead>
 		<tr>
@@ -11,7 +14,7 @@
 	<tfoot>
 		<tr>
 			<td colspan="4">
-				<a href="{% url 'schools:group_create' school.id %}" class="btn btn-default btn-block btn-xs"><span class="glyphicon glyphicon-plus"></span>&nbsp;Bæta við hóp</a>
+				
 			</td>
 		</tr>
 	</tfoot>

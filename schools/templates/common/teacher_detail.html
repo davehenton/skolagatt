@@ -1,14 +1,14 @@
 {% extends 'common/index.html'%}
 
 {% block content %}
-<h1>{{teacher.name}} ({{teacher.user}})</h1>
-{% if is_school_manager %}
-	<div class="row">
-		<div class="col-md-12">
-			<a href="{% url 'schools:teacher_update' school.id teacher.id %}" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span>&nbsp;Breyta</a>
-			<a href="{% url 'schools:teacher_delete' school.id teacher.id %}" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span>&nbsp;Eyða</a>
-		</div>
+<h1>
+	{{teacher.name}} <small>({{teacher.user}})</small>
+	<div class="btn-group">
+		<a href="{% url 'schools:teacher_update' school.id teacher.id %}" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-pencil"></span></a>
+		<a href="{% url 'schools:teacher_delete' school.id teacher.id %}" class="btn btn-danger btn-sm"><span class="glyphicon glyphicon-trash"></span></a>
 	</div>
+</h1>
+{% if is_school_manager %}
 	{% for school in teacher.school_set.all %}
 		<div class="row">
 			<h3 class="col-md-4 col-xs-12"><a href="{% url 'schools:school_detail' school.id %}">{{ school }}</a></h3>

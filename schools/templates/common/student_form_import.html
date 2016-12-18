@@ -2,36 +2,40 @@
 {% include staticfiles%}
 {% block content %}
 <div class="row">
-	<div class="col-md-6">
+	<div class="col-md-8 col-xs-12">
 		<form action="" method="post" enctype="multipart/form-data">
 			{% csrf_token %}
-				<div class="form-group">
-					<label for="file">Skrá</label>
-					<input type="file" name="file" id="file" class="btn btn-default"/>
+				<div class="row">
+					<div class="form-group form-group-lg col-md-6 col-xs-12">
+						<label for="file">Skrá</label>
+						<input type="file" name="file" id="file" class="btn btn-default"/>
+					</div>
+					<div class="col-md-6 col-xs-12 well">
+						<p class="help-block">Veljið skrá, excel eða csv, sem inniheldur dálka fyrir kennitölur og nöfn nemenda. Skráin verður að vera vistuð sem .csv eða .xlsx</p>
+						<p class="help-block">Veljið dálkanúmer kennitölu og nafns þar sem fremsti dálkurinn er <strong>númer 0</strong>, næsti númer 1 o.s.frv.</p>
+					</div>
 				</div>
-				<div class="form-group">
-					<label for="student_ssn">Númer dálks fyrir kennitölu</label>
-					<input type="number" name="student_ssn" id="student_ssn" min="0" value="0" class="form-control input-lg" />
+				<div class="row">
+					<div class="form-group form-group-lg col-xs-6">
+						<label for="student_ssn">Númer dálks fyrir kennitölu</label>
+						<input type="number" name="student_ssn" id="student_ssn" min="0" value="0" class="form-control" />
+					</div>
+					<div class="form-group form-group-lg col-xs-6">
+						<label for="student_name">Númer dálks fyrir nafn</label>
+						<input type="number" name="student_name" id="student_name" min="0" value="0" class="form-control" />
+					</div>
 				</div>
-				<div class="form-group">
-					<label for="student_name">Númer dálks fyrir nafn</label>
-					<input type="number" name="student_name" id="student_name" min="0" value="0" class="form-control input-lg" />
-				</div>
-				<div class="form-group">
+				<div class="form-group form-group-lg">
 					<label for="title">Er fyrsta línan með titli</label>
 					<input type="checkbox" id="title" name="title" value="yes"/>
 				</div>
-				<div class="form-group">
+				<div class="form-group form-group-lg">
 					<div class="btn-group">
 						<input type="submit" value="Vista" class="btn btn-success btn-lg"/>
 						<a class="btn btn-default btn-lg" href="{% url 'schools:student_listing' school.id %}">Til baka</a>
 					</div>
 				</div>
 		</form>
-	</div>
-	<div class="col-md-6 alert-info">
-		<p>Veljið skrá, excel eða csv, sem inniheldur dálka fyrir kennitölur og nöfn nemenda. Skráin verður að vera vistuð sem .csv eða .xlsx</p>
-		<p>Veljið dálkanúmer kennitölu og nafns þar sem fremsti dálkurinn er <strong>númer 0</strong>, næsti númer 1 o.s.frv.</p>
 	</div>
 </div>
 {% endblock %}

@@ -10,11 +10,11 @@ from common.models import (
 class ManagerForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(ManagerForm, self).__init__(*args, **kwargs)
-        self.fields['name'].widget.attrs.update({'class': 'form-control input-lg'})
-        self.fields['ssn'].widget.attrs.update({'class': 'form-control input-lg'})
-        self.fields['position'].widget.attrs.update({'class': 'form-control input-lg'})
-        self.fields['email'].widget.attrs.update({'class': 'form-control input-lg'})
-        self.fields['phone'].widget.attrs.update({'class': 'form-control input-lg'})
+        self.fields['name'].widget.attrs.update({'class': 'form-control'})
+        self.fields['ssn'].widget.attrs.update({'class': 'form-control'})
+        self.fields['position'].widget.attrs.update({'class': 'form-control'})
+        self.fields['email'].widget.attrs.update({'class': 'form-control'})
+        self.fields['phone'].widget.attrs.update({'class': 'form-control'})
 
     def clean(self):
         cleaned_data = super(ManagerForm, self).clean()
@@ -46,9 +46,9 @@ class ManagerForm(forms.ModelForm):
 class TeacherForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(TeacherForm, self).__init__(*args, **kwargs)
-        self.fields['name'].widget.attrs.update({'class': 'form-control input-lg'})
-        self.fields['ssn'].widget.attrs.update({'class': 'form-control input-lg'})
-        self.fields['position'].widget.attrs.update({'class': 'form-control input-lg'})
+        self.fields['name'].widget.attrs.update({'class': 'form-control'})
+        self.fields['ssn'].widget.attrs.update({'class': 'form-control'})
+        self.fields['position'].widget.attrs.update({'class': 'form-control'})
 
     def clean(self):
         cleaned_data = super(TeacherForm, self).clean()
@@ -78,8 +78,8 @@ class TeacherForm(forms.ModelForm):
 class StudentForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(StudentForm, self).__init__(*args, **kwargs)
-        self.fields['name'].widget.attrs.update({'class': 'form-control input-lg'})
-        self.fields['ssn'].widget.attrs.update({'class': 'form-control input-lg'})
+        self.fields['name'].widget.attrs.update({'class': 'form-control'})
+        self.fields['ssn'].widget.attrs.update({'class': 'form-control'})
 
     def clean(self):
         cleaned_data = super(StudentForm, self).clean()
@@ -107,8 +107,8 @@ class StudentForm(forms.ModelForm):
 class SchoolForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(SchoolForm, self).__init__(*args, **kwargs)
-        self.fields['name'].widget.attrs.update({'class': 'form-control input-lg'})
-        self.fields['ssn'].widget.attrs.update({'class': 'form-control input-lg'})
+        self.fields['name'].widget.attrs.update({'class': 'form-control'})
+        self.fields['ssn'].widget.attrs.update({'class': 'form-control'})
         self.fields['managers'].widget.attrs.update(
             {
                 'class': 'form-control input-lg col-md-6 col-xs-12',
@@ -152,8 +152,8 @@ class SchoolForm(forms.ModelForm):
 class StudentGroupForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(StudentGroupForm, self).__init__(*args, **kwargs)
-        self.fields['name'].widget.attrs.update({'class': 'form-control input-lg'})
-        self.fields['student_year'].widget.attrs.update({'class': 'form-control input-lg'})
+        self.fields['name'].widget.attrs.update({'class': 'form-control'})
+        self.fields['student_year'].widget.attrs.update({'class': 'form-control'})
 
     class Meta:
         model = StudentGroup
@@ -214,7 +214,7 @@ class SurveyLoginForm(forms.ModelForm):
 class SuperUserForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(SuperUserForm, self).__init__(*args, **kwargs)
-        self.fields['username'].widget.attrs.update({'class': 'form-control input-lg'})
+        self.fields['username'].widget.attrs.update({'class': 'form-control'})
 
     def clean(self):
         cleaned_data = super(SuperUserForm, self).clean()

@@ -8,25 +8,31 @@
 	<div class="row">
 		<div class="col-md-2">
 			<h3>Já</h3>
-			<a class="btn btn-default" href="" id="save_data"><span class="glyphicon glyphicon-ok"></span>&nbsp;Vista gögn</a>
+			<a class="btn btn-success" href="" id="save_data"><span class="glyphicon glyphicon-ok"></span>&nbsp;Vista gögn</a>
 		</div>
 		<div class="col-md-2">
 			<h3>Nei</h3>
-			<a class="btn btn-default" href="{% url 'schools:school_listing' %}"><span class="glyphicon glyphicon-remove"></span>&nbsp;Hætta við</a>
+			<a class="btn btn-danger" href="{% url 'schools:school_listing' %}"><span class="glyphicon glyphicon-remove"></span>&nbsp;Hætta við</a>
 		</div>
 	</div>
-	<div class="row">
-		<div class="col-md-1"><h4>Kennitala</h4></div>
-		<div class="col-md-10"><h4>Nafn</h4></div>
-		<div class="col-md-1"><h4>Kennitala skóla</h4></div>
-	</div>
-	{% for manager in data %}
-		<div class="row">
-			<div class="col-md-1">{{ manager.ssn }}</div>
-			<div class="col-md-10">{{ manager.name }}</div>
-			<div class="col-md-1">{{ manager.school_ssn }}</div>
-		</div>
-	{% endfor %}
+	<table class="table table-hover table-striped">
+		<thead>
+			<tr>
+				<th><h4>Kennitala</h4></th>
+				<th><h4>Nafn</h4></th>
+				<th><h4>Kennitala skóla</h4></th>
+			</tr>
+		</thead>
+		<tbody>
+		{% for manager in data %}
+			<tr>
+				<td>{{ manager.ssn }}</td>
+				<td>{{ manager.name }}</td>
+				<td>{{ manager.school_ssn }}</td>
+			</tr>
+		{% endfor %}
+		</tbody>
+	</table>
 {% endblock %}
 {% block script %}
 	<script type='text/javascript'>

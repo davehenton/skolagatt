@@ -1,13 +1,19 @@
 {% extends 'common/index.html'%}
 
+
 {% block content %}
-<h1>{{manager.name}} ({{manager.user}})</h1>
+
 
 {% if is_school_manager %}
 	<div class="row">
-		<div class="col-md-12">
-			<a href="{% url 'schools:manager_update' school.id manager.id %}" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span>&nbsp;Breyta</a>
-			<a href="{% url 'schools:manager_delete' school.id manager.id %}" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span>&nbsp;Eyða</a>
+		<div class="col-xs-12">
+			<h1>
+				{{manager.name}} ({{manager.user}})
+				<div class="btn-group">
+					<a href="{% url 'schools:manager_update' school.id manager.id %}" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-pencil"></span></a>
+					<a href="{% url 'schools:manager_delete' school.id manager.id %}" class="btn btn-danger btn-sm"><span class="glyphicon glyphicon-trash"></span></a>
+				</div>
+			</h1>
 		</div>
 	</div>
 
@@ -19,18 +25,14 @@
 			{% endwith %}
 		</div>
 		<div class="col-md-4">
-		{% for school in  manager.school_set.all %}
 			{% with school.studentgroup_set.all as studentgroup_list %}
 				{% include 'common/_group_list.html' %}
 			{% endwith %}
-		{% endfor %}
 		</div>
 		<div class="col-md-4">
-			{% for group in school.studentgroup_set.all %}
-				{% with group.groupsurvey_set.all as surveys and group as studentgroup %}
-					{% include 'common/_survey_list.html' %}
-				{% endwith %}
-			{% endfor %}
+			{% with school.get_school_surveys as surveys %}
+				{% include 'common/_survey_list.html' %}
+			{% endwith %}
 		</div>
 	</div>
 {% endif %}
