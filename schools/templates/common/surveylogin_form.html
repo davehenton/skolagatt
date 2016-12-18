@@ -3,8 +3,7 @@
 
 {% block content %}
 <form action="" method="post">
-	{% csrf_token %}
-	{{ form.as_p }}
-	<input type="submit" value="Vista" />
+	{% include 'common/_generic_form.html' %}
+	<input type="submit" value="Vista" class="btn btn-success btn-lg" />
 </form>
 {% endblock %}

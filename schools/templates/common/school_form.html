@@ -7,75 +7,75 @@
 {% csrf_token %}
 	<div class="row">
 		{% if form.name.errors %}
-		<div class="form-group has-feedback has-error col-md-6 col-sm-12">
+		<div class="form-group form-group-lg has-feedback has-error col-md-6 col-sm-12">
 		{% else %}
-		<div class="form-group has-feedback col-md-6 col-sm-12">
+		<div class="form-group form-group-lg has-feedback col-md-6 col-sm-12">
 		{% endif %}
 			<label for="{{ form.name.name }}">{{ form.name.label }}</label>
 			{{ form.name }}
 			{% if form.name.errors %}
 				<span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
 				<span id="inputError2Status" class="sr-only">(villa)</span>
+				<p>{{ form.name.errors.as_text }}</p>
 			{% endif %}
-			<p>{{ form.name.errors.as_text }}</p>
 		</div>
 		{% if form.ssn.errors %}
-		<div class="form-group has-feedback has-error col-md-6 col-sm-12">
+		<div class="form-group form-group-lg has-feedback has-error col-md-6 col-sm-12">
 		{% else %}
-		<div class="form-group has-feedback col-md-6 col-sm-12">
+		<div class="form-group form-group-lg has-feedback col-md-6 col-sm-12">
 		{% endif %}
 			<label for="{{ form.ssn.name }}">{{ form.ssn.label }}</label>
 			{{ form.ssn }}
 			{% if form.ssn.errors %}
 				<span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
 				<span id="inputError2Status" class="sr-only">(villa)</span>
+				<p>{{ form.ssn.errors.as_text }}</p>
 			{% endif %}
-			<p>{{ form.ssn.errors.as_text }}</p>
 		</div>
 	</div>
 	<hr>
 	<div class="row">
 		<div class="col-md-6 col-sm-12">
 			{% if form.managers.errors %}
-			<div class="form-group has-feedback has-error">
+			<div class="form-group form-group-lg has-feedback has-error">
 			{% else %}
-			<div class="form-group has-feedback">
+			<div class="form-group form-group-lg has-feedback">
 			{% endif %}
 				<label for="{{ form.managers.name }}">{{ form.managers.label }}</label>
 				{{ form.managers }}
 				{% if form.managers.errors %}
 					<span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
 					<span id="inputError2Status" class="sr-only">(villa)</span>
+					<p>{{ form.managers.errors.as_text }}</p>
 				{% endif %}
-				<p>{{ form.managers.errors.as_text }}</p>
 			</div>
 			{% if form.teachers.errors %}
-			<div class="form-group has-feedback has-error">
+			<div class="form-group form-group-lg has-feedback has-error">
 			{% else %}
-			<div class="form-group has-feedback">
+			<div class="form-group form-group-lg has-feedback">
 			{% endif %}
 				<label for="{{ form.teachers.name }}">{{ form.teachers.label }}</label>
 				{{ form.teachers }}
 				{% if form.teachers.errors %}
 					<span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
 					<span id="inputError2Status" class="sr-only">(villa)</span>
+					<p>{{ form.teachers.errors.as_text }}</p>
 				{% endif %}
-				<p>{{ form.teachers.errors.as_text }}</p>
 			</div>
 		</div>
 		<div class="col-md-6 col-sm-12">
 			{% if form.students.errors %}
-			<div class="form-group has-feedback has-error">
+			<div class="form-group form-group-lg has-feedback has-error">
 			{% else %}
-			<div class="form-group has-feedback">
+			<div class="form-group form-group-lg has-feedback">
 			{% endif %}
 				<label for="{{ form.students.name }}">{{ form.students.label }}</label>
 				{{ form.students }}
 				{% if form.students.errors %}
 					<span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
 					<span id="inputError2Status" class="sr-only">(villa)</span>
+					<p>{{ form.students.errors.as_text }}</p>
 				{% endif %}
-				<p>{{ form.students.errors.as_text }}</p>
 			</div>
 		</div>
 	</div>

@@ -16,36 +16,37 @@
 	<hr />
 <form action="" method="post" id="survey_result_form" class="form-horizontal">
 	{% if input_groups %}
-	<div class="row">
-		<div class="col-xs-6 col-md-4"><h3>Innsláttarsvæði</h3></div>
-		<div class="col-xs-6 col-md-8"><h3><small>Lýsing</small></h3></div>
-	</div>
-	<div id="input_fields">
-		{% for ig in input_groups %}
-			<fieldset name="ig.group">
-				<legend>
-					{{ ig.group }}
-				</legend>
-				{% for input in ig.inputs %}
-					<div class="row">
-						<div class="col-xs-2 col-md-1">
+	<table class="table table-striped">
+		<thead>
+			<th><h3>Innsláttarsvæði</h3></th>
+			<th class="col-xs-8"><h3><small>Lýsing</small></h3></th>
+		</thead>
+		<tbody id="input_fields">
+			{% for ig in input_groups %}
+			<tr>
+				<td class="info lead">{{ ig.group }}</td>
+				<td class="info">{{ ig.group.description }}</td>
+			</tr>
+			{% for input in ig.inputs %}
+				<tr>
+					<td>
+						<div class="col-xs-4">
 							<label for="{{ input.get_id }}">{{ input.get_id }}</label>
 						</div>
-						<div class="col-xs-4 col-md-3">
+						<div class="col-xs-8">
 							<input type="text" name="{{ input.get_id }}" id="{{ input.get_id }}" class="form-control" />
 						</div>
-						<div class="col-xs-6 col-md-8 alert-info">
-							{{ ig.group.description }}
-						</div>
-					</div>
-				{% endfor %}
-			</fieldset>
+					</td>
+					<td></td>
+				</tr>
+			{% endfor %}
 		{% endfor %}
-	</div>
+		</tbody>
+	</table>
 	{% endif %}
 	{% csrf_token %}
 	{{ form.as_p }}
-	<button type="submit" class="btn btn-success">Vista</button>
+	<button type="submit" class="btn btn-success btn-lg">Vista</button>
 </form>
 {% endblock %}
 

@@ -3,18 +3,24 @@
 
 {% block content %}
 <div class="row">
-	<div class="col-md-8">
-		<h1>{{school.name}} ({{school.ssn}})</h1>
+	<div class="col-md-10">
+		<h1>
+			{{school.name}}
+			<small>({{school.ssn}})</small>
+			<div class="btn-group">
+				{% if request.user.is_superuser %}
+				<a href="{% url 'schools:school_update' school.id %}" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span></a>
+				<a href="{% url 'schools:school_delete' school.id %}" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span></a>
+				{% endif %}
+			</div>
+		</h1>
 	</div>
-	<div class="col-md-4">
-		{% if is_school_teacher or is_school_manager %}
+	{% if is_school_teacher or is_school_manager %}
+		<div class="col-xs-2">
 			{% get_user_messages %}
-		{% endif %}
-		{% if request.user.is_superuser %}
-		<a href="{% url 'schools:school_update' school.id %}" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span>&nbsp;Breyta</a>
-		<a href="{% url 'schools:school_delete' school.id %}" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span>&nbsp;Eyða</a>
-		{% endif %}
-	</div>
+		</div>
+	{% endif %}
+
 </div>
 <div class="row">
 	<div class="row">
@@ -24,7 +30,7 @@
 		<div class="col-md-3">
 			{% include 'common/_teacher_list.html' %}
 		</div>
-		<div class="col-md-5">
+		<div class="col-md-6">
 			{% include 'common/_group_list.html' %}
 		</div>
 	</div>

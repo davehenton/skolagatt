@@ -5,38 +5,37 @@
 <script>
 	var survey_data = {{groupsurvey.data_fields|get_json|safe}};
 </script>
-<h1>{{survey_details.title}}</h1>
 <div class="row">
 	<div class="row">
-		<div class="col-md-4">
+		<div class="col-xs-12">
 			<div class="row">
-				<div class="col-md-12">
-				{% if expired %}
-					Lokið
-				{% elif is_group_manager or is_school_manager %}
-					<a href="{% url 'schools:survey_update' school.id studentgroup.id groupsurvey.id %}" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span>&nbsp;Breyta</a>
-					<a href="{% url 'schools:survey_delete' school.id studentgroup.id groupsurvey.id %}" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span>&nbsp;Eyða</a>
-				{% endif %}
+				<div class="col-xs-12">
+				<h1>
+					{{survey_details.title}}
+					{% if expired %}
+						Lokið
+					{% elif is_group_manager or is_school_manager %}
+						<div class="btn-group">
+							<a href="{% url 'schools:survey_update' school.id studentgroup.id groupsurvey.id %}" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span></a>
+							<a href="{% url 'schools:survey_delete' school.id studentgroup.id groupsurvey.id %}" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span></a>
+						</div>
+					{% endif %}
+				</h1>
 				</div>
 			</div>
 			<div class="row">
-				<div class="col-md-12">
-					Skráning virk frá: {{groupsurvey.active_from|parse_date:"%Y-%m-%d"|date:"d-m-Y" }}
+				<div class="col-xs-8">
+					<p><strong>Skráning virk frá:</strong> {{groupsurvey.active_from|parse_date:"%Y-%m-%d"|date:"d-m-Y" }}</p>
+					<p><strong>Skráning virkt til:</strong> {{groupsurvey.active_to|parse_date:"%Y-%m-%d"|date:"d-m-Y" }}</p>
+				</div>
+				<div class="col-xs-4 alert-info">
+					{% if is_group_manager or is_school_manager %}
+						Þú ert umsjónarmaður í þessum hóp eða skóla og getur skráð niðurstöður prófa.
+					{% else %}
+						Aðeins umsjónarmaður hóps getur skráð niðurstöður prófa.
+					{% endif %}
 				</div>
 			</div>
-			<div class="row">
-				<div class="col-md-12">
-					Skráning virkt til: {{groupsurvey.active_to|parse_date:"%Y-%m-%d"|date:"d-m-Y" }}
-				</div>
-			</div>
-		</div>
-		<div class="col-md-4"></div>
-		<div class="col-md-4 alert-info">
-			{% if is_group_manager or is_school_manager %}
-				Þú ert umsjónarmaður í þessum hóp eða skóla og getur skráð niðurstöður prófa.
-			{% else %}
-				Aðeins umsjónarmaður hóps getur skráð niðurstöður prófa.
-			{% endif %}
 		</div>
 	</div>
 	<div class="row">
@@ -60,7 +59,7 @@
 	</div>
 	<div class="row">
 		<h3>Nemendur</h3>
-		<table class="table table-striped table-hover">
+		<table class="table table-hover">
 			<thead>
 				<tr>
 					<th>Kennitala</th>

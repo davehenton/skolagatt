@@ -1,17 +1,13 @@
-<h3>Skólastjórnendur</h3>
+<h3>
+	Skólastjórnendur
+	{% if is_school_manager %}
+		<a href="{% url 'schools:manager_create' school.id %}" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></a>
+	{% endif %}
+</h3>
 <table class="table table-hover table-striped">
 		<thead>
 			<th class="col-md-12"><h4>Nafn</h4></th>
 		</thead>
-		{% if is_school_manager %}
-		<tfoot>
-			<tr>
-				<td>
-					<a href="{% url 'schools:manager_create' school.id %}" class="btn btn-default btn-block btn-xs"><span class="glyphicon glyphicon-plus"></span>&nbsp;Bæta við skólastjórnanda</a>
-				</td>
-			</tr>
-		</tfoot>
-		{% endif %}
 		<tbody>
 		{% for manager in managers %}
 		<tr>

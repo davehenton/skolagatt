@@ -9,6 +9,9 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
     <link href="{% static 'css/navbar-static-top.css' %}" rel="stylesheet">
     <link href="{% static 'css/bootstrap.css' %}" rel="stylesheet">
+    <link href="{% static 'css/main.css' %}" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,700" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Merriweather" rel="stylesheet" type="text/css">
 	{% block stylesheet %}
 	{% endblock %}
 	<script>
@@ -24,7 +27,7 @@
 
   <body>
 	{% include 'navbar.html' %}
-	<div class="container">
+	<div class="container main">
 		{% block content %}
 		{% endblock %}
 	</div>
@@ -34,6 +37,6 @@
 	<script src='{% static "sparkline/jquery.sparkline.min.js" %}'></script>
 	{% block script %}
 	{% endblock %}
-
+	{% include 'footer.html' %}
   </body>
 </html>

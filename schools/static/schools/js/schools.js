@@ -72,18 +72,13 @@ $(document).ready(function() {
 	$(document.body).on('click', '#message-header', function(){ 
 		var details = $(this).nextUntil('#message-header').toggle();
 	});
-	
 
-	$("#notes").on('click',function(){
+	$("#notes, #notes2").on('click',function(){
 		if($('#textareaid').is(":visible"))
 		{
-			var r = confirm("Viltu vista skilaboðin?");
-			if (r == true) {
-
-				$.post("notes_save/",{notes: $("#textareaid").val(), 'csrfmiddlewaretoken': $('input[name="csrfmiddlewaretoken"]').attr("value")},function(result){
-					$('div#notesshow').text($("#textareaid").val());
-				});
-			}
+			$.post("notes_save/",{notes: $("#textareaid").val(), 'csrfmiddlewaretoken': $('input[name="csrfmiddlewaretoken"]').attr("value")},function(result){
+				$('p#notesshow').text($("#textareaid").val());
+			});
 		}
     	$('#notesshow').toggle();
     	$('#textareashow').toggle();

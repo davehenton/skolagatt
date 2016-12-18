@@ -16,15 +16,23 @@
 		</div>
 	</div>
 	<div class="row">
-		<div class="col-md-2"><h4>Kennitala</h4></div>
-		<div class="col-md-4"><h4>Nafn</h4></div>
+		<table>
+			<thead>
+				<tr>
+					<th><h4>Kennitala</h4></th>
+					<th><h4>Nafn</h4></th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for teacher in data %}
+					<tr>
+						<td>{{ teacher.ssn }}</td>
+						<td>{{ teacher.name }}</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
 	</div>
-	{% for teacher in data %}
-		<div class="row">
-			<div class="col-md-2">{{ teacher.ssn }}</div>
-			<div class="col-md-4">{{ teacher.name }}</div>
-		</div>
-	{% endfor %}
 {% endblock %}
 {% block script %}
 	<script type='text/javascript'>

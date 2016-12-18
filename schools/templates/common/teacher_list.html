@@ -1,11 +1,11 @@
 {% extends 'common/index.html'%}
 
 {% block content %}
-<h3>Kennarar</h3>
-<div>
+<h3>
+	Kennarar
 	<div class="btn-group" role="group">
-		<a href="{% url 'schools:student_create' school.id %}" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-			<span class="caret"></span>&nbsp;Bæta við kennurum
+		<a href="{% url 'schools:student_create' school.id %}" type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+			<span class="glyphicon glyphicon-plus"></span>
 		</a>
 		<ul class="dropdown-menu">
 			<li>
@@ -19,34 +19,41 @@
 				</a>
 			</li>
 		</ul>
-	</div>		
-	<div id="teacher_list" class="table table-hover">
-		<div class="row">
-			<div class="col-md-3"><h4>Nafn</h4></div>
-			<div class="col-md-3"><h4>Staða</h4></div>
-			<div class="col-md-3"><h4>Bekkir</h4></div>
-			<div class="col-md-2"><h4>Aðgerðir</h4></div>
-		</div>
-		{% for teacher in teachers %}
-		<div class="row">
-			<div class="col-md-3"><a href="{% url 'schools:teacher_detail' school.id teacher.id %}">{{teacher.name}}</a></div>
-			<div class="col-md-3">{{teacher.position}}</div>
-			<div class="col-md-3">
-				{% for group in groups%}
-					{% for  manager in group.group_managers.all%}
-				 		{% if manager.id == teacher.id %}
-				 			<a href="{% url 'schools:group_detail' school.id group.id %}">{{ group.name }}</a>
-						{%endif%}
-					{% endfor %}
-				{% endfor %}
-			</div>
-			<div class="col-md-1">
-				<a href="{% url 'schools:teacher_update' school.id teacher.id %}" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
-				<a href="{% url 'schools:teacher_delete' school.id teacher.id %}" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-trash"></span></a>
-			</div>
-		</div>
-		{% endfor %}
-
 	</div>
+</h3>
+<div class="row">
+	<table id="teacher_list" class="table table-hover table-striped">
+		<thead>
+			<tr>
+				<td><h4>Nafn</h4></td>
+				<td><h4>Staða</h4></td>
+				<td><h4>Bekkir</h4></td>
+				<td class="col-xs-1"><h4>Aðgerðir</h4></td>
+			</tr>
+		</thead>
+		<tbody>
+			{% for teacher in teachers %}
+			<tr>
+				<td><a href="{% url 'schools:teacher_detail' school.id teacher.id %}">{{teacher.name}}</a></td>
+				<td>{{teacher.position}}</td>
+				<td>
+					{% for group in groups%}
+						{% for  manager in group.group_managers.all%}
+					 		{% if manager.id == teacher.id %}
+					 			<a href="{% url 'schools:group_detail' school.id group.id %}">{{ group.name }}</a>
+							{%endif%}
+						{% endfor %}
+					{% endfor %}
+				</td>
+				<td>
+					<div class="btn-group">
+						<a href="{% url 'schools:teacher_update' school.id teacher.id %}" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
+						<a href="{% url 'schools:teacher_delete' school.id teacher.id %}" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-trash"></span></a>
+					</div>
+				</td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
 </div>
 {% endblock %}

@@ -3,43 +3,44 @@
 {% block content %}
 {{ error }}
 <div class="row">
-	<div class="col-md-6">
+	<div class="col-md-8 col-sm-12">
 		<form action="" method="post" enctype="multipart/form-data">
 			{% csrf_token %}
-			<div class="form-group">
+			<div class="form-group form-group-lg">
 				<label for="file">Veldu skrá</label>
 				<input type="file" name="file" id="file" class="btn btn-default"/>
+				<p class="help-block">Veljið skrá, excel eða csv, sem inniheldur gögn fyrir samræmd próf.</p>
+				<p class="help-block">Skráin verður að vera vistuð sem .csv eða .xlsx á UTF-8 sniðmáti</p>
 			</div>
-			<div class="form-group">
+			<div class="form-group form-group-lg">
 				<label for="student_ssn">Prófkóði</label>
-				<input type="text" name="exam_code" id="exam_code" class="form-control input-lg" />
+				<input type="text" name="exam_code" id="exam_code" class="form-control" />
 			</div>
-			<div class="form-group">
-				<label for="student_name">Dagsetnings prófs</label>
-				<input type="text" name="exam_date" id="exam_date" placeholder='YYYY-MM-DD' class="form-control input-lg"/>
+			<div class="row">
+				<div class="form-group form-group-lg col-xs-6">
+					<label for="student_name">Dagsetnings prófs</label>
+					<input type="text" name="exam_date" id="exam_date" placeholder='YYYY-MM-DD' class="form-control"/>
+				</div>
+				<div class="form-group form-group-lg col-xs-6">
+					<label for="student_year">Bekkur</label>
+					<select id="student_year" name="student_year" class="form-control">
+						<option value="1">1. bekkur</option>
+						<option value="2">2. bekkur</option>
+						<option value="3">3. bekkur</option>
+						<option value="4">4. bekkur</option>
+						<option value="5">5. bekkur</option>
+						<option value="6">6. bekkur</option>
+						<option value="7">7. bekkur</option>
+						<option value="8">8. bekkur</option>
+						<option value="9">9. bekkur</option>
+						<option value="10">10. bekkur</option>
+					</select>
+				</div>
 			</div>
-			<div class="form-group">
-				<label for="student_year">Bekkur</label>
-				<select id="student_year" name="student_year" class="form-control input-lg">
-					<option value="1">1. bekkur</option>
-					<option value="2">2. bekkur</option>
-					<option value="3">3. bekkur</option>
-					<option value="4">4. bekkur</option>
-					<option value="5">5. bekkur</option>
-					<option value="6">6. bekkur</option>
-					<option value="7">7. bekkur</option>
-					<option value="8">8. bekkur</option>
-					<option value="9">9. bekkur</option>
-					<option value="10">10. bekkur</option>
-				</select>				
-			</div>
-			<div class="form-group">
+			<div class="form-group form-group-lg">
 				<input type="submit" value="Vista" class="btn btn-success btn-lg"/>
-			</div>
+			</div>	
 		</form>
-	</div>
-	<div class="col-md-6 alert-info">
-		<p>Veljið skrá, excel eða csv, sem inniheldur gögn fyrir samræmd próf, ... . Skráin verður að vera vistuð sem .csv eða .xlsx á UTF-8 sniðmáti</p>
 	</div>
 </div>
 {% endblock %}

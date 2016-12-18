@@ -1,3 +1,32 @@
 body {
-  min-height: 2000px;
+  	font-family: "Open Sans", "sans-serif";
+}
+div.main {
+	margin-top: 80px;
+	min-height: 95vh;
+}
+.navbar {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	font-family: "Open Sans", "sans-serif";
+	text-transform: uppercase;
+}
+.navbar-brand>span {
+	font-size: 16pt;
+}
+footer {
+	background-color: #333;
+	width: 100%;
+	padding: 20px auto;
+	margin: 10px 0 0 0;
+	color: #bbb;
+}
+
+@media (min-width: 768px) {
+	.navbar-nav>li>a {
+		padding-top: 30px;
+		padding-bottom: 6px;
+	}
 }
