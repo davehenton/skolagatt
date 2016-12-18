@@ -26,17 +26,20 @@
   </head>
 
   <body>
-	{% include 'navbar.html' %}
-	<div class="container main">
-		{% block content %}
-		{% endblock %}
-	</div>
+  	<div class="wrapper">
+  		{% include 'navbar.html' %}
+		<div class="container main">
+			{% block content %}
+			{% endblock %}
+		</div>
+		{% include 'footer.html' %}
+  	</div>
+		
 
 	{% include 'javascript.html' %}
 	<script src='{% static "marked/lib/marked.js" %}'></script>
 	<script src='{% static "sparkline/jquery.sparkline.min.js" %}'></script>
 	{% block script %}
 	{% endblock %}
-	{% include 'footer.html' %}
   </body>
 </html>
