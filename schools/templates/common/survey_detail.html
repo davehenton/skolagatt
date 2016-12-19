@@ -40,7 +40,7 @@
 		</div>
 	</div>
 	<div class="row">
-		<div class="col-md-6">
+		<div class="col-md-2">
 			<div class="row">
 				<h3>Um prófið</h3>
 				<div class="md">{{ survey_details.description }}</div>
@@ -71,18 +71,33 @@
 				</div>
 			</div>			
 		</div>
-		<div class="col-md-6">
+		<div class="col-md-10">
 			<h3>Nemendur</h3>
 			<div class="row">
-				<div class="col-md-12">
+				<div class="col-md-10">
+					<div class="row">
+						<div class="col-md-2">Kennitala</div>
+						<div class="col-md-4">Nafn</div>
+						{% if '01b_LTL_' in survey.identifier %}
+							<div class="col-md-2">Hljóð</div>
+							<div class="col-md-2">Mál</div>
+							<div class="col-md-2">Stafir</div>
+						{% endif %}
+						<div class="col-md-1">&nbsp</div>
+					</div>
+					
 					{% for student in students %}
 						{% get_survey_results student survey as student_result %}
 						<div class="row">
 							<div class="col-md-2">{{student.ssn}}</div>
-							<div class="col-md-5"><a href="{% url 'schools:student_detail' school.id student.id %}">{{student.name}}</a></div>
+							<div class="col-md-4"><a href="{% url 'schools:student_detail' school.id student.id %}">{{student.name}}</a></div>
 							{% if student_result %}
-							<div class="col-md-3">{{ student_results|get_item:student }}<!-- sparkline to be added --></div>
-							<div class="col-md-2">
+								{% with student_results|get_item:student as student_result_list %}
+									{% for student_result in student_result_list %}
+										<div class="col-md-2">{{ student_result|safe }}</div>
+									{% endfor %}
+								{% endwith %}
+							<div class="col-md-1">
 								{% if is_group_manager or is_school_manager %}
 									{% if survey.is_expired %}
 									{% else %}
