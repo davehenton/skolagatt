@@ -1086,11 +1086,11 @@ class SurveyDetail(UserPassesTestMixin, DetailView):
       if sr:
         r = literal_eval(sr.first().results) #get student results
         try:
-          student_results[student] = calc_survey_results(self.object.identifier, literal_eval(r['click_values']), r['input_values'])
+          student_results[student] = calc_survey_results(self.object.identifier, literal_eval(r['click_values']), r['input_values'], student)
         except Exception as e:
-          student_results[student] = calc_survey_results(self.object.identifier, [], r['input_values'])
+          student_results[student] = calc_survey_results(self.object.identifier, [], r['input_values'], student)
       else:
-        student_results[student] = calc_survey_results(self.object.identifier, [], {})
+        student_results[student] = calc_survey_results(self.object.identifier, [], {}, student)
     context['student_results'] = student_results
     context['field_types'] = ['text', 'number', 'text-list', 'number-list']
     return context
