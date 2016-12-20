@@ -4,9 +4,7 @@
 {% block content %}
 <form id="surveytype_form" action="" method="post">
 	{% csrf_token %}
-	<ul>
-		{{ form.as_ul }}
-	</ul>
-	<input type="submit" value="Save" />
+	{% include 'survey/_generic_form.html' %}
+	<input type="submit" value="Save" class="btn btn-lg btn-success" />
 </form>
 {% endblock %}

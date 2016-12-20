@@ -23,7 +23,7 @@ class SurveyCreateSuperSuccessMixin(SurveySuperSuccessMixin):
         try:
             return reverse_lazy(
                 'survey:survey_detail',
-                kwargs={'pk': self.object.pk})
+                kwargs={'pk': self.kwargs['survey_id']})
         except:
             return reverse_lazy('survey:survey_list')
 
