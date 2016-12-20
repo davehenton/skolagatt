@@ -54,7 +54,8 @@
 						</li>
 					{% endif %}
 					<li><a href="{% url 'schools:lesferill' school.id %}">Lesferill</a></li>
-					{% elif user.is_superuser %}
+					{% endif %}
+					{% if user.is_superuser %}
 						<li class="dropdown">
 							<a class="dropdown-toggle" data-toggle="dropdown" href="#">
 								<span class="glyphicon glyphicon-lock"></span>
@@ -62,6 +63,7 @@
 		        				<span class="caret"></span>
 		        			</a>
 		        			<ul class="dropdown-menu">
+		        				<li><a href="{% url 'survey:survey_list' %}">&nbsp;Prófagrunnur</a></li>
 								<li><a href="{% url 'schools:survey_login_admin_listing' %}">&nbsp;Prófkóðar fyrir samræmd próf</a></li>
 								<li><a href="{% url 'samraemd:math_admin_listing' %}">&nbsp;Samræmd próf í stærðfræði</a></li>
 								<li><a href="{% url 'samraemd:isl_admin_listing' %}">&nbsp;Samræmd próf í íslensku</a></li>

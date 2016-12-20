@@ -32,13 +32,29 @@ longer_time = (
 
 class SupportResourceForm(forms.ModelForm):
     support_title      = forms.ChoiceField(
-        required = False, widget = forms.CheckboxSelectMultiple, choices = support_title)
+        required = False,
+        widget = forms.CheckboxSelectMultiple(
+            attrs={'class': 'form-control'}
+        ),
+        choices = support_title)
     reading_assistance = forms.ChoiceField(
-        required = False, widget = forms.CheckboxSelectMultiple, choices = reading_assistance)
+        required = False,
+        widget = forms.CheckboxSelectMultiple(
+            attrs={'class': 'form-control'}
+        ),
+        choices = reading_assistance)
     interpretation     = forms.ChoiceField(
-        required = False, widget = forms.CheckboxSelectMultiple, choices = interpretation)
+        required = False,
+        widget = forms.CheckboxSelectMultiple(
+            attrs={'class': 'form-control'}
+        ),
+        choices = interpretation)
     longer_time        = forms.ChoiceField(
-        required = False, widget = forms.CheckboxSelectMultiple, choices = longer_time)
+        required = False,
+        widget = forms.CheckboxSelectMultiple(
+            attrs={'class': 'form-control'}
+        ),
+        choices = longer_time)
 
     class Meta:
         model  = SupportResource
@@ -59,10 +75,17 @@ reason_choices = (
 
 class ExceptionsForm(forms.ModelForm):
     exam   = forms.ChoiceField(
-        required = False, widget = forms.CheckboxSelectMultiple(attrs= {'inline': True},),
+        required = False,
+        widget = forms.CheckboxSelectMultiple(
+            attrs={'inline': True},
+        ),
         choices = exam_choices)
     reason = forms.ChoiceField(
-        required = False, widget = forms.RadioSelect, choices = reason_choices)
+        required = False,
+        widget = forms.RadioSelect(
+            attrs={'class': 'form-control'}
+        ),
+        choices = reason_choices)
 
     class Meta:
         model  = Exceptions

@@ -78,15 +78,6 @@ urlpatterns = [
         name='survey_input_group_delete'),
 
     # ========== SURVEY INPUT FIELD ========== #
-    url(r'^(?P<survey_id>\d+)/input/(?P<pk>\d+)/$',
-        views.SurveyInputFieldDetail.as_view(),
-        name='survey_input_detail'),
-    url(r'^(?P<survey_id>\d+)/input/create/$',
-        views.SurveyInputFieldCreate.as_view(),
-        name='survey_input_create'),
-    url(r'^(?P<survey_id>\d+)/input/(?P<pk>\d+)/update/$',
-        views.SurveyInputFieldUpdate.as_view(),
-        name='survey_input_update'),
     url(r'^(?P<survey_id>\d+)/input/(?P<pk>\d+)/delete/$',
         views.SurveyInputFieldDelete.as_view(),
         name='survey_input_delete'),

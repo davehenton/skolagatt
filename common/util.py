@@ -142,3 +142,9 @@ def calc_survey_results(survey_identifier, click_values, input_values):
         else:
             return ""
     return click_values
+
+
+def add_field_classes(self, field_list):
+    ''' To add form-control class to form fields '''
+    for item in field_list:
+        self.fields[item].widget.attrs.update({'class': 'form-control'})

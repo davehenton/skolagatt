@@ -3,17 +3,23 @@
 {% block content %}
 <div class="row">
 	<div class="col-md-9">
-		<h1>{{surveyresource.title}}</h1>
-	</div>
-	<div class="col-md-3">
-		<a href="{% url 'survey:survey_resource_update' survey.id surveyresource.id %}" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span>&nbsp;Breyta</a>
-		<a href="{% url 'survey:survey_resource_delete' survey.id surveyresource.id %}" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span>&nbsp;Eyða</a>
+		<h1>
+			{{surveyresource.title}}
+			<div class="btn-group">
+				<a href="{% url 'survey:survey_resource_update' survey.id surveyresource.id %}" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-pencil"></span></a>
+				<a href="{% url 'survey:survey_resource_delete' survey.id surveyresource.id %}" class="btn btn-danger btn-sm"><span class="glyphicon glyphicon-trash"></span></a>
+			</div>
+		</h1>
 	</div>
 </div>
 <div class="row">
-	<div class="col-md-10"><a href="{{surveyresource.resource_url}}">{{surveyresource.resource_url}}</a></div>
-</div>
-<div class="row">
-	<div class="col-md-10 md">{{surveyresource.description}}</div>
+	<div class="col-md-6 col-xs-12">
+		<h3>Hlekkur</h3>
+		<p><a href="{{surveyresource.resource_url}}">{{surveyresource.resource_url}}</a></p>
+	</div>
+	<div class="col-md-6 col-xs-12">
+		<h3>Lýsing</h3>
+		<p class="md">{{surveyresource.description}}</p>
+	</div>
 </div>
 {% endblock %}

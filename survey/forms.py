@@ -4,9 +4,15 @@ from django.utils.translation   import ugettext_lazy as _
 
 from . import models
 
+from common.util import add_field_classes
+
 
 class SurveyTypeForm(forms.ModelForm):
     """docstring for SurveyTypeForm"""
+    def __init__(self, *args, **kwargs):
+        super(SurveyTypeForm, self).__init__(*args, **kwargs)
+        add_field_classes(self, self.fields)
+
     class Meta:
         model  = models.SurveyType
         fields = ['identifier', 'title', 'description']
@@ -29,14 +35,20 @@ class SurveyForm(forms.ModelForm):
             empty_label=("Ár", "Mánuður", "Dagur"),
             months=MONTHS,
             attrs={
-                'class': 'required',
+                'class': 'required form-control',
+                'style': 'width: 26%; display: inline-block;'
             })
         self.fields['active_to'].widget = SelectDateWidget(
             empty_label=("Ár", "Mánuður", "Dagur"),
             months=MONTHS,
             attrs={
-                'class': 'required',
+                'class': 'required form-control',
+                'style': 'width: 26%; display: inline-block;'
             })
+        fields = [
+            'identifier', 'title', 'survey_type', 'student_year', 'description'
+        ]
+        add_field_classes(self, fields)
 
     class Meta:
         model  = models.Survey
@@ -56,6 +68,10 @@ class SurveyForm(forms.ModelForm):
 
 
 class SurveyResourceForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(SurveyResourceForm, self).__init__(*args, **kwargs)
+        add_field_classes(self, self.fields)
+
     class Meta:
         model  = models.SurveyResource
         fields = ['title', 'resource_url', 'description']
@@ -67,6 +83,10 @@ class SurveyResourceForm(forms.ModelForm):
 
 
 class SurveyGradingTemplateForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(SurveyGradingTemplateForm, self).__init__(*args, **kwargs)
+        add_field_classes(self, self.fields)
+
     class Meta:
         model  = models.SurveyGradingTemplate
         fields = ['title', 'md', 'info']
@@ -78,6 +98,10 @@ class SurveyGradingTemplateForm(forms.ModelForm):
 
 
 class SurveyInputFieldForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(SurveyInputFieldForm, self).__init__(*args, **kwargs)
+        add_field_classes(self, self.fields)
+
     class Meta:
         model  = models.SurveyInputField
         fields = ['input_group', 'name', 'label']
@@ -89,6 +113,10 @@ class SurveyInputFieldForm(forms.ModelForm):
 
 
 class SurveyInputGroupForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(SurveyInputGroupForm, self).__init__(*args, **kwargs)
+        add_field_classes(self, self.fields)
+
     class Meta:
         model  = models.SurveyInputGroup
         fields = ['title', 'identifier', 'description']
@@ -97,3 +125,8 @@ class SurveyInputGroupForm(forms.ModelForm):
             'identifier' : 'Kenni',
             'description': 'Lýsing'
         }
+
+
+class SurveyInputGroupCreateForm(SurveyInputGroupForm):
+    def __init__(self, *args, **kwargs):
+        super(SurveyInputGroupCreateForm, self).__init__(*args, **kwargs)

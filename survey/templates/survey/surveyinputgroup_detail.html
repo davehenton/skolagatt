@@ -2,16 +2,43 @@
 
 {% block content %}
 <div class="row">
-	<div class="col-md-9">
-		<h1>{{surveyinputgroup.title}}</h1>
-	</div>
-	<div class="col-md-3">
-		<a href="{% url 'survey:survey_input_group_update' survey.id surveyinputgroup.id %}" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span>&nbsp;Breyta</a>
-		<a href="{% url 'survey:survey_input_group_delete' survey.id surveyinputgroup.id %}" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span>&nbsp;Eyða</a>
+	<div class="col-md-12">
+		<h1>
+			{{surveyinputgroup.title}}
+			<div class="btn-group">
+				<a href="{% url 'survey:survey_input_group_update' survey.id surveyinputgroup.id %}" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-pencil"></span></a>
+				<a href="{% url 'survey:survey_input_group_delete' survey.id surveyinputgroup.id %}" class="btn btn-danger btn-sm"><span class="glyphicon glyphicon-trash"></span></a>
+			</div>
+		</h1>
 	</div>
 </div>
 <div class="row">
-	<div class="col-md-2">Lýsing</div>
-	<div class="col-md-10">{{surveyinputgroup.description}}</div>
+	<div class="col-md-6 col-xs-12">
+		<h3>Innsláttarsvæði</h3>
+		<table class="table table-hover table-striped">
+			<thead>
+				<tr>
+					<th>Heiti</th>
+					<th>Kenni</th>
+					<th class="col-xs-1"></th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for survey_input in surveyinputgroup.input_fields %}
+					<tr>
+						<td>{{survey_input.label}}</td>
+						<td>{{survey_input.get_id}}</td>
+						<td>
+							<a href="{% url 'survey:survey_input_delete' survey.id survey_input.id %}" class="btn btn-danger btn-xs pull-right"><span class="glyphicon glyphicon-trash"></span></a>
+						</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+	<div class="col-md-6 col-xs-12">
+		<h3>Lýsing</h3>
+		<p>{{surveyinputgroup.description}}</p>
+	</div>
 </div>
 {% endblock %}

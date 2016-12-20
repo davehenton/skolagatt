@@ -69,12 +69,7 @@ class SurveyTypeCreate(SurveyCreateSuperSuccessMixin, CreateView):
         return super(SurveyTypeCreate, self).form_valid(form)
 
     def get_success_url(self):
-        try:
-            return reverse_lazy(
-                'survey:survey_type_detail',
-                kwargs={'pk': self.object.pk})
-        except:
-            return reverse_lazy('survey:survey_list')
+        return reverse_lazy('survey:survey_list')
 
 
 class SurveyTypeUpdate(SurveySuperSuccessMixin, UpdateView):
@@ -82,12 +77,7 @@ class SurveyTypeUpdate(SurveySuperSuccessMixin, UpdateView):
     form_class = forms.SurveyTypeForm
 
     def get_success_url(self):
-        try:
-            return reverse_lazy(
-                'survey:survey_type_detail',
-                kwargs={'pk': self.kwargs['pk']})
-        except:
-            return reverse_lazy('survey:survey_list')
+        return reverse_lazy('survey:survey_list')
 
 
 class SurveyTypeDelete(UserPassesTestMixin, DeleteView):
@@ -269,12 +259,20 @@ class SurveyInputGroupDetail(UserPassesTestMixin, DetailView):
 
 class SurveyInputGroupCreate(SurveySuperSuccessMixin, CreateView):
     model      = SurveyInputGroup
-    form_class = forms.SurveyInputGroupForm
+    form_class = forms.SurveyInputGroupCreateForm
 
     def form_valid(self, form):
-        survey            = form.save(commit=False)
-        survey.created_by = self.request.user
-        survey.survey     = Survey.objects.get(pk=self.kwargs['survey_id'])
+        input_group        = form.save(commit=False)
+        input_group.survey = Survey.objects.get(pk=self.kwargs['survey_id'])
+        input_group.save()  # Save input group now so we can link inputfields to it
+        # Create related SurveyInputFields
+        nr_inputs   = int(self.request.POST['inputs'])
+        for x in range(0, nr_inputs):
+            inputfield = SurveyInputField(
+                name=x + 1, label=input_group.title, input_group=input_group
+            )
+            inputfield.save()
+
         return super(SurveyInputGroupCreate, self).form_valid(form)
 
     def get_context_data(self, **kwargs):
@@ -286,6 +284,24 @@ class SurveyInputGroupCreate(SurveySuperSuccessMixin, CreateView):
 class SurveyInputGroupUpdate(SurveySuperSuccessMixin, UpdateView):
     model      = SurveyInputGroup
     form_class = forms.SurveyInputGroupForm
+
+    def form_valid(self, form):
+        input_group        = form.save(commit=False)
+        input_group.survey = Survey.objects.get(pk=self.kwargs['survey_id'])
+        input_group.save()  # Save input group now so we can link inputfields to it
+        # Create related SurveyInputFields
+        nr_inputs   = int(self.request.POST['inputs'])
+        nr_inputs_saved = input_group.num_input_fields()
+        if nr_inputs_saved > nr_inputs:
+            for x in range(nr_inputs, nr_inputs_saved):
+                SurveyInputField.objects.get(input_group=input_group, name=x + 1).delete()
+        elif nr_inputs_saved < nr_inputs:
+            for x in range(0, nr_inputs):
+                inputfield = SurveyInputField.objects.get_or_create(
+                    name=x + 1, label=input_group.title, input_group=input_group
+                )
+
+        return super(SurveyInputGroupUpdate, self).form_valid(form)
 
 
 class SurveyInputGroupDelete(SurveyDeleteSuperSuccessMixin, DeleteView):

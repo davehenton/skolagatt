@@ -71,14 +71,21 @@ class SurveyInputGroup(models.Model):
     def __str__(self):
         return self.title
 
+    def input_fields(self):
+        inputfields = SurveyInputField.objects.filter(input_group=self).order_by('name')
+        return inputfields
+
+    def num_input_fields(self):
+        return len(self.input_fields())
+
 
 class SurveyInputField(models.Model):
     input_group = models.ForeignKey(SurveyInputGroup)
     name        = models.CharField(max_length=128)
     label       = models.CharField(max_length=128)
 
-    def __str__(self):
-        return self.input_group.title + ': ' + self.name
-
     def get_id(self):
         return self.input_group.identifier + '_' + self.name
+
+    def __str__(self):
+        return self.input_group.title + ': ' + self.get_id()
