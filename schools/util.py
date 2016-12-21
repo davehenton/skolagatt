@@ -262,7 +262,7 @@ def calc_survey_results(survey_identifier, click_values, input_values, student):
           return lesskilnings_hopar(aldursbil, input_values)
         except Exception as e:
           return ["error"]
-    elif survey_identifier.startswith('b_LF_'):
+    elif '_LF_' in survey_identifier:
       try:
         words_read = int(click_values[-1].split(',')[0]) - len(click_values)
         time_read = 120
