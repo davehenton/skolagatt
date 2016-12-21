@@ -230,15 +230,15 @@ def lesskilnings_hopar(aldursbil, input_values):
   # Cycle through input_values, sum up all values where the key starts with 'hljod_', 'mal_', 'bok_'. Checks for input errors.
   lesskilnings_sums = {'hljod_': 0, 'mal_': 0, 'bok_': 0}
   for key, value in input_values.items():
-    for lesskilnings_type, type_sum in lesskilnings_sums.items():
+    for type_sum in lesskilnings_sums.keys():
       # type = 'hljod_' for instance, type_sum for 'hljod_' starts as 0
-      if key.startswith(lesskilnings_type):
+      if key.startswith(type_sum):
         if not str(value).isdigit():
           # Input error so we will make this type_sum permanently = -1 to indicate error
-          type_sum = -1
-        elif str(value).isdigit() and not type_sum == -1:
+          lesskilnings_sums[type_sum] = -1
+        elif str(value).isdigit() and not lesskilnings_sums[type_sum] == -1:
           # Not input error so let's add up
-          type_sum += int(value)
+          lesskilnings_sums[type_sum] += int(value)
 
   # hljodkerfisvitund_sum = sum([ int(value) for key, value in input_values.items() if key.startswith("hljod_") and value.isdigit() ])
   # Same thing for keys that start with 'mal_'
