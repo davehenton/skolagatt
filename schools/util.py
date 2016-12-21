@@ -270,7 +270,7 @@ def calc_survey_results(survey_identifier, click_values, input_values, student):
           time_read = int(input_values.get('b1_LF_timi', 120))
         except:
           return [""]
-        return list(str(int(words_read / time_read * 60)) + " orð/mín")
+        return str(int(words_read / time_read * 60)) + " orð/mín"
       except:
         return [""]
     else:
