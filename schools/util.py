@@ -105,32 +105,38 @@ def lesskilnings_hopar_1(hljodkerfisvitund_sum, malthroski_sum, bokstafathekking
   Lesskilnings hópar fyrir börn fædd á fyrsta ársþriðjungi
   '''
   hopar = []
-  if hljodkerfisvitund_sum <= 18:
+  if hljodkerfisvitund_sum == -1:
+    hopar.append('Vantar gögn')
+  elif hljodkerfisvitund_sum <= 18:
     hopar.append('Áhætta 1 (%d)'%(hljodkerfisvitund_sum))
   elif hljodkerfisvitund_sum <= 21:
     hopar.append('Áhætta 2 (%d)'%(hljodkerfisvitund_sum))
   elif hljodkerfisvitund_sum <= 23:
     hopar.append('Óvissa (%d)'%(hljodkerfisvitund_sum))
   else:
-    hopar.append('&nbsp;')
+    hopar.append('Utan áhættu')
 
-  if malthroski_sum <= 17:
+  if malthroski_sum == -1:
+    hopar.append('Vantar gögn')
+  elif malthroski_sum <= 17:
     hopar.append('Áhætta 1 (%d)'%(malthroski_sum))
   elif malthroski_sum <= 18:
     hopar.append('Áhætta 2 (%d)'%(malthroski_sum))
   elif malthroski_sum <= 19:
     hopar.append('Óvissa (%d)'%(malthroski_sum))
   else:
-    hopar.append('&nbsp;')
+    hopar.append('Utan áhættu')
 
-  if bokstafathekking_sum <= 11:
+  if bokstafathekking_sum == -1:
+    hopar.append('Vantar gögn')
+  elif bokstafathekking_sum <= 11:
     hopar.append('Áhætta 1 (%d)'%(bokstafathekking_sum))
   elif bokstafathekking_sum <= 14:
     hopar.append('Áhætta 2 (%d)'%(bokstafathekking_sum))
   elif bokstafathekking_sum <= 15:
     hopar.append('Óvissa (%d)'%(bokstafathekking_sum))
   else:
-    hopar.append('&nbsp;')
+    hopar.append('Utan áhættu')
 
   return hopar
 
@@ -140,32 +146,38 @@ def lesskilnings_hopar_2(hljodkerfisvitund_sum, malthroski_sum, bokstafathekking
   Lesskilnings hópar fyrir börn fædd á öðrum ársþriðjungi
   '''
   hopar = []
-  if hljodkerfisvitund_sum <= 15:
+  if hljodkerfisvitund_sum == -1:
+    hopar.append('Vantar gögn')
+  elif hljodkerfisvitund_sum <= 15:
     hopar.append('Áhætta 1 (%d)'%(hljodkerfisvitund_sum))
   elif hljodkerfisvitund_sum <= 18:
     hopar.append('Áhætta 2 (%d)'%(hljodkerfisvitund_sum))
   elif hljodkerfisvitund_sum <= 20:
     hopar.append('Óvissa')
   else:
-    hopar.append('&nbsp;')
+    hopar.append('Utan áhættu')
 
-  if malthroski_sum <= 14:
+  if malthroski_sum == -1:
+    hopar.append('Vantar gögn')
+  elif malthroski_sum <= 14:
     hopar.append('Áhætta 1 (%d)'%(malthroski_sum))
   elif malthroski_sum <= 17:
     hopar.append('Áhætta 2 (%d)'%(malthroski_sum))
   elif malthroski_sum <= 18:
     hopar.append('Óvissa (%d)'%(malthroski_sum))
   else:
-    hopar.append('&nbsp;')
+    hopar.append('Utan áhættu')
 
-  if bokstafathekking_sum <= 10:
+  if bokstafathekking_sum == -1:
+    hopar.append('Vantar gögn')
+  elif bokstafathekking_sum <= 10:
     hopar.append('Áhætta 1 (%d)'%(bokstafathekking_sum))
   elif bokstafathekking_sum <= 13:
     hopar.append('Áhætta 2 (%d)'%(bokstafathekking_sum))
   elif bokstafathekking_sum <= 14:
     hopar.append('Óvissa (%d)'%(bokstafathekking_sum))
   else:
-    hopar.append('&nbsp;')
+    hopar.append('Utan áhættu')
 
   return hopar
 
@@ -175,32 +187,38 @@ def lesskilnings_hopar_3(hljodkerfisvitund_sum, malthroski_sum, bokstafathekking
   Lesskilnings hópar fyrir börn fædd á þriðja ársþriðjungi
   '''
   hopar = []
-  if hljodkerfisvitund_sum <= 16:
+  if hljodkerfisvitund_sum == -1:
+    hopar.append('Vantar gögn')
+  elif hljodkerfisvitund_sum <= 16:
     hopar.append('Áhætta 1 (%d)'%(hljodkerfisvitund_sum))
   elif hljodkerfisvitund_sum <= 19:
     hopar.append('Áhætta 2 (%d)'%(hljodkerfisvitund_sum))
   elif hljodkerfisvitund_sum <= 20:
     hopar.append('Óvissa (%d)'%(hljodkerfisvitund_sum))
   else:
-    hopar.append('&nbsp;')
+    hopar.append('Utan áhættu')
 
-  if malthroski_sum <= 14:
+  if malthroski_sum == -1:
+    hopar.append('Vantar gögn')
+  elif malthroski_sum <= 14:
     hopar.append('Áhætta 1 (%d)'%(malthroski_sum))
   elif malthroski_sum <= 16:
     hopar.append('Áhætta 2 (%d)'%(malthroski_sum))
   elif malthroski_sum <= 17:
     hopar.append('Óvissa (%d)'%(malthroski_sum))
   else:
-    hopar.append('&nbsp;')
+    hopar.append('Utan áhættu')
 
-  if bokstafathekking_sum <= 9:
+  if bokstafathekking_sum == -1:
+    hopar.append('Vantar gögn')
+  elif bokstafathekking_sum <= 9:
     hopar.append('Áhætta 1 (%d)'%(bokstafathekking_sum))
   elif bokstafathekking_sum <= 11:
     hopar.append('Áhætta 2 (%d)'%(bokstafathekking_sum))
   elif bokstafathekking_sum <= 13:
     hopar.append('Óvissa (%d)'%(bokstafathekking_sum))
   else:
-    hopar.append('&nbsp;')
+    hopar.append('Utan áhættu')
 
   return hopar
 
@@ -209,21 +227,31 @@ def lesskilnings_hopar(aldursbil, input_values):
   '''
   Finna lesskilnings hópa eftir aldursbili úr niðurstöðum prófa
   '''
-  # Cycle through input_values, sum up all values where the key starts with 'hljod_'
-  hljodkerfisvitund_sum = sum([ int(value) for key, value in input_values.items() if key.startswith("hljod_") and value.isdigit() ])
+  # Cycle through input_values, sum up all values where the key starts with 'hljod_', 'mal_', 'bok_'. Checks for input errors.
+  lesskilnings_sums = {'hljod_': 0, 'mal_': 0, 'bok_': 0}
+  for key, value in input_values.items():
+    for lesskilnings_type, type_sum in lesskilnings_sums:
+      # type = 'hljod_' for instance, type_sum for 'hljod_' starts as 0
+      if key.startswith(lesskilnings_type):
+        if not value.isdigit():
+          # Input error so we will make this type_sum permanently = -1 to indicate error
+          type_sum = -1
+        elif value.isdigit() and not type_sum == -1:
+          # Not input error so let's add up
+          type_sum += int(value)
+
+  # hljodkerfisvitund_sum = sum([ int(value) for key, value in input_values.items() if key.startswith("hljod_") and value.isdigit() ])
   # Same thing for keys that start with 'mal_'
-  malthroski_sum = sum([ int(value) for key, value in input_values.items() if key.startswith("mal_") and value.isdigit() ])
+  # malthroski_sum = sum([ int(value) for key, value in input_values.items() if key.startswith("mal_") and value.isdigit() ])
   # And again for keys that start with 'bok_'
-  bokstafathekking_sum = sum([ int(value) for key, value in input_values.items() if key.startswith("bok_") and value.isdigit() ])
-
-
+  # bokstafathekking_sum = sum([ int(value) for key, value in input_values.items() if key.startswith("bok_") and value.isdigit() ])
 
   if aldursbil == 'bil 1':
-    return lesskilnings_hopar_1(hljodkerfisvitund_sum, malthroski_sum, bokstafathekking_sum)
+    return lesskilnings_hopar_1(lesskilnings_sums["hljod_"], lesskilnings_sums["mal_"], lesskilnings_sums["bok_"])
   elif aldursbil == 'bil 2':
-    return lesskilnings_hopar_2(hljodkerfisvitund_sum, malthroski_sum, bokstafathekking_sum)
+    return lesskilnings_hopar_1(lesskilnings_sums["hljod_"], lesskilnings_sums["mal_"], lesskilnings_sums["bok_"])
   else:
-    return lesskilnings_hopar_3(hljodkerfisvitund_sum, malthroski_sum, bokstafathekking_sum)
+    return lesskilnings_hopar_1(lesskilnings_sums["hljod_"], lesskilnings_sums["mal_"], lesskilnings_sums["bok_"])
 
 
 def calc_survey_results(survey_identifier, click_values, input_values, student):
