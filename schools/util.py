@@ -87,7 +87,7 @@ def is_group_manager(request, kwargs):
 def slug_sort(q, attr):
   return sorted(q, key=lambda x: slugify(getattr(x,attr)))
 
-def lesskilnings_results(nput_values):
+def lesskilnings_results(input_values):
   '''
   Skilum niðurstöðum prófs í lesskilningi
   '''
