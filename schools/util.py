@@ -108,33 +108,33 @@ def lesskilnings_results(input_values):
   if lesskilnings_sums["hljod_"] == -1:
     hopar.append('Vantar gögn')
   elif lesskilnings_sums["hljod_"] <= 14:
-    hopar.append('Áhætta 1 (%d)'%(lesskilnings_sums["hljod_"]))
+    hopar.append('Áhætta 1')
   elif lesskilnings_sums["hljod_"] <= 17:
-    hopar.append('Áhætta 2 (%d)'%(lesskilnings_sums["hljod_"]))
+    hopar.append('Áhætta 2')
   elif lesskilnings_sums["hljod_"] <= 19:
-    hopar.append('Óvissa (%d)'%(lesskilnings_sums["hljod_"]))
+    hopar.append('Óvissa')
   else:
     hopar.append('Utan áhættu')
 
   if lesskilnings_sums["mal_"] == -1:
     hopar.append('Vantar gögn')
   elif lesskilnings_sums["mal_"] <= 14:
-    hopar.append('Áhætta 1 (%d)'%(lesskilnings_sums["mal_"]))
+    hopar.append('Áhætta 1')
   elif lesskilnings_sums["mal_"] <= 16:
-    hopar.append('Áhætta 2 (%d)'%(lesskilnings_sums["mal_"]))
+    hopar.append('Áhætta 2')
   elif lesskilnings_sums["mal_"] <= 17:
-    hopar.append('Óvissa (%d)'%(lesskilnings_sums["mal_"]))
+    hopar.append('Óvissa')
   else:
     hopar.append('Utan áhættu')
 
   if lesskilnings_sums["bok_"] == -1:
     hopar.append('Vantar gögn')
   elif lesskilnings_sums["bok_"] <= 7:
-    hopar.append('Áhætta 1 (%d)'%(lesskilnings_sums["bok_"]))
+    hopar.append('Áhætta 1')
   elif lesskilnings_sums["bok_"] <= 10:
-    hopar.append('Áhætta 2 (%d)'%(lesskilnings_sums["bok_"]))
+    hopar.append('Áhætta 2')
   elif lesskilnings_sums["bok_"] <= 12:
-    hopar.append('Óvissa (%d)'%(lesskilnings_sums["bok_"]))
+    hopar.append('Óvissa')
   else:
     hopar.append('Utan áhættu')
 
