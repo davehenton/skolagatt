@@ -20,19 +20,16 @@
 			{% get_user_messages %}
 		</div>
 	{% endif %}
-
 </div>
 <div class="row">
-	<div class="row">
-		<div class="col-md-3">
-			{% include 'common/_manager_list.html' %}
-		</div>
-		<div class="col-md-3">
-			{% include 'common/_teacher_list.html' %}
-		</div>
-		<div class="col-md-6">
-			{% include 'common/_group_list.html' %}
-		</div>
+	<div class="col-md-3">
+		{% include 'common/_manager_list.html' %}
+	</div>
+	<div class="col-md-3">
+		{% include 'common/_teacher_list.html' %}
+	</div>
+	<div class="col-md-6">
+		{% include 'common/_group_list.html' %}
 	</div>
 </div>
 {% endblock %}
