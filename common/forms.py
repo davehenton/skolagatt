@@ -4,12 +4,23 @@ from django.contrib.auth.models import User
 from common.models import (
     Manager, Teacher, Student,
     School, StudentGroup, GroupSurvey,
-    SurveyResult, SurveyLogin)
+    SurveyResult, SurveyLogin, Notification)
 
 
 def add_field_classes(self, field_list):
     for item in field_list:
         self.fields[item].widget.attrs.update({'class': 'form-control'})
+
+
+class NotificationForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(NotificationForm, self).__init__(*args, **kwargs)
+        add_field_classes(self, self.fields)
+
+    class Meta:
+        model = Notification
+        fields = ['notification_type', 'notification_id']
+        widgets = {'user': forms.HiddenInput()}
 
 
 class ManagerForm(forms.ModelForm):

@@ -137,7 +137,7 @@ def get_school_name(context):
     try:
         return School.objects.get(pk=m.group('school_id')).name
     except:
-        return "Velja skóla"
+        return "Skóli"
 
 
 @register.assignment_tag

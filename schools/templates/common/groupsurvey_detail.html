@@ -64,8 +64,14 @@
 				<tr>
 					<th>Kennitala</th>
 					<th>Nafn</th>
-					<th class="col-xs-7">Niðurstöður</th>
-					<th class="col-xs-1"></th>
+					{% if '01b_LTL_' in survey.identifier %}
+ 						<th class="col-md-2">Hljóð</th>
+ 						<th class="col-md-2">Mál</th>
+ 						<th class="col-md-2">Stafir</th>
+ 					{% else %}
+ 						<th class="col-xs-6">Niðurstöður</th>
+ 					{% endif %}
+					<th class="col-xs-2"></th>
 				</tr>
 			</thead>
 			<tbody>
@@ -79,18 +85,19 @@
 							</a>
 						</td>
 						{% if student_result %}
-						<td>
-							{{ student_results|get_item:student }}
-							<!-- sparkline to be added -->
-						</td>
+							{% with student_results|get_item:student as student_result_list %}
+	 							{% for student_result in student_result_list %}
+	 								<td>{{ student_result|safe }}</td>
+	 							{% endfor %}
+	 						{% endwith %}
 						<td>
 							{% if is_group_manager or is_school_manager %}
 								{% if groupsurvey.is_expired %}
 								{% else %}
-								<a href="{% url 'schools:survey_result_update' school.id student.id groupsurvey.id student_result.id %}" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
+								<a href="{% url 'schools:survey_result_update' school.id student.id groupsurvey.id student_result.id %}" class="btn btn-default btn-xs pull-right"><span class="glyphicon glyphicon-pencil"></span></a>
 								{% endif %}
 							{% endif %}
-							<button href="" class="btn btn-default btn-xs" type="button" data-toggle="collapse" data-target="#results-{{student_result.id}}" aria-expanded="false" aria-controls="collapseExample">
+							<button class="btn btn-default btn-xs pull-right" type="button" data-toggle="collapse" data-target="#results-{{student_result.id}}" aria-expanded="false" aria-controls="collapseExample">
 								<span class="caret"></span>
 							</button>
 						</td>
