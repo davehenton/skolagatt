@@ -118,17 +118,21 @@
 							{% with results=student_result.results|get_json %}
 								<div class='row'>
 									<div class='col-md-12'>
+										{% if results.click_values %}
 										<div>
 											<strong>Valin orð:</strong>
 											{% for val in results.click_values|literal_eval %}
 												<p class="click_values">{{val}}</p>
 											{% endfor %}
 										</div>
+										{% endif %}
+										{% if results.input_values %}
 										<div><strong>Innsláttur:</strong>
 											{% for val in results.input_values %}
 												<p class="click_values">{{val}}: {{results.input_values|get_item:val}}</p>
 											{% endfor %}
 										</div>
+										{% endif %}
 										{% if is_group_manager or is_school_manager %}
 										<div><strong>Skráð af:</strong> {{student_result.reported_by}}</div>
 										{% endif %}
