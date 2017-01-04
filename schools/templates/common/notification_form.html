@@ -1,0 +1,13 @@
+{% extends 'common/index.html'%}
+{% include staticfiles%}
+
+{% block content %}
+<h2>Tilkynningar</h2>
+<form action="" method="post">
+	{% include 'common/_generic_form.html' %}
+	<div class="btn-group">
+		<input type="submit" class="btn btn-success btn-lg" value="Vista" />
+		<a class="btn btn-default btn-lg" href="{% url 'schools:school_listing' %}">Til baka</a>
+	</div>
+</form>
+{% endblock %}

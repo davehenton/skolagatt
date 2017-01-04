@@ -5,7 +5,6 @@ from django.views.generic         import ListView, CreateView, DetailView, Updat
 from django.core.urlresolvers     import reverse_lazy
 from django.contrib.auth.mixins   import UserPassesTestMixin
 from django.contrib.auth.models   import User
-from django.conf                  import settings
 from django.utils                 import timezone
 from django.utils.decorators      import method_decorator
 from django.views.decorators.csrf import csrf_exempt
@@ -13,9 +12,7 @@ from django.views.decorators.csrf import csrf_exempt
 from uuid      import uuid4
 from datetime  import datetime, date
 from ast       import literal_eval
-from kennitala import Kennitala
 
-import requests
 import json
 import xlrd
 import openpyxl
@@ -34,12 +31,13 @@ from survey.models import Survey, SurveyGradingTemplate, SurveyInputField, Surve
 import supportandexception.models as sae_models
 
 
-def lesferill(request, school_id):
-    return render(request, 'common/lesferill.html', {'school_id': school_id})
+def lesferill(request):
+    return render(request, 'common/lesferill.html')
 
 
 class NotificationCreate(UserPassesTestMixin, CreateView):
     model = Notification
+    form_class  = cm_forms.NotificationForm
 
     @method_decorator(csrf_exempt)
     def dispatch(self, request, *args, **kwargs):
@@ -51,7 +49,7 @@ class NotificationCreate(UserPassesTestMixin, CreateView):
     def post(self, *args, **kwargs):
         try:
             notification_type = self.request.POST.get('notification_type', None)
-            notification_id   = self.request.POST.get('id', None)
+            notification_id   = self.request.POST.get('notification_id', None)
 
             if notification_type and notification_id:
                 Notification.objects.create(
@@ -1132,14 +1130,16 @@ class SurveyDetail(common_mixins.SchoolEmployeeMixin, DetailView):
                 try:
                     student_results[student] = common_util.calc_survey_results(
                         self.object.survey.identifier,
-                        literal_eval(r['click_values']), r['input_values']
+                        literal_eval(r['click_values']),
+                        r['input_values'],
+                        student
                     )
                 except Exception as e:
                     student_results[student] = common_util.calc_survey_results(
-                        self.object.survey.identifier, [], r['input_values'])
+                        self.object.survey.identifier, [], r['input_values'], student)
             else:
                 student_results[student] = common_util.calc_survey_results(
-                    self.object.survey.identifier, [], {})
+                    self.object.survey.identifier, [], {}, student)
         context['student_results'] = student_results
         context['field_types']     = ['text', 'number', 'text-list', 'number-list']
         return context

@@ -32,7 +32,7 @@ urlpatterns = [
         views.NotificationCreate.as_view(),
         name='notification_create'),
 
-    url(r'^(?P<school_id>\d+)/lesferill/$',
+    url(r'^lesferill/$',
         views.lesferill,
         name='lesferill'),
 
