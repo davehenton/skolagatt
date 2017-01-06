@@ -29,8 +29,8 @@
 			{% endif %}
 			<table id="school_list" class="table table-hover table-striped row">
 				<thead>
-					<th><h4>Kennitala</h4></th>
 					<th><h4>Nafn</h4></th>
+					<th><h4>Kennitala</h4></th>
 					{% if request.user.is_superuser %}
 					<th>Stjórn.#</th>
 					<th>Nem.#</th>
@@ -41,10 +41,10 @@
 					{% for school in school_list %}
 					<tr>
 						<td>
-							<a href="{% url 'schools:school_detail' school.id %}">{{school.ssn}}</a>
+							<a href="{% url 'schools:school_detail' school.id %}">{{school.name}}</a>
 						</td>
 						<td>
-							<a href="{% url 'schools:school_detail' school.id %}">{{school.name}}</a>
+							<a href="{% url 'schools:school_detail' school.id %}">{{school.ssn}}</a>
 						</td>
 						{% if request.user.is_superuser %}
 						<td>

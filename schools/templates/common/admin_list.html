@@ -15,8 +15,8 @@
 		<table id="school_list" class="table table-hover table-striped">
 			<thead>
 				<tr>
-					<th><h4>Kennitala</h4></th>
 					<th><h4>Nafn</h4></th>
+					<th><h4>Kennitala</h4></th>
 					{% if request.user.is_superuser %}
 					<th class="col-xs-1"><h4>Aðgerðir</h4></th>
 					{% endif %}
@@ -25,7 +25,6 @@
 			<tbody>
 				{% for user in user_list %}
 				<tr>
-					<td>{{user.username}}</td>
 					<td>
 						{% if user.manager_set.exists %}
 							{{user.manager_set.first}}
@@ -35,6 +34,7 @@
 							Nafn finnst ekki
 						{% endif %}
 					</td>
+					<td>{{user.username}}</td>
 					{% if request.user.is_superuser %}
 					<td>
 						<a href="{% url 'schools:admin_update' user.id %}" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>

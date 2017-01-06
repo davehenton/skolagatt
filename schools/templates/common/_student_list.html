@@ -2,15 +2,15 @@
 <table id="student_list" class="table table-hover table-striped">
 	<thead>
 		<tr>
-			<td class="col-md-4"><h4>Kt.</h4></td>
 			<td class="col-md-8"><h4>Nafn</h4></td>
+			<td class="col-md-4"><h4>Kt.</h4></td>
 		</tr>
 	</thead>
 	<tbody>
 	{% for student in students %}
 	<tr>
-		<td>{{student.ssn}}</td>
 		<td><a href="{% url 'schools:student_detail' school.id student.id %}">{{student.name}}</a></td>
+		<td>{{student.ssn}}</td>
 	</tr>
 	{% endfor %}
 	</tbody>
