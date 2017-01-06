@@ -29,7 +29,6 @@
 					<tr>
 						<th><h4>Kennitala</h4></th>
 						<th><h4>Nafn</h4></th>
-						<th><h4>Stuðningur</h4></th>
 						{% if is_school_manager %}
 						<td class="col-xs-1"><h4>Aðgerðir</h4></td>
 						{% endif %}
@@ -40,14 +39,6 @@
 					<tr>
 						<td><a href="{% url 'schools:student_detail' school.id student.id %}">{{student.ssn}}</a></td>
 						<td><a href="{% url 'schools:student_detail' school.id student.id %}">{{student.name}}</a></td>
-						<td>
-							{% if student.exceptions_set.first %}
-							<a href="{% url 'supportandexception:exception' school.id student.id %}" title="Undanþágur"><span class="glyphicon glyphicon-flag" style="color:#449D44"></span>&nbsp;</a>
-							{% endif %}
-							{% if student.supportresource_set.first %}
-							<a href="{% url 'supportandexception:supportresource' school.id student.id %}" title="Stuðningsúrræði"><span class="glyphicon glyphicon-flag" style="color:#EC971F"></span>&nbsp;</a>
-							{% endif %}
-						</td>
 						{% if is_school_manager %}
 						<td>
 							<div class="btn-group">
