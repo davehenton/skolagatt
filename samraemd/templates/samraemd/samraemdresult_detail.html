@@ -12,11 +12,6 @@
 			<a href="{% url 'samraemd:result_excel' school.id year group %}" class="btn btn-default" target="_blank">Excel</a>
 		{% else %}
 			<a href="{% url 'samraemd:admin_result_print' year group %}" class="btn btn-default" target="_blank">Prentvæn einkunnablöð</a>
-			{% if 'stæ' in request.path %}
-				<a href="{% url 'samraemd:admin_result_csv_stf' year group %}" class="btn btn-default" target="_blank">CSV stærðfræði</a>
-			{% elif 'isl' in request.path %}
-				<a href="{% url 'samraemd:admin_result_csv_isl' year group %}" class="btn btn-default" target="_blank">CSV íslenska</a>
-			{% endif %}
 		{% endif %}
 	</div>
 </div>

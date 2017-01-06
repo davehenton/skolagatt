@@ -8,17 +8,27 @@
 	</a>
 </div>
 <div>
-	<div id="survey_list" class="table table-hover">
-		<div class="row">
-			<div class="col-md-4"><h4>Könnun</h4></div>
-			<div class="col-md-1"><h4>Aðgerðir</h4></div>
-		</div>
-		{% for survey in survey_login_list %}
-		<div class="row">
-			<div class="col-md-4"><a href="{% url 'schools:survey_login_detail_all' survey.survey_id %}">{{survey.survey_id}}</a></div>
-			<div class="col-md-1"><a href="{% url 'schools:surveylogin_delete' survey.survey_id %}"><span class="glyphicon glyphicon-trash"></span></a></div>
-		</div>
-		{% endfor %}
-	</div>
+	<table id="survey_list" class="table table-hover table-striped">
+		<thead>
+			<tr>
+				<td><h4>Könnun</h4></td>
+				<td class="col-xs-1"><h4>Aðgerðir</h4></td>
+			</tr>
+		</thead>
+		<tbody>
+			{% for survey in survey_login_list %}
+			<tr>
+				<td>
+					<a href="{% url 'schools:survey_login_detail_all' survey.survey_id %}">{{survey.survey_id}}</a>
+				</td>
+				<td>
+					<a href="{% url 'schools:surveylogin_delete' survey.survey_id %}">
+						<span class="glyphicon glyphicon-trash"></span>
+					</a>
+				</td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
 </div>
 {% endblock %}

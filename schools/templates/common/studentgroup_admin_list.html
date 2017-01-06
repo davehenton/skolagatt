@@ -3,13 +3,12 @@
 {% block content %}
 	<div class="alert-danger">{{error}}</div>
 	<div class="row">
-		<div class="col-md-3"><a href="{% url 'schools:group_admin_listing_csv' surveys.first.title %}">CSV útgáfa</a></div>
-		<div class="col-md-2"><a href="{% url 'schools:group_admin_listing_excel' surveys.first.title %}">Excel útgáfa</a></div>
-		<div class="col-md-2"><a href="{% url 'schools:group_admin_attendance_excel' surveys.first.title %}">Mætingarlisti</a></div>
+		<div class="col-md-2"><a href="{% url 'schools:group_admin_listing_excel' surveys.first.survey.title %}">Excel útgáfa</a></div>
+		<div class="col-md-2"><a href="{% url 'schools:group_admin_attendance_excel' surveys.first.survey.title %}">Mætingarlisti</a></div>
 		<div class="col-md-3">Lykill: ísl(1),ens(2),stæ(3)</div>
 	</div>
-	
 	{% for survey in surveys %}
+		{% if survey.studentgroup %}
 		<div class="row">
 			<div class="col-md-6">
 				<h3><a href="{% url 'schools:school_detail' survey.studentgroup.school.id %}">{{ survey.studentgroup.school }}</a></h3>
@@ -47,19 +46,20 @@
 							<a href="{% url 'supportandexception:exception' survey.studentgroup.school.id student.id %}" title="Undanþágur"><span class="glyphicon glyphicon-flag" style="color:#449D44"></span>&nbsp;</a>
 							{{ student.exceptions_set.first.exam }}
 						</div>
-						{% elif student.supportresource_set.all %}							
+						{% elif student.supportresource_set.all %}
 						<div class="col-md-4">
 							<a href="{% url 'supportandexception:supportresource' survey.studentgroup.school.id student.id %}" title="Stuðningsúrræði"><span class="glyphicon glyphicon-flag" style="color:#EC971F"></span>&nbsp;</a>
 							Tími: {{ student.supportresource_set.first.longer_time }} Lestur: {{ student.supportresource_set.first.reading_assistance }}
 						</div>
 						{% else %}
 						<div class="col-md-4">
-						</div>							
+						</div>
 						{% endif %}
 					</div>
 				{% endfor %}
 			</div>
 		</div>
+		{% endif %}
 	{% endfor %}
 
 {% endblock %}

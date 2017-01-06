@@ -1,36 +1,43 @@
 {% extends 'common/index.html'%}
 
 {% block content %}
-<h1>{{teacher.name}} ({{teacher.user}})</h1>
-{% if is_school_manager %}
-	<div class="row">
-		<div class="col-md-12">
-			<a href="{% url 'schools:teacher_update' school.id teacher.id %}" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span>&nbsp;Breyta</a>
-			<a href="{% url 'schools:teacher_delete' school.id teacher.id %}" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span>&nbsp;Eyða</a>
-		</div>
+<h1>
+	{{teacher.name}} <small>({{teacher.user}})</small>
+	<div class="btn-group">
+		<a href="{% url 'schools:teacher_update' school.id teacher.id %}" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-pencil"></span></a>
+		<a href="{% url 'schools:teacher_delete' school.id teacher.id %}" class="btn btn-danger btn-sm"><span class="glyphicon glyphicon-trash"></span></a>
 	</div>
-	{% for school in  teacher.school_set.all %}
-		<h3><a href="{% url 'schools:school_detail' school.id %}">{{ school }}</a></h3>
-		{% for group in school.studentgroup_set.all %}
-			{% if teacher in group.group_managers.all %}
-			<div class="row">
-				<div class="col-md-6">
-					<div class="row">
-						<div class="col-md-6">	Hópar kennara</div>
-						<div class="col-md-3">Árgangur</div>
-						<div class="col-md-3">Fjöldi í hóp</div>
-					</div>
-					<div class="row">
-						<div class="col-md-6">
-							<a href="{% url 'schools:group_detail' school.id group.id %}">{{ group }}</a>
-						</div>
-						<div class="col-md-3">{{ group.student_year }}</div>
-						<div class="col-md-3">{{ group.students.count }}</div>
-					</div>
-				</div>
+</h1>
+{% if is_school_manager %}
+	{% for school in teacher.school_set.all %}
+		<div class="row">
+			<h3 class="col-md-4 col-xs-12"><a href="{% url 'schools:school_detail' school.id %}">{{ school }}</a></h3>
+			<div class="col-md-8 col-xs-12">
+				<table class="table table-striped table-hover">
+					<thead>
+						<tr>
+							<th>Hópar kennara í skóla</th>
+							<th class="col-xs-2">Árgangur</th>
+							<th class="col-xs-2">Fjöldi í hóp</th>
+						</tr>
+					</thead>
+					<tbody>
+				{% for group in school.studentgroup_set.all %}
+					{% if teacher in group.group_managers.all %}
+						<tr>
+							<td>
+								<a href="{% url 'schools:group_detail' school.id group.id %}">{{ group }}</a>
+							</td>
+							<td>{{ group.student_year }}</td>
+							<td>{{ group.students.count }}</td>
+						</tr>
+					{% endif %}
+				{% endfor %}
+					</tbody>
+				</table>
 			</div>
-			{% endif %}
-		{% endfor %}
+		</div>
+		<hr>
 	{% endfor %}
 {% endif %}
 {% endblock %}

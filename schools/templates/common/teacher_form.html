@@ -2,12 +2,12 @@
 {% include staticfiles%}
 
 {% block content %}
+<h3>Kennari</h3>
 <form action="" method="post">
-	{% csrf_token %}
-	<ul class="form_elements">
-		{{ form.as_ul }}
-	</ul>
-	<input type="submit" value="Vista" class="btn btn-default"/>
-	<a class="btn btn-default" href="{% url 'schools:teacher_listing' school.id %}">Til baka</a>
+	{% include 'common/_generic_form.html' %}
+	<div class="btn-group">
+		<input type="submit" class="btn btn-success btn-lg" value="Vista" />
+		<a class="btn btn-default btn-lg" href="{% url 'schools:teacher_listing' school.id %}">Til baka</a>
+	</div>
 </form>
 {% endblock %}

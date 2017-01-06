@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load i18n %}
+ 
+{% block title %}Page not found{% endblock %}
+ 
+{% block content %}
+<div class="col-md-12">
+	<div class="row">
+		<div class="col-md-12 alert-danger">
+			<h4>Afsakið! Þú virðist ekki hafa aðgang til þess að skoða þessa undirsíðu (villa 401)</h4>
+			<p>Þú getur:</p>
+			<ul>
+				<li>Skráð þig inn á notanda sem hefur aðgang að þessari undirsíðu</li>
+				<li>Farið <a href="javascript:history.back()">til baka</a></li>
+				<li>Farið <a href="javascript:history.back()">til baka</a></li>
+				<li>Farið til baka á <a href="/skoli/">forsíðu Skólagáttar</a></li>
+				<li>Ef þú varst að gera eitthvað mikilvægt sem villan kom í veg fyrir að þú gætir klárað þá geturðu sent tölvupóst á <a href="mailto:skolagatt@mms.is">skolagatt@mms.is</a></li>
+			</ul>
+		</div>
+	</div>
+</div>
+{% endblock %}

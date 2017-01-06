@@ -1,17 +1,35 @@
-<h3>Bekkir og hópar</h3>
-<div>
-	<div id="survey_list" class="table table-hover">
-		<div class="row">
-			<div class="col-md-6"><h4>Nafn</h4></div>
-			<div class="col-md-3"><h4>Árgangur</h4></div>
-			<div class="col-md-3"><h4>Fjöldi í hóp</h4></div>
-		</div>
+<h3>
+	Bekkir og hópar
+	<a href="{% url 'schools:group_create' school.id %}" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></a>
+</h3>
+<table class="table table-striped table-hover">
+	<thead>
+		<tr>
+			<th class="col-md-4"><h4>Nafn</h4></th>
+			<th class="col-md-2"><h4>Ár </h4></th>
+			<th class="col-md-2"><h4>#</h4></th>
+			<th class="col-md-4"><h4>Kennarar</h4></th>
+		</tr>
+	</thead>
+	<tfoot>
+		<tr>
+			<td colspan="4">
+				
+			</td>
+		</tr>
+	</tfoot>
+	<tbody>
 		{% for group in studentgroup_list %}
-		<div class="row">
-			<div class="col-md-6"><a href="{% url 'schools:group_detail' school.id group.id %}">{{group.name}}</a></div>
-			<div class="col-md-3">{{group.student_year}}</div>
-			<div class="col-md-3">{{group.students.count}}</div>
-		</div>
+		<tr>
+			<td><a href="{% url 'schools:group_detail' school.id group.id %}">{{group.name}}</a></td>
+			<td>{{group.student_year}}</td>
+			<td>{{group.students.count}}</td>
+			<td>
+				{% for teacher in group.group_managers.all %}
+				<small><a href="{% url 'schools:teacher_detail' school.id teacher.id %}">{{ teacher.name }}</a></small>&nbsp;
+				{% endfor%}
+			</td>
+		</tr>
 		{% endfor %}
-	</div>
-</div>
+	</tbody>
+</table>

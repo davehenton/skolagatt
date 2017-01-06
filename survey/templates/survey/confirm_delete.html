@@ -1,0 +1,11 @@
+{% extends 'survey/index.html' %}
+
+{% block content %}
+
+<form id="delete_confirm" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="submit" class="btbn btn-danger btn-lg" value="Staðfesta eyðingu?" />
+	<a href="{% url 'survey:survey_list' %}" class="btn btn-default btn-lg">Hætta við</a>
+</form>
+
+{% endblock %}

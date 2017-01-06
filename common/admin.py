@@ -1,12 +1,13 @@
 from django.contrib import admin
 
-from .models import *
+import common.models as cm_models
+
 # Register your models here.
 register = admin.site.register
-register(School)
-register(Manager)
-register(Teacher)
-register(Student)
-register(StudentGroup)
-register(Survey)
-register(SurveyResult)
+register(cm_models.School)
+register(cm_models.Manager)
+register(cm_models.Teacher)
+register(cm_models.Student)
+register(cm_models.StudentGroup)
+register(cm_models.GroupSurvey)
+register(cm_models.SurveyResult)

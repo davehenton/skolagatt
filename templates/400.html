@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% load i18n %}
+ 
+{% block title %}Page not found{% endblock %}
+ 
+{% block content %}
+<div class="col-md-12">
+	<div class="row">
+		<div class="col-md-12 alert-danger">
+			<h4>Afsakið! Tæknileg villa hefur komið upp (400)</h4>
+			<p>Villan kom í veg fyrir að við gætum birt þessa síðu. </p>
+			<p>Þú getur:</p>
+			<ul>
+				<li>Farið <a href="javascript:history.back()">til baka</a></li>
+				<li>Farið til baka á <a href="/skoli/">forsíðu Skólagáttar</a></li>
+				<li>Ef þú varst að gera eitthvað mikilvægt sem villan kom í veg fyrir að þú gætir klárað þá geturðu sent tölvupóst á <a href="mailto:skolagatt@mms.is">skolagatt@mms.is</a></li>
+			</ul>
+		</div>
+	</div>
+</div>
+{% endblock %}

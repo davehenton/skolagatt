@@ -1,17 +1,23 @@
-    $(function() {
-        /** This code runs when everything has been loaded on the page */
-        /* Inline sparklines take their values from the contents of the tag */
-        $('.inlinesparkline').sparkline(); 
+$(function() {
+    /** This code runs when everything has been loaded on the page */
+    /* Inline sparklines take their values from the contents of the tag */
+    $('.inlinesparkline').sparkline(); 
 
-        /* Sparklines can also take their values from the first argument 
-        passed to the sparkline() function */
-        var myvalues = [10,8,5,7,4,4,1];
-        $('.dynamicsparkline').sparkline(myvalues);
+    /* Sparklines can also take their values from the first argument 
+    passed to the sparkline() function */
+    var myvalues = [10,8,5,7,4,4,1];
+    $('.dynamicsparkline').sparkline(myvalues);
 
-        /* The second argument gives options such as chart type */
-        $('.dynamicbar').sparkline(myvalues, {type: 'bar', barColor: 'green'} );
+    /* The second argument gives options such as chart type */
+    $('.dynamicbar').sparkline(myvalues, {type: 'bar', barColor: 'green'} );
 
-        /* Use 'html' instead of an array of values to pass options 
-        to a sparkline with data in the tag */
-        $('.inlinebar').sparkline('html', {type: 'bar', barColor: 'red'} );
+    /* Use 'html' instead of an array of values to pass options 
+    to a sparkline with data in the tag */
+    $('.inlinebar').sparkline('html', {type: 'bar', barColor: 'red'} );
+});
+$(function() {
+    // markdown format content of each md classed element
+    $( ".md" ).each(function( index ) {
+        $( this ).html(marked( $( this ).html() ));
     });
+});

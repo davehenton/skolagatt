@@ -1,0 +1,35 @@
+{% extends 'survey/index.html'%}
+{% include staticfiles%}
+
+{% block content %}
+<div class="row">
+	<div class="col-md-6 md_form">
+		<form id="surveygradingtemplate_form" action="" method="post">
+			{% csrf_token %}
+			{% include 'survey/_generic_form.html' %}
+			<input type="submit" value="Save" class="btn btn-lg btn-success" />
+		</form>
+	</div>
+	<div class="col-md-6" id="markdown_container">
+		<h3 id="title"></h3>
+		<div id="preview">
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+{% block script %}
+	<script>
+		function update_preview() {
+			//update preview
+			var title = $('#id_title').val();
+			var md = $('#id_md').val();
+			$("#title").html(title);
+			$("#preview").html(marked(md));
+		}
+		update_preview();
+		$('.md_form').on('keyup', function(event){
+			update_preview();
+		})
+	</script>
+{% endblock %}

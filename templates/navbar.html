@@ -1,8 +1,8 @@
 {% load staticfiles %}
 {% load common_helpers %}
 
-<nav class="navbar navbar-default navbar-static-top" role="navigation">
-	<div class="container-fluid">
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+	<div class="container">
 		<div class="navbar-header">
 			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
 				<span class="sr-only">Toggle navigation</span>
@@ -10,61 +10,75 @@
 				<span class="icon-bar"></span>
 				<span class="icon-bar"></span>
 			</button>
-			<a class="navbar-brand" href="{% url 'schools:school_listing' %}">
-				<span><img src="{% static 'img/logo.png'%}" /></span>
-				<span>Skólagátt</span>
-			</a>
+			<a class="navbar-brand" href="{% url 'schools:school_listing' %}">Skólagátt</a>
 		</div>
-		<div id="navbar" class="navbar-collapse collapse">
+		<div id="navbar" class="navbar-collapse collapse" aria-expanded="false" style="height: 1px;">
 			<ul class="nav navbar-nav">
 				<li class="dropdown">
 					{% get_user_schools %}
 				</li>
 				{% if school.id %}
-				<li><a href="{% url 'schools:manager_listing' school.id %}">Skólastjórnendur</a></li>
-				<li><a href="{% url 'schools:teacher_listing' school.id %}">Kennarar</a></li>
-				<li><a href="{% url 'schools:group_listing' school.id %}">Bekkir</a></li>
-				<li><a href="{% url 'schools:student_listing' school.id %}">Nemendur</a></li>
-				{% if  is_school_manager %}
-				<li class="dropdown">
-					<a class="dropdown-toggle" data-toggle="dropdown" href="#">Samræmd könnunarpróf
-        				<span class="caret"></span>
-        			</a>
-        			<ul class="dropdown-menu">
-						<li><a href="{% url 'supportandexception:examsupport' school.id %}">Stuðningsúrræði</a></li>
-						{% if is_school_manager %}
-						<li><a href="{% url 'schools:survey_login_listing' school.id %}">Prófkóðar</a></li>
-						<li><a href="{% url 'samraemd:result_list' school.id %}">Niðurstöður</a></li>
-						{% endif %}
-					</ul>
-				</li>
-				{% endif %}
-				<li><a href="{% url 'schools:lesferill' school.id %}">Lesferill</a></li>
-				{% elif user.is_superuser %}
 					<li class="dropdown">
-						<a class="dropdown-toggle" data-toggle="dropdown" href="#">
-							<span class="glyphicon glyphicon-lock"></span>
-							Umsjónarmenn
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Aðilar skóla
 	        				<span class="caret"></span>
 	        			</a>
 	        			<ul class="dropdown-menu">
-							<li><a href="{% url 'schools:survey_login_admin_listing' %}">&nbsp;Prófkóðar fyrir samræmd próf</a></li>
-							<li><a href="{% url 'samraemd:math_admin_listing' %}">&nbsp;Samræmd próf í stærðfræði</a></li>
-							<li><a href="{% url 'samraemd:isl_admin_listing' %}">&nbsp;Samræmd próf í íslensku</a></li>
-							<li><a href="{% url 'schools:survey_admin_listing' %}">&nbsp;Próf</a></li>
-							<li><a href="{% url 'schools:admin_listing' %}">&nbsp;Skoða umsjónarmenn</a></li>
+							<li><a href="{% url 'schools:manager_listing' school.id %}">Skólastjórnendur</a></li>
+							<li><a href="{% url 'schools:teacher_listing' school.id %}">Kennarar</a></li>
+						</ul>
+					</li>
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Nemendur
+	        				<span class="caret"></span>
+	        			</a>
+	        			<ul class="dropdown-menu">
+							<li><a href="{% url 'schools:group_listing' school.id %}">Bekkir</a></li>
+							<li><a href="{% url 'schools:student_listing' school.id %}">Nemendur</a></li>
 						</ul>
 					</li>
 				{% endif %}
-			</ul>
-			<ul class="nav navbar-nav navbar-right">
-				<li><a href="mailto:skolagatt@mms.is" class="btn btn-info"><span class="glyphicon glyphicon-envelope"></span>&nbsp;Hafðu samband</a></li>
+				{% if is_school_manager %}
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Próf
+	        				<span class="caret"></span>
+	        			</a>
+	        			<ul class="dropdown-menu">
+	        				{% if school.id %}
+								<li><a href="{% url 'supportandexception:examsupport' school.id %}">Stuðningsúrræði</a></li>
+								{% if is_school_manager %}
+									<li><a href="{% url 'schools:survey_login_listing' school.id %}">Prófkóðar</a></li>
+									<li><a href="{% url 'samraemd:result_list' school.id %}">Niðurstöður</a></li>
+								{% endif %}
+							{% endif %}
+							{% if user.is_superuser %}
+								<hr>
+								<li><a href="{% url 'survey:survey_list' %}">Prófagrunnur</a></li>
+								<li><a href="{% url 'schools:survey_login_admin_listing' %}">Prófkóðar fyrir samræmd próf</a></li>
+								<li><a href="{% url 'samraemd:math_admin_listing' %}">Samræmd próf í stærðfræði</a></li>
+								<li><a href="{% url 'samraemd:isl_admin_listing' %}">Samræmd próf í íslensku</a></li>
+								<li><a href="{% url 'schools:survey_admin_listing' %}">Öll próf</a></li>
+							{% endif %}
+						</ul>
+					</li>
+				{% endif %}
+				<li class="hidden-sm"><a href="{% url 'schools:lesferill' %}">Lesferill</a></li>
+				</ul>
+				<ul class="nav navbar-nav navbar-right">
 				{% if user.is_authenticated %}
-					<li>
-						<a href="{% url 'auth_logout' %}" class="btn btn-sm btn-danger">
-							<span class="glyphicon glyphicon-user"></span>&nbsp;{{user.username}}
-							<span class="glyphicon glyphicon-log-out"></span>
-						</a>
+					<li class="dropdown bg-logout">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+							<span class="caret"></span>
+							<span class="glyphicon glyphicon-user"></span>
+	        			</a>
+	        			<ul class="dropdown-menu">
+	        				{% if user.is_superuser %}
+	        					<li><a href="{% url 'schools:admin_listing' %}">&nbsp;Skoða umsjónarmenn</a></li>
+	        				{% endif %}
+							<li>
+								<a>&nbsp;{{user.username}}</a>
+							</li>
+							<li><a href="{% url 'auth_logout' %}" class="text-warning">&nbsp;Útskrá</a></li>
+						</ul>
 					</li>
 				{% else %}
 					<li>

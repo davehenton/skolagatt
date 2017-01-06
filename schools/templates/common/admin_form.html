@@ -3,10 +3,7 @@
 
 {% block content %}
 <form action="" method="post">
-	{% csrf_token %}
-	<ul class="form_elements">
-		{{ form.as_ul }}
-	</ul>
-	<input type="submit" value="Vista" class="btn btn-default"/>
+	{% include 'common/_generic_form.html' %}
+	<input type="submit" value="Vista" class="btn btn-success btn-lg"/>
 </form>
 {% endblock %}
