@@ -1,6 +1,7 @@
 from django                     import forms
 from django.forms.widgets       import SelectDateWidget
 from django.utils.translation   import ugettext_lazy as _
+from django.utils               import timezone
 
 from . import models
 
@@ -33,6 +34,7 @@ class SurveyForm(forms.ModelForm):
         }
         self.fields['active_from'].widget = SelectDateWidget(
             empty_label=("Ár", "Mánuður", "Dagur"),
+            years = range(2016, timezone.now().year + 10),
             months=MONTHS,
             attrs={
                 'class': 'required form-control',
@@ -40,6 +42,7 @@ class SurveyForm(forms.ModelForm):
             })
         self.fields['active_to'].widget = SelectDateWidget(
             empty_label=("Ár", "Mánuður", "Dagur"),
+            years = range(2016, timezone.now().year + 10),
             months=MONTHS,
             attrs={
                 'class': 'required form-control',
