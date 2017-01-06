@@ -2,67 +2,87 @@
 
 {% block content %}
 <div>
-	<div class="btn-group" role="group">
-		<a href="{% url 'schools:student_create' school.id %}" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-			<span class="caret"></span>&nbsp;Bæta við nemendum
-		</a>
-		<ul class="dropdown-menu">
-			<li>
-				<a href="{% url 'schools:student_create' school.id %}">
-					<span class="glyphicon glyphicon-plus"></span>&nbsp;Bæta við einum
-				</a>
-			</li>
-			<li>
-				<a href="{% url 'schools:student_create_import' school.id %}">
-					<span class="glyphicon glyphicon-plus"></span>&nbsp;Bæta við mörgum
-				</a>
-			</li>
-		</ul>
-	</div>
 	<div class="row">
-		<div id="student_list" class="col-md-6">
-			<h3>Nemendur</h3>
-			<div class="row">
-				<div class="col-md-3"><h4>Kennitala</h4></div>
-				<div class="col-md-5"><h4>Nafn</h4></div>
-				<div class="col-md-2"><h4>Stuðningur</h4></div>
-				{% if is_school_manager %}
-				<div class="col-md-2"><h4>Aðgerðir</h4></div>
-				{% endif %}
-			</div>
-			{% for student in students %}
-			<div class="row">
-				<div class="col-md-3"><a href="{% url 'schools:student_detail' school.id student.id %}">{{student.ssn}}</a></div>
-				<div class="col-md-5"><a href="{% url 'schools:student_detail' school.id student.id %}">{{student.name}}</a></div>
-				<div class="col-md-2">
-					{% if student.exceptions_set.first %}
-					<a href="{% url 'supportandexception:exception' school.id student.id %}" title="Undanþágur"><span class="glyphicon glyphicon-flag" style="color:#449D44"></span>&nbsp;</a>
-					{% endif %}
-					{% if student.supportresource_set.first %}
-					<a href="{% url 'supportandexception:supportresource' school.id student.id %}" title="Stuðningsúrræði"><span class="glyphicon glyphicon-flag" style="color:#EC971F"></span>&nbsp;</a>
-					{% endif %}
+		<div id="student_list" class="col-md-8">
+			<h3>
+				Allir nemendur &nbsp;
+				<div class="btn-group" role="group">
+					<a href="{% url 'schools:student_create' school.id %}" type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						<span class="glyphicon glyphicon-plus"></span>
+					</a>
+					<ul class="dropdown-menu">
+						<li>
+							<a href="{% url 'schools:student_create' school.id %}">
+								<span class="glyphicon glyphicon-plus"></span>&nbsp;Bæta við einum
+							</a>
+						</li>
+						<li>
+							<a href="{% url 'schools:student_create_import' school.id %}">
+								<span class="glyphicon glyphicon-plus"></span>&nbsp;Bæta við mörgum
+							</a>
+						</li>
+					</ul>
 				</div>
-				{% if is_school_manager %}
-				<div class="col-md-2">
-					<a href="{% url 'schools:student_update' school.id student.id %}" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
-					<a href="{% url 'schools:student_delete' school.id student.id %}" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-trash"></span></a>
-				</div>
-				{% endif %}
-			</div>
-			{% endfor %}
+			</h3>
+			<table class="table table-striped table-hover">
+				<thead>
+					<tr>
+						<th><h4>Kennitala</h4></th>
+						<th><h4>Nafn</h4></th>
+						<th><h4>Stuðningur</h4></th>
+						{% if is_school_manager %}
+						<td class="col-xs-1"><h4>Aðgerðir</h4></td>
+						{% endif %}
+					</tr>
+				</thead>
+				<tbody>
+					{% for student in students %}
+					<tr>
+						<td><a href="{% url 'schools:student_detail' school.id student.id %}">{{student.ssn}}</a></td>
+						<td><a href="{% url 'schools:student_detail' school.id student.id %}">{{student.name}}</a></td>
+						<td>
+							{% if student.exceptions_set.first %}
+							<a href="{% url 'supportandexception:exception' school.id student.id %}" title="Undanþágur"><span class="glyphicon glyphicon-flag" style="color:#449D44"></span>&nbsp;</a>
+							{% endif %}
+							{% if student.supportresource_set.first %}
+							<a href="{% url 'supportandexception:supportresource' school.id student.id %}" title="Stuðningsúrræði"><span class="glyphicon glyphicon-flag" style="color:#EC971F"></span>&nbsp;</a>
+							{% endif %}
+						</td>
+						{% if is_school_manager %}
+						<td>
+							<div class="btn-group">
+								<a href="{% url 'schools:student_update' school.id student.id %}" class="btn btn-default btn-xs">
+									<span class="glyphicon glyphicon-pencil"></span>
+								</a>
+								<a href="{% url 'schools:student_delete' school.id student.id %}" class="btn btn-danger btn-xs">
+									<span class="glyphicon glyphicon-trash"></span>
+								</a>
+							</div>
+						</td>
+						{% endif %}
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
 		</div>
-		<div id="student_list" class="col-md-6">
+		<div id="other_student_list" class="col-md-4">
 			<h3>Nemendur utan hópa</h3>
-			<div class="row">
-				<div class="col-md-3"><h4>Kennitala</h4></div>
-				<div class="col-md-6"><h4>Nafn</h4></div>
-			</div>
-			{% for student in students_outside_groups %}
-			<div class="row">
-				<div class="col-md-3"><a href="{% url 'schools:student_detail' school.id student.id %}">{{student.ssn}}</a></div>
-				<div class="col-md-6"><a href="{% url 'schools:student_detail' school.id student.id %}">{{student.name}}</a></div>
-			</div>
-			{% endfor %}
+			<table class="table table-hover table-striped">
+				<thead>
+					<tr>
+						<th><h4>Kennitala</h4></th>
+						<th><h4>Nafn</h4></th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for student in students_outside_groups %}
+					<tr>
+						<td><a href="{% url 'schools:student_detail' school.id student.id %}">{{student.ssn}}</a></td>
+						<td><a href="{% url 'schools:student_detail' school.id student.id %}">{{student.name}}</a></td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
 		</div>
 	</div>
 </div>

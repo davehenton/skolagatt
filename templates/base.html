@@ -4,11 +4,13 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Skólagátt</title>
 
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
-    <link href="{% static 'css/navbar-static-top.css' %}" rel="stylesheet">
-    <link href="{% static 'css/bootstrap.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link href="{% static 'css/main.css' %}" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,700" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Merriweather" rel="stylesheet" type="text/css">
 	{% block stylesheet %}
 	{% endblock %}
 	<script>
@@ -16,25 +18,26 @@
 		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
 		m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 		})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-		 
+
 		ga('create', 'UA-86658984-1', 'auto');
 		ga('send', 'pageview');
-	 
 	</script>
   </head>
 
   <body>
-	{% include 'navbar.html' %}
-	<div class="container">
-		{% block content %}
-		{% endblock %}
-	</div>
+  	<div class="wrapper">
+  		{% include 'navbar.html' %}
+		<div class="container main">
+			{% block content %}
+			{% endblock %}
+		</div>
+		{% include 'footer.html' %}
+  	</div>
 
 	{% include 'javascript.html' %}
 	<script src='{% static "marked/lib/marked.js" %}'></script>
 	<script src='{% static "sparkline/jquery.sparkline.min.js" %}'></script>
 	{% block script %}
 	{% endblock %}
-
   </body>
 </html>

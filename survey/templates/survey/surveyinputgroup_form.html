@@ -1,0 +1,14 @@
+{% extends 'survey/index.html'%}
+{% include staticfiles%}
+
+{% block content %}
+<form id="survey_input_group_form" action="" method="post">
+	{% csrf_token %}
+	{% include 'survey/_generic_form.html' %}
+	<div class="form-group form-group-lg has-feedback">
+		<label for="inputs">Fjöldi innsláttarsvæða</label>
+		<input type="number" name="inputs" class="form-control" />
+	</div>
+	<input type="submit" value="Save" class="btn btn-lg btn-success" />
+</form>
+{% endblock %}

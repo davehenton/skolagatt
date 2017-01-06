@@ -1,0 +1,10 @@
+{% extends 'survey/index.html'%}
+{% include staticfiles%}
+
+{% block content %}
+<form id="survey_form" action="" method="post">
+	{% csrf_token %}
+	{% include 'survey/_generic_form.html' %}
+	<input type="submit" value="Save" class="btn btn-lg btn-success" />
+</form>
+{% endblock %}

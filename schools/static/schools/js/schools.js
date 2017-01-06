@@ -1,7 +1,7 @@
 
 jQuery.fn.filterByText = function(textbox, selectSingleMatch, year) {
 	return this.each(function() {
-		var select = this;
+		var select  = this;
 		var options = [];
 		$(select).find('option').each(function() {
 			options.push({value: $(this).val(), text: $(this).text()});
@@ -9,12 +9,11 @@ jQuery.fn.filterByText = function(textbox, selectSingleMatch, year) {
 		$(select).data('options', options);
 		$(textbox).bind('change keyup', function() {
 			var options = $(select).empty().scrollTop(0).data('options');
-			var search = $.trim($(this).val());
-			var regex = new RegExp(search,'gi');
-	 
+			var search  = $.trim($(this).val());
+			var regex   = new RegExp(search,'gi');
 			$.each(options, function(i) {
 				var option = options[i];
-				data = option.text;
+				data       = option.text;
 				if(year)
 				{
 					data = data.substring(4,6);
@@ -53,17 +52,17 @@ $(function() {
 //Create notification
 $(document.body).on('click', 'a[data-query="message"]', function(){ 
 	var data = {
-		id: $(this).attr("data-target").split('-')[1],
+		id               : $(this).attr("data-target").split('-')[1],
 		notification_type: 'message'
 	}
 	console.log(data);
 	$.ajax({
-	    url: $(this).attr("data-url"),
-	    type: "POST",
-	    data: data,
-	    success:function(response){},
-	    complete:function(){},
-	    error:function (xhr, textStatus, thrownError){
+		url     : $(this).attr("data-url"),
+		type    : "POST",
+		data    : data,
+		success :function(response){},
+		complete:function(){},
+		error   :function (xhr, textStatus, thrownError){
 	        console.log("error doing something");
 	    }
 	});	
@@ -73,18 +72,13 @@ $(document).ready(function() {
 	$(document.body).on('click', '#message-header', function(){ 
 		var details = $(this).nextUntil('#message-header').toggle();
 	});
-	
 
-	$("#notes").on('click',function(){
+	$("#notes, #notes2").on('click',function(){
 		if($('#textareaid').is(":visible"))
 		{
-			var r = confirm("Viltu vista skilaboðin?");
-			if (r == true) {
-
-				$.post("notes_save/",{notes: $("#textareaid").val(), 'csrfmiddlewaretoken': $('input[name="csrfmiddlewaretoken"]').attr("value")},function(result){
-					$('div#notesshow').text($("#textareaid").val());
-				});
-			}
+			$.post("notes_save/",{notes: $("#textareaid").val(), 'csrfmiddlewaretoken': $('input[name="csrfmiddlewaretoken"]').attr("value")},function(result){
+				$('p#notesshow').text($("#textareaid").val());
+			});
 		}
     	$('#notesshow').toggle();
     	$('#textareashow').toggle();
@@ -178,8 +172,8 @@ $( document ).on("change", "#survey_select", function(){
 $(function() {
 	try {
 		//add survey select
-		var select = $("<select id=\"survey_select\" name=\"survey_select\" />");
-		var options= '<option value="">Velja próf</option>';
+		var select  = $("<select id=\"survey_select\" name=\"survey_select\" />");
+		var options = '<option value="">Velja próf</option>';
 		$.each(survey_list, function(key, value){
 			options += '<option value=' + value['pk'] + '>' + value['title'] + ' - ' + value['active_to'] + '</option>';
 		});
