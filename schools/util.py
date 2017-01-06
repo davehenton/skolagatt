@@ -1,3 +1,5 @@
+from kennitala import Kennitala
+
 
 def aldursbil(kennitala):
     '''Takes kennitala, returns aldursbil (age level)'''
@@ -5,7 +7,8 @@ def aldursbil(kennitala):
     # where DD is date, MM month, YY year, rest we don't care about.
     # OUTPUT: aldursbil. "bil 1", "bil 2", "bil 3"
     # where bil 1 means was born in jan-may, 2 means apr-aug, 3 means sep-dec.
-    if not is_kennitala_valid(kennitala):
+    kt = Kennitala(kennitala)
+    if not kt.validate():
         # we have an error
         return "villa"
     else:
