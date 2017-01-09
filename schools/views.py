@@ -1691,3 +1691,48 @@ def group_admin_attendance_excel(request, survey_title):
     wb.save(response)
 
     return response
+
+
+def survey_detail_excel(request, school_id, student_group, pk):
+        school = School.objects.get(pk=school_id)
+        studentgroup = StudentGroup.objects.get(pk=student_group)
+        survey = GroupSurvey.objects.filter(pk=pk).first()
+
+        response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        response['Content-Disposition'] = 'attachment; filename=niðurstöður.xlsx'
+        wb = openpyxl.Workbook()
+        ws = wb.get_active_sheet()
+
+        identifier = survey.survey.identifier
+
+        if identifier.startswith('01b_LTL_'):
+            ws.title = 'Lesskimun fyrir fyrsta bekk'
+
+            ws['A1'] = 'Kennitala'
+            ws['B1'] = 'Nafn'
+            ws['C1'] = 'Hljóð'
+            ws['D1'] = 'Mál'
+            ws['E1'] = 'Stafir'
+
+            index = 2
+            if studentgroup:
+                for student in studentgroup.students.all():
+                    sr = SurveyResult.objects.filter(student=student, survey=survey)
+                    if sr:
+                        r = literal_eval(sr.first().results)  # get student results
+                        survey_student_result = common_util.calc_survey_results(
+                            identifier,
+                            [],
+                            r['input_values'],
+                            student
+                        )
+                        ws.cell('A' + str(index)).value = student.ssn
+                        ws.cell('B' + str(index)).value = student.name
+                        ws.cell('C' + str(index)).value = survey_student_result[0]
+                        ws.cell('D' + str(index)).value = survey_student_result[1]
+                        ws.cell('E' + str(index)).value = survey_student_result[2]
+                        index += 1
+
+        wb.save(response)
+
+        return response
