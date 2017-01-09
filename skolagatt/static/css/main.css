@@ -73,6 +73,9 @@ div.footer hr {
 div.footer strong {
 	color: #fff;
 }
+#grading_template span:hover {
+	cursor: pointer;
+}
 
 @media (min-width: 768px) {
 	.navbar-nav>li>a {
