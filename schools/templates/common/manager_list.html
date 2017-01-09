@@ -2,7 +2,7 @@
 
 {% block content %}
 <h3>Skólastjórnendur</h3>
-<div class="col-md-8 col-sm-12">
+<div class="col-sm-12">
 	<a href="{% url 'schools:manager_create' school.id %}" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span>Bæta við skólastjórnanda</a>
 	<table id="manager_list" class="table table-hover">
 		<thead>
@@ -18,7 +18,7 @@
 				<td><a href="{% url 'schools:manager_detail' school.id manager.id %}">{{manager.name}}</a></td>
 				<td>{{manager.position}}</td>
 				<td>
-					<div class="btn-group">
+					<div class="btn-group pull-right">
 						<a href="{% url 'schools:manager_update' school.id manager.id %}" class="btn btn-xs">
 							<span class="glyphicon glyphicon-pencil"></span>
 						</a>
@@ -32,4 +32,9 @@
 		</tbody>
 	</table>
 </div>
+{% endblock %}
+{% block script %}
+<script type="text/javascript">
+	datafy_table('#manager_list');
+</script>
 {% endblock %}
