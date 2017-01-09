@@ -11,7 +11,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '9g!57u34sefgiuay(d7bj4s5@#oaqybj8)sts63pjyi39l@ihd'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['localhost', 'skolagatt.is']
 
@@ -141,9 +141,5 @@ STATICFILES_DIRS = (
 
 JSON_API_KEY = 'some-random-string'
 
-PROFAGRUNNUR_URL = 'http://localhost:8080/api?format=json'
-PROFAGRUNNUR_JSON_KEY = 'some-random-string'
-ICEKEY_VERIFICATION = ''
-ICEKEY_LOGIN = ''
-INNRI_SKILABOD_URL = 'http://localhost:8088/innri_vefur/skilabod/api?format=json'
-INNRI_SKILABOD_JSON_KEY = 'some-random-string'
+ICEKEY_VERIFICATION = 'https://innskraning.mms.is/verify_login/'
+ICEKEY_LOGIN = 'https://innskraning.mms.is/island_innskraning'
