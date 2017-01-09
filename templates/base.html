@@ -35,7 +35,6 @@
 		{% include 'footer.html' %}
   	</div>
 
-	{% include 'javascript.html' %}
 	<script src='{% static "marked/lib/marked.js" %}'></script>
 	<script src='{% static "sparkline/jquery.sparkline.min.js" %}'></script>
 	<script>
@@ -45,8 +44,8 @@
                 "pageLength": 20,
 		    	"language": {
 				    "sEmptyTable":     "Engin gögn eru í þessari töflu",
-				    "sInfo":           "Sýni _START_ til _END_ af _TOTAL_ færslum",
-				    "sInfoEmpty":      "Sýni 0 til 0 af 0 færslum",
+				    "sInfo":           '',
+				    "sInfoEmpty":      "0 færslur",
 				    "sInfoFiltered":   "(síað út frá _MAX_ færslum)",
 				    "sInfoPostFix":    "",
 				    "sInfoThousands":  ".",
@@ -69,6 +68,7 @@
 		    });
 		});
 	</script>
+	{% include 'javascript.html' %}
 	{% block script %}
 	{% endblock %}
   </body>
