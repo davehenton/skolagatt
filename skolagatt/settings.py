@@ -11,7 +11,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '9g!57u34sefgiuay(d7bj4s5@#oaqybj8)sts63pjyi39l@ihd'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['localhost', 'skolagatt.is']
 
@@ -71,14 +71,14 @@ WSGI_APPLICATION = 'skolagatt.wsgi.application'
 
 DATABASES = {
     'default': {
-        # 'ENGINE': 'django.db.backends.sqlite3',
-        # 'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-        'ENGINE'   : 'django.db.backends.postgresql_psycopg2',
-        'NAME'     : 'skolagatt',
-        'USER'     : 'user',  # Postgres user that has all privileges for the skolagatt DB
-        'PASSWORD' : 'password',  # Password for Postgres user
-        'HOST'     : 'localhost',  # Address of postgres server, defaults to localhost (for dev)
-        'PORT'     : '5432',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        # 'ENGINE'   : 'django.db.backends.postgresql_psycopg2',
+        # 'NAME'     : 'skolagatt',
+        # 'USER'     : 'user',  # Postgres user that has all privileges for the skolagatt DB
+        # 'PASSWORD' : 'password',  # Password for Postgres user
+        # 'HOST'     : 'localhost',  # Address of postgres server, defaults to localhost (for dev)
+        # 'PORT'     : '5432',
     }
 }
 
