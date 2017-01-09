@@ -26,7 +26,10 @@ from common.models import (
 )
 import common.util   as common_util
 import common.forms  as cm_forms
-from survey.models import Survey, SurveyGradingTemplate, SurveyInputField, SurveyInputGroup
+from survey.models import (
+    Survey, SurveyGradingTemplate, SurveyInputField,
+    SurveyInputGroup, SurveyResource
+)
 
 import supportandexception.models as sae_models
 
@@ -1113,9 +1116,11 @@ class SurveyDetail(common_mixins.SchoolEmployeeMixin, DetailView):
     def get_context_data(self, **kwargs):
         # xxx will be available in the template as the related objects
         context = super(SurveyDetail, self).get_context_data(**kwargs)
-        context['survey_details'] = Survey.objects.filter(pk=self.object.survey.id)[0]
-        context['school']   = School.objects.get(pk=self.kwargs['school_id'])
-        context['studentgroup'] = StudentGroup.objects.get(pk=self.kwargs['student_group'])
+        survey = Survey.objects.filter(pk=self.object.survey.id)[0]
+        context['survey_details']   = survey
+        context['survey_resources'] = SurveyResource.objects.filter(survey=survey)
+        context['school']           = School.objects.get(pk=self.kwargs['school_id'])
+        context['studentgroup']     = StudentGroup.objects.get(pk=self.kwargs['student_group'])
         try:
             context['students'] = self.object.studentgroup.students.all()
             context['expired']  = True if self.object.survey.active_to < date.today() else False
