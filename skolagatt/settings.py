@@ -1,4 +1,5 @@
 import os
+from . import production_settings
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -8,10 +9,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '9g!57u34sefgiuay(d7bj4s5@#oaqybj8)sts63pjyi39l@ihd'
+SECRET_KEY = production_settings.SECRET_KEY
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = production_settings.DEBUG
 
 ALLOWED_HOSTS = ['localhost', 'skolagatt.is']
 
@@ -68,19 +69,7 @@ WSGI_APPLICATION = 'skolagatt.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.9/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-        # 'ENGINE'   : 'django.db.backends.postgresql_psycopg2',
-        # 'NAME'     : 'skolagatt',
-        # 'USER'     : 'user',  # Postgres user that has all privileges for the skolagatt DB
-        # 'PASSWORD' : 'password',  # Password for Postgres user
-        # 'HOST'     : 'localhost',  # Address of postgres server, defaults to localhost (for dev)
-        # 'PORT'     : '5432',
-    }
-}
+DATABASES = production_settings.DATABASES
 
 
 AUTHENTICATION_BACKENDS = [
