@@ -1717,6 +1717,8 @@ def survey_detail_excel(request, school_id, student_group, pk):
             index = 2
             if studentgroup:
                 for student in studentgroup.students.all():
+                    ws.cell('A' + str(index)).value = student.ssn
+                    ws.cell('B' + str(index)).value = student.name
                     sr = SurveyResult.objects.filter(student=student, survey=survey)
                     if sr:
                         r = literal_eval(sr.first().results)  # get student results
@@ -1726,12 +1728,14 @@ def survey_detail_excel(request, school_id, student_group, pk):
                             r['input_values'],
                             student
                         )
-                        ws.cell('A' + str(index)).value = student.ssn
-                        ws.cell('B' + str(index)).value = student.name
                         ws.cell('C' + str(index)).value = survey_student_result[0]
                         ws.cell('D' + str(index)).value = survey_student_result[1]
                         ws.cell('E' + str(index)).value = survey_student_result[2]
-                        index += 1
+                    else:
+                        ws.cell('C' + str(index)).value = 'Vantar gögn'
+                        ws.cell('D' + str(index)).value = 'Vantar gögn'
+                        ws.cell('E' + str(index)).value = 'Vantar gögn'
+                    index += 1
 
         wb.save(response)
 
