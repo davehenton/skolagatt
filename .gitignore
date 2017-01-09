@@ -4,6 +4,7 @@
 /lib64
 /share
 /env
+/venv
 /public
 */migrations/
 db.sqlite3
