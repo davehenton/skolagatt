@@ -55,6 +55,11 @@
 			</ul>
 		</div>
 	</div>
+	{% if '01b_LTL_' in groupsurvey.survey.identifier %}
+	<div class="row">
+		<a href="{% url 'schools:survey_detail_excel' school.id studentgroup.id groupsurvey.id %}">Sækja Excel</a>
+	</div>
+	{% endif %}
 	<div class="row">
 		<div class="col-xs-12">
 			<h3>Nemendur</h3>
