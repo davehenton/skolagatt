@@ -7,8 +7,8 @@
 		<span class="glyphicon glyphicon-plus"></span>
 	</a>
 </h3>
-<div class="col-md-8">
-	<table id="teacher_list" class="table table-striped table-hover">
+<div class="col-md-12">
+	<table id="studentgroup_list" class="table table-striped table-hover">
 		<thead class="row">
 			<tr>
 				<th><h4>Nafn</h4></th>
@@ -46,4 +46,9 @@
 		</tbody>
 	</table>
 </div>
+{% endblock %}
+{% block script %}
+<script type="text/javascript">
+	datafy_table('#studentgroup_list');
+</script>
 {% endblock %}
