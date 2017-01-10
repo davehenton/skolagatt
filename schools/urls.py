@@ -89,6 +89,9 @@ urlpatterns = [
     url(r'^(?P<school_id>\d+)/bekkur/(?P<student_group>\d+)/próf/(?P<pk>\d+)/delete/$',
         views.SurveyDelete.as_view(),
         name='survey_delete'),
+    url(r'^(?P<school_id>\d+)/bekkur/(?P<student_group>\d+)/próf/(?P<pk>\d+)/excel/$',
+        views.survey_detail_excel,
+        name='survey_detail_excel'),
 
     url(r'^(?P<school_id>\d+)/nemandi/(?P<student_id>\d+)/próf/(?P<survey_id>\d+)/niðurstöður/create/$',
         views.SurveyResultCreate.as_view(),
