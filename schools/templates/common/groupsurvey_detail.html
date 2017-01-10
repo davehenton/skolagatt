@@ -42,9 +42,9 @@
 			<div class="md">{{ survey_details.description }}</div>
 		</div>
 		<div class="col-md-6 md-display">
-			<h3>Ítargögn</h3>
+			<h3>Nánari upplýsingar</h3>
 			<ul class="survey_resources">
-			{% for resource in survey_details.resources %}
+			{% for resource in survey_resources %}
 				<li>
 					<div>
 						<h4><a href="{{resource.resource_url}}">{{resource.title}}</a></h4>

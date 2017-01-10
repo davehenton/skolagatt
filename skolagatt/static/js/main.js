@@ -1,23 +1,35 @@
 $(function() {
-    /** This code runs when everything has been loaded on the page */
-    /* Inline sparklines take their values from the contents of the tag */
-    $('.inlinesparkline').sparkline(); 
-
-    /* Sparklines can also take their values from the first argument 
-    passed to the sparkline() function */
-    var myvalues = [10,8,5,7,4,4,1];
-    $('.dynamicsparkline').sparkline(myvalues);
-
-    /* The second argument gives options such as chart type */
-    $('.dynamicbar').sparkline(myvalues, {type: 'bar', barColor: 'green'} );
-
-    /* Use 'html' instead of an array of values to pass options 
-    to a sparkline with data in the tag */
-    $('.inlinebar').sparkline('html', {type: 'bar', barColor: 'red'} );
-});
-$(function() {
     // markdown format content of each md classed element
     $( ".md" ).each(function( index ) {
         $( this ).html(marked( $( this ).html() ));
     });
 });
+var datafy_table = function(table) {
+	$(table).DataTable({
+		"bLengthChange": false,
+	    "pageLength": 20,
+		"language": {
+		    "sEmptyTable":     "Engin gögn eru í þessari töflu",
+		    "sInfo":           '',
+		    "sInfoEmpty":      "",
+		    "sInfoFiltered":   "(síað út frá _MAX_ færslum)",
+		    "sInfoPostFix":    "",
+		    "sInfoThousands":  ".",
+		    "sLengthMenu":     "Sýna _MENU_ færslur",
+		    "sLoadingRecords": "Hleð...",
+		    "sProcessing":     "Úrvinnsla...",
+		    "sSearch":         "Leita:",
+		    "sZeroRecords":    "Engar færslur fundust",
+		    "oPaginate": {
+		        "sFirst":    "Fyrsta",
+		        "sLast":     "Síðasta",
+		        "sNext":     "Næsta",
+		        "sPrevious": "Fyrri"
+		    },
+		    "oAria": {
+		        "sSortAscending":  ": virkja til að raða dálki í hækkandi röð",
+		        "sSortDescending": ": virkja til að raða dálki lækkandi í röð"
+		    }
+		}
+	});
+}
