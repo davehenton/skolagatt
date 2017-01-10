@@ -84,7 +84,6 @@ class School(models.Model):
 
     def get_school_surveys(self):
         surveys = GroupSurvey.objects.filter(studentgroup__in=self.studentgroup_set.all())
-        print(surveys)
         return surveys
 
     class Meta:
