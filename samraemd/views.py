@@ -199,20 +199,37 @@ class SamraemdResultDetail(cm_mixins.SchoolManagerMixin, DetailView):
             context['school']      = school
             context['school_id']   = self.kwargs['school_id']
             context['school_name'] = school.name
-            for result in list(chain(
-                s_models.SamraemdISLResult.objects.filter(
-                    student__in     = cm_models.Student.objects.filter(school=school),
-                    student_year    = group,
-                    exam_date__year = year),
-                s_models.SamraemdMathResult.objects.filter(
-                    student__in     = cm_models.Student.objects.filter(school=school),
-                    student_year    = group,
-                    exam_date__year = year),
-            )):
-                if result.student in student_results:
-                    student_results[result.student].append(result)
-                else:
-                    student_results[result.student] = [result]
+            if 'student_id' in self.kwargs:
+                student = cm_models.Student.objects.get(pk=self.kwargs['student_id'])
+                for result in list(chain(
+                    s_models.SamraemdISLResult.objects.filter(
+                        student         = student,
+                        student_year    = group,
+                        exam_date__year = year),
+                    s_models.SamraemdMathResult.objects.filter(
+                        student         = student,
+                        student_year    = group,
+                        exam_date__year = year),
+                )):
+                    if result.student in student_results:
+                        student_results[result.student].append(result)
+                    else:
+                        student_results[result.student] = [result]
+            else:
+                for result in list(chain(
+                    s_models.SamraemdISLResult.objects.filter(
+                        student__in     = cm_models.Student.objects.filter(school=school),
+                        student_year    = group,
+                        exam_date__year = year),
+                    s_models.SamraemdMathResult.objects.filter(
+                        student__in     = cm_models.Student.objects.filter(school=school),
+                        student_year    = group,
+                        exam_date__year = year),
+                )):
+                    if result.student in student_results:
+                        student_results[result.student].append(result)
+                    else:
+                        student_results[result.student] = [result]
         else:
             if self.request.user.is_superuser:
                 if 'stæ' in self.request.path:

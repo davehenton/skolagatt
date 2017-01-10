@@ -76,7 +76,9 @@ div.footer strong {
 #grading_template span:hover {
 	cursor: pointer;
 }
-
+.modal-lg {
+	width: 90%;
+}
 @media (min-width: 768px) {
 	.navbar-nav>li>a {
 
