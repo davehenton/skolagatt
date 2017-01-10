@@ -14,7 +14,7 @@ SECRET_KEY = production_settings.SECRET_KEY
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = production_settings.DEBUG
 
-ALLOWED_HOSTS = ['localhost', 'skolagatt.is']
+ALLOWED_HOSTS = production_settings.ALLOWED_HOSTS
 
 
 # Application definition
