@@ -111,10 +111,6 @@
 		$( ".md" ).each(function( index ) {
 			$( this ).html(marked( $( this ).html() ));
 		});
-		$('span[count]').on('click',function(event){
-			//append removable div to grading_template
-			var selected_text = $(this).toggleClass('selected');
-		});
 
 		$("#survey_result_form").on('submit', function(event){
 			//event.preventDefault();
@@ -126,6 +122,12 @@
 				}));
 			});
 
+		});
+		$( document ).ready(function() {
+		    $('span[count]').on('click',function(event){
+				//append removable div to grading_template
+				var selected_text = $(this).toggleClass('selected');
+			});
 		});
 	</script>
 	{% endblock %}
