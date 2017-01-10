@@ -179,14 +179,14 @@ def calc_survey_results(survey_identifier, click_values, input_values, student):
                 return ["error"]
         elif '_LF_' in survey_identifier:
             try:
+                print(int(click_values[-1].split(',')[0]))
                 words_read = int(click_values[-1].split(',')[0]) - len(click_values)
                 time_read = 120
                 try:
-                    # time_read = int(input_values.get('b1_LF_timi', 120))
                     time_read = [value for key, value in input_values.items() if 'lf_timi' in key.lower()]
                 except:
                     return [""]
-                return [str(int(words_read / time_read * 60)) + " orð/mín"]
+                return [str(int(words_read / int(time_read[0]) * 60)) + " orð/mín"]
             except:
                 return [""]
         else:
