@@ -13,6 +13,9 @@
 					{{survey_details.title}}
 					{% if expired %}
 						Lokið
+						{% if '01b_LTL_' in groupsurvey.survey.identifier %}
+							<a href="{% url 'schools:survey_detail_excel' school.id studentgroup.id groupsurvey.id %}" class="btn btn-lg btn-default pull-right">Sækja Excel</a>
+						{% endif %}
 					{% elif is_group_manager or is_school_manager %}
 						<div class="btn-group">
 							<a href="{% url 'schools:survey_update' school.id studentgroup.id groupsurvey.id %}" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span></a>
@@ -37,11 +40,11 @@
 		</div>
 	</div>
 	<div class="row">
-		<div class="col-md-6">
+		<div class="col-md-8">
 			<h3>Um prófið</h3>
 			<div class="md">{{ survey_details.description }}</div>
 		</div>
-		<div class="col-md-6 md-display">
+		<div class="col-md-4 md-display">
 			<h3>Nánari upplýsingar</h3>
 			<ul class="survey_resources">
 			{% for resource in survey_resources %}
@@ -55,21 +58,16 @@
 			</ul>
 		</div>
 	</div>
-	{% if '01b_LTL_' in groupsurvey.survey.identifier %}
-	<div class="row">
-		<a href="{% url 'schools:survey_detail_excel' school.id studentgroup.id groupsurvey.id %}">Sækja Excel</a>
-	</div>
-	{% endif %}
 	<div class="row">
 		<div class="col-xs-12">
 			<h3>Nemendur</h3>
 		</div>
 		<div class="col-xs-12">
-			<table class="table table-hover">
+			<table id="result_list" class="table table-hover table-striped">
 				<thead>
 					<tr>
-						<th>Kennitala</th>
 						<th>Nafn</th>
+						<th>Kennitala</th>
 						{% if '01b_LTL_' in groupsurvey.survey.identifier %}
 	 						<th class="col-md-2">Hljóð</th>
 	 						<th class="col-md-2">Mál</th>
@@ -84,12 +82,12 @@
 					{% for student in students %}
 						{% get_survey_results student groupsurvey as student_result %}
 						<tr>
-							<td>{{student.ssn}}</td>
 							<td>
 								<a href="{% url 'schools:student_detail' school.id student.id %}">
 									{{student.name}}
 								</a>
 							</td>
+							<td>{{student.ssn}}</td>
 							{% if student_result %}
 								{% with student_results|get_item:student as student_result_list %}
 		 							{% for student_result in student_result_list %}
@@ -103,8 +101,8 @@
 									<a href="{% url 'schools:survey_result_update' school.id student.id groupsurvey.id student_result.id %}" class="btn btn-default btn-xs pull-right"><span class="glyphicon glyphicon-pencil"></span></a>
 									{% endif %}
 								{% endif %}
-								<button class="btn btn-default btn-xs pull-right" type="button" data-toggle="collapse" data-target="#results-{{student_result.id}}" aria-expanded="false" aria-controls="collapseExample">
-									<span class="caret"></span>
+								<button class="btn btn-default btn-xs pull-right" type="button" data-toggle="modal" data-target="#results-{{student_result.id}}" aria-expanded="false" aria-controls="collapseExample">
+									Niðurstöður
 								</button>
 							</td>
 							{% else %}
@@ -118,10 +116,19 @@
 							</td>
 							{% endif %}
 						</tr>
+					{% endfor %}
+					{% for student in students %}
+						{% get_survey_results student groupsurvey as student_result %}
 						{% if student_result %}
-						<tr class="collapse" id="results-{{student_result.id}}">
-							<td class="well" colspan="4">
-								{% with results=student_result.results|get_json %}
+						<div class="modal fade" id="results-{{student_result.id}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+						  <div class="modal-dialog" role="document">
+						    <div class="modal-content">
+						      <div class="modal-header">
+						        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						        <h4 class="modal-title" id="results-{{student_result.id}}Label">{{student}}</h4>
+						      </div>
+						      <div class="modal-body">
+						        {% with results=student_result.results|get_json %}
 									<div class='row'>
 										<div class='col-md-12'>
 											{% if results.click_values %}
@@ -145,12 +152,22 @@
 										</div>
 									</div>
 								{% endwith %}
-							</re>
-						</tr>
+						      </div>
+						      <div class="modal-footer">
+						        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+						      </div>
+						    </div>
+						  </div>
+						</div>
 						{% endif %}
 					{% endfor %}
 				</tbody>
 			</table>
 		</div>
 	</div>
+{% endblock %}
+{% block script %}
+<script type="text/javascript">
+	datafy_table('#result_list');
+</script>
 {% endblock %}
