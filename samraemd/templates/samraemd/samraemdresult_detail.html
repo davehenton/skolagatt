@@ -31,7 +31,10 @@
 							{{student}}
 							<div class="btn-group pull-right" role="group">
 								<button type="button" class="btn btn-sm btn-default" data-toggle="modal" data-target="#nem-{{student.id}}">Niðurstöður</button>
-								<a href="{% url 'samraemd:result_single_print' school.id year group student.id %}" class="btn btn-sm btn-info" target="_blank">Prentvænt einkunnablað</a>
+								{% if school %}
+									<a href="{% url 'samraemd:result_single_print' school.id year group student.id %}" class="btn btn-sm btn-info" target="_blank">Prentvænt einkunnablað</a>
+								{% else %}
+								{% endif %}
 							</div>
 						</td>
 					</tr>
@@ -248,7 +251,10 @@
 					{% endfor %}
 			      </div>
 			      <div class="modal-footer">
-			      	<a href="{% url 'samraemd:result_single_print' school.id year group student.id %}" class="btn btn-sm btn-info" target="_blank">Prentvænt einkunnablað</a>
+			      	{% if school %}
+			      		<a href="{% url 'samraemd:result_single_print' school.id year group student.id %}" class="btn btn-sm btn-info" target="_blank">Prentvænt einkunnablað</a>
+			      	{% else %}
+					{% endif %}
 			        <button type="button" class="btn btn-default" data-dismiss="modal">Loka</button>
 			      </div>
 			    </div>
