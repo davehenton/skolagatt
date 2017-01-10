@@ -1321,7 +1321,6 @@ class SurveyResultCreate(common_mixins.SchoolEmployeeMixin, CreateView):
                 }
             )
         except:
-            print('fail')
             return reverse_lazy('schools:school_listing')
 
 
@@ -1383,7 +1382,6 @@ class SurveyResultUpdate(common_mixins.SchoolEmployeeMixin, UpdateView):
                 }
             )
         except:
-            print('fail')
             return reverse_lazy('schools:school_listing')
 
 

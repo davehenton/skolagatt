@@ -179,7 +179,6 @@ def calc_survey_results(survey_identifier, click_values, input_values, student):
                 return ["error"]
         elif '_LF_' in survey_identifier:
             try:
-                print(int(click_values[-1].split(',')[0]))
                 words_read = int(click_values[-1].split(',')[0]) - len(click_values)
                 time_read = 120
                 try:
