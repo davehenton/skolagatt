@@ -21,18 +21,6 @@
 				{% endif %}
 			</h1>
 		</div>
-		<div class="col-xs-4">
-			{% if  is_school_manager %}
-			<div class="pull-right">
-				<a href="{% url 'supportandexception:exception' school.id student.id %}" class="btn btn-success" data-action='save_notes'>
-					<span class="glyphicon glyphicon-bookmark"></span>&nbsp;Undanþágur
-				</a>
-				<a href="{% url 'supportandexception:supportresource' school.id student.id %}" class="btn btn-warning" data-action='save_notes'>
-					<span class="glyphicon glyphicon-bookmark"></span>&nbsp;Stuðningsúrræði
-				</a>
-			</div>
-			{% endif %}
-		</div>
 	</div>
 	<div class="row">
 		<div class="col-md-12">
