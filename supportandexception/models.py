@@ -5,6 +5,8 @@ from __future__ import unicode_literals
 from django.db import models
 
 from common.models  import Student, Manager
+from survey.models import Survey
+
 from rest_framework import serializers
 
 
@@ -15,19 +17,17 @@ class StudentExceptionSupport(models.Model):
 # undanþágur
 class Exceptions(models.Model):
     student             = models.ForeignKey(Student)
-    reason              = models.CharField(max_length = 1)
+    survey              = models.ForeignKey(Survey)
     exam                = models.CharField(max_length = 32)
     exceptionssignature = models.ForeignKey(Manager)
     exceptionsdate      = models.DateField(auto_now=False, auto_now_add=True, null=True)
-
-    def __str__(self):
-        return self.reason
 
 
 # Stuðningsúrræði
 
 class SupportResource(models.Model):
     student                  = models.ForeignKey(Student)
+    survey                   = models.ForeignKey(Survey)
     supportresourcesignature = models.ForeignKey(Manager)
     supportresourcedate      = models.DateField(auto_now = True, null = True)
     support_title            = models.CharField(max_length = 32, null=True)
@@ -35,8 +35,6 @@ class SupportResource(models.Model):
     interpretation           = models.CharField(max_length = 32, null=True)
     longer_time              = models.CharField(max_length = 32, null=True)
 
-    def __str__(self):
-        return self.explanation
 
 
 # serializer
@@ -44,9 +42,7 @@ class ExceptionsSerializer(serializers.ModelSerializer):
     class Meta:
         model  = Exceptions
         fields = (
-            'reason',
             'exam',
-            'explanation',
             'exceptionssignature',
             'exceptionsdate'
         )
@@ -56,7 +52,6 @@ class SupportResourceSerializer(serializers.ModelSerializer):
     class Meta:
         model  = SupportResource
         fields = (
-            'explanation',
             'supportresourcesignature',
             'supportresourcedate',
             'support_title',
