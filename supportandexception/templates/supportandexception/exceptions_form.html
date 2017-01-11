@@ -22,12 +22,6 @@
 		</div>
 	</div>
 <div class="row">
-	<div class="col-md-4">
-		<b>Minnispunktar um skráninguna:</b>
-		<textarea rows="5" cols="50" id="notes" name="notes">{{studentmorinfo.notes}}</textarea>
-	</div>
-</div>
-<div class="row">
 	<div class="col-md-12">
 		<div class="row">
 			<div class="col-md-4">
@@ -63,16 +57,7 @@
 	</tr>
 	{% endfor %}
 </table>
-<div class="row">
-	<div class="col-md-12">
-		<div class="row">
-			<div class="col-md-4">
-				<b>Skýring með umsókn</b>
-			</div>
-		</div>
-		<textarea rows="5" cols="50" name="explanation">{{exceptions.explanation}}</textarea>
-	</div>
-</div>
+
 {% if exceptions.student.id == student.id %}
 <div>
 <b>Netfang sendanda:</b> {{exceptions.exceptionssignature}}
