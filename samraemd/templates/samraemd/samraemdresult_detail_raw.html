@@ -7,13 +7,15 @@
 		
 	</div>
 	<div class="col-md-6 hidden-print">
+		<div class="btn-group pull-right" role="group" aria-label="...">
 		{% if school.id %}
-			<a href="{% url 'samraemd:result_raw_print' school.id year group %}" class="btn btn-default" target="_blank">Prentvæn úrlausnablöð</a>
+			<a href="{% url 'samraemd:result_raw_print' school.id year group %}" class="btn btn-primary" target="_blank">Prentvæn úrlausnablöð</a>
 			<a href="{% url 'samraemd:result_raw_excel' school.id year group %}" class="btn btn-default" target="_blank">Excel</a>
 		{% else %}
-			<a href="{% url 'samraemd:admin_result_raw_print' exam_code year group %}" class="btn btn-default" target="_blank">Prentvæn úrlausnablöð</a>
+			<a href="{% url 'samraemd:admin_result_raw_print' exam_code year group %}" class="btn btn-primary" target="_blank">Prentvæn úrlausnablöð</a>
 			<a href="{% url 'samraemd:admin_result_raw_excel' exam_code year group %}" class="btn btn-default" target="_blank">Excel</a>
 		{% endif %}
+		</div>
 	</div>
 </div>
 <div>
@@ -25,7 +27,7 @@
 				<thead class="thead-default">
 					<tr>
 						<th>Skóli</th>
-						<th>Kennitölur</th>
+						<th>Kennitala</th>
 						<th>Nafn</th>
 						<th>Bekkur</th>
 
@@ -73,17 +75,4 @@
 		</div>
 	{%endfor%}
 </div>
-<script type="text/javascript">
-	function printEinstaklingsblod() {
-		$('.not-on-einstaklingsblod').addClass('hidden-print');
-		$('.student-testcode').addClass('on-einstaklingsblod').prepend('<span class="removeme">Prófkóði: </span>');
-		$('.student-kt').addClass('on-einstaklingsblod').prepend('<span class="removeme">Kennitala: </span>');
-		$('.student-name').addClass('on-einstaklingsblod').prepend('<span class="removeme">Nafn: </span>');
-		window.print();
-		$('.removeme').remove();
-		$('.on-einstaklingsblod').removeClass('on-einstaklingsblod');
-		$('.not-on-einstaklingsblod').removeClass('hidden-print');
-		$('.student-testcode').css('page-break-after','auto');
-	}
-</script>
 {% endblock %}
