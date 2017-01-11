@@ -48,6 +48,14 @@ class SurveyForm(forms.ModelForm):
                 'class': 'required form-control',
                 'style': 'width: 26%; display: inline-block;'
             })
+        self.fields['support_and_exception_deadline'].widget = SelectDateWidget(
+            empty_label=("Ár", "Mánuður", "Dagur"),
+            years = range(2016, timezone.now().year + 10),
+            months=MONTHS,
+            attrs={
+                'class': 'required form-control',
+                'style': 'width: 26%; display: inline-block;'
+            })
         fields = [
             'identifier', 'title', 'survey_type', 'student_year', 'description'
         ]
@@ -57,16 +65,17 @@ class SurveyForm(forms.ModelForm):
         model  = models.Survey
         fields = [
             'identifier', 'title', 'survey_type', 'student_year',
-            'description', 'active_from', 'active_to'
+            'description', 'active_from', 'active_to', 'support_and_exception_deadline'
         ]
         labels = {
-            'identifier'  : 'Auðkenni',
-            'title'       : 'Heiti',
-            'survey_type' : 'Tegund',
-            'student_year': 'Árgangur',
-            'description' : 'Lýsing',
-            'active_from' : 'Virkt frá',
-            'active_to'   : 'Virkt til',
+            'identifier'                     : 'Auðkenni',
+            'title'                          : 'Heiti',
+            'survey_type'                    : 'Tegund',
+            'student_year'                   : 'Árgangur',
+            'description'                    : 'Lýsing',
+            'active_from'                    : 'Virkt frá',
+            'active_to'                      : 'Virkt til',
+            'support_and_exception_deadline' : 'Skráningarfrestur undanþága og stuðningsúrræða',
         }
 
 

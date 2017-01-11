@@ -83,6 +83,17 @@
 			</div>
 		</div>
 	</div>
+	{# Support and exception deadline #}
+	<div class="row">
+		<div class="form-group form-group-lg col-md-6 col-xs-12">
+			<div>
+				<label for="{{ form.support_and_exception_deadline.name }}">{{ form.support_and_exception_deadline.label }}</label>
+			</div>
+			<div>
+				{{ form.support_and_exception_deadline }}
+			</div>
+		</div>
+	</div>
 	{# Description #}
 	{% if form.description.errors %}
 		<div class="form-group form-group-lg has-feedback has-error">
