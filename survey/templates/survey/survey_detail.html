@@ -19,6 +19,11 @@
 		<h4>Búið til: <small>{{survey.created_at}}</small></h4>
 		<h4>Virkt frá: <small>{{survey.active_from}}</small></h4>
 		<h4>Virkt til: <small>{{survey.created_by}}</small></h4>
+		{% if survey.support_and_exception_allowed %}
+			<h4>Skrá úrræði/undanþágur fyrir: <small>{{survey.support_and_exception_deadline}}</small></h4>
+		{% else %}
+		    <h4>Skráning úrræða eða undanþága ekki leyfð</h4>
+		{% endif %}
 	</div>
 	<div class="col-md-8 col-xs-12">
 		<h4>Lýsing:</h4>

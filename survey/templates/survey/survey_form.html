@@ -88,6 +88,11 @@
 		<div class="form-group col-md-6">
 				{{ form.support_and_exception_allowed }}
 				<label for="{{ form.support_and_exception_allowed.name }}">{{ form.support_and_exception_allowed.label }}</label>
+				{% if form.support_and_exception_allowed.errors %}
+			    	<span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+				    <span id="inputError2Status" class="sr-only">(villa)</span>
+				    <p class="text-danger">{{ form.support_and_exception_allowed.errors.as_text }}</p>
+			    {% endif %}
 		</div>
 		<div class="form-group form-group-lg col-md-6 col-xs-12">
 			<div>
@@ -96,6 +101,11 @@
 			<div id="support_and_exception_deadline_selector">
 				{{ form.support_and_exception_deadline }}
 			</div>
+			{% if form.support_and_exception_deadline.errors %}
+			    	<span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+				    <span id="inputError2Status" class="sr-only">(villa)</span>
+				    <p class="text-danger">{{ form.support_and_exception_deadline.errors.as_text }}</p>
+			    {% endif %}
 		</div>
 	</div>
 	{# Description #}
