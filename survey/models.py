@@ -38,7 +38,7 @@ class Survey(models.Model):
     created_by                     = models.ForeignKey(User)
     old_version                    = models.ForeignKey('Survey', null=True, blank=True)
     support_and_exception_allowed  = models.BooleanField(default=False)
-    support_and_exception_deadline = models.DateField(default=timezone.now)
+    support_and_exception_deadline = models.DateField(default=None)
 
     def __str__(self):
         return self.title

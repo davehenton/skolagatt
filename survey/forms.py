@@ -53,11 +53,13 @@ class SurveyForm(forms.ModelForm):
             years = range(2016, timezone.now().year + 10),
             months=MONTHS,
             attrs={
-                'class': 'required form-control',
-                'style': 'width: 26%; display: inline-block;'
+                'class': 'form-control disabled',
+                'style': 'width: 26%; display: inline-block;',
+                'disabled': True,
             })
         fields = [
-            'identifier', 'title', 'survey_type', 'student_year', 'description'
+            'identifier', 'title', 'survey_type', 'student_year', 'description',
+            'support_and_exception_allowed',
         ]
         add_field_classes(self, fields)
 
@@ -66,7 +68,7 @@ class SurveyForm(forms.ModelForm):
         fields = [
             'identifier', 'title', 'survey_type', 'student_year',
             'description', 'active_from', 'active_to', 'support_and_exception_deadline',
-            'support_and_exception_allowed'
+            'support_and_exception_allowed',
         ]
         labels = {
             'identifier'                     : 'Auðkenni',

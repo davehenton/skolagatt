@@ -119,3 +119,17 @@
 	<input type="submit" value="Vista" class="btn btn-success btn-lg" />
 </form>
 {% endblock %}
+
+{% block script %}
+<script>
+$(function() {
+    $('#id_support_and_exception_allowed').click(function() {
+        var disable = $(this).is(':checked');
+
+        $('#id_support_and_exception_deadline_month').attr('disabled', !disable);
+        $('#id_support_and_exception_deadline_day').attr('disabled', !disable);
+        $('#id_support_and_exception_deadline_year').attr('disabled', !disable);
+    });
+});
+</script>
+{% endblock %}
