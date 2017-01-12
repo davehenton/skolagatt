@@ -140,11 +140,11 @@
 <script>
 $(function() {
     $('#id_support_and_exception_allowed').click(function() {
-        var disable = $(this).is(':checked');
+        var enable = $(this).is(':checked');
 
-        $('#id_support_and_exception_deadline_month').attr('disabled', !disable);
-        $('#id_support_and_exception_deadline_day').attr('disabled', !disable);
-        $('#id_support_and_exception_deadline_year').attr('disabled', !disable);
+        $('#id_support_and_exception_deadline_month').attr('disabled', !enable);
+        $('#id_support_and_exception_deadline_day').attr('disabled', !enable);
+        $('#id_support_and_exception_deadline_year').attr('disabled', !enable);
     });
 });
 </script>
