@@ -65,7 +65,8 @@ class SurveyForm(forms.ModelForm):
         model  = models.Survey
         fields = [
             'identifier', 'title', 'survey_type', 'student_year',
-            'description', 'active_from', 'active_to', 'support_and_exception_deadline'
+            'description', 'active_from', 'active_to', 'support_and_exception_deadline',
+            'support_and_exception_allowed'
         ]
         labels = {
             'identifier'                     : 'Auðkenni',
@@ -75,6 +76,7 @@ class SurveyForm(forms.ModelForm):
             'description'                    : 'Lýsing',
             'active_from'                    : 'Virkt frá',
             'active_to'                      : 'Virkt til',
+            'support_and_exception_allowed'  : 'Undanþágur og stuðningsúrræði leyfð',
             'support_and_exception_deadline' : 'Skráningarfrestur undanþága og stuðningsúrræða',
         }
 
