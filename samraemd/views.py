@@ -634,12 +634,21 @@ class SamraemdRawResultDetail(cm_mixins.SchoolManagerMixin, DetailView):
             context['school']      = school
             context['school_id']   = self.kwargs['school_id']
             context['school_name'] = school.name
-            number_of_loops        = s_models.SamraemdResult.objects.all().values(
-                'result_length', 'exam_code', 'exam_name').filter(
-                exam_date__year=year, student_year=group).annotate(total=Count('exam_code'))
-            results                = s_models.SamraemdResult.objects.filter(
-                student__in = cm_models.Student.objects.filter(school=school)).filter(
-                student_year=group).filter(exam_date__year=year)
+            if 'student_id' in self.kwargs:
+                student = cm_models.Student.objects.get(pk=self.kwargs['student_id'])
+                results = s_models.SamraemdResult.objects.filter(
+                    student         = student).filter(
+                    exam_code       = self.kwargs['exam_code']).filter(
+                    student_year    = group).filter(
+                    exam_date__year = year)
+                number_of_loops = results.annotate(total=Count('exam_code'))
+            else:
+                number_of_loops        = s_models.SamraemdResult.objects.all().values(
+                    'result_length', 'exam_code', 'exam_name').filter(
+                    exam_date__year=year, student_year=group).annotate(total=Count('exam_code'))
+                results = s_models.SamraemdResult.objects.filter(
+                    student__in = cm_models.Student.objects.filter(school=school)).filter(
+                    student_year=group).filter(exam_date__year=year)
             s_util.display_raw_results(results, student_results, student_group, col_names)
 
         else:
