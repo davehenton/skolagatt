@@ -126,7 +126,7 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'survey/static'),
     os.path.join(BASE_DIR, 'vendor'),
 )
-
+STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.CachedStaticFilesStorage'
 
 JSON_API_KEY = 'some-random-string'
 
