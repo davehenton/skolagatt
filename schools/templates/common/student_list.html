@@ -63,6 +63,7 @@
 					<tr>
 						<th><h4>Nafn</h4></th>
 						<th><h4>Kennitala</h4></th>
+						<th></th>
 					</tr>
 				</thead>
 				<tbody>
@@ -70,6 +71,18 @@
 					<tr>
 						<td><a href="{% url 'schools:student_detail' school.id student.id %}">{{student.name}}</a></td>
 						<td><a href="{% url 'schools:student_detail' school.id student.id %}">{{student.ssn}}</a></td>
+						{% if is_school_manager %}
+						<td>
+							<div class="btn-group">
+								<a href="{% url 'schools:student_update' school.id student.id %}" class="btn btn-default btn-xs">
+									<span class="glyphicon glyphicon-pencil"></span>
+								</a>
+								<a href="{% url 'schools:student_delete' school.id student.id %}" class="btn btn-danger btn-xs">
+									<span class="glyphicon glyphicon-trash"></span>
+								</a>
+							</div>
+						</td>
+						{% endif %}
 					</tr>
 					{% endfor %}
 				</tbody>
@@ -80,7 +93,14 @@
 {% endblock %}
 {% block script %}
 <script type="text/javascript">
-	datafy_table('#student_table');
-	datafy_table('#other_student_table');
+	dataTable_settings["columnDefs"] = [
+       { "type": 'icelandic-html', "targets": [0] },
+       { "type": 'kt-html', "targets": 1},
+       {% if is_school_manager %}
+       { "targets": -1, "orderable": false }
+       {% endif %}
+    ];
+	$('#student_table').DataTable(dataTable_settings);
+	$('#other_student_table').DataTable(dataTable_settings);
 </script>
 {% endblock %}

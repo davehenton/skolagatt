@@ -38,6 +38,12 @@
 {% endblock %}
 {% block script %}
 <script type="text/javascript">
-	datafy_table('#survey_list');
+	dataTable_settings["columnDefs"] = [
+       { "type": 'icelandic-html', "targets": [0, 1] },
+       { "type": 'dates', "targets": [3, 4] },
+       { "targets": -1, "orderable": false }
+    ];
+
+	$('#survey_list').DataTable(dataTable_settings);
 </script>
 {% endblock %}

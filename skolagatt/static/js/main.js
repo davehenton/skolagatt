@@ -125,6 +125,16 @@ jQuery.extend( jQuery.fn.dataTableExt.oSort, {
     "kt-html-desc": function ( a, b ) {
         return kt_sort(a, b, true) * -1;
     },
+    "dates-asc": function ( a, b ) {
+    	a = new Date(a);
+    	b = new Date(b);
+        return (a < b) ? -1 : ((a > b) ? 1 : 0);
+    },
+    "dates-desc": function ( a, b ) {
+    	a = new Date(a);
+    	b = new Date(b);
+        return (a < b) ? 1 : ((a > b) ? -1 : 0);
+    },
 } );
 
 var dataTable_settings = {
