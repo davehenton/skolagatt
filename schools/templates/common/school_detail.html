@@ -41,11 +41,12 @@
 	dataTable_settings["columnDefs"] = [
        { "type": 'icelandic-html', "targets": [0] },
     ];
-	$('table:not(:last-child)').DataTable(dataTable_settings);
+	$('#manager-list, #teacher-list').DataTable(dataTable_settings);
 	// For last table
 	dataTable_settings["columnDefs"] = [
        { "type": 'num-html', "targets": [0] },
+       { "type": 'icelandic-html', "targets": [3] },
     ];
-    $('table:last-child').DataTable(dataTable_settings);
+    $('#studentgroup-list').DataTable(dataTable_settings);
 </script>
 {% endblock %}
