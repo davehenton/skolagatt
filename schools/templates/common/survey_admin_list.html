@@ -37,6 +37,10 @@
 {% endblock %}
 {% block script %}
 <script type="text/javascript">
-	datafy_table('#survey_table');
+	dataTable_settings["columnDefs"] = [
+       { "type": 'icelandic-html', "targets": [0,1] },
+       { "type": 'num-html', "targets": [2] }
+    ];
+	$('#survey_table').DataTable(dataTable_settings);
 </script>
 {% endblock %}
