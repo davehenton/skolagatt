@@ -266,6 +266,9 @@
 {% endblock %}
 {% block script %}
 <script type="text/javascript">
-	datafy_table('#student_list');
+	dataTable_settings["columnDefs"] = [
+       { "type": 'icelandic-html', "targets": [0] }
+    ];
+	$('#student_list').DataTable(dataTable_settings);
 </script>
 {% endblock %}

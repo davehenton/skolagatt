@@ -33,3 +33,19 @@
 	</div>
 </div>
 {% endblock %}
+{% block script %}
+<script type="text/javascript">
+	dataTable_settings["bPaginate"] = false;
+	dataTable_settings["bFilter"] = false;
+	// For first two tables
+	dataTable_settings["columnDefs"] = [
+       { "type": 'icelandic-html', "targets": [0] },
+    ];
+	$('table:not(:last-child)').DataTable(dataTable_settings);
+	// For last table
+	dataTable_settings["columnDefs"] = [
+       { "type": 'num-html', "targets": [0] },
+    ];
+    $('table:last-child').DataTable(dataTable_settings);
+</script>
+{% endblock %}

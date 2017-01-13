@@ -1,0 +1,185 @@
+@font-face {
+    font-family: MinionPro;
+
+    src: url('/static/samraemd/css/fonts/MinionPro-Regular.otf') format('opentype');
+}
+@font-face {
+    font-family: MinionPro;
+    font-style: italic;
+
+    src: url('/static/samraemd/css/fonts/MinionPro-It.otf') format('opentype');
+}
+@font-face {
+    font-family: MinionPro;
+    font-weight: bolder;
+    font-style: italic;
+
+    src: url('/static/samraemd/css/fonts/MinionPro-MediumIt.otf') format('opentype');
+}
+@font-face {
+    font-family: Avenir;
+
+    src: url('/static/samraemd/css/fonts/Avenir-Roman.ttf') format('truetype');
+}
+@font-face {
+    font-family: Avenir;
+    font-weight: bolder;
+
+    src: url('/static/samraemd/css/fonts/Avenir-Medium.ttf') format('truetype');
+}
+@font-face {
+    font-family: Avenir;
+    font-weight: lighter;
+
+    src: url('/static/samraemd/css/fonts/Avenir-Light.ttf') format('truetype');
+}
+@font-face {
+    font-family: Avenir;
+    font-weight: bold;
+
+    src: url('/static/samraemd/css/fonts/Avenir-Heavy.ttf') format('truetype');
+}
+body {
+    color: #1075a3;
+    background: #eaeaea;
+}
+page[size='A4'] {
+    display: block;
+
+    width: 210mm;
+    height: 291.9mm;
+    margin: 0 auto;
+    margin-bottom: 5mm;
+    padding: 3em;
+
+    background: white;
+    box-shadow: 0 0 5mm rgba(0, 0, 0, .5);
+
+    -webkit-print-color-adjust: exact;
+}
+@page {
+    margin: 0;
+}
+.outer-border {
+    height: 96%;
+    margin-top: 2%;
+    padding: 2px;
+
+    border: solid 3px #1075a3;
+}
+.inner-border {
+    height: 100%;
+
+    border: solid 1px #1075a3;
+}
+h1 {
+    font-family: MinionPro;
+    font-size: 36pt;
+    font-weight: bolder;
+    font-style: italic;
+
+    padding-top: 1em;
+}
+h2 {
+    font-family: Avenir;
+    font-size: 18pt;
+
+    margin: 0;
+}
+h3 {
+    font-family: MinionPro;
+    font-size: 24pt;
+    font-style: italic;
+
+    padding-top: 1em;
+
+    color: #000;
+}
+h4 {
+    font-family: Avenir;
+    font-size: 12pt;
+    font-weight: lighter;
+
+    margin: 1em;
+
+    color: #000;
+}
+strong {
+    font-weight: 900;
+}
+.info {
+    font-family: Avenir;
+    font-size: 12pt;
+    font-weight: lighter;
+
+    padding: 1em 0 1em 2em;
+
+    color: #000;
+}
+.info p {
+    margin-bottom: .3em;
+}
+td {
+    font-family: Avenir;
+
+    padding: .3em 0 0 0 !important;
+
+    vertical-align: middle !important;
+
+    border: none !important;
+}
+td:not(:first-child) {
+    text-align: center;
+}
+.thead td {
+    font-size: 12pt;
+    font-weight: bolder;
+}
+.thead-subject td {
+    font-size: 14pt;
+    font-weight: bold;
+
+    padding-top: .8em !important;
+}
+.tbody td {
+    font-size: 12pt;
+
+    color: #000;
+}
+.ord_talna td {
+    padding-top: .8em !important;
+}
+.table-container {
+    padding: 2em;
+}
+.mms-logo {
+    width: 20%;
+    margin: 0 auto;
+    padding-top: 20px;
+}
+.footer {
+    font-family: Avenir;
+
+    padding-top: 1em;
+}
+.backside {
+    font-family: Avenir;
+    font-size: 11pt;
+
+    padding-top: 6em;
+
+    color: #000;
+}
+.backside li {
+    padding: .3em 0;
+
+    list-style: none;
+}
+@media print {
+    h1,
+    h2,
+    .thead > td,
+    .thead-subject > td {
+        color: #1075a3 !important;
+    }
+}

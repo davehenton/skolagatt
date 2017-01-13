@@ -34,7 +34,7 @@
 					{% if request.user.is_superuser %}
 					<th>Stjórn.#</th>
 					<th>Nem.#</th>
-					<th class="col-xs-2"><h4></h4></th>
+					<th class="col-xs-2"></th>
 					{% endif %}
 				</thead>
 				<tbody>
@@ -100,6 +100,11 @@
 {% endblock %}
 {% block script %}
 <script type="text/javascript">
-	datafy_table('#school_list');
+	dataTable_settings["columnDefs"] = [
+       { "type": 'icelandic-html', "targets": [0] },
+       { "type": 'kt-html', "targets": 1},
+       { "targets": -1, "orderable": false }
+    ];
+	$('#school_list').DataTable(dataTable_settings);
 </script>
 {% endblock %}

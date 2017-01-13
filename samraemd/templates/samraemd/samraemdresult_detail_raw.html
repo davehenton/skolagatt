@@ -4,7 +4,6 @@
 <div class="row ">
 	<div class="col-md-6">
 		<h3>Niðurstöður nemenda</h3>
-		
 	</div>
 	<div class="col-md-6 hidden-print">
 		<div class="btn-group pull-right" role="group" aria-label="...">
@@ -23,21 +22,16 @@
 	{% for value in loop_times %}
 		<h4>{{ value.exam_name }}</h4>
 		<div class="table-responsive">
-			<table class="table table-striped table-bordered table-hover table-responsive">
+			<table class="table table-striped table-hover table-responsive student-table">
 				<thead class="thead-default">
 					<tr>
+						{% if not school.id %}
 						<th>Skóli</th>
-						<th>Kennitala</th>
+						{% endif %}
 						<th>Nafn</th>
+						<th>Kennitala</th>
 						<th>Bekkur</th>
-
-						{% for xm_code, cols in columns.items %}
-							{% for i, col in cols.result_data.items|dictsort:"0.lower" %}
-								{% if xm_code == value.exam_code %}
-									<th>{{col.id}}</th>
-								{%endif%}
-							{% endfor %}
-						{% endfor %}
+						<th></th>
 					</tr>
 				</thead>
 				<tbody>
@@ -45,6 +39,7 @@
 						{% for result in results %}
 							{% if result.exam_code == value.exam_code %}
 								<tr>
+									{% if not school.id %}
 									{% for gstudent, groups in student_group.items %}
 										{% if student == gstudent%}
 											{% with group=groups|first %}
@@ -52,27 +47,114 @@
 											{% endwith %}
 										{% endif %}
 									{%endfor%}
-									<td>{{ student.ssn }}</td>
+									{% endif %}
 									<td>{{ student }}</td>
+									<td>{{ student.ssn }}</td>
 									{% for gstudent, groups in student_group.items %}
 										{% if student == gstudent%}
 											{% with group=groups|first %}
 												<td>{{group.name}}</td>
 											{% endwith %}
-											
 										{% endif %}
 									{%endfor%}
-									{% for key, val in result.result_data.items|dictsort:"0.lower" %}
-									<td>{{val.value}}</td>
-									{% endfor %}
+									<td>
+										<div class="btn-group pull-right" role="group">
+										{% if school.id %}
+											<button type="button" class="btn btn-sm btn-default" data-toggle="modal" data-target="#nem-{{student.id}}">Niðurstöður</button>
+											<a href="{% url 'samraemd:result_raw_single_print' school.id year group student.id result.exam_code%}" class="btn btn-sm btn-info" target="_blank">Prentvænt úrlausnarblað</a>
+										{% else %}
+											<button type="button" class="btn btn-sm btn-default" data-toggle="modal" data-target="#nem-{{student.id}}">Niðurstöður</button>
+										{% endif %}
+										</div>
+									</td>
 								</tr>
 							{% endif %}
 						{% endfor %}
-						
 					{% endfor %}
 				</tbody>
 			</table>
 		</div>
+		{% for student, results in student_results.items %}
+		<div class="modal fade bs-example-modal-lg" id="nem-{{student.id}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+			  <div class="modal-dialog modal-lg" role="document">
+			    <div class="modal-content">
+			      <div class="modal-header">
+			        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			        <h4 class="modal-title" id="nem-{{student.id}}Label">{{student}}</h4>
+			      </div>
+			      <div class="modal-body">
+					<div class="table-responsive">
+						<table class="table table-striped table-hover table-responsive">
+							<thead>
+								<tr>
+									<th>Dæmi</th>
+									<th>Svar*</th>
+									<th>Flokkur</th>
+									<th>Innihald</th>
+									<th>Útskýring</th>
+								</tr>
+							</thead>
+							<tbody>
+								{% for result in results %}
+									{% if result.exam_code == value.exam_code %}
+										{% for key, values in result.result_data.items|dictsort:'0.lower' %}
+											<tr>
+												<td class="td1">{{values.id}}</td>
+												<td class="td2">{{values.value}}</td>
+												<td class="td3">{{values.category}}</td>
+												<td class="td4">{{values.context}}</td>
+												<td class="td5">
+													{{values.description}}
+													{% if values.img %}
+														<img class="desc-img" src="{{values.img}}" />
+													{% endif %}
+												</td>
+											</tr>
+										{% endfor %}
+									{% endif %}
+								{% endfor %}
+							</tbody>
+							<tfoot>
+								<tr>
+									<td colspan="5"><small>*(0=rangt)</small></td>
+								</tr>
+							</tfoot>
+						</table>
+					</div>
+					</div>
+			      <div class="modal-footer">
+			      	{% if school.id %}
+						{% with results|first as result%}
+			      		<a href="{% url 'samraemd:result_raw_single_print' school.id year group student.id result.exam_code%}" class="btn btn-info" target="_blank">Prentvænt úrlausnarblað</a>
+			      		{% endwith %}
+			      	{% else %}
+					{% endif %}
+			        <button type="button" class="btn btn-default" data-dismiss="modal">Loka</button>
+			      </div>
+			    </div>
+			  </div>
+			</div>
+		{% endfor %}
 	{%endfor%}
 </div>
+{% endblock %}
+{% block script %}
+<script type="text/javascript">
+	{% if not school.id %}
+		dataTable_settings["columnDefs"] = [
+	       { "type": 'icelandic-html', "targets": [0, 1] },
+	       { "type": 'kt-html', "targets": [2] },
+	       { "type": 'num-html', "targets": [3] },
+	       { "targets": -1, "orderable": false }
+	    ];
+    {% else %}
+    	dataTable_settings["columnDefs"] = [
+	       { "type": 'icelandic-html', "targets": [0] },
+	       { "type": 'kt-html', "targets": [1] },
+	       { "type": 'num-html', "targets": [2] },
+	       { "targets": -1, "orderable": false }
+	    ];
+    {% endif %}
+	$('.student-table').DataTable(dataTable_settings);
+</script>
 {% endblock %}

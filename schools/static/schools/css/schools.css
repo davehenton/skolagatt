@@ -39,20 +39,15 @@ ul.form_elements {
 
 .align label {
     display: inline-block;
-<<<<<<< HEAD
     width: 90px;
-=======
-
-    width  : 50px;
->>>>>>> 4a032fc829a912cd726a895cc2dd39d64b65dbf6
 }
 
 .md-display li {
     list-style-type:disc;
 }
 
-.selected {
-    background-color:#efefef;
+option.selected {
+    background-color:#dadada;
 }
 
 .small-message {
