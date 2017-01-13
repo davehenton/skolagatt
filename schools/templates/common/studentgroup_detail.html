@@ -15,7 +15,7 @@
 <div class="row">
 	<div class="col-md-3">
 		<h3>Umsjónarmenn</h3>
-		<table class="table table-striped table-hover">
+		<table class="table table-striped table-hover" id="manager-table">
 			<thead>
 				<tr>
 					<th>Nafn</th>
@@ -34,21 +34,21 @@
 	</div>
 	<div class="col-md-5">
 		<h3>Nemendur</h3>
-		<table class="table table-striped table-hover">
+		<table class="table table-striped table-hover" id="student-table">
 			<thead>
 				<tr>
-					<th>Kt.</th>
 					<th>Nafn</th>
+					<th>Kt.</th>
 				</tr>
 			</thead>
 			<tbody>
 				{% for student in students %}
 					<tr>
 						<td>
-							<a href="{% url 'schools:student_detail' school.id student.id %}">{{student.ssn}}</a>
+							<a href="{% url 'schools:student_detail' school.id student.id %}">{{student}}</a>
 						</td>
 						<td>
-							<a href="{% url 'schools:student_detail' school.id student.id %}">{{student}}</a>
+							<a href="{% url 'schools:student_detail' school.id student.id %}">{{student.ssn}}</a>
 						</td>
 					</tr>
 				{% endfor %}
@@ -61,7 +61,7 @@
 				Próf
 				<a href="{% url 'schools:survey_create' school.id studentgroup.id %}" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></a>
 			</h3>
-			<table class="table table-striped table-hover">
+			<table class="table table-striped table-hover" id="active-test-table">
 				<thead>
 					<tr>
 						<th>Próf</th>
@@ -84,7 +84,7 @@
 		</div>
 		<div class="row">
 			<h4>Niðurstöður</h4>
-			<table class="table table-striped table-hover">
+			<table class="table table-striped table-hover" id="done-test-table">
 				<thead>
 					<tr>
 						<th>Próf</th>
@@ -107,4 +107,27 @@
 		</div>
 	</div>
 </div>
+{% endblock %}
+{% block script %}
+<script type="text/javascript">
+	dataTable_settings["bPaginate"] = false;
+	dataTable_settings["bFilter"] = false;
+	// For teacher table
+	dataTable_settings["columnDefs"] = [
+       { "type": 'icelandic-html', "targets": [0] },
+    ];
+	$('#manager-table').DataTable(dataTable_settings);
+	// For student table
+	dataTable_settings["columnDefs"] = [
+       { "type": 'kt-html', "targets": [1] },
+       { "type": 'icelandic-html', "targets": [0] },
+    ];
+    $('#student-table').DataTable(dataTable_settings);
+    // For test tables
+	dataTable_settings["columnDefs"] = [
+       { "type": 'icelandic-html', "targets": [0] },
+       { "type": 'dates-html', "targets": [1] },
+    ];
+    $('#active-test-table, #done-test-table').DataTable(dataTable_settings);
+</script>
 {% endblock %}
