@@ -35,6 +35,10 @@
 {% endblock %}
 {% block script %}
 <script type="text/javascript">
-	datafy_table('#manager_list');
+	dataTable_settings["columnDefs"] = [
+       { "type": 'icelandic-html', "targets": [0,1] },
+       { "targets": [-1], "orderable": false }
+    ];
+	$('#manager_list').DataTable(dataTable_settings);
 </script>
 {% endblock %}

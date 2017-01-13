@@ -96,8 +96,7 @@
 		 						{% endwith %}
 							<td>
 								{% if is_group_manager or is_school_manager %}
-									{% if groupsurvey.is_expired %}
-									{% else %}
+									{% if not groupsurvey.is_expired %}
 									<a href="{% url 'schools:survey_result_update' school.id student.id groupsurvey.id student_result.id %}" class="btn btn-default btn-xs pull-right"><span class="glyphicon glyphicon-pencil"></span></a>
 									{% endif %}
 								{% endif %}
@@ -106,7 +105,13 @@
 								</button>
 							</td>
 							{% else %}
-							<td></td>
+							{% if '01b_LTL_' in groupsurvey.survey.identifier %}
+		 						<td>-</td>
+		 						<td>-</td>
+		 						<td>-</td>
+		 					{% else %}
+		 						<td>-</td>
+		 					{% endif %}
 							<td>
 								{% if is_group_manager or is_school_manager %}
 									{% if groupsurvey.is_expired = False %}
@@ -168,6 +173,16 @@
 {% endblock %}
 {% block script %}
 <script type="text/javascript">
-	datafy_table('#result_list');
+	dataTable_settings["columnDefs"] = [
+       { "type": 'icelandic-html', "targets": 0 },
+       { "type": 'kt-html', "targets": 1 },
+       { "targets": [-1], "orderable": false },
+       {% if '01b_LTL_' in groupsurvey.survey.identifier %}
+       { "type": 'icelandic-html', "targets": [2,3,4] },
+       {% else %}
+       { "type": 'num-html', "targets": [2] },
+       {% endif %}
+    ];
+	$('#result_list').DataTable(dataTable_settings);
 </script>
 {% endblock %}
