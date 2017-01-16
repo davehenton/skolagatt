@@ -118,19 +118,29 @@ class GroupSurvey(models.Model):
     studentgroup = models.ForeignKey(
         'StudentGroup', null=True, blank=True, on_delete=models.SET_NULL
     )
-    survey       = models.ForeignKey(Survey)
-    active_from  = models.DateField(default=timezone.now)
-    active_to    = models.DateField(default=timezone.now)
+    survey                         = models.ForeignKey(Survey)
+    active_from                    = models.DateField(default=timezone.now)
+    active_to                      = models.DateField(default=timezone.now)
+    support_and_exception_allowed  = models.BooleanField(default=False)
+    support_and_exception_deadline = models.DateField(blank=True, null=True)
 
     def save(self, *args, **kwargs):
         if self.survey:
             self.active_from = self.survey.active_from
             self.active_to   = self.survey.active_to
+            self.support_and_exception_allowed = self.survey.support_and_exception_allowed
+            self.support_and_exception_deadline = self.survey.support_and_exception_deadline
         super(GroupSurvey, self).save(*args, **kwargs)
 
     def is_expired(self):
         if timezone.now().date() > self.active_to:
             return True
+        return False
+
+    def can_add_support_and_exception(self):
+        if self.support_and_exception_allowed:
+            if timezone.now().date() <= self.support_and_exception_deadline:
+                return True
         return False
 
     def results(self):

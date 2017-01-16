@@ -4,6 +4,12 @@ from .                import views
 
 app_name = 'supportandexception'
 urlpatterns = [
+    url(r'^skoli/(?P<school_id>\d+)/prof/(?P<groupsurvey_id>\d+)/stuðningsúrræði/$',
+        views.ExamSupport.as_view(),
+        name="newsupporturl"),
+    url(r'^skoli/(?P<school_id>\d+)/prof/(?P<groupsurvey_id>\d+)/undanþágur/$',
+        views.ExamSupport.as_view(),
+        name="newexceptionurl"),
     url(r'^(?P<school_id>\d+)/$',
         views.ExamSupport.as_view(),
         name='examsupport'),

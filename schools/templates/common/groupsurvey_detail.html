@@ -58,6 +58,23 @@
 			</ul>
 		</div>
 	</div>
+	{% if groupsurvey.can_add_support_and_exception %}
+		<div class="row">
+			<div class="col-xs-12">
+				<h3>Undanþágur og stuðningsúrræði</h3>
+			</div>
+			<div class="col-xs-12">
+				<a href="{% url 'supportandexception:newexceptionurl' school.id groupsurvey.id %}" class="btn btn-success" data-action='save_notes'>
+		           	<span class="glyphicon glyphicon-bookmark"></span>&nbsp;Skrá undanþágur fyrir þetta próf
+		        </a>
+		    </div>
+		    <div class="col-xs-12">
+		    	<a href="{% url 'supportandexception:newsupporturl' school.id groupsurvey.id %}" class="btn btn-success" data-action='save_notes'>
+		           	<span class="glyphicon glyphicon-bookmark"></span>&nbsp;Skrá stuðningsúrræði fyrir þetta próf
+		        </a>
+		    </div>
+        </div>
+	{% endif %}
 	<div class="row">
 		<div class="col-xs-12">
 			<h3>Nemendur</h3>
@@ -114,7 +131,7 @@
 		 					{% endif %}
 							<td>
 								{% if is_group_manager or is_school_manager %}
-									{% if groupsurvey.is_expired = False %}
+									{% if groupsurvey.is_expired == False %}
 									<a href="{% url 'schools:survey_result_create' school.id student.id groupsurvey.id %}" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span>&nbsp;Skrá</a>
 									{% endif %}
 								{% endif %}
