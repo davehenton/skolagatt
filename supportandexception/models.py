@@ -4,8 +4,7 @@ from __future__ import unicode_literals
 
 from django.db import models
 
-from common.models  import Student, Manager
-from survey.models import Survey
+from common.models  import Student, Manager, GroupSurvey
 
 from rest_framework import serializers
 
@@ -17,7 +16,7 @@ class StudentExceptionSupport(models.Model):
 # undanþágur
 class Exceptions(models.Model):
     student             = models.ForeignKey(Student)
-    survey              = models.ForeignKey(Survey)
+    groupsurvey         = models.ForeignKey(GroupSurvey, null=True)
     exam                = models.CharField(max_length = 32)
     exceptionssignature = models.ForeignKey(Manager)
     exceptionsdate      = models.DateField(auto_now=False, auto_now_add=True, null=True)
@@ -27,7 +26,7 @@ class Exceptions(models.Model):
 
 class SupportResource(models.Model):
     student                  = models.ForeignKey(Student)
-    survey                   = models.ForeignKey(Survey)
+    groupsurvey              = models.ForeignKey(GroupSurvey, null=True)
     supportresourcesignature = models.ForeignKey(Manager)
     supportresourcedate      = models.DateField(auto_now = True, null = True)
     support_title            = models.CharField(max_length = 32, null=True)
