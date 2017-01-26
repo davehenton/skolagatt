@@ -231,7 +231,7 @@ class ExceptionCreate(CreateView):
         exceptions       = models.Exceptions.objects.filter(student = student_info, groupsurvey = groupsurvey)
 
         context['student']        = student_info.get
-        context['studentmorinfo'] = student_moreinfo.get
+        context['studentmoreinfo'] = student_moreinfo.get
         context['studentgroup']   = StudentGroup.objects.filter(students = student_info).get
         context['exceptions']     = exceptions.get
         context['school']         = School.objects.get(pk=self.kwargs['school_id'])

@@ -4,82 +4,66 @@
 
 
 {% block content %}
-<script>
-	var exam = [];
-	var reason = [];
-
-	var pagetype = "exceptions";
-
-	exam={% if exceptions.exam == "" %}"no"{% else %}{{ exceptions.exam }}{% endif %};
-	reason.push({{exceptions.reason}});
-</script>
-<form action="" method="post" id="exception">{% csrf_token %}
+{% if groupsurvey.can_add_support_and_exception %}
+	<form action="" method="post" id="exception">{% csrf_token %}
 	<div class="row">
 		<div class="col-md-4">
-
-		<b>Nafn:</b> {{student.name}} <b>Kennitala:</b> {{student.ssn}}
-
+			<h4>Nafn</h4>
+			<h4>{{student.name}}</h4>
 		</div>
+		<div class="col-md-4">
+			<h4>Kennitala</h4>
+			<h4>{{student.ssn}}</h4>
+		</div>
+		<div class="col-md-4">
+			<h4>Próf</h4>
+			<h4>{{groupsurvey.survey.title}}</h4>
 	</div>
-<div class="row">
-	<div class="col-md-12">
-		<div class="row">
-			<div class="col-md-4">
-				<b>Undanþágur</b>
+	<div class="row">
+		<div class="col-md-12">
+			<div class="row">
+				<div class="col-md-4">
+					<b>Undanþágur</b>
+				</div>
 			</div>
+			Undanþágur frá því að þreyta samræmd könnunarpróf í 4., 7. og 10. bekk eru heimilar skv. 39. gr. laga um grunnskóla, nr. 91/2008. Samkvæmt lögunum er skólastjórum heimilt, ef gildar ástæður mæla með því og ef samþykki foreldra liggur fyrir, að veita nemendum undanþágu frá því að þreyta samræmd könnunarpróf.
 		</div>
-		Undanþágur frá því að þreyta samræmd könnunarpróf í 4., 7. og 10. bekk eru heimilar skv. 39. gr. laga um grunnskóla, nr. 91/2008. Samkvæmt lögunum er skólastjórum heimilt, ef gildar ástæður mæla með því og ef samþykki foreldra liggur fyrir, að veita nemendum undanþágu frá því að þreyta samræmd könnunarpróf.
 	</div>
-</div>
-<table>
-	<tr>
-		{% for exam_text in form.exam %}
-			<th>{{ exam_text.choice_label }}</th>
-		{% endfor %}
-	</tr>
-	<tr name="exam" id="exam">
-		{% for exam_text in form.exam %}
-			<td>{{ exam_text.tag }}</td>
-		{% endfor %}
-	</tr>
-</table>
-<div>
-<b>
-Ástæða undanþágubeiðnar</b>(<i>merkið við</i>)<b>:</b>
+	<table>
+		<tr>
+			{% for exam_text in form.exam %}
+				<th>{{ exam_text.choice_label }}</th>
+			{% endfor %}
+		</tr>
+		<tr name="exam" id="exam">
+			{% for exam_text in form.exam %}
+				<td>{{ exam_text.tag }}</td>
+			{% endfor %}
+		</tr>
+	</table>
 
-</div>
-<table name="reason_radio" id="reason_radio">
-	{% for reason_text in form.reason %}
-	<tr>
-	<td>
-	{{reason_text}}
-	</td>
-	</tr>
-	{% endfor %}
-</table>
-
-{% if exceptions.student.id == student.id %}
-<div>
-<b>Netfang sendanda:</b> {{exceptions.exceptionssignature}}
-</div>
-<div>
-<b>Skráð:</b>{{exceptions.exceptionsdate}}
-</div>
-{% endif %}
-<div class="row">
-	Skráningartími fyrir stuðningsúrræði er liðinn.
-</div>
-<div class="row">
-	{% if  is_school_manager %}
-		<button class="btn btn-success" type="submit" value="exceptionsave" name="submit">Vista beiðni um undanþágu</button>
-		<button class="btn btn-danger" type="submit" value="exceptiondelete" name="submit">Eyða beiðni um undanþágu</button>
-	{% else %}
-		<button class="btn btn-success" type="submit" value="exceptiongothrough" name="submit">Til baka</button>
+	{% if exceptions.student.id == student.id %}
+		<div>
+		<b>Netfang sendanda:</b> {{exceptions.exceptionssignature}}
+		</div>
+		<div>
+		<b>Skráð:</b>{{exceptions.exceptionsdate}}
+		</div>
 	{% endif %}
-</div>
-</form>
+	<div class="row">
+		{% if  is_school_manager %}
+			<button class="btn btn-success" type="submit" value="exceptionsave" name="submit">Vista beiðni um undanþágu</button>
+			<button class="btn btn-danger" type="submit" value="exceptiondelete" name="submit">Eyða beiðni um undanþágu</button>
+		{% else %}
+			<button class="btn btn-success" type="submit" value="exceptiongothrough" name="submit">Til baka</button>
+		{% endif %}
+	</div>
+	</form>
+{% else %}
+	<div class="row">
+		Skráningartími fyrir stuðningsúrræði er liðinn.
+	</div>
+{% endif %}
+
 {% endblock %}
 
-{% block script %}
-<script src='{% static "supportandexception/js/supportandexception.js" %}'></script>
-{% endblock %}

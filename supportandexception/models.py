@@ -10,7 +10,8 @@ from rest_framework import serializers
 
 
 class StudentExceptionSupport(models.Model):
-    student = models.ForeignKey(Student)
+    student     = models.ForeignKey(Student)
+    groupsurvey = models.ForeignKey(GroupSurvey, null=True)
 
 
 # undanþágur
