@@ -46,16 +46,17 @@ class ExamSupport(ListView):
         school  = School.objects.get(pk=self.kwargs['school_id'])
 
         student_info     = Student.objects.filter(school=school)
-        student_moreinfo = models.StudentExceptionSupport.objects.filter(student = student_info)
+        groupsurvey      = GroupSurvey.objects.get(pk=self.kwargs.get('groupsurvey_id'))
+        student_moreinfo = models.StudentExceptionSupport.objects.filter(student = student_info, groupsurvey = groupsurvey)
 
         context['student']           = Student.objects.filter(school=school)
         context['studentmorinfo']    = student_moreinfo
         context['studentssupport']   = models.SupportResource.objects.filter(
-            student__in = student_info).all
+            student__in = student_info, groupsurvey = groupsurvey).all
         context['studentsexception'] = models.Exceptions.objects.filter(
-            student__in = student_info).all
+            student__in = student_info, groupsurvey = groupsurvey).all
         context['school']            = School.objects.get(pk=self.kwargs['school_id'])
-        context['groupsurvey']       = GroupSurvey.objects.get(pk=self.kwargs['groupsurvey_id'])
+        context['groupsurvey']       = groupsurvey
         return context
 
 
@@ -80,7 +81,8 @@ class SupportResourceCreate(CreateView):
     def get_context_data(self, **kwargs):
         context          = super(SupportResourceCreate, self).get_context_data(**kwargs)
         student_info     = Student.objects.filter(pk=self.kwargs.get('pk'))
-        student_moreinfo = models.StudentExceptionSupport.objects.filter(student = student_info)
+        groupsurvey      = GroupSurvey.objects.get(pk=self.kwargs.get('groupsurvey_id'))
+        student_moreinfo = models.StudentExceptionSupport.objects.filter(student = student_info, groupsurvey=groupsurvey)
 
         context['student']         = student_info.get
         context['studentmorinfo']  = student_moreinfo.get
@@ -88,7 +90,7 @@ class SupportResourceCreate(CreateView):
             student = student_info).get or "''"
         context['studentgroup']    = StudentGroup.objects.filter(students = student_info).get
         context['school']          = School.objects.get(pk=self.kwargs['school_id'])
-        context['groupsurvey']     = GroupSurvey.objects.get(pk=self.kwargs['groupsurvey_id'])
+        context['groupsurvey']     = groupsurvey
 
         return context
 
@@ -112,13 +114,15 @@ class SupportResourceCreate(CreateView):
                 for i in range(len(lt)):
                     longer_time.append(int(lt[i]))
             s = Student.objects.get(pk = self.kwargs.get('pk'))
-            if not (models.StudentExceptionSupport.objects.filter(student = s).exists()):
+            gs = Student.objects.get(pk = self.kwargs.get('groupsurvey_id'))
+            if not (models.StudentExceptionSupport.objects.filter(student = s, groupsurvey = gs).exists()):
                 ses         = models.StudentExceptionSupport()
                 ses.student = s
+                ses.groupsurvey = gs
                 ses.save()
 
-            if (models.SupportResource.objects.filter(student = s).exists()):
-                models.SupportResource.objects.filter(student = s).update(
+            if (models.SupportResource.objects.filter(student = s, groupsurvey = gs).exists()):
+                models.SupportResource.objects.filter(student = s, groupsurvey = gs).update(
                     reading_assistance = reading_assistance,
                     interpretation     = interpretation,
                     longer_time        = longer_time
@@ -132,6 +136,7 @@ class SupportResourceCreate(CreateView):
                     longer_time              = longer_time
                 )
                 sr.student = s
+                sr.groupsurvey = gs
                 sr.save()
             return HttpResponseRedirect(
                 reverse(
@@ -141,7 +146,7 @@ class SupportResourceCreate(CreateView):
             )
         if (request.POST.get('submit') == 'supportdelete'):
             s = Student.objects.get(pk = self.kwargs.get('pk'))
-            models.SupportResource.objects.filter(student = s).delete()
+            models.SupportResource.objects.filter(student = s, groupsurvey = gs).delete()
             return HttpResponseRedirect(
                 reverse(
                     'schools:student_detail',
@@ -173,12 +178,14 @@ class ExceptionCreate(CreateView):
                 for i in range(len(exam)):
                     exam_list.append(int(exam[i]))
             s = Student.objects.get(pk = self.kwargs.get('pk'))
-            if not (models.StudentExceptionSupport.objects.filter(student = s).exists()):
+            gs = GroupSurvey.objects.get(pk = self.kwargs.get('groupsurvey_id'))
+            if not (models.StudentExceptionSupport.objects.filter(student = s, groupsurvey = gs).exists()):
                 ses         = models.StudentExceptionSupport()
                 ses.student = s
+                ses.groupsurvey = gs
                 ses.save()
-            if (models.Exceptions.objects.filter(student = s).exists()):
-                models.Exceptions.objects.filter(student = s).update(
+            if (models.Exceptions.objects.filter(student = s, groupsurvey = gs).exists()):
+                models.Exceptions.objects.filter(student = s, groupsurvey = gs).update(
                     exam = exam_list,
                 )
             else:
@@ -189,6 +196,7 @@ class ExceptionCreate(CreateView):
                     )
                 )
                 exceptions.student = s
+                exceptions.groupsurvey = gs
                 exceptions.save()
             return HttpResponseRedirect(
                 reverse(
@@ -198,7 +206,9 @@ class ExceptionCreate(CreateView):
             )
         if (request.POST.get('submit') == 'exceptiondelete'):
             models.Exceptions.objects.filter(
-                student = Student.objects.get(pk=self.kwargs.get('pk'))).delete()
+                student = Student.objects.get(pk=self.kwargs.get('pk')),
+                groupsurvey = GroupSurvey.objects.get(pk=self.kwargs.get('groupsurvey_id')),
+            ).delete()
             return HttpResponseRedirect(
                 reverse(
                     'schools:student_detail',
@@ -216,15 +226,16 @@ class ExceptionCreate(CreateView):
     def get_context_data(self, **kwargs):
         context          = super(ExceptionCreate, self).get_context_data(**kwargs)
         student_info     = Student.objects.filter(pk=self.kwargs.get('pk'))
-        student_moreinfo = models.StudentExceptionSupport.objects.filter(student = student_info)
-        exceptions       = models.Exceptions.objects.filter(student = student_info)
+        groupsurvey      = GroupSurvey.objects.get(pk=self.kwargs['groupsurvey_id'])
+        student_moreinfo = models.StudentExceptionSupport.objects.filter(student = student_info, groupsurvey = groupsurvey)
+        exceptions       = models.Exceptions.objects.filter(student = student_info, groupsurvey = groupsurvey)
 
         context['student']        = student_info.get
         context['studentmorinfo'] = student_moreinfo.get
         context['studentgroup']   = StudentGroup.objects.filter(students = student_info).get
         context['exceptions']     = exceptions.get
         context['school']         = School.objects.get(pk=self.kwargs['school_id'])
-        context['groupsurvey']    = GroupSurvey.objects.get(pk=self.kwargs['groupsurvey_id'])
+        context['groupsurvey']    = groupsurvey
         return context
 
 
