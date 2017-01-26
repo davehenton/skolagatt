@@ -4,6 +4,16 @@
 
 
 {% block content %}
+<script>
+       var exam = [];
+       var reason = [];
+
+       var pagetype = "exceptions";
+
+       exam={% if exceptions.exam == "" %}"no"{% else %}{{ exceptions.exam }}{% endif %};
+       reason.push({{exceptions.reason}});
+</script>
+
 {% if groupsurvey.can_add_support_and_exception %}
 	<form action="" method="post" id="exception">{% csrf_token %}
 	<div class="row">
@@ -67,3 +77,6 @@
 
 {% endblock %}
 
+{% block script %}
+<script src='{% static "supportandexception/js/supportandexception.js" %}'></script>
+{% endblock %}

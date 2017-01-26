@@ -10,10 +10,6 @@ $(document).ready(function() {
             {
                 $("#id_exam_"+(i-1)).prop('checked',true);
             }
-            if ($.inArray( i, reason )!=-1)
-            {
-                $("#id_reason_"+(i-1)).prop('checked',true);
-            }
         }
     }
 
@@ -36,13 +32,6 @@ $(document).ready(function() {
 
 
 
-	$(document).on('click',"button[value='exceptionsave']", function(event){
-        if( !$('input[name="reason"]:checked').val()){
-            alert('Það þarf að velja ástæðu');
-            event.preventDefault();
-            return;
-        }
-    });
 
     $(document).on('click', "button[value='exceptiondelete']", function(event){
         if (confirm("Ertu viss um að þú viljir eyða þessari undanþágu") == false) {

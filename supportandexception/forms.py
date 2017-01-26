@@ -92,9 +92,7 @@ class ExceptionsForm(forms.ModelForm):
         fields = '__all__'
         labels = {
             'student'    : 'Nemandi',
-            'reason'     : 'Ástæða',
             'exam'       : 'Próf',
-            'explanation': 'Skýringar',
             'signature'  : 'Undirskrift',
             'date'       : 'Dagsetning',
         }

@@ -13,99 +13,91 @@
 	longer_time={% if supportresource.longer_time == "" %}"no"{% else %}{{supportresource.longer_time}}{% endif %};
 </script>
 
-<form action="" method="post">{% csrf_token %}
-	<div class="row">
-		<div class="col-md-4">
-			<h4>Nafn</h4>
-			<h4>{{student.name}}</h4>
-		</div>
-		<div class="col-md-4">
-			<h4>Kennitala</h4>
-			<h4>{{student.ssn}}</h4>
-		</div>
-		<div class="col-md-4">
-			<h4>Próf</h4>
-			<h4>{{groupsurvey.survey.title}}</h4>
-	</div>
-
-	<hr/>
-
-	<div class="row">
-		<div class="col-md-12">
-			<h4>Stuðningsúrræði</h4>
-		</div>
-	</div>
-
-	<div class="row">
-		<div class="col-md-12">
-			<div class="row">
-				<div class="col-md-3"></div>
-				<div class="col-md-3"><h4>Íslenska</h4></div>
-				<div class="col-md-3"><h4>Enska</h4></div>
-				<div class="col-md-3"><h4>Stærðfræði</h4></div>
+{% if groupsurvey.can_add_support_and_exception %}
+	<form action="" method="post">{% csrf_token %}
+		<div class="row">
+			<div class="col-md-4">
+				<h4>Nafn</h4>
+				<h4>{{student.name}}</h4>
 			</div>
-			{% for value, text in form.support_title.field.choices %}
-			<div class="row">
-				<div class="col-md-3"><h4>{{text}}</h4></div>
-				{% if 'reading_assistance' == value %}
-					{% for check in form.reading_assistance %}
-						<div class="col-md-3">{{check.tag}}</div>
-					{% endfor %}
-				{% endif %}
-				{% if 'interpretation' == value %}
-					{% for check in form.interpretation %}
-						<div class="col-md-3">{{check.tag}}</div>
-					{% endfor %}
-				{% endif %}
-				{% if 'longer_time' == value %}
-					{% for check in form.longer_time %}
-						<div class="col-md-3">{{check.tag}}</div>
-					{% endfor %}
-				{% endif %}
+			<div class="col-md-4">
+				<h4>Kennitala</h4>
+				<h4>{{student.ssn}}</h4>
 			</div>
-			{% endfor %}
+			<div class="col-md-4">
+				<h4>Próf</h4>
+				<h4>{{groupsurvey.survey.title}}</h4>
 		</div>
-	</div>
 
-	<hr/>
+		<hr/>
 
-	<div class="row">
-		<div class="col-md-6">
-			<h4>Sérúrræði</h4>
+		<div class="row">
+			<div class="col-md-12">
+				<h4>Stuðningsúrræði</h4>
+			</div>
 		</div>
-		<div class="col-md-6">
-			<h4>Aðrar athugasemdir</h4>
-		</div>
-	</div>
 
-	<hr/>
-
-	{% if supportresource.student.id == student.id %}
-	<div class="row">
-		<div class="col-md-3 col-md-offset-3">
-			<b>Skráð:</b>{{supportresource.supportresourcesignature}}
+		<div class="row">
+			<div class="col-md-12">
+				<div class="row">
+					<div class="col-md-3"></div>
+					<div class="col-md-3"><h4>Íslenska</h4></div>
+					<div class="col-md-3"><h4>Enska</h4></div>
+					<div class="col-md-3"><h4>Stærðfræði</h4></div>
+				</div>
+				{% for value, text in form.support_title.field.choices %}
+				<div class="row">
+					<div class="col-md-3"><h4>{{text}}</h4></div>
+					{% if 'reading_assistance' == value %}
+						{% for check in form.reading_assistance %}
+							<div class="col-md-3">{{check.tag}}</div>
+						{% endfor %}
+					{% endif %}
+					{% if 'interpretation' == value %}
+						{% for check in form.interpretation %}
+							<div class="col-md-3">{{check.tag}}</div>
+						{% endfor %}
+					{% endif %}
+					{% if 'longer_time' == value %}
+						{% for check in form.longer_time %}
+							<div class="col-md-3">{{check.tag}}</div>
+						{% endfor %}
+					{% endif %}
+				</div>
+				{% endfor %}
+			</div>
 		</div>
-	</div>
-	<div class="row">
-		<div class="col-md-3 col-md-offset-3">
-			<b>Skráir:</b>{{supportresource.supportresourcedate|date:"d-m-Y"|lower}}
-		</div>
-	</div>
-	{% endif %}
 
+		<hr/>
+
+		{% if supportresource.student.id == student.id %}
+		<div class="row">
+			<div class="col-md-3 col-md-offset-3">
+				<b>Skráð:</b>{{supportresource.supportresourcesignature}}
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-3 col-md-offset-3">
+				<b>Skráir:</b>{{supportresource.supportresourcedate|date:"d-m-Y"|lower}}
+			</div>
+		</div>
+		{% endif %}
+
+		<div class="row">
+			{% if  is_school_manager %}
+			<button class="btn btn-success" type="submit" value="supportsave" name="submit">Vista beiðni um stuðningsúrræði</button>
+			<button class="btn btn-danger" type="submit" value="supportdelete" name="submit">Eyða beiðni um stuðningsúrræði</button>
+			{% else %}
+			<button class="btn btn-success" type="submit" value="supportgothrough" name="submit">Til baka</button>
+			{% endif %}
+		</div>
+
+	</form>
+{% else %}
 	<div class="row">
 		Skráningartími fyrir stuðningsúrræði er liðinn.
 	</div>
-	<div class="row">
-		{% if  is_school_manager %}
-		<button class="btn btn-success" type="submit" value="supportsave" name="submit">Vista beiðni um stuðningsúrræði</button>
-		<button class="btn btn-danger" type="submit" value="supportdelete" name="submit">Eyða beiðni um stuðningsúrræði</button>
-		{% else %}
-		<button class="btn btn-success" type="submit" value="supportgothrough" name="submit">Til baka</button>
-		{% endif %}
-	</div>
-
-</form>
+{% endif %}
 {% endblock %}
 {% block script %}
 <script src='{% static "supportandexception/js/supportandexception.js" %}'></script>

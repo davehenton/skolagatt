@@ -95,6 +95,11 @@ class SupportResourceCreate(CreateView):
         return context
 
     def post(self, request, *args, **kwargs):
+        groupsurvey  = GroupSurvey.objects.get(pk=self.kwargs.get('groupsurvey_id'))
+        response_url = reverse(
+            'schools:survey_detail',
+            args=(int(self.kwargs.get('school_id')), int(groupsurvey.studentgroup.id), int(groupsurvey.id))
+        )
         if (request.POST.get('submit') == 'supportsave'):
             ra    = request.POST.getlist('reading_assistance')
             inte  = request.POST.getlist('interpretation')
@@ -114,7 +119,7 @@ class SupportResourceCreate(CreateView):
                 for i in range(len(lt)):
                     longer_time.append(int(lt[i]))
             s = Student.objects.get(pk = self.kwargs.get('pk'))
-            gs = Student.objects.get(pk = self.kwargs.get('groupsurvey_id'))
+            gs = GroupSurvey.objects.get(pk = self.kwargs.get('groupsurvey_id'))
             if not (models.StudentExceptionSupport.objects.filter(student = s, groupsurvey = gs).exists()):
                 ses         = models.StudentExceptionSupport()
                 ses.student = s
@@ -138,28 +143,14 @@ class SupportResourceCreate(CreateView):
                 sr.student = s
                 sr.groupsurvey = gs
                 sr.save()
-            return HttpResponseRedirect(
-                reverse(
-                    'schools:student_detail',
-                    args=(int(self.kwargs.get('school_id')), int(self.kwargs.get('pk')),)
-                )
-            )
+            return HttpResponseRedirect(response_url)
         if (request.POST.get('submit') == 'supportdelete'):
             s = Student.objects.get(pk = self.kwargs.get('pk'))
+            gs = GroupSurvey.objects.get(pk = self.kwargs.get('groupsurvey_id'))
             models.SupportResource.objects.filter(student = s, groupsurvey = gs).delete()
-            return HttpResponseRedirect(
-                reverse(
-                    'schools:student_detail',
-                    args=(int(self.kwargs.get('school_id')), int(self.kwargs.get('pk')),)
-                )
-            )
+            return HttpResponseRedirect(response_url)
         if (request.POST.get('submit') == 'supportgothrough'):
-            return HttpResponseRedirect(
-                reverse(
-                    'schools:student_detail',
-                    args=(int(self.kwargs.get('school_id')), int(self.kwargs.get('pk')),)
-                )
-            )
+            return HttpResponseRedirect(response_url)
 
 
 class ExceptionCreate(CreateView):
@@ -170,6 +161,11 @@ class ExceptionCreate(CreateView):
         return is_school_manager(self.request, self.kwargs)
 
     def post(self, request, *args, **kwargs):
+        groupsurvey  = GroupSurvey.objects.get(pk=self.kwargs.get('groupsurvey_id'))
+        response_url = reverse(
+            'schools:survey_detail',
+            args=(int(self.kwargs.get('school_id')), int(groupsurvey.studentgroup.id), int(groupsurvey.id))
+        )
         if (request.POST.get('submit') == 'exceptionsave'):
             exam      = request.POST.getlist("exam")
             reason    = request.POST.get('reason')
@@ -198,30 +194,15 @@ class ExceptionCreate(CreateView):
                 exceptions.student = s
                 exceptions.groupsurvey = gs
                 exceptions.save()
-            return HttpResponseRedirect(
-                reverse(
-                    'schools:student_detail',
-                    args=(int(self.kwargs.get('school_id')), int(self.kwargs.get('pk')),)
-                )
-            )
+            return HttpResponseRedirect(response_url)
         if (request.POST.get('submit') == 'exceptiondelete'):
             models.Exceptions.objects.filter(
                 student = Student.objects.get(pk=self.kwargs.get('pk')),
                 groupsurvey = GroupSurvey.objects.get(pk=self.kwargs.get('groupsurvey_id')),
             ).delete()
-            return HttpResponseRedirect(
-                reverse(
-                    'schools:student_detail',
-                    args=(int(self.kwargs.get('school_id')), int(self.kwargs.get('pk')),)
-                )
-            )
+            return HttpResponseRedirect(response_url)
         if (request.POST.get('submit') == 'exceptiongothrough'):
-            return HttpResponseRedirect(
-                reverse(
-                    'schools:student_detail',
-                    args=(int(self.kwargs.get('school_id')), int(self.kwargs.get('pk')),)
-                )
-            )
+            return HttpResponseRedirect(response_url)
 
     def get_context_data(self, **kwargs):
         context          = super(ExceptionCreate, self).get_context_data(**kwargs)
@@ -231,7 +212,7 @@ class ExceptionCreate(CreateView):
         exceptions       = models.Exceptions.objects.filter(student = student_info, groupsurvey = groupsurvey)
 
         context['student']        = student_info.get
-        context['studentmoreinfo'] = student_moreinfo.get
+        context['studentmorinfo'] = student_moreinfo.get
         context['studentgroup']   = StudentGroup.objects.filter(students = student_info).get
         context['exceptions']     = exceptions.get
         context['school']         = School.objects.get(pk=self.kwargs['school_id'])
