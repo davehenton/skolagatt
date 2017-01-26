@@ -93,7 +93,7 @@ class SupportResourceCreate(CreateView):
         return context
 
     def post(self, request, *args, **kwargs):
-        if(request.POST.get('submit') == 'supportsave'):
+        if (request.POST.get('submit') == 'supportsave'):
             ra    = request.POST.getlist('reading_assistance')
             inte  = request.POST.getlist('interpretation')
             lt    = request.POST.getlist('longer_time')
@@ -102,13 +102,13 @@ class SupportResourceCreate(CreateView):
             interpretation     = []
             longer_time        = []
 
-            if(ra != []):
+            if (ra != []):
                 for i in range(len(ra)):
                     reading_assistance.append(int(ra[i]))
-            if(inte != []):
+            if (inte != []):
                 for i in range(len(inte)):
                     interpretation.append(int(inte[i]))
-            if(lt != []):
+            if (lt != []):
                 for i in range(len(lt)):
                     longer_time.append(int(lt[i]))
             s = Student.objects.get(pk = self.kwargs.get('pk'))
@@ -117,7 +117,7 @@ class SupportResourceCreate(CreateView):
                 ses.student = s
                 ses.save()
 
-            if(models.SupportResource.objects.filter(student = s).exists()):
+            if (models.SupportResource.objects.filter(student = s).exists()):
                 models.SupportResource.objects.filter(student = s).update(
                     reading_assistance = reading_assistance,
                     interpretation     = interpretation,
@@ -139,7 +139,7 @@ class SupportResourceCreate(CreateView):
                     args=(int(self.kwargs.get('school_id')), int(self.kwargs.get('pk')),)
                 )
             )
-        if(request.POST.get('submit') == 'supportdelete'):
+        if (request.POST.get('submit') == 'supportdelete'):
             s = Student.objects.get(pk = self.kwargs.get('pk'))
             models.SupportResource.objects.filter(student = s).delete()
             return HttpResponseRedirect(
@@ -148,7 +148,7 @@ class SupportResourceCreate(CreateView):
                     args=(int(self.kwargs.get('school_id')), int(self.kwargs.get('pk')),)
                 )
             )
-        if(request.POST.get('submit') == 'supportgothrough'):
+        if (request.POST.get('submit') == 'supportgothrough'):
             return HttpResponseRedirect(
                 reverse(
                     'schools:student_detail',
@@ -165,11 +165,11 @@ class ExceptionCreate(CreateView):
         return is_school_manager(self.request, self.kwargs)
 
     def post(self, request, *args, **kwargs):
-        if(request.POST.get('submit') == 'exceptionsave'):
+        if (request.POST.get('submit') == 'exceptionsave'):
             exam      = request.POST.getlist("exam")
             reason    = request.POST.get('reason')
             exam_list = []
-            if(exam != []):
+            if (exam != []):
                 for i in range(len(exam)):
                     exam_list.append(int(exam[i]))
             s = Student.objects.get(pk = self.kwargs.get('pk'))
@@ -177,7 +177,7 @@ class ExceptionCreate(CreateView):
                 ses         = models.StudentExceptionSupport()
                 ses.student = s
                 ses.save()
-            if(models.Exceptions.objects.filter(student = s).exists()):
+            if (models.Exceptions.objects.filter(student = s).exists()):
                 models.Exceptions.objects.filter(student = s).update(
                     exam = exam_list,
                 )
@@ -196,7 +196,7 @@ class ExceptionCreate(CreateView):
                     args=(int(self.kwargs.get('school_id')), int(self.kwargs.get('pk')),)
                 )
             )
-        if(request.POST.get('submit') == 'exceptiondelete'):
+        if (request.POST.get('submit') == 'exceptiondelete'):
             models.Exceptions.objects.filter(
                 student = Student.objects.get(pk=self.kwargs.get('pk'))).delete()
             return HttpResponseRedirect(
@@ -205,7 +205,7 @@ class ExceptionCreate(CreateView):
                     args=(int(self.kwargs.get('school_id')), int(self.kwargs.get('pk')),)
                 )
             )
-        if(request.POST.get('submit') == 'exceptiongothrough'):
+        if (request.POST.get('submit') == 'exceptiongothrough'):
             return HttpResponseRedirect(
                 reverse(
                     'schools:student_detail',
