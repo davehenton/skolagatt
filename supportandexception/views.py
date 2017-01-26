@@ -9,7 +9,7 @@ from django.contrib.auth.models import User
 from rest_framework import viewsets
 
 from .             import models
-from common.models import Student, StudentGroup, School, Manager
+from common.models import Student, StudentGroup, School, Manager, GroupSurvey
 from common.forms  import StudentForm
 from .             import forms
 from common.util   import is_school_manager
@@ -55,6 +55,7 @@ class ExamSupport(ListView):
         context['studentsexception'] = models.Exceptions.objects.filter(
             student__in = student_info).all
         context['school']            = School.objects.get(pk=self.kwargs['school_id'])
+        context['groupsurvey']       = GroupSurvey.objects.get(pk=self.kwargs['groupsurvey_id'])
         return context
 
 
@@ -64,9 +65,10 @@ class Detail(CreateView):
     template_name = "supportandexception/student_form.html"
 
     def get_context_data(self, **kwargs):
-        context            = super(Detail, self).get_context_data(**kwargs)
-        context['student'] = Student.objects.filter(pk=self.kwargs.get('student_id')).get
-        context['school']  = School.objects.get(pk=self.kwargs['school_id'])
+        context                = super(Detail, self).get_context_data(**kwargs)
+        context['student']     = Student.objects.filter(pk=self.kwargs.get('student_id')).get
+        context['school']      = School.objects.get(pk=self.kwargs['school_id'])
+        context['groupsurvey'] = GroupSurvey.objects.get(pk=self.kwargs['groupsurvey_id'])
         return context
 
 
@@ -86,13 +88,12 @@ class SupportResourceCreate(CreateView):
             student = student_info).get or "''"
         context['studentgroup']    = StudentGroup.objects.filter(students = student_info).get
         context['school']          = School.objects.get(pk=self.kwargs['school_id'])
+        context['groupsurvey']     = GroupSurvey.objects.get(pk=self.kwargs['groupsurvey_id'])
 
         return context
 
     def post(self, request, *args, **kwargs):
         if(request.POST.get('submit') == 'supportsave'):
-            notes = request.POST['notes']
-            expl  = request.POST['explanation']
             ra    = request.POST.getlist('reading_assistance')
             inte  = request.POST.getlist('interpretation')
             lt    = request.POST.getlist('longer_time')
@@ -111,23 +112,19 @@ class SupportResourceCreate(CreateView):
                 for i in range(len(lt)):
                     longer_time.append(int(lt[i]))
             s = Student.objects.get(pk = self.kwargs.get('pk'))
-            if(models.StudentExceptionSupport.objects.filter(student = s).exists()):
-                models.StudentExceptionSupport.objects.filter(student = s).update(notes = notes)
-            else:
-                ses         = models.StudentExceptionSupport(notes = notes)
+            if not (models.StudentExceptionSupport.objects.filter(student = s).exists()):
+                ses         = models.StudentExceptionSupport()
                 ses.student = s
                 ses.save()
 
             if(models.SupportResource.objects.filter(student = s).exists()):
                 models.SupportResource.objects.filter(student = s).update(
-                    explanation        = expl,
                     reading_assistance = reading_assistance,
                     interpretation     = interpretation,
                     longer_time        = longer_time
                 )
             else:
                 sr = models.SupportResource(
-                    explanation              = expl,
                     supportresourcesignature = Manager.objects.get(
                         user=User.objects.filter(username=self.request.user)),
                     reading_assistance       = reading_assistance,
@@ -169,30 +166,24 @@ class ExceptionCreate(CreateView):
 
     def post(self, request, *args, **kwargs):
         if(request.POST.get('submit') == 'exceptionsave'):
-            expl      = request.POST.get('explanation')
             exam      = request.POST.getlist("exam")
-            notes     = request.POST.get('notes')
             reason    = request.POST.get('reason')
             exam_list = []
             if(exam != []):
                 for i in range(len(exam)):
                     exam_list.append(int(exam[i]))
             s = Student.objects.get(pk = self.kwargs.get('pk'))
-            if(models.StudentExceptionSupport.objects.filter(student = s).exists()):
-                models.StudentExceptionSupport.objects.filter(student = s).update(notes = notes)
-            else:
-                ses         = models.StudentExceptionSupport(notes = notes)
+            if not (models.StudentExceptionSupport.objects.filter(student = s).exists()):
+                ses         = models.StudentExceptionSupport()
                 ses.student = s
                 ses.save()
             if(models.Exceptions.objects.filter(student = s).exists()):
                 models.Exceptions.objects.filter(student = s).update(
-                    explanation = expl, exam = exam_list, reason = reason
+                    exam = exam_list,
                 )
             else:
                 exceptions = models.Exceptions(
-                    explanation = expl,
                     exam = exam_list,
-                    reason = reason,
                     exceptionssignature = Manager.objects.get(
                         user=User.objects.filter(username=self.request.user)
                     )
@@ -233,6 +224,7 @@ class ExceptionCreate(CreateView):
         context['studentgroup']   = StudentGroup.objects.filter(students = student_info).get
         context['exceptions']     = exceptions.get
         context['school']         = School.objects.get(pk=self.kwargs['school_id'])
+        context['groupsurvey']    = GroupSurvey.objects.get(pk=self.kwargs['groupsurvey_id'])
         return context
 
 
