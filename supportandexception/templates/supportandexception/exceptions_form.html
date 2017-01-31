@@ -5,15 +5,10 @@
 
 {% block content %}
 <script>
-       var exam = [];
-       var reason = [];
+var pagetype="exceptions";
 
-       var pagetype = "exceptions";
-
-       exam={% if exceptions.exam == "" %}"no"{% else %}{{ exceptions.exam }}{% endif %};
-       reason.push({{exceptions.reason}});
+var exempt = {% if exceptions.exempt == True %} true{% else %} false{% endif %};
 </script>
-
 {% if groupsurvey.can_add_support_and_exception %}
 	<form action="" method="post" id="exception">{% csrf_token %}
 	<div class="row">
@@ -29,6 +24,7 @@
 			<h4>Próf</h4>
 			<h4>{{groupsurvey.survey.title}}</h4>
 	</div>
+	<hr/>
 	<div class="row">
 		<div class="col-md-12">
 			<div class="row">
@@ -39,18 +35,18 @@
 			Undanþágur frá því að þreyta samræmd könnunarpróf í 4., 7. og 10. bekk eru heimilar skv. 39. gr. laga um grunnskóla, nr. 91/2008. Samkvæmt lögunum er skólastjórum heimilt, ef gildar ástæður mæla með því og ef samþykki foreldra liggur fyrir, að veita nemendum undanþágu frá því að þreyta samræmd könnunarpróf.
 		</div>
 	</div>
-	<table>
-		<tr>
-			{% for exam_text in form.exam %}
-				<th>{{ exam_text.choice_label }}</th>
-			{% endfor %}
-		</tr>
-		<tr name="exam" id="exam">
-			{% for exam_text in form.exam %}
-				<td>{{ exam_text.tag }}</td>
-			{% endfor %}
-		</tr>
-	</table>
+	<hr/>
+	<div class="row">
+		<div class="form-group col-md-12">
+			{{ form.exempt }}
+			<label for="{{ form.exempt.name }}">{{ form.exempt.label }}</label>
+			{% if form.exempt.errors %}
+		    	<span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+			    <span id="inputError2Status" class="sr-only">(villa)</span>
+			    <p class="text-danger">{{ form.exempt.errors.as_text }}</p>
+		    {% endif %}
+		</div>
+	</div>
 
 	{% if exceptions.student.id == student.id %}
 		<div>

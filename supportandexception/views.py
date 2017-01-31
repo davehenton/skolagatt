@@ -167,12 +167,8 @@ class ExceptionCreate(CreateView):
             args=(int(self.kwargs.get('school_id')), int(groupsurvey.studentgroup.id), int(groupsurvey.id))
         )
         if (request.POST.get('submit') == 'exceptionsave'):
-            exam      = request.POST.getlist("exam")
-            reason    = request.POST.get('reason')
-            exam_list = []
-            if (exam != []):
-                for i in range(len(exam)):
-                    exam_list.append(int(exam[i]))
+            exempt = request.POST.getlist('exempt')
+
             s = Student.objects.get(pk = self.kwargs.get('pk'))
             gs = GroupSurvey.objects.get(pk = self.kwargs.get('groupsurvey_id'))
             if not (models.StudentExceptionSupport.objects.filter(student = s, groupsurvey = gs).exists()):
@@ -182,11 +178,11 @@ class ExceptionCreate(CreateView):
                 ses.save()
             if (models.Exceptions.objects.filter(student = s, groupsurvey = gs).exists()):
                 models.Exceptions.objects.filter(student = s, groupsurvey = gs).update(
-                    exam = exam_list,
+                    exempt = exempt,
                 )
             else:
                 exceptions = models.Exceptions(
-                    exam = exam_list,
+                    exempt = exempt,
                     exceptionssignature = Manager.objects.get(
                         user=User.objects.filter(username=self.request.user)
                     )

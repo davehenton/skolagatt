@@ -5,12 +5,7 @@ $(document).ready(function() {
     });*/
 
     if ( typeof pagetype !== 'undefined' && pagetype == 'exceptions' ) {
-        for(i=1; i < 4 ; i++ ){
-            if ($.inArray( i, exam )!=-1)
-            {
-                $("#id_exam_"+(i-1)).prop('checked',true);
-            }
-        }
+        $("#id_exempt").prop('checked', exempt)
     }
 
     if ( typeof pagetype !== 'undefined' && pagetype == 'supportresource' ) {

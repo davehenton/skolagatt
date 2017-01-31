@@ -18,7 +18,7 @@ class StudentExceptionSupport(models.Model):
 class Exceptions(models.Model):
     student             = models.ForeignKey(Student)
     groupsurvey         = models.ForeignKey(GroupSurvey, null=True)
-    exam                = models.CharField(max_length = 32)
+    exempt              = models.BooleanField(default=False)
     exceptionssignature = models.ForeignKey(Manager)
     exceptionsdate      = models.DateField(auto_now=False, auto_now_add=True, null=True)
 
@@ -30,10 +30,9 @@ class SupportResource(models.Model):
     groupsurvey              = models.ForeignKey(GroupSurvey, null=True)
     supportresourcesignature = models.ForeignKey(Manager)
     supportresourcedate      = models.DateField(auto_now = True, null = True)
-    support_title            = models.CharField(max_length = 32, null=True)
-    reading_assistance       = models.CharField(max_length = 32, null=True)
-    interpretation           = models.CharField(max_length = 32, null=True)
-    longer_time              = models.CharField(max_length = 32, null=True)
+    reading_assistance       = models.BooleanField(default=False)
+    interpretation           = models.BooleanField(default=False)
+    longer_time              = models.BooleanField(default=False)
 
 
 
@@ -42,7 +41,7 @@ class ExceptionsSerializer(serializers.ModelSerializer):
     class Meta:
         model  = Exceptions
         fields = (
-            'exam',
+            'exempt',
             'exceptionssignature',
             'exceptionsdate'
         )
