@@ -3,14 +3,10 @@
 
 {% block content %}
 <script>
-	var reading_assistance = [];
-	var interpretation = [];
-	var longer_time = [];
 	var pagetype = "supportresource";
-
-	reading_assistance={% if supportresource.reading_assistance == "" %}"no"{% else %}{{ supportresource.reading_assistance }}{% endif %};
-	interpretation={% if supportresource.interpretation == "" %}"no"{% else %}{{supportresource.interpretation}}{% endif %};
-	longer_time={% if supportresource.longer_time == "" %}"no"{% else %}{{supportresource.longer_time}}{% endif %};
+	var reading_assistance = {% if exceptions.reading_assistance == True %} true{% else %} false{% endif %};
+	var interpretation = {% if exceptions.interpretation == True %} true{% else %} false{% endif %};
+	var longer_time = {% if exceptions.exempt == True %} true{% else %} false{% endif %};
 </script>
 
 {% if groupsurvey.can_add_support_and_exception %}

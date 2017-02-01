@@ -9,20 +9,9 @@ $(document).ready(function() {
     }
 
     if ( typeof pagetype !== 'undefined' && pagetype == 'supportresource' ) {
-        for(i=1; i < 4 ; i++ ){
-            if ($.inArray( i, reading_assistance )!=-1)
-            {
-                $("#id_reading_assistance_"+(i-1)).prop('checked',true);
-            }
-            if ($.inArray( i, interpretation )!=-1)
-            {
-                $("#id_interpretation_"+(i-1)).prop('checked',true);
-            }
-            if ($.inArray( i, longer_time )!=-1)
-            {
-                $("#id_longer_time_"+(i-1)).prop('checked',true);
-            }
-        }
+        $("#id_reading_assistance").prop('checked', reading_assistance);
+        $("#id_interpretation".prop('checked', interpretation);
+        $("#id_longer_time").prop('checked', longer_time);
     }
 
 
