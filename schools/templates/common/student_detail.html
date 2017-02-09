@@ -51,9 +51,7 @@
 							{% get_survey_results student surveyresults.survey as student_result %}
 							<td>
 								{% if surveyresults.survey.studentgroup.id %}
-									<a href="{% url 'schools:survey_detail' school.id surveyresults.survey.studentgroup.id surveyresults.survey.id %}">
 										{{surveyresults.survey.survey.student_year}}. bekkur - {{surveyresults.survey.survey.title}}
-									</a>
 								{% else %}
 									{{surveyresults.survey.survey.student_year}}. bekkur - {{surveyresults.survey.survey.title}}
 								{% endif %}
