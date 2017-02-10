@@ -28,7 +28,7 @@ import common.util   as common_util
 import common.forms  as cm_forms
 from survey.models import (
     Survey, SurveyGradingTemplate, SurveyInputField,
-    SurveyInputGroup, SurveyResource, 
+    SurveyInputGroup, SurveyResource, SurveyTransformation,
     SurveyType
 )
 
@@ -1125,9 +1125,9 @@ class SurveyDetail(common_mixins.SchoolEmployeeMixin, DetailView):
         context['survey_resources'] = SurveyResource.objects.filter(survey=survey)
         context['school']           = School.objects.get(pk=self.kwargs['school_id'])
         context['studentgroup']     = StudentGroup.objects.get(pk=self.kwargs['student_group'])
-        #transformation = SurveyTransformation.objects.filter(survey=survey)
-        #if transformation == []:
-        #    transformation = -1
+        transformation = SurveyTransformation.objects.filter(survey=survey)
+        if transformation == []:
+            transformation = -1
         
         try:
             context['students'] = self.object.studentgroup.students.all()
@@ -1149,7 +1149,7 @@ class SurveyDetail(common_mixins.SchoolEmployeeMixin, DetailView):
                         r['input_values'],
                         student,
                         survey_type,
-         #               transformation
+                        transformation
                     )
                 except Exception as e:
                     student_results[student] = common_util.calc_survey_results(

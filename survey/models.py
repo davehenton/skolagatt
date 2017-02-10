@@ -93,12 +93,12 @@ class SurveyInputField(models.Model):
 
 
 # Vörpunartafla
-#class SurveyTransformation(models.Model):
-#    survey   = models.ForeignKey(Survey)
-#    name     = models.CharField(max_length=128)
-#    order    = models.IntegerField()
-#    data     = JSONField()
-#    unit     = models.CharField(max_length=60, null = True)
+class SurveyTransformation(models.Model):
+    survey   = models.ForeignKey(Survey)
+    name     = models.CharField(max_length=128)
+    order    = models.IntegerField()
+    data     = JSONField()
+    unit     = models.CharField(max_length=60, null = True)
 
-#    def __str__(self):
-#        return self.name
+    def __str__(self):
+        return self.name

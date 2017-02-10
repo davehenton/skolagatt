@@ -64,15 +64,15 @@ urlpatterns = [
         name='survey_template_delete'),
 
     # ======= SURVEY TRANSFORMATION TABLE ======== #
-    #url(r'^(?P<survey_id>\d+)/vorpun/(?P<pk>\d+)/$',
-    #    views.SurveyTransformationDetail.as_view(),
-    #    name='survey_transformation_detail'),
-    #url(r'^(?P<survey_id>\d+)/vorpun/create/$',
-    #    views.SurveyTransformationCreate.as_view(),
-    #    name='survey_transformation_create'),
-    #url(r'^(?P<survey_id>\d+)/vorpun/(?P<pk>\d+)/delete/$',
-    #    views.SurveyTransformationDelete.as_view(),
-    #    name='survey_transformation_delete'),
+    url(r'^(?P<survey_id>\d+)/vorpun/(?P<pk>\d+)/$',
+        views.SurveyTransformationDetail.as_view(),
+        name='survey_transformation_detail'),
+    url(r'^(?P<survey_id>\d+)/vorpun/create/$',
+        views.SurveyTransformationCreate.as_view(),
+        name='survey_transformation_create'),
+    url(r'^(?P<survey_id>\d+)/vorpun/(?P<pk>\d+)/delete/$',
+        views.SurveyTransformationDelete.as_view(),
+        name='survey_transformation_delete'),
 
     # ========== SURVEY INPUT GROUP FIELD ========== #
     url(r'^(?P<survey_id>\d+)/group/(?P<pk>\d+)/$',
