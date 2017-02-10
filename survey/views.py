@@ -10,7 +10,7 @@ import openpyxl
 
 from .            import forms
 from .models      import (
-    Survey, SurveyType, SurveyResource, 
+    Survey, SurveyType, SurveyResource, SurveyTransformation,
     SurveyGradingTemplate, SurveyInputField, SurveyInputGroup
 )
 from common.models      import (
@@ -39,7 +39,7 @@ class SurveyDetail(UserPassesTestMixin, DetailView):
         context['survey']                    = survey
         context['survey_resource_list']      = SurveyResource.objects.filter(survey=survey)
         context['survey_template_list']      = SurveyGradingTemplate.objects.filter(survey=survey)
-        #context['survey_transformation_list'] = SurveyTransformation.objects.filter(survey=survey)
+        context['survey_transformation_list'] = SurveyTransformation.objects.filter(survey=survey)
         input_groups                         = SurveyInputGroup.objects.filter(survey=survey)
         context['survey_input_field_groups'] = input_groups
         inputs = []
@@ -317,7 +317,7 @@ class SurveyInputGroupDelete(SurveyDeleteSuperSuccessMixin, DeleteView):
 
 # Transformation
 
-"""
+
 class SurveyTransformationDetail(UserPassesTestMixin, DetailView):
     model         = SurveyTransformation
 
@@ -385,7 +385,7 @@ class SurveyTransformationCreate(SurveySuperSuccessMixin, CreateView):
 class SurveyTransformationDelete(SurveyDeleteSuperSuccessMixin, DeleteView):
     model         = SurveyTransformation
 
-"""
+
 class AdminOutput(UserPassesTestMixin, ListView):
     model      = Survey
     template_name = "survey/survey_admin_filter.html"
