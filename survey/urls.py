@@ -97,7 +97,4 @@ urlpatterns = [
     url(r'^adminoutput/$',
         views.AdminOutput.as_view(),
         name='admin_output'),
-    url(r'^adminoutput/excel/$',
-        views.admin_output_excel,
-        name='admin_output_excel'),
 ]

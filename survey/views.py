@@ -404,14 +404,14 @@ class AdminOutput(UserPassesTestMixin, ListView):
     def test_func(self):
         return self.request.user.is_superuser
 
-
-def admin_output_excel(request):
-    print('hello')
+def _generate_excel_audun():
+#def admin_output_excel(request):
+#    print('hello')
         
     
-    response = HttpResponse(
-        content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-    response['Content-Disposition'] = 'attachment; filename=Þjálguðgögn.xlsx'
+#    response = HttpResponse(
+#        content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+#    response['Content-Disposition'] = 'attachment; filename=Þjálguðgögn.xlsx'
 
     wb       = openpyxl.Workbook()
     
@@ -423,8 +423,10 @@ def admin_output_excel(request):
         ws['A1'] = 'Kennitala nemanda'
         ws['B1'] = 'Nafn'
         ws['C1'] = 'September'
-        ws['D1'] =  'Janúar'
-        ws['E1'] =  'Mismunur'
+        ws['D1'] = 'Janúar'
+        ws['E1'] = 'Mismunur'
+        ws['F1'] = 'September óþjálgað'
+        ws['G1'] = 'Janúar óþjálgað'
 
         sept_identifier = "{}b_LF_sept".format(year)
         surveys = Survey.objects.filter(survey_type_id = 2,student_year = year, identifier = sept_identifier)
@@ -433,7 +435,7 @@ def admin_output_excel(request):
             survey_type = SurveyType.objects.filter(survey=survey.id).values('id')
             dic = survey_type[0]
             survey_type = dic['id']
-            transformation = SurveyTransformation.objects.filter(survey=survey)
+            transformation_sept = SurveyTransformation.objects.filter(survey=survey)
             for group in groups:
                 groupsurveys = GroupSurvey.objects.filter(studentgroup = group, survey = survey).all()
                 for groupsurvey in groupsurveys:
@@ -449,15 +451,26 @@ def admin_output_excel(request):
                                 r_sept['input_values'],
                                 result_sept.student,
                                 survey_type,
-                                transformation
+                                transformation_sept,
                             )
-
-                            ws.cell('C' + str(index)).value = survey_student_result_sept[0]
+                            survey_student_result_sept_nt = common_util.calc_survey_results(
+                                sept_identifier,
+                                literal_eval(r_sept['click_values']),
+                                r_sept['input_values'],
+                                result_sept.student,
+                                survey_type,
+                            )
+                           
+                            if not survey_student_result_sept[0] == '':
+                                ws.cell('C' + str(index)).value = survey_student_result_sept[0]
+                            if not survey_student_result_sept_nt[0] == '':
+                                ws.cell('F' + str(index)).value = survey_student_result_sept_nt[0]
                         except Exception as e:
                             print('sept' + str(e))
 
                         jan_identifier = "b{}_LF_jan17".format(year)
                         jan_survey = Survey.objects.filter(identifier = jan_identifier).first()
+                        transformation_jan = SurveyTransformation.objects.filter(survey=jan_survey)
                         jan_gs = GroupSurvey.objects.filter(survey = jan_survey, studentgroup = groupsurvey.studentgroup).first()
                         #import pdb; pdb.set_trace()
                         
@@ -471,12 +484,22 @@ def admin_output_excel(request):
                                     r_jan['input_values'],
                                     result_jan.student,
                                     survey_type,
-                                    transformation
+                                    transformation_jan,
+                                )
+                                survey_student_result_jan_nt = common_util.calc_survey_results(
+                                    jan_identifier,
+                                    literal_eval(r_jan['click_values']),
+                                    r_jan['input_values'],
+                                    result_jan.student,
+                                    survey_type,
                                 ) 
+
                                 if not survey_student_result_jan[0] == '':
                                     ws.cell('D' + str(index)).value = survey_student_result_jan[0]
-                                    diff = int(survey_student_result_jan[0]) - int(survey_student_result_sept[0])
-                                    ws.cell('E' + str(index)).value = diff
+                                    if not survey_student_result_sept[0] == '':
+                                        diff = int(survey_student_result_jan[0]) - int(survey_student_result_sept[0])
+                                        ws.cell('E' + str(index)).value = diff
+                                    ws.cell('G' + str(index)).value = survey_student_result_jan_nt[0]
                             except Exception as e:
                                 print('Jan' + str(e))
                         
@@ -485,7 +508,7 @@ def admin_output_excel(request):
 
         
     
+    wb.save(filename = '/tmp/audun.xlsx')
+#    wb.save(response)
 
-    wb.save(response)
-
-    return response
+#    return response
