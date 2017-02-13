@@ -207,7 +207,7 @@ def calc_survey_results(
                 
                 data = transformation[0].data               
                 if(transformation != -1):
-                    oam_string = str(int(data[oam])) + ' ' + transformation[0].unit               
+                    oam_string = int(data[oam])
                 return [oam_string] 
             except:
                 return [""]
