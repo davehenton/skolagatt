@@ -8,11 +8,14 @@ from django.contrib.auth.mixins import UserPassesTestMixin
 from django.core.urlresolvers import reverse_lazy
 import openpyxl
 
+from ast       import literal_eval
+
 from .            import forms
 from .models      import (
     Survey, SurveyType, SurveyResource, SurveyTransformation,
     SurveyGradingTemplate, SurveyInputField, SurveyInputGroup
 )
+import common.util   as common_util
 from common.models      import (
     School, SurveyResult, StudentGroup, GroupSurvey
 )
@@ -402,59 +405,86 @@ class AdminOutput(UserPassesTestMixin, ListView):
         return self.request.user.is_superuser
 
 
-def AdminOutputExcel(request):
-    if request.is_ajax() and request.method == 'GET':
-        types = request.GET['types']
-        studentyear = request.GET['studentyear']
-        month = request.GET['month']
-        school = request.GET['school']
+def admin_output_excel(request):
+    print('hello')
+        
+    
+    response = HttpResponse(
+        content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename=Þjálguðgögn.xlsx'
 
-        surveydata = []
-        groupdata = []
-        surveygroupdata = []
+    wb       = openpyxl.Workbook()
+    
+    index = 2
+    for year in range(1,11):
+        title = "Árgangur {}".format(year)
+        ws = wb.create_sheet(title=title)
+        ws['A1'] = 'Kennitala nemanda'
+        ws['B1'] = 'Nafn'
+        ws['C1'] = 'September'
+        ws['D1'] =  'Janúar'
+        ws['E1'] =  'Mismunur'
 
-        if types != -1:
-            surveydata.append(int(types))
+        sept_identifier = "{}b_LF_sept".format(year)
+        surveys = Survey.objects.filter(survey_type_id = 2,student_year = year, identifier = sept_identifier)
+        groups = StudentGroup.objects.filter(student_year = year).all()
+        for survey in surveys:
+            survey_type = SurveyType.objects.filter(survey=survey.id).values('id')
+            dic = survey_type[0]
+            survey_type = dic['id']
+            transformation = SurveyTransformation.objects.filter(survey=survey)
+            for group in groups:
+                groupsurveys = GroupSurvey.objects.filter(studentgroup = group, survey = survey).all()
+                for groupsurvey in groupsurveys:
+                    results = SurveyResult.objects.filter(survey = groupsurvey)
+                    for result_sept in results:
+                        ws.cell('A' + str(index)).value = result_sept.student.ssn
+                        ws.cell('B' + str(index)).value = result_sept.student.name
+                        try:
+                            r_sept = literal_eval(result_sept.results)
+                            survey_student_result_sept = common_util.calc_survey_results(
+                                sept_identifier,
+                                literal_eval(r_sept['click_values']),
+                                r_sept['input_values'],
+                                result_sept.student,
+                                survey_type,
+                                transformation
+                            )
 
-        print(surveydata)
-        survey = Survey.objects.filter(surveydata)
+                            ws.cell('C' + str(index)).value = survey_student_result_sept[0]
+                        except Exception as e:
+                            print(str(e))
 
-        group = StudentGroup.objects.filter(student_year = studentyear, school = school)
+                        jan_identifier = "b{}_LF_jan17".format(year)
+                        jan_survey = Survey.objects.filter(identifier = jan_identifier).first()
+                        jan_gs = GroupSurvey.objects.filter(survey = jan_survey, studentgroup = groupsurvey.studentgroup).first()
+                        #import pdb; pdb.set_trace()
+                        
+                        if SurveyResult.objects.filter(student = result_sept.student, survey = jan_gs).exists():
+                            result_jan = SurveyResult.objects.filter(student = result_sept.student, survey = jan_gs).first()
+                            try:
+                                r_jan = literal_eval(result_jan.results)
+                                survey_student_result_jan = common_util.calc_survey_results(
+                                    jan_identifier,
+                                    literal_eval(r_jan['click_values']),
+                                    r_jan['input_values'],
+                                    result_jan.student,
+                                    survey_type,
+                                    transformation
+                                ) 
+                                if not survey_student_result_jan[0] == '':
+                                    ws.cell('D' + str(index)).value = survey_student_result_jan[0]
+                                    diff = int(survey_student_result_jan[0]) - int(survey_student_result_sept[0])
+                                    ws.cell('E' + str(index)).value = diff
+                            except Exception as e:
+                                print(str(e))
+                        
+                        index += 1
+                        
 
-        surveygroup = GroupSurvey.objects.filter(studentgroup = group, survey = survey)
+        
+    
 
-        result = SurveyResult.objects.filter(survey = surveygroup)
-        print('gaddi')
-        print(types)
-        print(studentyear)
-        print(month)
-        print("Elli")
-        print(survey)
-        print(group)
-        print(surveygroup)
-        print(result)
-        response = HttpResponse(
-            content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-        response['Content-Disposition'] = 'attachment; filename=samræmdupróf.xlsx'
+    wb.save(response)
 
-        wb       = openpyxl.Workbook()
-        ws       = wb.get_active_sheet()
-        ws.title = 'samræmdupróf'
-
-        ws['A1'] = 'Auðkenni'
-        ws['B1'] = 'Kennitala sḱóla'
-        ws['C1'] = 'Orð á mínútu'
-        ws['D1'] = 'Villur'
-        ws['E1'] = 'Fjöldi lesina orða'
-        ws['F1'] = 'Fjöldi villna'
-        ws['G1'] = 'Lestími'
-        ws['H1'] = 'Árgangur'
-        ws['I1'] = 'Tegund prófs'
-        ws['J1'] = 'Mánuður'
-        ws['K1'] = 'Prófár'
-
-        wb.save(response)
-
-        return response
-#    else:
-#        return
+    return response
