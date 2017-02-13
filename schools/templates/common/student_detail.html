@@ -25,7 +25,7 @@
 			{% if  is_school_manager %}
 			<div class="pull-right">
 				<a href="{% url 'supportandexception:exception' school.id student.id %}" class="btn btn-success" data-action='save_notes'>
-					<span class="glyphicon glyphicon-bookmark"></span>&nbsp;Undanþágur
+					<span class="glyphicon glyphicon-bookmark"></span>&nbsp;UndanþágurXX
 				</a>
 				<a href="{% url 'supportandexception:supportresource' school.id student.id %}" class="btn btn-warning" data-action='save_notes'>
 					<span class="glyphicon glyphicon-bookmark"></span>&nbsp;Stuðningsúrræði
@@ -55,7 +55,7 @@
 								{% else %}
 									{{surveyresults.survey.survey.student_year}}. bekkur - {{surveyresults.survey.survey.title}}
 								{% endif %}
-							</td>
+							</td>					
 							{% if student_result %}
 							<td>
 								{% if student_results|get_item:student != None %}
