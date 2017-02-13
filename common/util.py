@@ -205,10 +205,12 @@ def calc_survey_results(
                     time = time_read[0]
                 oam = str(int(oam / time * 60))
                 
-                data = transformation[0].data               
-                if(transformation != -1):
+                if (transformation):
+                    data = transformation[0].data               
                     oam_string = int(data[oam])
-                return [oam_string] 
+                    return [oam_string]
+                else:
+                    return [oam]
             except:
                 return [""]
           
