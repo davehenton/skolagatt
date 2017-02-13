@@ -415,8 +415,9 @@ def admin_output_excel(request):
 
     wb       = openpyxl.Workbook()
     
-    index = 2
+    
     for year in range(1,11):
+        index = 2
         title = "Árgangur {}".format(year)
         ws = wb.create_sheet(title=title)
         ws['A1'] = 'Kennitala nemanda'
@@ -453,7 +454,7 @@ def admin_output_excel(request):
 
                             ws.cell('C' + str(index)).value = survey_student_result_sept[0]
                         except Exception as e:
-                            print(str(e))
+                            print('sept' + str(e))
 
                         jan_identifier = "b{}_LF_jan17".format(year)
                         jan_survey = Survey.objects.filter(identifier = jan_identifier).first()
@@ -477,7 +478,7 @@ def admin_output_excel(request):
                                     diff = int(survey_student_result_jan[0]) - int(survey_student_result_sept[0])
                                     ws.cell('E' + str(index)).value = diff
                             except Exception as e:
-                                print(str(e))
+                                print('Jan' + str(e))
                         
                         index += 1
                         
