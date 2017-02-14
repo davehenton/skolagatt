@@ -1821,13 +1821,23 @@ def survey_detail_excel(request, school_id, student_group, pk):
                         cur_cell = ws.cell('E' + str(index))
                         diff = value_jan - value_sept
 
-                        if diff < 0:
-                            cur_cell.fill = PatternFill(start_color='ff0000', end_color='ff0000', fill_type="solid")
+                        if int(studentgroup.student_year) <= 3:
+                            if diff <= 7:
+                                cur_cell.fill = PatternFill(start_color='ff0000', end_color='ff0000', fill_type="solid")
 
-                        elif diff <= 5:
-                            cur_cell.fill = PatternFill(start_color= 'ffff00', end_color= 'ffff00', fill_type="solid")
+                            elif diff <= 20:
+                                cur_cell.fill = PatternFill(start_color= 'ffff00', end_color= 'ffff00', fill_type="solid")
+                            else:
+                                cur_cell.fill = PatternFill(start_color= '00ff00', end_color= '00ff00', fill_type="solid")
                         else:
-                            cur_cell.fill = PatternFill(start_color= '00ff00', end_color= '00ff00', fill_type="solid")
+                            if diff < 0:
+                                cur_cell.fill = PatternFill(start_color='ff0000', end_color='ff0000', fill_type="solid")
+
+                            elif diff <= 10:
+                                cur_cell.fill = PatternFill(start_color= 'ffff00', end_color= 'ffff00', fill_type="solid")
+                            else:
+                                cur_cell.fill = PatternFill(start_color= '00ff00', end_color= '00ff00', fill_type="solid")
+
                         cur_cell.value = diff
                     
                     index += 1
