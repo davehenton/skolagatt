@@ -16,6 +16,7 @@ from ast       import literal_eval
 import json
 import xlrd
 import openpyxl
+from openpyxl.styles import Color, PatternFill
 
 import csv
 
@@ -1144,20 +1145,29 @@ class SurveyDetail(common_mixins.SchoolEmployeeMixin, DetailView):
                 r = literal_eval(sr.first().results)  # get student results
                 try:
                     student_results[student] = common_util.calc_survey_results(
-                        self.object.survey.identifier,
-                        literal_eval(r['click_values']),
-                        r['input_values'],
-                        student,
-                        survey_type,
-                        transformation
+                        survey_identifier = self.object.survey.identifier,
+                        click_values = literal_eval(r['click_values']),
+                        input_values = r['input_values'],
+                        student = student,
+                        survey_type = survey_type,
+                        transformation = transformation,
                     )
                 except Exception as e:
                     student_results[student] = common_util.calc_survey_results(
-                        self.object.survey.identifier, [], r['input_values'], student)
+                        survey_identifier = self.object.survey.identifier,
+                        click_values = [],
+                        input_values = r['input_values'],
+                        student = student,
+                        survey_type = survey_type,
+                        transformation = transformation)
 
             else:
                 student_results[student] = common_util.calc_survey_results(
-                    self.object.survey.identifier, [], {}, student, survey_type)
+                    survey_identifier = self.object.survey.identifier,
+                    click_values = [],
+                    input_values = {},
+                    student = student,
+                    survey_type = survey_type)
         context['student_results'] = student_results
         context['field_types']     = ['text', 'number', 'text-list', 'number-list']
         return context
@@ -1752,6 +1762,76 @@ def survey_detail_excel(request, school_id, student_group, pk):
                         ws.cell('D' + str(index)).value = 'Vantar gögn'
                         ws.cell('E' + str(index)).value = 'Vantar gögn'
                     index += 1
+        elif identifier.endswith('_LF_jan17'):
+            ws.title = 'Niðurstöður'
+            ws['A1'] = 'Kennitala nemanda'
+            ws['B1'] = 'Nafn'
+            ws['C1'] = 'September'
+            ws['D1'] = 'Janúar'
+            ws['E1'] = 'Mismunur'
+
+            index = 2
+            survey_type = SurveyType.objects.filter(survey=survey.survey.id).values('id')
+            dic = survey_type[0]
+            survey_type = dic['id']
+            jan_transformation = SurveyTransformation.objects.filter(survey=survey.survey)
+
+
+            if studentgroup:
+                sept_identifier = "{}b_LF_sept".format(studentgroup.student_year)
+                sept_survey = Survey.objects.filter(identifier = sept_identifier).first()
+                sept_transformation = SurveyTransformation.objects.filter(survey=sept_survey)
+                sept_gs = GroupSurvey.objects.filter(survey = sept_survey, studentgroup = survey.studentgroup).first()
+
+                for student in studentgroup.students.all():
+                    value_jan = 'Vantar gögn'
+                    value_sept = 'Vantar gögn'
+                    ws.cell('A' + str(index)).value = student.ssn
+                    ws.cell('B' + str(index)).value = student.name
+                    sr = SurveyResult.objects.filter(student=student, survey=survey)
+                    if sr:
+                        r = literal_eval(sr.first().results)  # get student results
+                        survey_student_result = common_util.calc_survey_results(
+                            survey_identifier = identifier,
+                            click_values = literal_eval(r['click_values']),
+                            input_values = r['input_values'],
+                            student = student,
+                            survey_type = survey_type,
+                            transformation = jan_transformation,
+                        )
+                        value_jan = survey_student_result[0]
+
+                    sr = SurveyResult.objects.filter(student=student, survey=sept_gs)
+                    if sr:
+                        r = literal_eval(sr.first().results)  # get student results
+                        survey_student_result = common_util.calc_survey_results(
+                            survey_identifier = sept_identifier,
+                            click_values = literal_eval(r['click_values']),
+                            input_values = r['input_values'],
+                            student = student,
+                            survey_type = survey_type,
+                            transformation = sept_transformation,
+                        )
+                        value_sept = survey_student_result[0]
+                    
+
+                    ws.cell('C' + str(index)).value = value_sept
+                    ws.cell('D' + str(index)).value = value_jan
+                    if isinstance(value_sept, int) and isinstance(value_jan, int):
+                        cur_cell = ws.cell('E' + str(index))
+                        diff = value_jan - value_sept
+
+                        if diff < 0:
+                            cur_cell.fill = PatternFill(start_color='ff0000', end_color='ff0000', fill_type="solid")
+
+                        elif diff <= 5:
+                            cur_cell.fill = PatternFill(start_color= 'ffff00', end_color= 'ffff00', fill_type="solid")
+                        else:
+                            cur_cell.fill = PatternFill(start_color= '00ff00', end_color= '00ff00', fill_type="solid")
+                        cur_cell.value = diff
+                    
+                    index += 1
+
 
         wb.save(response)
 

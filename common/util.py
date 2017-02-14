@@ -183,7 +183,7 @@ def calc_survey_results(
                 return lesskilnings_results(input_values)
             except Exception as e:
                 return ["error"]
-        else:
+        elif '_LF_' in survey_identifier:
             try:
                 villur = len(click_values) - 1
                 if(villur < 3):
