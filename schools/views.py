@@ -17,6 +17,8 @@ import json
 import xlrd
 import openpyxl
 from openpyxl.styles import Color, PatternFill
+from openpyxl.chart import BarChart, Series, Reference
+
 
 import csv
 
@@ -1776,6 +1778,8 @@ def survey_detail_excel(request, school_id, student_group, pk):
             survey_type = dic['id']
             jan_transformation = SurveyTransformation.objects.filter(survey=survey.survey)
 
+            datapoints = []
+            datapoints.append(('Nafn', 'September', 'Janúar'))
 
             if studentgroup:
                 sept_identifier = "{}b_LF_sept".format(studentgroup.student_year)
@@ -1839,7 +1843,14 @@ def survey_detail_excel(request, school_id, student_group, pk):
                                 cur_cell.fill = PatternFill(start_color= '00ff00', end_color= '00ff00', fill_type="solid")
 
                         cur_cell.value = diff
-                    
+
+                    if not isinstance(value_sept, int):
+                        value_sept = 0
+                    if not isinstance(value_jan, int):
+                        value_jan = 0
+
+                    datapoints.append((student.name.split()[0], value_sept, value_jan))    
+
                     index += 1
 
             dims = {}
@@ -1863,6 +1874,28 @@ def survey_detail_excel(request, school_id, student_group, pk):
             ws.cell('B' + str(index)).value = 'Góð framvinda'
             ws.merge_cells('B' + str(index) + ':E' + str(index))
 
+            ws_bar = wb.create_sheet(title="Súlurit")
+            for datapoint in datapoints:
+                ws_bar.append(datapoint)
+            chart = BarChart()
+            chart.type = "col"
+            chart.style = 10
+            chart.title = "Niðurstöður úr Lesfimi, sept 2016 - jan 2017"
+            chart.y_axis.title = "Orð á mínútu"
+            chart.x_axis.title = "Nemandi"
+            data = Reference(ws_bar, min_col=2, min_row=1, max_row=len(datapoints), max_col=3)
+            cats = Reference(ws_bar, min_col=1, min_row=2, max_row=len(datapoints))
+            chart.add_data(data, titles_from_data=True)
+            chart.set_categories(cats)
+            chart.shape = 4
+            chart.width = 40
+            chart.height = 20
+
+            for idx in range(1, len(datapoints) + 1):
+                ws_bar.row_dimensions[idx].hidden = True
+
+            ws_bar.add_chart(chart, "A" + str(len(datapoints) + 1))
+            
 
         wb.save(response)
 
