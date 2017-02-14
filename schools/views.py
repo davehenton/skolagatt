@@ -1764,7 +1764,7 @@ def survey_detail_excel(request, school_id, student_group, pk):
                     index += 1
         elif identifier.endswith('_LF_jan17'):
             ws.title = 'Niðurstöður'
-            ws['A1'] = 'Kennitala nemanda'
+            ws['A1'] = 'Kennitala'
             ws['B1'] = 'Nafn'
             ws['C1'] = 'September'
             ws['D1'] = 'Janúar'
@@ -1841,6 +1841,27 @@ def survey_detail_excel(request, school_id, student_group, pk):
                         cur_cell.value = diff
                     
                     index += 1
+
+            dims = {}
+            for row in ws.rows:
+                for cell in row:
+                    if cell.value:
+                        dims[cell.column] = max((dims.get(cell.column, 0), len(str(cell.value))))
+            for col, value in dims.items():
+                ws.column_dimensions[col].width = int(value) + 2
+
+            index += 2
+            ws.cell('A' + str(index)).fill = PatternFill(start_color='ff0000', end_color='ff0000', fill_type='solid')
+            ws.cell('B' + str(index)).value = 'Lítil framvinda miðað við aldur'
+            ws.merge_cells('B' + str(index) + ':E' + str(index))
+            index += 1
+            ws.cell('A' + str(index)).fill = PatternFill(start_color='ffff00', end_color='ffff00', fill_type='solid')
+            ws.cell('B' + str(index)).value = 'Fremur lítil framvinda'
+            ws.merge_cells('B' + str(index) + ':E' + str(index))
+            index += 1
+            ws.cell('A' + str(index)).fill = PatternFill(start_color='00ff00', end_color='00ff00', fill_type='solid')
+            ws.cell('B' + str(index)).value = 'Góð framvinda'
+            ws.merge_cells('B' + str(index) + ':E' + str(index))
 
 
         wb.save(response)
