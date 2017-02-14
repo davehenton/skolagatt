@@ -13,7 +13,7 @@
 					{{survey_details.title}}
 					{% if expired %}
 						Lokið
-						{% if '01b_LTL_' in groupsurvey.survey.identifier %}
+						{% if '01b_LTL_' in groupsurvey.survey.identifier or '_LF_jan17' in groupsurvey.survey.identifier %}
 							<a href="{% url 'schools:survey_detail_excel' school.id studentgroup.id groupsurvey.id %}" class="btn btn-lg btn-default pull-right">Sækja Excel</a>
 						{% endif %}
 					{% elif is_group_manager or is_school_manager %}
