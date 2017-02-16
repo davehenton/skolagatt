@@ -16,3 +16,10 @@ pyvenv.cfg
 pip-selfcheck.json
 .DS_Store
 /skolagatt/production_settings.py
+/skolagatt/lib
+/skolagatt/lib64
+/skolagatt/share
+/skolagatt/bin
+*.swp
+*.json
+/backup
