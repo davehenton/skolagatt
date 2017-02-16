@@ -1,14 +1,22 @@
+from django.http                  import HttpResponse
+from django.shortcuts           import render, redirect
 from django.views.generic       import (
     ListView, CreateView, DetailView, UpdateView, DeleteView
 )
 from django.contrib.auth.mixins import UserPassesTestMixin
 
 from django.core.urlresolvers import reverse_lazy
+import openpyxl
+from ast       import literal_eval
 
 from .            import forms
 from .models      import (
-    Survey, SurveyType, SurveyResource,
+    Survey, SurveyType, SurveyResource, SurveyTransformation,
     SurveyGradingTemplate, SurveyInputField, SurveyInputGroup
+)
+import common.util   as common_util
+from common.models      import (
+    School, SurveyResult, StudentGroup, GroupSurvey
 )
 from .mixins      import (
     SurveySuperSuccessMixin,
@@ -33,6 +41,7 @@ class SurveyDetail(UserPassesTestMixin, DetailView):
         context['survey']                    = survey
         context['survey_resource_list']      = SurveyResource.objects.filter(survey=survey)
         context['survey_template_list']      = SurveyGradingTemplate.objects.filter(survey=survey)
+        context['survey_transformation_list'] = SurveyTransformation.objects.filter(survey=survey)
         input_groups                         = SurveyInputGroup.objects.filter(survey=survey)
         context['survey_input_field_groups'] = input_groups
         inputs = []
@@ -305,4 +314,202 @@ class SurveyInputGroupUpdate(SurveySuperSuccessMixin, UpdateView):
 
 
 class SurveyInputGroupDelete(SurveyDeleteSuperSuccessMixin, DeleteView):
-    model         = SurveyInputGroup
+    model = SurveyInputGroup
+
+
+# Transformation
+
+
+class SurveyTransformationDetail(UserPassesTestMixin, DetailView):
+    model         = SurveyTransformation
+
+    def get_context_data(self, **kwargs):
+        # xxx will be available in the template as the related objects
+        context           = super(SurveyTransformationDetail, self).get_context_data(**kwargs)
+        context['survey'] = Survey.objects.get(pk=self.kwargs['survey_id'])
+        transformation = SurveyTransformation.objects.get(pk=self.kwargs['pk'])
+        context['transformation'] = transformation
+        return context
+
+    def test_func(self, **kwargs):
+        return self.request.user.is_authenticated()
+
+
+class SurveyTransformationCreate(SurveySuperSuccessMixin, CreateView):
+    model      = SurveyTransformation
+    form_class = forms.SurveyTransformationForm
+
+    def get_context_data(self, **kwargs):
+        context           = super(SurveyTransformationCreate, self).get_context_data(**kwargs)
+        context['survey'] = Survey.objects.get(pk=self.kwargs['survey_id'])
+        return context
+
+    def post(self, *args, **kwargs):
+        if(self.request.FILES):
+            try:
+                input_excel = self.request.FILES['file']
+                book        = openpyxl.load_workbook(filename = input_excel)
+                name        = self.request.POST.get('transformationname')
+                unit        = self.request.POST.get('transformationunit')
+                survey      = self.kwargs['survey_id']
+                result_data = {}
+                for sheet in book.worksheets:
+                    # import pdb; pdb.set_trace()
+                    for index, row in enumerate(
+                            sheet.iter_rows('A{}:B{}'.format(sheet.min_row + 1, sheet.max_row))):
+                        # result_data[row] = float(sheet.cell(row, 1))
+                        result_data[int(sheet.cell(row=index + 2 , column=1).value)] = float(
+                            sheet.cell(row=index + 2 , column=2).value)
+                # order select
+                transform = SurveyTransformation(name = name, order = 1, data = result_data, unit= unit)
+                transform.survey = Survey.objects.get(id=survey)
+                transform.save()
+
+            except Exception as e:
+                return render(
+                    self.request,
+                    'survey/surveytransformation_form.html',
+                    {'pk': self.kwargs['survey_id']},
+                    {'error': 'Dálkur ekki til, reyndu aftur'}
+                )
+        return redirect(self.get_success_url())   
+
+    def get_success_url(self):
+        if 'school_id' in self.kwargs:
+            return reverse_lazy(
+                'samraemd:math_listing',
+                kwargs={'pk': self.kwargs['survey_id']}
+            )
+        return reverse_lazy('survey:survey_detail',
+                kwargs={'pk': self.kwargs['survey_id']})
+
+
+class SurveyTransformationDelete(SurveyDeleteSuperSuccessMixin, DeleteView):
+    model         = SurveyTransformation
+
+
+class AdminOutput(UserPassesTestMixin, ListView):
+    model      = Survey
+    template_name = "survey/survey_admin_filter.html"
+
+    def get_context_data(self, **kwargs):
+        # xxx will be available in the template as the related objects
+        context           = super(AdminOutput, self).get_context_data(**kwargs)
+        context['schools'] = School.objects.all()
+        context['surveytypes'] = SurveyType.objects.all()
+        context['surveys'] = Survey.objects.all()
+        return context
+
+    def test_func(self):
+        return self.request.user.is_superuser
+
+def _generate_excel_audun():
+#def admin_output_excel(request):
+#    print('hello')
+        
+    
+#    response = HttpResponse(
+#        content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+#    response['Content-Disposition'] = 'attachment; filename=Þjálguðgögn.xlsx'
+
+    wb       = openpyxl.Workbook()
+    
+    
+    for year in range(1,11):
+        index = 2
+        title = "Árgangur {}".format(year)
+        ws = wb.create_sheet(title=title)
+        ws['A1'] = 'Kennitala nemanda'
+        ws['B1'] = 'Nafn'
+        ws['C1'] = 'September'
+        ws['D1'] = 'Janúar'
+        ws['E1'] = 'Mismunur'
+        ws['F1'] = 'September óþjálgað'
+        ws['G1'] = 'Janúar óþjálgað'
+
+        sept_identifier = "{}b_LF_sept".format(year)
+        surveys = Survey.objects.filter(survey_type_id = 2,student_year = year, identifier = sept_identifier)
+        groups = StudentGroup.objects.filter(student_year = year).all()
+        for survey in surveys:
+            survey_type = SurveyType.objects.filter(survey=survey.id).values('id')
+            dic = survey_type[0]
+            survey_type = dic['id']
+            transformation_sept = SurveyTransformation.objects.filter(survey=survey)
+            for group in groups:
+                groupsurveys = GroupSurvey.objects.filter(studentgroup = group, survey = survey).all()
+                for groupsurvey in groupsurveys:
+                    results = SurveyResult.objects.filter(survey = groupsurvey)
+                    for result_sept in results:
+                        ws.cell('A' + str(index)).value = result_sept.student.ssn
+                        ws.cell('B' + str(index)).value = result_sept.student.name
+                        try:
+                            r_sept = literal_eval(result_sept.results)
+                            survey_student_result_sept = common_util.calc_survey_results(
+                                sept_identifier,
+                                literal_eval(r_sept['click_values']),
+                                r_sept['input_values'],
+                                result_sept.student,
+                                survey_type,
+                                transformation_sept,
+                            )
+                            survey_student_result_sept_nt = common_util.calc_survey_results(
+                                sept_identifier,
+                                literal_eval(r_sept['click_values']),
+                                r_sept['input_values'],
+                                result_sept.student,
+                                survey_type,
+                            )
+                           
+                            if not survey_student_result_sept[0] == '':
+                                ws.cell('C' + str(index)).value = survey_student_result_sept[0]
+                            if not survey_student_result_sept_nt[0] == '':
+                                ws.cell('F' + str(index)).value = survey_student_result_sept_nt[0]
+                        except Exception as e:
+                            print('sept' + str(e))
+
+                        jan_identifier = "b{}_LF_jan17".format(year)
+                        jan_survey = Survey.objects.filter(identifier = jan_identifier).first()
+                        transformation_jan = SurveyTransformation.objects.filter(survey=jan_survey)
+                        jan_gs = GroupSurvey.objects.filter(survey = jan_survey, studentgroup = groupsurvey.studentgroup).first()
+                        #import pdb; pdb.set_trace()
+                        
+                        if SurveyResult.objects.filter(student = result_sept.student, survey = jan_gs).exists():
+                            result_jan = SurveyResult.objects.filter(student = result_sept.student, survey = jan_gs).first()
+                            try:
+                                r_jan = literal_eval(result_jan.results)
+                                survey_student_result_jan = common_util.calc_survey_results(
+                                    jan_identifier,
+                                    literal_eval(r_jan['click_values']),
+                                    r_jan['input_values'],
+                                    result_jan.student,
+                                    survey_type,
+                                    transformation_jan,
+                                )
+                                survey_student_result_jan_nt = common_util.calc_survey_results(
+                                    jan_identifier,
+                                    literal_eval(r_jan['click_values']),
+                                    r_jan['input_values'],
+                                    result_jan.student,
+                                    survey_type,
+                                ) 
+
+                                if not survey_student_result_jan[0] == '':
+                                    ws.cell('D' + str(index)).value = survey_student_result_jan[0]
+                                    if not survey_student_result_sept[0] == '':
+                                        diff = int(survey_student_result_jan[0]) - int(survey_student_result_sept[0])
+                                        ws.cell('E' + str(index)).value = diff
+                                    ws.cell('G' + str(index)).value = survey_student_result_jan_nt[0]
+                            except Exception as e:
+                                print('Jan' + str(e))
+                        
+                        index += 1
+                        
+
+        
+    
+    wb.save(filename = '/tmp/audun.xlsx')
+#    wb.save(response)
+
+#    return response
+
+

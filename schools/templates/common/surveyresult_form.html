@@ -88,8 +88,16 @@
 			var text_container = $("#grading_template");
 			text_container.html(wrap_text(text_container.html()));
 			//highlight words from update array
+			print(i)
 			for(i in update) {
-				$('span[count='+update[i]+']').toggleClass('selected');
+				if(i==(update.length-1)){
+					$('span[count='+update[i]+']').toggleClass('codered');
+				}
+				else
+				{
+					$('span[count='+update[i]+']').toggleClass('selected');
+
+				}
 			}
 		}
 		catch(err) {
@@ -115,18 +123,23 @@
 		$("#survey_result_form").on('submit', function(event){
 			//event.preventDefault();
 			var selected_words = $("span.selected");
+			var red_word = $("span.codered");
 			selected_words.each(function(i){
 				$("#survey_result_form").append($("<input type='hidden' />").attr({
 					name:'data_results[]',
 					value: [$(selected_words[i]).attr('count'), $(selected_words[i]).text()]
 				}));
 			});
+			$("#survey_result_form").append($("<input type='hidden' />").attr({
+				name:'data_results[]',
+				value: [$(red_word).attr('count'), $(red_word).text()]
+			}));
 
 		});
 		$( document ).ready(function() {
 		    $('span[count]').on('click',function(event){
-				//append removable div to grading_template
-				var selected_text = $(this).toggleClass('selected');
+				var classes = ['','selected','codered'];
+				this.className = classes[($.inArray(this.className, classes)+1)%classes.length];
 			});
 		});
 	</script>

@@ -63,6 +63,17 @@ urlpatterns = [
         views.SurveyGradingTemplateDelete.as_view(),
         name='survey_template_delete'),
 
+    # ======= SURVEY TRANSFORMATION TABLE ======== #
+    url(r'^(?P<survey_id>\d+)/vorpun/(?P<pk>\d+)/$',
+        views.SurveyTransformationDetail.as_view(),
+        name='survey_transformation_detail'),
+    url(r'^(?P<survey_id>\d+)/vorpun/create/$',
+        views.SurveyTransformationCreate.as_view(),
+        name='survey_transformation_create'),
+    url(r'^(?P<survey_id>\d+)/vorpun/(?P<pk>\d+)/delete/$',
+        views.SurveyTransformationDelete.as_view(),
+        name='survey_transformation_delete'),
+
     # ========== SURVEY INPUT GROUP FIELD ========== #
     url(r'^(?P<survey_id>\d+)/group/(?P<pk>\d+)/$',
         views.SurveyInputGroupDetail.as_view(),
@@ -81,4 +92,9 @@ urlpatterns = [
     url(r'^(?P<survey_id>\d+)/input/(?P<pk>\d+)/delete/$',
         views.SurveyInputFieldDelete.as_view(),
         name='survey_input_delete'),
+
+    # ========== SURVEY ADMIN OUTPUT ========== #
+    url(r'^adminoutput/$',
+        views.AdminOutput.as_view(),
+        name='admin_output'),
 ]
