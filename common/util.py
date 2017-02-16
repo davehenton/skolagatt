@@ -1,6 +1,7 @@
 from django.utils.text import slugify
 
 import common.models as cm_models
+#import survey.models as sv_models
 
 
 def get_messages():
@@ -169,29 +170,49 @@ def lesskilnings_results(input_values):
 
     return hopar
 
-
-def calc_survey_results(survey_identifier, click_values, input_values, student):
+def calc_survey_results(
+        survey_identifier,
+        click_values,
+        input_values,
+        student,
+        survey_type,
+        transformation = None):
     if survey_identifier:
         if survey_identifier.startswith('01b_LTL_'):
             try:
                 return lesskilnings_results(input_values)
             except Exception as e:
                 return ["error"]
-        elif '_LF_' in survey_identifier:
+        else:
             try:
-                words_read = int(click_values[-1].split(',')[0]) - len(click_values)
-                time_read = 120
-                try:
-                    time_read = [value for key, value in input_values.items() if 'lf_timi' in key.lower()]
-                except:
-                    return [""]
-                return [str(int(words_read / int(time_read[0]) * 60)) + " orð/mín"]
+                villur = len(click_values) - 1
+                if(villur < 3):
+                    vill = 0
+                elif(villur < 10):
+                    vill = villur - 2
+                else:
+                    vill = villur * 2 - 11
+                words_read = int(click_values[-1].split(',')[0]) - vill
+                if(int(survey_type) == 2):
+                    oam = int(round(words_read / 2))
+                else:
+                    oam = words_read
+                time_read = [
+                    value for key, value in input_values.items() if '_timi' in key.lower()]
+                if(int(survey_type) == 2):
+                    time = int(round(int(time_read[0]) / 2))
+                else:
+                    time = time_read[0]
+                oam = str(int(oam / time * 60))
+                
+                data = transformation[0].data               
+                if(transformation != -1):
+                    oam_string = str(int(data[oam])) + ' ' + transformation[0].unit               
+                return [oam_string] 
             except:
                 return [""]
-        else:
-            return [""]
+          
     return click_values
-
 
 def add_field_classes(self, field_list):
     ''' To add form-control class to form fields '''

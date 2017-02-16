@@ -1,0 +1,76 @@
+{% extends 'survey/index.html'%}
+
+{% block content %}
+<h1>kalli</h1>
+<select class="form-control" id="types" name="types">
+  <option value="-1">Próf</option>
+  {% for surveytype in surveytypes %}
+  <option value="{{surveytype.id}}">{{surveytype.title}}</option>
+  {%endfor%}
+</select>
+<select class="form-control" id="studentyear" name="studentyear">
+  <option value="-1">Ár</option>
+  <option value="0">Blandaður árgangur</option>
+        <option value="1">1. bekkur</option>
+        <option value="2">2. bekkur</option>
+        <option value="3">3. bekkur</option>
+        <option value="4">4. bekkur</option>
+        <option value="5">5. bekkur</option>
+        <option value="6">6. bekkur</option>
+        <option value="7">7. bekkur</option>
+        <option value="8">8. bekkur</option>
+        <option value="9">9. bekkur</option>
+        <option value="10">10. bekkur</option>
+</select>
+<select class="form-control" id="month" name="month">
+  <option value="-1">Allir</option> 
+  <option value="9">September</option>
+  <option value="1">Janúar</option>
+  <option value="5">Maí</option>
+</select>
+<select class="form-control" id="school" name="school">
+  <option value="-1">Skólar</option>
+  {% for school in schools %}
+  <option value="{{school.id}}">{{school.name}}</option>
+  {%endfor%}
+</select>
+<button class="btn btn-default" id="excel_output">hello</button>
+
+	{% endblock %}
+
+{% block script %}
+<!--script type="text/javascript">
+$.('#excel_output').click(function () {
+
+	$.get("excel/",{ "types": $('#type').val(), studentyear, $('#studentyear').val(), month: $('#month').val(), school: $('#school').val(), csrfmiddlewaretoken: '{{ csrf_token }}' },function(data){
+  alert("Data: ");
+});
+  
+
+});
+</script-->	
+
+<script type="text/javascript">
+$("#excel_output").on('click',function()
+{
+
+	types = $('#types').val();
+	studentyear = $('#studentyear').val();
+	month = $('#month').val();
+	school = $('#school').val();
+
+	$.get("excel/", 
+		{ types: types, 
+		studentyear: studentyear,
+		month: month,
+		school: school,
+		csrfmiddlewaretoken: '{{ csrf_token }}' },
+		function(data)	
+		{
+    		alert("Data: ");
+		}
+	);
+});
+
+</script>	
+{% endblock %}

@@ -1,14 +1,20 @@
+from django.http                  import HttpResponse
+from django.shortcuts           import render, redirect
 from django.views.generic       import (
     ListView, CreateView, DetailView, UpdateView, DeleteView
 )
 from django.contrib.auth.mixins import UserPassesTestMixin
 
 from django.core.urlresolvers import reverse_lazy
+import openpyxl
 
 from .            import forms
 from .models      import (
-    Survey, SurveyType, SurveyResource,
+    Survey, SurveyType, SurveyResource, SurveyTransformation,
     SurveyGradingTemplate, SurveyInputField, SurveyInputGroup
+)
+from common.models      import (
+    School, SurveyResult, StudentGroup, GroupSurvey
 )
 from .mixins      import (
     SurveySuperSuccessMixin,
@@ -33,6 +39,7 @@ class SurveyDetail(UserPassesTestMixin, DetailView):
         context['survey']                    = survey
         context['survey_resource_list']      = SurveyResource.objects.filter(survey=survey)
         context['survey_template_list']      = SurveyGradingTemplate.objects.filter(survey=survey)
+        context['survey_transformation_list'] = SurveyTransformation.objects.filter(survey=survey)
         input_groups                         = SurveyInputGroup.objects.filter(survey=survey)
         context['survey_input_field_groups'] = input_groups
         inputs = []
@@ -305,4 +312,149 @@ class SurveyInputGroupUpdate(SurveySuperSuccessMixin, UpdateView):
 
 
 class SurveyInputGroupDelete(SurveyDeleteSuperSuccessMixin, DeleteView):
-    model         = SurveyInputGroup
+    model = SurveyInputGroup
+
+
+# Transformation
+
+
+class SurveyTransformationDetail(UserPassesTestMixin, DetailView):
+    model         = SurveyTransformation
+
+    def get_context_data(self, **kwargs):
+        # xxx will be available in the template as the related objects
+        context           = super(SurveyTransformationDetail, self).get_context_data(**kwargs)
+        context['survey'] = Survey.objects.get(pk=self.kwargs['survey_id'])
+        transformation = SurveyTransformation.objects.get(pk=self.kwargs['pk'])
+        context['transformation'] = transformation
+        return context
+
+    def test_func(self, **kwargs):
+        return self.request.user.is_authenticated()
+
+
+class SurveyTransformationCreate(SurveySuperSuccessMixin, CreateView):
+    model      = SurveyTransformation
+    form_class = forms.SurveyTransformationForm
+
+    def get_context_data(self, **kwargs):
+        context           = super(SurveyTransformationCreate, self).get_context_data(**kwargs)
+        context['survey'] = Survey.objects.get(pk=self.kwargs['survey_id'])
+        return context
+
+    def post(self, *args, **kwargs):
+        if(self.request.FILES):
+            try:
+                input_excel = self.request.FILES['file']
+                book        = openpyxl.load_workbook(filename = input_excel)
+                name        = self.request.POST.get('transformationname')
+                unit        = self.request.POST.get('transformationunit')
+                survey      = self.kwargs['survey_id']
+                result_data = {}
+                for sheet in book.worksheets:
+                    # import pdb; pdb.set_trace()
+                    for index, row in enumerate(
+                            sheet.iter_rows('A{}:B{}'.format(sheet.min_row + 1, sheet.max_row))):
+                        # result_data[row] = float(sheet.cell(row, 1))
+                        result_data[int(sheet.cell(row=index + 2 , column=1).value)] = float(
+                            sheet.cell(row=index + 2 , column=2).value)
+                # order select
+                transform = SurveyTransformation(name = name, order = 1, data = result_data, unit= unit)
+                transform.survey = Survey.objects.get(id=survey)
+                transform.save()
+
+            except Exception as e:
+                return render(
+                    self.request,
+                    'survey/surveytransformation_form.html',
+                    {'pk': self.kwargs['survey_id']},
+                    {'error': 'Dálkur ekki til, reyndu aftur'}
+                )
+        return redirect(self.get_success_url())   
+
+    def get_success_url(self):
+        if 'school_id' in self.kwargs:
+            return reverse_lazy(
+                'samraemd:math_listing',
+                kwargs={'pk': self.kwargs['survey_id']}
+            )
+        return reverse_lazy('survey:survey_detail',
+                kwargs={'pk': self.kwargs['survey_id']})
+
+
+class SurveyTransformationDelete(SurveyDeleteSuperSuccessMixin, DeleteView):
+    model         = SurveyTransformation
+
+
+class AdminOutput(UserPassesTestMixin, ListView):
+    model      = Survey
+    template_name = "survey/survey_admin_filter.html"
+
+    def get_context_data(self, **kwargs):
+        # xxx will be available in the template as the related objects
+        context           = super(AdminOutput, self).get_context_data(**kwargs)
+        context['schools'] = School.objects.all()
+        context['surveytypes'] = SurveyType.objects.all()
+        context['surveys'] = Survey.objects.all()
+        return context
+
+    def test_func(self):
+        return self.request.user.is_superuser
+
+
+def AdminOutputExcel(request):
+    if request.is_ajax() and request.method == 'GET':
+        types = request.GET['types']
+        studentyear = request.GET['studentyear']
+        month = request.GET['month']
+        school = request.GET['school']
+
+        surveydata = []
+        groupdata = []
+        surveygroupdata = []
+
+        if types != -1:
+            surveydata.append(int(types))
+
+        print(surveydata)
+        survey = Survey.objects.filter(surveydata)
+
+        group = StudentGroup.objects.filter(student_year = studentyear, school = school)
+
+        surveygroup = GroupSurvey.objects.filter(studentgroup = group, survey = survey)
+
+        result = SurveyResult.objects.filter(survey = surveygroup)
+        print('gaddi')
+        print(types)
+        print(studentyear)
+        print(month)
+        print("Elli")
+        print(survey)
+        print(group)
+        print(surveygroup)
+        print(result)
+        response = HttpResponse(
+            content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        response['Content-Disposition'] = 'attachment; filename=samræmdupróf.xlsx'
+
+        wb       = openpyxl.Workbook()
+        ws       = wb.get_active_sheet()
+        ws.title = 'samræmdupróf'
+
+        ws['A1'] = 'Auðkenni'
+        ws['B1'] = 'Kennitala sḱóla'
+        ws['C1'] = 'Orð á mínútu'
+        ws['D1'] = 'Villur'
+        ws['E1'] = 'Fjöldi lesina orða'
+        ws['F1'] = 'Fjöldi villna'
+        ws['G1'] = 'Lestími'
+        ws['H1'] = 'Árgangur'
+        ws['I1'] = 'Tegund prófs'
+        ws['J1'] = 'Mánuður'
+        ws['K1'] = 'Prófár'
+
+        wb.save(response)
+
+        return response
+#    else:
+#        return

@@ -15,6 +15,14 @@ span.selected {
     background   : yellow;
 }
 
+span.codered {
+    padding-right: 5px;
+    padding-left : 5px;
+
+    border       : thin solid black;
+    background   : red;
+}
+
 span.click_values {
     padding-right: 5px;
     padding-left : 5px;
@@ -48,6 +56,10 @@ ul.form_elements {
 
 option.selected {
     background-color:#dadada;
+}
+
+.codered {
+    background-color:#FF0000;
 }
 
 .small-message {
