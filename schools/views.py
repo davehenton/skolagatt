@@ -1730,7 +1730,7 @@ def survey_detail_excel(request, school_id, student_group, pk):
         survey = GroupSurvey.objects.filter(pk=pk).first()
 
         response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-        response['Content-Disposition'] = 'attachment; filename=niðurstöður.xlsx'
+        response['Content-Disposition'] = 'attachment; filename=Niðurstöður - {}.xlsx'.format(survey.survey.title)
         wb = openpyxl.Workbook()
         ws = wb.get_active_sheet()
 
@@ -1960,7 +1960,7 @@ def lesfimi_excel_for_principals(request, pk):
     school = School.objects.get(pk = pk)
 
     response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-    response['Content-Disposition'] = 'attachment; filename=Lesfimi{}.xlsx'.format(school.name)
+    response['Content-Disposition'] = 'attachment; filename=Lesfimi {}.xlsx'.format(school.name)
 
     wb = openpyxl.Workbook()
     ws = wb.get_active_sheet()
