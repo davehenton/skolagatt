@@ -17,8 +17,10 @@ import json
 import xlrd
 import openpyxl
 from openpyxl.styles import Color, PatternFill
-from openpyxl.chart import BarChart, LineChart, Series, Reference
+from openpyxl.chart import AreaChart, BarChart, LineChart, Series, Reference
 from openpyxl.chart.layout import Layout, ManualLayout
+
+
 
 
 import csv
@@ -1938,3 +1940,153 @@ def survey_detail_excel(request, school_id, student_group, pk):
         wb.save(response)
 
         return response
+
+
+def lesfimi_excel_for_principals(request, pk):
+    ref_values = {
+        1:  (20, 55, 75),
+        2:  (40, 85, 100),
+        3:  (55, 100, 120),
+        4:  (80, 120, 145),
+        5:  (90, 140, 160),
+        6:  (105, 155, 175),
+        7:  (120, 165, 190),
+        8:  (130, 180, 210),
+        9:  (140, 180, 210),
+        10: (145, 180, 210),
+    }
+
+    # Get the school object
+    school = School.objects.get(pk = pk)
+
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename=Lesfimi{}.xlsx'.format(school.name)
+
+    wb = openpyxl.Workbook()
+    ws = wb.get_active_sheet()
+    wb.remove_sheet(ws)     
+
+    tests = (
+        ('b{}_LF_jan17', 'Janúar 2017'),
+        ('{}b_LF_sept', 'September 2016'),
+    )
+    for test in tests:
+        identifier = test[0]
+        title = test[1]
+        ws = wb.create_sheet(title = title)
+        ws['A1'] = 'Bekkur'
+        ws['B1'] = 'Fjöldi nemenda'
+        ws['C1'] = 'Fjöldi nemenda sem þreytti próf'
+        ws['D1'] = 'Hlutfall sem nær 90% viðmiðum'
+        ws['E1'] = 'Hlutfall sem nær 50% viðmiðum'
+        ws['F1'] = 'Hlutfall sem nær 25% viðmiðum'
+        index = 2
+        errors = []
+        for year in range(1,11):
+            ws['A' + str(index)] = year
+            survey = Survey.objects.filter(identifier = identifier.format(year)).first()
+            survey_type = SurveyType.objects.filter(survey=survey.id).values('id')
+            dic = survey_type[0]
+            survey_type = dic['id']
+            transformation = SurveyTransformation.objects.filter(survey=survey)
+            studentgroups = StudentGroup.objects.filter(school = school, student_year = year).all()
+            this_year_result = {
+                'students': 0,
+                'students_who_took_test': 0,
+                'students_over_25pct': 0,
+                'students_over_50pct': 0,
+                'students_over_90pct': 0,
+            }
+            for studentgroup in studentgroups:
+                this_year_result['students'] += studentgroup.students.all().count()
+                groupsurveys = GroupSurvey.objects.filter(studentgroup = studentgroup, survey = survey)
+                if groupsurveys.all().count() > 1:
+                    errors.append('sama próf skráð {} sinnum fyrir {}'.format(groupsurveys.all().count(), studentgroup.name))
+                for groupsurvey in groupsurveys.all():
+                    for student in studentgroup.students.all():
+                        surveyresults = SurveyResult.objects.filter(survey = groupsurvey, student = student)
+                        if surveyresults.all().count() > 1:
+                            errors.append('{} niðurstöður í sama prófi skráðar fyrir nemanda {} í bekk {}'.format(
+                                surveyresults.all().count(),
+                                student.ssn,
+                                studentgroup.name,
+                            ))
+                        for surveyresult in surveyresults.all():
+                            r = literal_eval(surveyresult.results)  # get student results
+                            try:
+                                survey_student_result = common_util.calc_survey_results(
+                                    survey_identifier = identifier,
+                                    click_values = literal_eval(r['click_values']),
+                                    input_values = r['input_values'],
+                                    student = student,
+                                    survey_type = survey_type,
+                                    transformation = transformation,
+                                )
+                                #import pdb; pdb.set_trace()
+                                if not survey_student_result[0] == '':
+                                    this_year_result['students_who_took_test'] += 1
+                                    if int(survey_student_result[0]) >= ref_values[year][2]:
+                                        this_year_result['students_over_25pct'] += 1
+                                    if int(survey_student_result[0]) >= ref_values[year][1]:
+                                        this_year_result['students_over_50pct'] += 1
+                                    if int(survey_student_result[0]) >= ref_values[year][0]:
+                                        this_year_result['students_over_90pct'] += 1
+                            except:
+                                pass
+
+            ws['B' + str(index)] = this_year_result['students']
+            ws['C' + str(index)] = this_year_result['students_who_took_test']
+            if this_year_result['students'] > 0:
+                pct_over_90pct = (this_year_result['students_over_90pct'] / this_year_result['students']) * 100
+                ws['D' + str(index)] = pct_over_90pct
+
+                pct_over_50pct = (this_year_result['students_over_50pct'] / this_year_result['students']) * 100
+                ws['E' + str(index)] = pct_over_50pct
+
+                pct_over_25pct = (this_year_result['students_over_25pct'] / this_year_result['students']) * 100
+                ws['F' + str(index)] = pct_over_25pct
+
+            else:
+                ws['D' + str(index)] = 0
+                ws['E' + str(index)] = 0
+                ws['F' + str(index)] = 0
+
+            index += 1
+        dims = {}
+        for row in ws.rows:
+            for cell in row:
+                if cell.value:
+                    dims[cell.column] = max((dims.get(cell.column, 0), len(str(cell.value))))
+        for col, value in dims.items():
+            ws.column_dimensions[col].width = int(value) + 2
+
+        chart = AreaChart()
+        chart.title = "Lesfimi í {} - {}".format(title, school.name)
+        chart.style = 10
+        chart.width = 40
+        chart.height = 20
+
+        chart.x_axis.title = 'Bekkur'
+        chart.y_axis.title = 'Prósent'
+
+        cats = Reference(ws, min_col=1, min_row=2, max_row=index - 1)
+        data = Reference(ws, min_col=4, min_row=1, max_col=6, max_row=index)
+        chart.add_data(data, titles_from_data=True)
+        chart.set_categories(cats)
+
+        if errors:
+            index += 1
+            for error in errors:
+                ws['A' + str(index)] = "ATH: " + error
+                ws['A' + str(index)].fill = PatternFill(start_color='ff0000', end_color='ff0000', fill_type='solid')
+                ws.merge_cells('A' + str(index) + ':F' + str(index))
+                index += 1
+
+        ws.add_chart(chart, "A" + str(index + 2))
+
+    #wb.save(filename='/tmp/test.xlsx')
+    wb.save(response)
+
+    return response
+
+
