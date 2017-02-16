@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.db                  import models
 from django.utils               import timezone
+from jsonfield                  import JSONField
 
 
 class SurveyType(models.Model):
@@ -89,3 +90,15 @@ class SurveyInputField(models.Model):
 
     def __str__(self):
         return self.input_group.title + ': ' + self.get_id()
+
+
+# Vörpunartafla
+class SurveyTransformation(models.Model):
+    survey   = models.ForeignKey(Survey)
+    name     = models.CharField(max_length=128)
+    order    = models.IntegerField()
+    data     = JSONField()
+    unit     = models.CharField(max_length=60, null = True)
+
+    def __str__(self):
+        return self.name

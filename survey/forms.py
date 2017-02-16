@@ -133,3 +133,17 @@ class SurveyInputGroupForm(forms.ModelForm):
 class SurveyInputGroupCreateForm(SurveyInputGroupForm):
     def __init__(self, *args, **kwargs):
         super(SurveyInputGroupCreateForm, self).__init__(*args, **kwargs)
+
+
+class SurveyTransformationForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(SurveyTransformationForm, self).__init__(*args, **kwargs)
+        add_field_classes(self, self.fields)
+
+    class Meta:
+        model  = models.SurveyTransformation
+        fields = ['name', 'unit']
+        labels = {
+            'name': 'Nafn',
+            'unit': 'Eining',
+        }

@@ -28,7 +28,8 @@ import common.util   as common_util
 import common.forms  as cm_forms
 from survey.models import (
     Survey, SurveyGradingTemplate, SurveyInputField,
-    SurveyInputGroup, SurveyResource
+    SurveyInputGroup, SurveyResource, SurveyTransformation,
+    SurveyType
 )
 
 import supportandexception.models as sae_models
@@ -1117,10 +1118,17 @@ class SurveyDetail(common_mixins.SchoolEmployeeMixin, DetailView):
         # xxx will be available in the template as the related objects
         context = super(SurveyDetail, self).get_context_data(**kwargs)
         survey = Survey.objects.filter(pk=self.object.survey.id)[0]
+        survey_type = SurveyType.objects.filter(survey=self.object.survey.id).values('id')
+        dic = survey_type[0]
+        survey_type = dic['id']
         context['survey_details']   = survey
         context['survey_resources'] = SurveyResource.objects.filter(survey=survey)
         context['school']           = School.objects.get(pk=self.kwargs['school_id'])
         context['studentgroup']     = StudentGroup.objects.get(pk=self.kwargs['student_group'])
+        transformation = SurveyTransformation.objects.filter(survey=survey)
+        if transformation == []:
+            transformation = -1
+        
         try:
             context['students'] = self.object.studentgroup.students.all()
             context['expired']  = True if self.object.survey.active_to < date.today() else False
@@ -1130,6 +1138,8 @@ class SurveyDetail(common_mixins.SchoolEmployeeMixin, DetailView):
         student_results     = {}
         for student in context['students']:
             sr = SurveyResult.objects.filter(student=student, survey=self.object)
+            print('edadfas')
+            print(sr)
             if sr:
                 r = literal_eval(sr.first().results)  # get student results
                 try:
@@ -1137,14 +1147,17 @@ class SurveyDetail(common_mixins.SchoolEmployeeMixin, DetailView):
                         self.object.survey.identifier,
                         literal_eval(r['click_values']),
                         r['input_values'],
-                        student
+                        student,
+                        survey_type,
+                        transformation
                     )
                 except Exception as e:
                     student_results[student] = common_util.calc_survey_results(
                         self.object.survey.identifier, [], r['input_values'], student)
+
             else:
                 student_results[student] = common_util.calc_survey_results(
-                    self.object.survey.identifier, [], {}, student)
+                    self.object.survey.identifier, [], {}, student, survey_type)
         context['student_results'] = student_results
         context['field_types']     = ['text', 'number', 'text-list', 'number-list']
         return context
