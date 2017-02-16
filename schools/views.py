@@ -17,7 +17,8 @@ import json
 import xlrd
 import openpyxl
 from openpyxl.styles import Color, PatternFill
-from openpyxl.chart import BarChart, Series, Reference
+from openpyxl.chart import BarChart, LineChart, Series, Reference
+from openpyxl.chart.layout import Layout, ManualLayout
 
 
 import csv
@@ -1772,6 +1773,19 @@ def survey_detail_excel(request, school_id, student_group, pk):
             ws['D1'] = 'Janúar'
             ws['E1'] = 'Mismunur'
 
+            ref_values = {
+                '1':  (20, 55, 75),
+                '2':  (40, 85, 100),
+                '3':  (55, 100, 120),
+                '4':  (80, 120, 145),
+                '5':  (90, 140, 160),
+                '6':  (105, 155, 175),
+                '7':  (120, 165, 190),
+                '8':  (130, 180, 210),
+                '9':  (140, 180, 210),
+                '10': (145, 180, 210),
+            }
+
             index = 2
             survey_type = SurveyType.objects.filter(survey=survey.survey.id).values('id')
             dic = survey_type[0]
@@ -1779,7 +1793,7 @@ def survey_detail_excel(request, school_id, student_group, pk):
             jan_transformation = SurveyTransformation.objects.filter(survey=survey.survey)
 
             datapoints = []
-            datapoints.append(('Nafn', 'September', 'Janúar'))
+            datapoints.append(('Nafn', 'September', 'Janúar', '90% viðmið', '50% viðmið', '25% viðmið'))
 
             if studentgroup:
                 sept_identifier = "{}b_LF_sept".format(studentgroup.student_year)
@@ -1792,6 +1806,7 @@ def survey_detail_excel(request, school_id, student_group, pk):
                     value_sept = 'Vantar gögn'
                     ws.cell('A' + str(index)).value = student.ssn
                     ws.cell('B' + str(index)).value = student.name
+                    sy = studentgroup.student_year
                     sr = SurveyResult.objects.filter(student=student, survey=survey)
                     if sr:
                         r = literal_eval(sr.first().results)  # get student results
@@ -1825,7 +1840,8 @@ def survey_detail_excel(request, school_id, student_group, pk):
                         cur_cell = ws.cell('E' + str(index))
                         diff = value_jan - value_sept
 
-                        if int(studentgroup.student_year) <= 3:
+                        # Student year
+                        if int(sy) <= 3:
                             if diff <= 7:
                                 cur_cell.fill = PatternFill(start_color='ff0000', end_color='ff0000', fill_type="solid")
 
@@ -1849,10 +1865,11 @@ def survey_detail_excel(request, school_id, student_group, pk):
                     if not isinstance(value_jan, int):
                         value_jan = 0
 
-                    datapoints.append((student.name.split()[0], value_sept, value_jan))    
+                    datapoints.append((student.name.split()[0], value_sept, value_jan, ref_values[sy][0], ref_values[sy][1], ref_values[sy][2]))
 
                     index += 1
 
+            # Fix column widths
             dims = {}
             for row in ws.rows:
                 for cell in row:
@@ -1861,6 +1878,8 @@ def survey_detail_excel(request, school_id, student_group, pk):
             for col, value in dims.items():
                 ws.column_dimensions[col].width = int(value) + 2
 
+
+            # Add legend
             index += 2
             ws.cell('A' + str(index)).fill = PatternFill(start_color='ff0000', end_color='ff0000', fill_type='solid')
             ws.cell('B' + str(index)).value = 'Lítil framvinda miðað við aldur'
@@ -1874,6 +1893,8 @@ def survey_detail_excel(request, school_id, student_group, pk):
             ws.cell('B' + str(index)).value = 'Góð framvinda'
             ws.merge_cells('B' + str(index) + ':E' + str(index))
 
+
+            # Add bar chart
             ws_bar = wb.create_sheet(title="Súlurit")
             for datapoint in datapoints:
                 ws_bar.append(datapoint)
@@ -1890,6 +1911,23 @@ def survey_detail_excel(request, school_id, student_group, pk):
             chart.shape = 4
             chart.width = 40
             chart.height = 20
+
+            # Add reference lines
+            lchart = LineChart()
+            ldata = Reference(ws_bar, min_col=4, max_col=6, min_row=1, max_row=len(datapoints) + 1)
+            lchart.width = 40
+            lchart.height = 20
+
+            lchart.layout = Layout(
+                ManualLayout(
+                    xMode="edge",
+                    yMode="edge",
+                )
+            )
+            lchart.add_data(ldata, titles_from_data=True)
+            chart += lchart
+
+            
 
             for idx in range(1, len(datapoints) + 1):
                 ws_bar.row_dimensions[idx].hidden = True
