@@ -1977,9 +1977,10 @@ def lesfimi_excel_for_principals(request, pk):
         ws['A1'] = 'Bekkur'
         ws['B1'] = 'Fjöldi nemenda'
         ws['C1'] = 'Fjöldi nemenda sem þreytti próf'
-        ws['D1'] = 'Hlutfall sem nær 90% viðmiðum'
-        ws['E1'] = 'Hlutfall sem nær 50% viðmiðum'
-        ws['F1'] = 'Hlutfall sem nær 25% viðmiðum'
+        ws['D1'] = 'Hlutfall nemenda sem þreytti próf'
+        ws['E1'] = 'Hlutfall sem nær 90% viðmiðum'
+        ws['F1'] = 'Hlutfall sem nær 50% viðmiðum'
+        ws['G1'] = 'Hlutfall sem nær 25% viðmiðum'
         index = 2
         errors = []
         for year in range(1,11):
@@ -2036,20 +2037,22 @@ def lesfimi_excel_for_principals(request, pk):
 
             ws['B' + str(index)] = this_year_result['students']
             ws['C' + str(index)] = this_year_result['students_who_took_test']
-            if this_year_result['students'] > 0:
+            if this_year_result['students'] > 0 and this_year_result['students_who_took_test'] > 0:
+                ws['D' + str(index)] = (this_year_result['students_who_took_test'] / this_year_result['students']) * 100
                 pct_over_90pct = (this_year_result['students_over_90pct'] / this_year_result['students']) * 100
-                ws['D' + str(index)] = pct_over_90pct
+                ws['E' + str(index)] = pct_over_90pct
 
                 pct_over_50pct = (this_year_result['students_over_50pct'] / this_year_result['students']) * 100
-                ws['E' + str(index)] = pct_over_50pct
+                ws['F' + str(index)] = pct_over_50pct
 
                 pct_over_25pct = (this_year_result['students_over_25pct'] / this_year_result['students']) * 100
-                ws['F' + str(index)] = pct_over_25pct
+                ws['G' + str(index)] = pct_over_25pct
 
             else:
                 ws['D' + str(index)] = 0
                 ws['E' + str(index)] = 0
                 ws['F' + str(index)] = 0
+                ws['G' + str(index)] = 0
 
             index += 1
         dims = {}
@@ -2066,13 +2069,42 @@ def lesfimi_excel_for_principals(request, pk):
         chart.width = 40
         chart.height = 20
 
+        chart.layout = Layout(
+                ManualLayout(
+                    xMode="edge",
+                    yMode="edge",
+                )
+            )
+
+
         chart.x_axis.title = 'Bekkur'
         chart.y_axis.title = 'Prósent'
 
+        chart.y_axis.scaling.min = 0
+        chart.y_axis.scaling.max = 100
+
         cats = Reference(ws, min_col=1, min_row=2, max_row=index - 1)
-        data = Reference(ws, min_col=4, min_row=1, max_col=6, max_row=index)
+        data = Reference(ws, min_col=5, min_row=1, max_col=7, max_row=index)
         chart.add_data(data, titles_from_data=True)
         chart.set_categories(cats)
+
+
+        bchart = BarChart()
+        bchart.title = "Hlutfall nemenda sem þreyttu próf"
+        bchart.style = 10
+        bchart.width = 20
+        bchart.height = 10
+
+        bchart.x_axis.title = 'Bekkur'
+        bchart.y_axis.title = 'Prósent'
+
+        bchart.y_axis.scaling.min = 0
+        bchart.y_axis.scaling.max = 100
+
+        bdata = Reference(ws, min_col=4, max_col=4, min_row=1, max_row=index)
+        bchart.add_data(bdata, titles_from_data=True)
+        bchart.set_categories(cats)
+        ws.add_chart(bchart, "I1")
 
         if errors:
             index += 1
@@ -2081,8 +2113,10 @@ def lesfimi_excel_for_principals(request, pk):
                 ws['A' + str(index)].fill = PatternFill(start_color='ff0000', end_color='ff0000', fill_type='solid')
                 ws.merge_cells('A' + str(index) + ':F' + str(index))
                 index += 1
-
-        ws.add_chart(chart, "A" + str(index + 2))
+        if index > 20:
+            ws.add_chart(chart, "A" + str(index + 2))
+        else:
+            ws.add_chart(chart, "A22")
 
     #wb.save(filename='/tmp/test.xlsx')
     wb.save(response)
