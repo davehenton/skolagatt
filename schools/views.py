@@ -1104,7 +1104,7 @@ class SurveyAdminListing(common_mixins.SuperUserMixin, ListView):
         # xxx will be available in the template as the related objects
         try:
             context            = super(SurveyAdminListing, self).get_context_data(**kwargs)
-            context['surveys'] = GroupSurvey.objects.all()
+            context['surveys'] = Survey.objects.all()
         except Exception as e:
             context['error'] = str(e)
         return context
