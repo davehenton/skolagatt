@@ -1974,10 +1974,10 @@ def lesfimi_excel_for_principals(request, pk):
         identifier = test[0]
         title = test[1]
         ws = wb.create_sheet(title = title)
-        ws['A1'] = 'Bekkur'
+        ws['A1'] = 'Árgangur'
         ws['B1'] = 'Fjöldi nemenda'
-        ws['C1'] = 'Fjöldi nemenda sem þreytti próf'
-        ws['D1'] = 'Hlutfall nemenda sem þreytti próf'
+        ws['C1'] = 'Fjöldi sem þreytti próf'
+        ws['D1'] = 'Hlutfall sem þreytti próf'
         ws['E1'] = 'Hlutfall sem nær 90% viðmiðum'
         ws['F1'] = 'Hlutfall sem nær 50% viðmiðum'
         ws['G1'] = 'Hlutfall sem nær 25% viðmiðum'
@@ -2077,7 +2077,7 @@ def lesfimi_excel_for_principals(request, pk):
             )
 
 
-        chart.x_axis.title = 'Bekkur'
+        chart.x_axis.title = 'Árgangur'
         chart.y_axis.title = 'Prósent'
 
         chart.y_axis.scaling.min = 0
@@ -2095,7 +2095,7 @@ def lesfimi_excel_for_principals(request, pk):
         bchart.width = 20
         bchart.height = 10
 
-        bchart.x_axis.title = 'Bekkur'
+        bchart.x_axis.title = 'Árgangur'
         bchart.y_axis.title = 'Prósent'
 
         bchart.y_axis.scaling.min = 0
