@@ -17,4 +17,5 @@ $('.md_form').on('keyup', function(event){
 	}
 	$("#title").html(title);
 	$("#preview").html(marked(textarea));
-})
+});
+

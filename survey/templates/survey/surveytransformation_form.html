@@ -1,0 +1,39 @@
+{% extends 'common/index.html'%}
+{% include staticfiles%}
+{% block content %}
+<div class="row">
+	<div class="col-md-8 col-xs-12">
+		<form action="" method="post" enctype="multipart/form-data">
+			{% csrf_token %}
+				<div class="row">
+					<div class="form-group form-group-lg col-md-6 col-xs-12">
+						<label for="file">Skrá</label>
+						<input type="file" name="file" id="file" class="btn btn-default"/>
+					</div>
+					<div class="col-md-6 col-xs-12 well">
+						<p class="help-block">Veljið Excelskrá, sem inniheldur dálka fyrir vörpunartöflu prófsins. Skráin verður að vera vistuð sem .xlsx</p>
+						<p class="help-block">Fyrsti dálkurinn er talan sem leitað er að og seinni dálkurinn er skilagildið</p>
+					</div>
+				</div>
+				<div class="row">
+					<div class="form-group form-group-lg col-md-6 col-xs-12">
+						<label for="input">Nafn</label>
+						<input type="input" name="transformationname" id="transformationname" class="btn btn-default"/>
+					</div>
+				</div>
+				<div class="row">
+					<div class="form-group form-group-lg col-md-6 col-xs-12">
+						<label for="input">Eining</label>
+						<input type="input" name="transformationunit" id="transformationunit" class="btn btn-default"/>
+					</div>
+				</div>
+				<div class="form-group form-group-lg">
+					<div class="btn-group">
+						<input type="submit" value="Vista" class="btn btn-success btn-lg"/>
+						<a class="btn btn-default btn-lg" href="{% url 'survey:survey_detail' survey.id %}">Til baka</a>
+					</div>
+				</div>
+		</form>
+	</div>
+</div>
+{% endblock %}

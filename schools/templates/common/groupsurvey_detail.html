@@ -15,6 +15,8 @@
 						Lokið
 						{% if '01b_LTL_' in groupsurvey.survey.identifier %}
 							<a href="{% url 'schools:survey_detail_excel' school.id studentgroup.id groupsurvey.id %}" class="btn btn-lg btn-default pull-right">Sækja Excel</a>
+                                                {% elif '_LF_jan17' in groupsurvey.survey.identifier %}
+							<a href="{% url 'schools:survey_detail_excel' school.id studentgroup.id groupsurvey.id %}" class="btn btn-lg btn-primary pull-right">Sækja niðurstöður úr lesfimiprófi á Excel formi</a>
 						{% endif %}
 					{% elif is_group_manager or is_school_manager %}
 						<div class="btn-group">
@@ -25,10 +27,17 @@
 				</h1>
 				</div>
 			</div>
+                        {% if '_LF_sept' in groupsurvey.survey.identifier %}
+                            <div class="row">
+                                <div class="col-xs-4 alert-info">
+                                    Fara þarf inn í janúar próf bekkjar til að sækja niðurstöður úr Lesfimiprófi á Excel formi
+                                </div>
+                            </div>
+                        {% endif %}
 			<div class="row">
 				<div class="col-xs-8">
 					<p><strong>Skráning virk frá:</strong> {{groupsurvey.active_from|parse_date:"%Y-%m-%d"|date:"d-m-Y" }}</p>
-					<p><strong>Skráning virkt til:</strong> {{groupsurvey.active_to|parse_date:"%Y-%m-%d"|date:"d-m-Y" }}</p>
+					<p><strong>Skráning virk til:</strong> {{groupsurvey.active_to|parse_date:"%Y-%m-%d"|date:"d-m-Y" }}</p>
 				</div>
 				{% if is_group_manager or is_school_manager %}
 				{% else %}
@@ -37,25 +46,6 @@
 					</div>
 				{% endif %}
 			</div>
-		</div>
-	</div>
-	<div class="row">
-		<div class="col-md-8">
-			<h3>Um prófið</h3>
-			<div class="md">{{ survey_details.description }}</div>
-		</div>
-		<div class="col-md-4 md-display">
-			<h3>Nánari upplýsingar</h3>
-			<ul class="survey_resources">
-			{% for resource in survey_resources %}
-				<li>
-					<div>
-						<h4><a href="{{resource.resource_url}}">{{resource.title}}</a></h4>
-						<p>{{resource.description|md|safe}}</p>
-					</div>
-				</li>
-			{% endfor %}
-			</ul>
 		</div>
 	</div>
 	<div class="row">
@@ -170,6 +160,26 @@
 			</table>
 		</div>
 	</div>
+	<div class="row">
+		<div class="col-md-8">
+			<h3>Um prófið</h3>
+			<div class="md">{{ survey_details.description }}</div>
+		</div>
+		<div class="col-md-4 md-display">
+			<h3>Nánari upplýsingar</h3>
+			<ul class="survey_resources">
+			{% for resource in survey_resources %}
+				<li>
+					<div>
+						<h4><a href="{{resource.resource_url}}">{{resource.title}}</a></h4>
+						<p>{{resource.description|md|safe}}</p>
+					</div>
+				</li>
+			{% endfor %}
+			</ul>
+		</div>
+	</div>
+	
 {% endblock %}
 {% block script %}
 <script type="text/javascript">
