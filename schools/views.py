@@ -2101,8 +2101,9 @@ def lesfimi_excel_for_principals(request, pk):
         bchart.y_axis.scaling.min = 0
         bchart.y_axis.scaling.max = 100
 
-        bdata = Reference(ws, min_col=4, max_col=4, min_row=1, max_row=index)
-        bchart.add_data(bdata, titles_from_data=True)
+        bdata = Reference(ws, min_col=4, max_col=4, min_row=2, max_row=index)
+        bchart.add_data(bdata)
+        bchart.legend = None
         bchart.set_categories(cats)
         ws.add_chart(bchart, "I1")
 
