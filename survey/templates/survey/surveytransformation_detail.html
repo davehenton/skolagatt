@@ -1,0 +1,46 @@
+{% extends 'survey/index.html'%}
+
+{% block content %}
+<div class="row">
+<div class="col-md-6 col-xs-12">
+	<h1>
+		{{survey.title}}
+	</h1>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-2 col-xs-12">
+	     <h2>{{transformation.name}}</h2>
+	</div>
+	<div class="col-md-2 col-xs-12">
+	     <h3>(eining: {{transformation.unit}})</h3>
+	</div>
+	<div class="col-md-3 col-xs-12 col-md-offset-4">
+	    <div class="btn-group">
+			<a href="{% url 'survey:survey_transformation_delete' survey.id transformation.id %}" class="btn btn-danger btn-sm"><span class="glyphicon glyphicon-trash"></span></a>
+		</div>
+	</div>
+</div>
+<div class="row">
+<div class="col-md-6 col-xs-12">
+<table class="table table-striped">
+	<tr>
+		<th>
+			Gögn
+		</th>
+		<th>
+			Vörpun
+		</th>
+	</tr>
+	{% for key, val in transformation.data.items|dictsort:"0.lower" %}
+    <tr>
+        <td>{{key}}</td>
+        <td>{{val}}</td>
+    </tr>
+    {% endfor %}
+</table>
+</div>
+</div>
+
+
+{% endblock %}
