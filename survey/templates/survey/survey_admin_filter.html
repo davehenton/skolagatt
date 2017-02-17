@@ -1,9 +1,46 @@
 {% extends 'survey/index.html'%}
 
 {% block content %}
+<<<<<<< HEAD
 <h1>Það sem Auðun vildi</h1>
 
 {# <a class="btn btn-default" id="excel_output" href="{% url 'survey:admin_output_excel'%}">Gögn</a> #}
+=======
+<h1>kalli</h1>
+<select class="form-control" id="types" name="types">
+  <option value="-1">Próf</option>
+  {% for surveytype in surveytypes %}
+  <option value="{{surveytype.id}}">{{surveytype.title}}</option>
+  {%endfor%}
+</select>
+<select class="form-control" id="studentyear" name="studentyear">
+  <option value="-1">Ár</option>
+  <option value="0">Blandaður árgangur</option>
+        <option value="1">1. bekkur</option>
+        <option value="2">2. bekkur</option>
+        <option value="3">3. bekkur</option>
+        <option value="4">4. bekkur</option>
+        <option value="5">5. bekkur</option>
+        <option value="6">6. bekkur</option>
+        <option value="7">7. bekkur</option>
+        <option value="8">8. bekkur</option>
+        <option value="9">9. bekkur</option>
+        <option value="10">10. bekkur</option>
+</select>
+<select class="form-control" id="month" name="month">
+  <option value="-1">Allir</option> 
+  <option value="9">September</option>
+  <option value="1">Janúar</option>
+  <option value="5">Maí</option>
+</select>
+<select class="form-control" id="school" name="school">
+  <option value="-1">Skólar</option>
+  {% for school in schools %}
+  <option value="{{school.id}}">{{school.name}}</option>
+  {%endfor%}
+</select>
+<button class="btn btn-default" id="excel_output">hello</button>
+>>>>>>> 294228c6e393bc53387445809b5f8f8bbce5f918
 
 	{% endblock %}
 
@@ -20,7 +57,11 @@ $.('#excel_output').click(function () {
 </script-->	
 
 <script type="text/javascript">
+<<<<<<< HEAD
 /*$("#excel_output").on('click',function()
+=======
+$("#excel_output").on('click',function()
+>>>>>>> 294228c6e393bc53387445809b5f8f8bbce5f918
 {
 
 	types = $('#types').val();
@@ -39,7 +80,14 @@ $.('#excel_output').click(function () {
     		alert("Data: ");
 		}
 	);
+<<<<<<< HEAD
 });*/
 
 </script>	
 {% endblock %}
+=======
+});
+
+</script>	
+{% endblock %}
+>>>>>>> 294228c6e393bc53387445809b5f8f8bbce5f918
