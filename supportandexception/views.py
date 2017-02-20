@@ -101,23 +101,10 @@ class SupportResourceCreate(CreateView):
             args=(int(self.kwargs.get('school_id')), int(groupsurvey.studentgroup.id), int(groupsurvey.id))
         )
         if (request.POST.get('submit') == 'supportsave'):
-            ra    = request.POST.getlist('reading_assistance')
-            inte  = request.POST.getlist('interpretation')
-            lt    = request.POST.getlist('longer_time')
+            reading_assistance = True if request.POST.get('reading_assistance') == 'on' else False
+            interpretation     = True if request.POST.get('interpretation') == 'on' else False
+            longer_time        = True if request.POST.get('longer_time') == 'on' else False
 
-            reading_assistance = []
-            interpretation     = []
-            longer_time        = []
-
-            if (ra != []):
-                for i in range(len(ra)):
-                    reading_assistance.append(int(ra[i]))
-            if (inte != []):
-                for i in range(len(inte)):
-                    interpretation.append(int(inte[i]))
-            if (lt != []):
-                for i in range(len(lt)):
-                    longer_time.append(int(lt[i]))
             s = Student.objects.get(pk = self.kwargs.get('pk'))
             gs = GroupSurvey.objects.get(pk = self.kwargs.get('groupsurvey_id'))
             if not (models.StudentExceptionSupport.objects.filter(student = s, groupsurvey = gs).exists()):
@@ -167,7 +154,7 @@ class ExceptionCreate(CreateView):
             args=(int(self.kwargs.get('school_id')), int(groupsurvey.studentgroup.id), int(groupsurvey.id))
         )
         if (request.POST.get('submit') == 'exceptionsave'):
-            exempt = request.POST.getlist('exempt')
+            exempt = True if request.POST.get('exempt') == 'on' else False
 
             s = Student.objects.get(pk = self.kwargs.get('pk'))
             gs = GroupSurvey.objects.get(pk = self.kwargs.get('groupsurvey_id'))

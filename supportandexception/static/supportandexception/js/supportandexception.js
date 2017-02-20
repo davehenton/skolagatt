@@ -10,11 +10,9 @@ $(document).ready(function() {
 
     if ( typeof pagetype !== 'undefined' && pagetype == 'supportresource' ) {
         $("#id_reading_assistance").prop('checked', reading_assistance);
-        $("#id_interpretation".prop('checked', interpretation);
+        $("#id_interpretation").prop('checked', interpretation);
         $("#id_longer_time").prop('checked', longer_time);
     }
-
-
 
 
     $(document).on('click', "button[value='exceptiondelete']", function(event){

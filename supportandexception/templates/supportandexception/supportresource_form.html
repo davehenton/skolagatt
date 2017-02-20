@@ -4,9 +4,9 @@
 {% block content %}
 <script>
 	var pagetype = "supportresource";
-	var reading_assistance = {% if exceptions.reading_assistance == True %} true{% else %} false{% endif %};
-	var interpretation = {% if exceptions.interpretation == True %} true{% else %} false{% endif %};
-	var longer_time = {% if exceptions.exempt == True %} true{% else %} false{% endif %};
+	var reading_assistance = {% if supportresource.reading_assistance == True %} true{% else %} false{% endif %};
+	var interpretation = {% if supportresource.interpretation == True %} true{% else %} false{% endif %};
+	var longer_time = {% if supportresource.longer_time == True %} true{% else %} false{% endif %};
 </script>
 
 {% if groupsurvey.can_add_support_and_exception %}
@@ -27,40 +27,41 @@
 
 		<hr/>
 
-		<div class="row">
-			<div class="col-md-12">
-				<h4>Stuðningsúrræði</h4>
-			</div>
+		<div class="col-md-12">
+			<h4>Stuðningsúrræði</h4>
 		</div>
 
 		<div class="row">
-			<div class="col-md-12">
-				<div class="row">
-					<div class="col-md-3"></div>
-					<div class="col-md-3"><h4>Íslenska</h4></div>
-					<div class="col-md-3"><h4>Enska</h4></div>
-					<div class="col-md-3"><h4>Stærðfræði</h4></div>
-				</div>
-				{% for value, text in form.support_title.field.choices %}
-				<div class="row">
-					<div class="col-md-3"><h4>{{text}}</h4></div>
-					{% if 'reading_assistance' == value %}
-						{% for check in form.reading_assistance %}
-							<div class="col-md-3">{{check.tag}}</div>
-						{% endfor %}
-					{% endif %}
-					{% if 'interpretation' == value %}
-						{% for check in form.interpretation %}
-							<div class="col-md-3">{{check.tag}}</div>
-						{% endfor %}
-					{% endif %}
-					{% if 'longer_time' == value %}
-						{% for check in form.longer_time %}
-							<div class="col-md-3">{{check.tag}}</div>
-						{% endfor %}
-					{% endif %}
-				</div>
-				{% endfor %}
+			<div class="form-group col-md-12">
+				{{ form.reading_assistance }}
+				<label for="{{ form.reading_assistance.name }}">{{ form.reading_assistance.label }}</label>
+				{% if form.reading_assistance.errors %}
+			    	<span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+				    <span id="inputError2Status" class="sr-only">(villa)</span>
+				    <p class="text-danger">{{ form.reading_assistance.errors.as_text }}</p>
+			    {% endif %}
+			</div>
+		</div>
+		<div class="row">
+			<div class="form-group col-md-12">
+				{{ form.interpretation }}
+				<label for="{{ form.interpretation.name }}">{{ form.interpretation.label }}</label>
+				{% if form.interpretation.errors %}
+			    	<span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+				    <span id="inputError2Status" class="sr-only">(villa)</span>
+				    <p class="text-danger">{{ form.interpretation.errors.as_text }}</p>
+			    {% endif %}
+			</div>
+		</div>
+		<div class="row">
+			<div class="form-group col-md-12">
+				{{ form.longer_time }}
+				<label for="{{ form.longer_time.name }}">{{ form.longer_time.label }}</label>
+				{% if form.longer_time.errors %}
+			    	<span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+				    <span id="inputError2Status" class="sr-only">(villa)</span>
+				    <p class="text-danger">{{ form.longer_time.errors.as_text }}</p>
+			    {% endif %}
 			</div>
 		</div>
 
