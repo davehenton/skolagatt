@@ -2186,7 +2186,7 @@ def lesfimi_excel_entire_country_stats():
                 this_year_result['students'] += studentgroup.students.all().count()
                 groupsurveys = GroupSurvey.objects.filter(studentgroup = studentgroup, survey = survey)
                 if groupsurveys.all().count() > 1:
-                    errors.append('sama próf skráð {} sinnum fyrir {}'.format(groupsurveys.all().count(), studentgroup.name))
+                    errors.append('sama próf skráð {} sinnum fyrir {} í {}'.format(groupsurveys.all().count(), studentgroup.name, studentgroup.school.name))
                 for groupsurvey in groupsurveys.all():
                     for student in studentgroup.students.all():
                         surveyresults = SurveyResult.objects.filter(survey = groupsurvey, student = student)
