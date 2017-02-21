@@ -413,7 +413,9 @@ def _generate_excel_audun():
 #    response['Content-Disposition'] = 'attachment; filename=Þjálguðgögn.xlsx'
 
     wb       = openpyxl.Workbook()
-    
+
+    ws = wb.get_active_sheet()
+    wb.remove_sheet(ws)    
     
     for year in range(1,11):
         index = 2
@@ -511,6 +513,13 @@ def _generate_excel_audun():
                                 print('Jan' + str(e))
                         
                         index += 1
+        dims = {}
+        for row in ws.rows:
+            for cell in row:
+                if cell.value:
+                    dims[cell.column] = max((dims.get(cell.column, 0), len(str(cell.value))))
+        for col, value in dims.items():
+            ws.column_dimensions[col].width = int(value) + 2
                         
 
         
