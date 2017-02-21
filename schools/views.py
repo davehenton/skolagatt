@@ -16,12 +16,9 @@ from ast       import literal_eval
 import json
 import xlrd
 import openpyxl
-from openpyxl.styles import Color, PatternFill
-from openpyxl.chart import AreaChart, BarChart, LineChart, Series, Reference
+from openpyxl.styles import PatternFill
+from openpyxl.chart import AreaChart, BarChart, LineChart,  Reference
 from openpyxl.chart.layout import Layout, ManualLayout
-
-
-
 
 import csv
 
@@ -37,6 +34,9 @@ from survey.models import (
     SurveyInputGroup, SurveyResource, SurveyTransformation,
     SurveyType
 )
+
+from supportandexception.models import (
+    SupportResource)
 
 import supportandexception.models as sae_models
 
@@ -1134,7 +1134,7 @@ class SurveyDetail(common_mixins.SchoolEmployeeMixin, DetailView):
         transformation = SurveyTransformation.objects.filter(survey=survey)
         if transformation == []:
             transformation = -1
-        
+
         try:
             context['students'] = self.object.studentgroup.students.all()
             context['expired']  = True if self.object.survey.active_to < date.today() else False
@@ -1628,7 +1628,6 @@ class AdminUpdate(common_mixins.SuperUserMixin, UpdateView):
 
 def group_admin_listing_excel(request, survey_title):
     surveys = GroupSurvey.objects.filter(survey__title=survey_title)
-
     response                        = HttpResponse(
         content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
     response['Content-Disposition'] = 'attachment; filename=samræmdupróf.xlsx'
@@ -1636,21 +1635,36 @@ def group_admin_listing_excel(request, survey_title):
 
     ws       = wb.get_active_sheet()
     ws.title = 'samræmdupróf'
-    ws['A1'] = 'Skóli'
-    ws['B1'] = 'Kennitala sḱóla'
-    ws['C1'] = 'Nemandi'
-    ws['D1'] = 'Kennitala'
-    ws['E1'] = 'Bekkur'
+    ws['A1'] = 'FIRST'
+    ws['B1'] = 'LAST'
+    ws['C1'] = 'RESULTS EMAIL'
+    ws['D1'] = 'EXTERNAL ID'
+    ws['E1'] = 'CODE EMAIL'
+    ws['F1'] = 'TEST NAME'
+    ws['G1'] = 'GROUP PATH'
+    ws['H1'] = 'EXTRA TIME'
+    ws['J1'] = 'BEKKUR (TAKA ÚT)'
 
     index = 2
     for survey in surveys:
         if survey.studentgroup:
             for student in survey.studentgroup.students.all():
-                ws.cell('A' + str(index)).value = survey.studentgroup.school.name
-                ws.cell('B' + str(index)).value = survey.studentgroup.school.ssn
-                ws.cell('C' + str(index)).value = student.name
+                studentname = student.name
+                studentpos = [pos for pos, char in enumerate(studentname) if char == ' '][-1]
+                ws.cell('A' + str(index)).value = studentname[0:studentpos]
+                ws.cell('B' + str(index)).value = studentname[studentpos:]
                 ws.cell('D' + str(index)).value = student.ssn
-                ws.cell('E' + str(index)).value = survey.studentgroup.name
+                ws.cell('F' + str(index)).value = survey.survey.identifier
+                ws.cell('H' + str(index)).value = 'No'
+                #print(student.id)
+                supports = SupportResource.objects.filter(student=student.id)
+                for support in supports:
+                    if 'fyrri' in survey_title and '1' in support.longer_time or '2' in support.longer_time:
+                        ws.cell('H' + str(index)).value = 'yes'
+                    elif'seinni' in survey_title and '3' in support.longer_time or '2' in support.longer_time:
+                        ws.cell('H' + str(index)).value = 'donni'
+
+                ws.cell('J' + str(index)).value = str(StudentGroup.objects.filter(students=student.id)[:1].get())
                 index += 1
 
     wb.save(response)
@@ -1834,7 +1848,6 @@ def survey_detail_excel(request, school_id, student_group, pk):
                             transformation = sept_transformation,
                         )
                         value_sept = survey_student_result[0]
-                    
 
                     ws.cell('C' + str(index)).value = value_sept
                     ws.cell('D' + str(index)).value = value_jan
@@ -1880,7 +1893,6 @@ def survey_detail_excel(request, school_id, student_group, pk):
             for col, value in dims.items():
                 ws.column_dimensions[col].width = int(value) + 2
 
-
             # Add legend
             index += 2
             ws.cell('A' + str(index)).fill = PatternFill(start_color='ff0000', end_color='ff0000', fill_type='solid')
@@ -1894,7 +1906,6 @@ def survey_detail_excel(request, school_id, student_group, pk):
             ws.cell('A' + str(index)).fill = PatternFill(start_color='00ff00', end_color='00ff00', fill_type='solid')
             ws.cell('B' + str(index)).value = 'Góð framvinda'
             ws.merge_cells('B' + str(index) + ':E' + str(index))
-
 
             # Add bar chart
             ws_bar = wb.create_sheet(title="Súlurit")
@@ -1929,13 +1940,10 @@ def survey_detail_excel(request, school_id, student_group, pk):
             lchart.add_data(ldata, titles_from_data=True)
             chart += lchart
 
-            
-
             for idx in range(1, len(datapoints) + 1):
                 ws_bar.row_dimensions[idx].hidden = True
 
             ws_bar.add_chart(chart, "A" + str(len(datapoints) + 1))
-            
 
         wb.save(response)
 
@@ -1964,7 +1972,7 @@ def lesfimi_excel_for_principals(request, pk):
 
     wb = openpyxl.Workbook()
     ws = wb.get_active_sheet()
-    wb.remove_sheet(ws)     
+    wb.remove_sheet(ws)
 
     tests = (
         ('b{}_LF_jan17', 'Janúar 2017'),
@@ -1983,7 +1991,7 @@ def lesfimi_excel_for_principals(request, pk):
         ws['G1'] = 'Hlutfall sem nær 25% viðmiðum'
         index = 2
         errors = []
-        for year in range(1,11):
+        for year in range(1, 11):
             ws['A' + str(index)] = year
             survey = Survey.objects.filter(identifier = identifier.format(year)).first()
             survey_type = SurveyType.objects.filter(survey=survey.id).values('id')
@@ -2023,7 +2031,7 @@ def lesfimi_excel_for_principals(request, pk):
                                     survey_type = survey_type,
                                     transformation = transformation,
                                 )
-                                #import pdb; pdb.set_trace()
+                                # import pdb; pdb.set_trace()
                                 if not survey_student_result[0] == '':
                                     this_year_result['students_who_took_test'] += 1
                                     if int(survey_student_result[0]) >= ref_values[year][2]:
@@ -2070,12 +2078,11 @@ def lesfimi_excel_for_principals(request, pk):
         chart.height = 20
 
         chart.layout = Layout(
-                ManualLayout(
-                    xMode="edge",
-                    yMode="edge",
-                )
+            ManualLayout(
+                xMode="edge",
+                yMode="edge",
             )
-
+        )
 
         chart.x_axis.title = 'Árgangur'
         chart.y_axis.title = 'Prósent'
@@ -2087,7 +2094,6 @@ def lesfimi_excel_for_principals(request, pk):
         data = Reference(ws, min_col=5, min_row=1, max_col=7, max_row=index)
         chart.add_data(data, titles_from_data=True)
         chart.set_categories(cats)
-
 
         bchart = BarChart()
         bchart.title = "Hlutfall nemenda sem þreyttu próf"
@@ -2119,7 +2125,7 @@ def lesfimi_excel_for_principals(request, pk):
         else:
             ws.add_chart(chart, "A22")
 
-    #wb.save(filename='/tmp/test.xlsx')
+    # wb.save(filename='/tmp/test.xlsx')
     wb.save(response)
 
     return response
@@ -2144,7 +2150,7 @@ def lesfimi_excel_entire_country_stats():
 
     wb = openpyxl.Workbook()
     ws = wb.get_active_sheet()
-    wb.remove_sheet(ws)     
+    wb.remove_sheet(ws)
 
     tests = (
         ('b{}_LF_jan17', 'Janúar 2017'),
@@ -2163,7 +2169,7 @@ def lesfimi_excel_entire_country_stats():
         ws['G1'] = 'Hlutfall sem nær 25% viðmiðum'
         index = 2
         errors = []
-        for year in range(1,11):
+        for year in range(1, 11):
             ws['A' + str(index)] = year
             survey = Survey.objects.filter(identifier = identifier.format(year)).first()
             survey_type = SurveyType.objects.filter(survey=survey.id).values('id')
@@ -2204,7 +2210,7 @@ def lesfimi_excel_entire_country_stats():
                                     survey_type = survey_type,
                                     transformation = transformation,
                                 )
-                                #import pdb; pdb.set_trace()
+                                # import pdb; pdb.set_trace()
                                 if not survey_student_result[0] == '':
                                     this_year_result['students_who_took_test'] += 1
                                     if int(survey_student_result[0]) >= ref_values[year][2]:
@@ -2251,12 +2257,11 @@ def lesfimi_excel_entire_country_stats():
         chart.height = 20
 
         chart.layout = Layout(
-                ManualLayout(
-                    xMode="edge",
-                    yMode="edge",
-                )
+            ManualLayout(
+                xMode="edge",
+                yMode="edge",
             )
-
+        )
 
         chart.x_axis.title = 'Árgangur'
         chart.y_axis.title = 'Prósent'
@@ -2268,7 +2273,6 @@ def lesfimi_excel_entire_country_stats():
         data = Reference(ws, min_col=5, min_row=1, max_col=7, max_row=index)
         chart.add_data(data, titles_from_data=True)
         chart.set_categories(cats)
-
 
         bchart = BarChart()
         bchart.title = "Hlutfall nemenda sem þreyttu próf"
@@ -2302,10 +2306,7 @@ def lesfimi_excel_entire_country_stats():
                 ws.merge_cells('A' + str(index) + ':F' + str(index))
                 index += 1
 
-
     wb.save(filename='/tmp/test.xlsx')
-    #wb.save(response)
+    # wb.save(response)
 
     return response
-
-
