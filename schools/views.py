@@ -1825,9 +1825,13 @@ def survey_detail_excel(request, school_id, student_group, pk):
                     sr = SurveyResult.objects.filter(student=student, survey=sept_gs)
                     if sr:
                         r = literal_eval(sr.first().results)  # get student results
+                        try:
+                            click_values = literal_eval(r['click_values'])
+                        except:
+                            click_values = []
                         survey_student_result = common_util.calc_survey_results(
                             survey_identifier = sept_identifier,
-                            click_values = literal_eval(r['click_values']),
+                            click_values = click_values,
                             input_values = r['input_values'],
                             student = student,
                             survey_type = survey_type,
