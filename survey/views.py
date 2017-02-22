@@ -403,21 +403,19 @@ class AdminOutput(UserPassesTestMixin, ListView):
     def test_func(self):
         return self.request.user.is_superuser
 
+
 def _generate_excel_audun():
-#def admin_output_excel(request):
-#    print('hello')
-        
-    
-#    response = HttpResponse(
-#        content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-#    response['Content-Disposition'] = 'attachment; filename=Þjálguðgögn.xlsx'
+    # def admin_output_excel(request):
+
+    # response = HttpResponse(
+    # content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    # response['Content-Disposition'] = 'attachment; filename=Þjálguðgögn.xlsx'
 
     wb       = openpyxl.Workbook()
 
     ws = wb.get_active_sheet()
-    wb.remove_sheet(ws)    
-    
-    for year in range(1,11):
+    wb.remove_sheet(ws)
+    for year in range(1, 11):
         index = 2
         title = "Árgangur {}".format(year)
         ws = wb.create_sheet(title=title)
@@ -465,7 +463,7 @@ def _generate_excel_audun():
                                 result_sept.student,
                                 survey_type,
                             )
-                           
+
                             if not survey_student_result_sept[0] == '':
                                 ws.cell('C' + str(index)).value = survey_student_result_sept[0]
                             if not survey_student_result_sept_nt[0] == '':
@@ -477,8 +475,8 @@ def _generate_excel_audun():
                         jan_survey = Survey.objects.filter(identifier = jan_identifier).first()
                         transformation_jan = SurveyTransformation.objects.filter(survey=jan_survey)
                         jan_gs = GroupSurvey.objects.filter(survey = jan_survey, studentgroup = groupsurvey.studentgroup).first()
-                        #import pdb; pdb.set_trace()
-                        
+                        # import pdb; pdb.set_trace()
+
                         if SurveyResult.objects.filter(student = result_sept.student, survey = jan_gs).exists():
                             result_jan = SurveyResult.objects.filter(student = result_sept.student, survey = jan_gs).first()
                             try:
@@ -501,7 +499,7 @@ def _generate_excel_audun():
                                     r_jan['input_values'],
                                     result_jan.student,
                                     survey_type,
-                                ) 
+                                )
 
                                 if not survey_student_result_jan[0] == '':
                                     ws.cell('D' + str(index)).value = survey_student_result_jan[0]
@@ -511,7 +509,7 @@ def _generate_excel_audun():
                                     ws.cell('G' + str(index)).value = survey_student_result_jan_nt[0]
                             except Exception as e:
                                 print('Jan' + str(e))
-                        
+
                         index += 1
         dims = {}
         for row in ws.rows:
@@ -520,13 +518,8 @@ def _generate_excel_audun():
                     dims[cell.column] = max((dims.get(cell.column, 0), len(str(cell.value))))
         for col, value in dims.items():
             ws.column_dimensions[col].width = int(value) + 2
-                        
 
-        
-    
     wb.save(filename = '/tmp/audun.xlsx')
 #    wb.save(response)
 
 #    return response
-
-
