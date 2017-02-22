@@ -413,7 +413,9 @@ def _generate_excel_audun():
 #    response['Content-Disposition'] = 'attachment; filename=Þjálguðgögn.xlsx'
 
     wb       = openpyxl.Workbook()
-    
+
+    ws = wb.get_active_sheet()
+    wb.remove_sheet(ws)    
     
     for year in range(1,11):
         index = 2
@@ -444,9 +446,13 @@ def _generate_excel_audun():
                         ws.cell('B' + str(index)).value = result_sept.student.name
                         try:
                             r_sept = literal_eval(result_sept.results)
+                            try:
+                                click_values = literal_eval(r_sept['click_values'])
+                            except:
+                                click_values = []
                             survey_student_result_sept = common_util.calc_survey_results(
                                 sept_identifier,
-                                literal_eval(r_sept['click_values']),
+                                click_values,
                                 r_sept['input_values'],
                                 result_sept.student,
                                 survey_type,
@@ -454,7 +460,7 @@ def _generate_excel_audun():
                             )
                             survey_student_result_sept_nt = common_util.calc_survey_results(
                                 sept_identifier,
-                                literal_eval(r_sept['click_values']),
+                                click_values,
                                 r_sept['input_values'],
                                 result_sept.student,
                                 survey_type,
@@ -477,9 +483,13 @@ def _generate_excel_audun():
                             result_jan = SurveyResult.objects.filter(student = result_sept.student, survey = jan_gs).first()
                             try:
                                 r_jan = literal_eval(result_jan.results)
+                                try:
+                                    click_values = literal_eval(r_jan['click_values'])
+                                except:
+                                    click_values = []
                                 survey_student_result_jan = common_util.calc_survey_results(
                                     jan_identifier,
-                                    literal_eval(r_jan['click_values']),
+                                    click_values,
                                     r_jan['input_values'],
                                     result_jan.student,
                                     survey_type,
@@ -487,7 +497,7 @@ def _generate_excel_audun():
                                 )
                                 survey_student_result_jan_nt = common_util.calc_survey_results(
                                     jan_identifier,
-                                    literal_eval(r_jan['click_values']),
+                                    click_values,
                                     r_jan['input_values'],
                                     result_jan.student,
                                     survey_type,
@@ -503,6 +513,13 @@ def _generate_excel_audun():
                                 print('Jan' + str(e))
                         
                         index += 1
+        dims = {}
+        for row in ws.rows:
+            for cell in row:
+                if cell.value:
+                    dims[cell.column] = max((dims.get(cell.column, 0), len(str(cell.value))))
+        for col, value in dims.items():
+            ws.column_dimensions[col].width = int(value) + 2
                         
 
         
