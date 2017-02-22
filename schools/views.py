@@ -1839,9 +1839,13 @@ def survey_detail_excel(request, school_id, student_group, pk):
                     sr = SurveyResult.objects.filter(student=student, survey=sept_gs)
                     if sr:
                         r = literal_eval(sr.first().results)  # get student results
+                        try:
+                            click_values = literal_eval(r['click_values'])
+                        except:
+                            click_values = []
                         survey_student_result = common_util.calc_survey_results(
                             survey_identifier = sept_identifier,
-                            click_values = literal_eval(r['click_values']),
+                            click_values = click_values,
                             input_values = r['input_values'],
                             student = student,
                             survey_type = survey_type,
@@ -2188,7 +2192,7 @@ def lesfimi_excel_entire_country_stats():
                 this_year_result['students'] += studentgroup.students.all().count()
                 groupsurveys = GroupSurvey.objects.filter(studentgroup = studentgroup, survey = survey)
                 if groupsurveys.all().count() > 1:
-                    errors.append('sama próf skráð {} sinnum fyrir {}'.format(groupsurveys.all().count(), studentgroup.name))
+                    errors.append('sama próf skráð {} sinnum fyrir {} í {}'.format(groupsurveys.all().count(), studentgroup.name, studentgroup.school.name))
                 for groupsurvey in groupsurveys.all():
                     for student in studentgroup.students.all():
                         surveyresults = SurveyResult.objects.filter(survey = groupsurvey, student = student)
