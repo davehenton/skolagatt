@@ -1826,9 +1826,13 @@ def survey_detail_excel(request, school_id, student_group, pk):
                     sr = SurveyResult.objects.filter(student=student, survey=survey)
                     if sr:
                         r = literal_eval(sr.first().results)  # get student results
+                        try:
+                            click_values = literal_eval(r['click_values'])
+                        except:
+                            click_values = []
                         survey_student_result = common_util.calc_survey_results(
                             survey_identifier = identifier,
-                            click_values = literal_eval(r['click_values']),
+                            click_values = click_values,
                             input_values = r['input_values'],
                             student = student,
                             survey_type = survey_type,
@@ -2314,3 +2318,48 @@ def lesfimi_excel_entire_country_stats():
     # wb.save(response)
 
     return response
+
+
+def _lesfimi_excel_result_duplicates():
+    wb = openpyxl.Workbook()
+    ws = wb.get_active_sheet()
+    wb.remove_sheet(ws)
+
+    tests = (
+        ('b{}_LF_jan17', 'Janúar 2017'),
+        ('{}b_LF_sept', 'September 2016'),
+    )
+    for test in tests:
+        identifier = test[0]
+        title = test[1]
+        ws = wb.create_sheet(title = title)
+        ws['A1'] = 'Kennitala'
+        ws['B1'] = 'Groupsurvey id'
+        ws['C1'] = 'Surveyresult id'
+        ws['D1'] = 'Result'
+        index = 2
+        errors = []
+        for year in range(1, 11):
+            ws['A' + str(index)] = year
+            survey = Survey.objects.filter(identifier = identifier.format(year)).first()
+            survey_type = SurveyType.objects.filter(survey=survey.id).values('id')
+            dic = survey_type[0]
+            survey_type = dic['id']
+            transformation = SurveyTransformation.objects.filter(survey=survey)
+            studentgroups = StudentGroup.objects.filter(student_year = year).all()
+            for studentgroup in studentgroups:
+                groupsurveys = GroupSurvey.objects.filter(studentgroup = studentgroup, survey = survey)
+                if groupsurveys.all().count() > 1:
+                    errors.append('sama próf skráð {} sinnum fyrir {} í {}'.format(groupsurveys.all().count(), studentgroup.name, studentgroup.school.name))
+                for groupsurvey in groupsurveys.all():
+                    for student in studentgroup.students.all():
+                        surveyresults = SurveyResult.objects.filter(survey = groupsurvey, student = student)
+                        if surveyresults.all().count() > 1:
+                            for surveyresult in surveyresults.all():
+                                ws['A' + str(index)] = student.ssn
+                                ws['B' + str(index)] = groupsurvey.id
+                                ws['C' + str(index)] = surveyresult.id
+                                ws['D' + str(index)] = surveyresult.results
+                                index += 1
+    
+    wb.save(filename='/tmp/duplicates.xlsx')
