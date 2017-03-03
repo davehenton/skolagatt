@@ -1439,8 +1439,8 @@ class SurveyLoginListing(common_mixins.SchoolEmployeeMixin, ListView):
         survey_login_list = SurveyLogin.objects.filter(
             student__in = Student.objects.filter(school=school)
         ).values('survey_id').distinct()
-        print(survey_login_list)
         context['survey_list'] = Survey.objects.filter(identifier__in =survey_login_list)
+        print(context['survey_list'])
         return context
 
 
@@ -1477,7 +1477,10 @@ class SurveyLoginDetail(common_mixins.SchoolManagerMixin, DetailView):
         context              = super(SurveyLoginDetail, self).get_context_data(**kwargs)
         context['survey_id'] = self.kwargs['survey_id']
         identifier = self.kwargs['survey_id']
-        survey_name = Survey.objects.filter(identifier = identifier[:len(identifier)-11]).values('title')
+        if 'stuðningur' in identifier:
+            survey_name = Survey.objects.filter(identifier = identifier[:len(identifier)-11]).values('title')
+        else:
+            survey_name = Survey.objects.filter(identifier = identifier[:len(identifier)]).values('title')
         context['survey_name'] = survey_name[0]
         if 'school_id' in self.kwargs:
             school = School.objects.get(pk=self.kwargs['school_id'])
