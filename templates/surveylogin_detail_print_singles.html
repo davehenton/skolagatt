@@ -77,7 +77,7 @@
 	<div class="outer-border">
 		<div class="inner-border">
 			<img src="{% static 'img/logo-3litur.png'%}" class="img-responsive mms-logo"/>
-			<h1 class="text-center">Prófkóði nemanda <small>{{survey_id}}</small></h1>
+			<h1 class="text-center">Prófkóði nemanda <small>{{survey_name.title}}</small></h1>
 			<div class="table-container">
 				<table id="{{data.student.ssn}}" class="table">
 					<tbody>
@@ -102,5 +102,10 @@
 		</div>
 	</div>
 </page>
+{% if '2' in survey_id  %}
+<page size="A4">
+	<img src="{% static 'img/0310stfformulublad_mms_red.png'%}" class="img-responsive"/>
+</page>
+{% endif %}
 {% endfor %}
 {% endblock %}

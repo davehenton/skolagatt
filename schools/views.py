@@ -1436,9 +1436,11 @@ class SurveyLoginListing(common_mixins.SchoolEmployeeMixin, ListView):
         context                      = super(SurveyLoginListing, self).get_context_data(**kwargs)
         school                       = School.objects.get(pk=self.kwargs['school_id'])
         context['school_id']         = school.id
-        context['survey_login_list'] = SurveyLogin.objects.filter(
+        survey_login_list = SurveyLogin.objects.filter(
             student__in = Student.objects.filter(school=school)
         ).values('survey_id').distinct()
+        print(survey_login_list)
+        context['survey_list'] = Survey.objects.filter(identifier__in =survey_login_list)
         return context
 
 
@@ -1474,6 +1476,8 @@ class SurveyLoginDetail(common_mixins.SchoolManagerMixin, DetailView):
         # xxx will be available in the template as the related objects
         context              = super(SurveyLoginDetail, self).get_context_data(**kwargs)
         context['survey_id'] = self.kwargs['survey_id']
+        survey_name = Survey.objects.filter(identifier = self.kwargs['survey_id']).values('title')
+        context['survey_name'] = survey_name[0]
         if 'school_id' in self.kwargs:
             school = School.objects.get(pk=self.kwargs['school_id'])
 
