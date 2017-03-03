@@ -1476,7 +1476,8 @@ class SurveyLoginDetail(common_mixins.SchoolManagerMixin, DetailView):
         # xxx will be available in the template as the related objects
         context              = super(SurveyLoginDetail, self).get_context_data(**kwargs)
         context['survey_id'] = self.kwargs['survey_id']
-        survey_name = Survey.objects.filter(identifier = self.kwargs['survey_id']).values('title')
+        identifier = self.kwargs['survey_id']
+        survey_name = Survey.objects.filter(identifier = identifier[:len(identifier)-11]).values('title')
         context['survey_name'] = survey_name[0]
         if 'school_id' in self.kwargs:
             school = School.objects.get(pk=self.kwargs['school_id'])
