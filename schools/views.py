@@ -1541,7 +1541,7 @@ class SurveyLoginCreate(common_mixins.SuperUserMixin, CreateView):
                         for row in range(first, sheet.nrows):
                             rowdata = {
                                 'survey_id': str(sheet.cell_value(row, int(survey_id))),
-                                'ssn'      : int(str(sheet.cell_value(row, int(ssn)))),
+                                'ssn'      : str(sheet.cell_value(row, int(ssn))),
                                 'password' : str(sheet.cell_value(row, int(password))),
                             }
                             data.append(rowdata)
