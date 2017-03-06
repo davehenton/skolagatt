@@ -1539,17 +1539,18 @@ class SurveyLoginCreate(common_mixins.SuperUserMixin, CreateView):
                     for sheetsnumber in range(book.nsheets):
                         sheet = book.sheet_by_index(sheetsnumber)
                         for row in range(first, sheet.nrows):
-                            data.append({
+                            rowdata = {
                                 'survey_id': str(sheet.cell_value(row, int(survey_id))),
                                 'ssn'      : int(str(sheet.cell_value(row, int(ssn)))),
                                 'password' : str(sheet.cell_value(row, int(password))),
-                            })
+                            }
+                            data.append(rowdata)
                 return render(self.request, 'common/password_verify_import.html', {'data': data})
             except Exception as e:
                 return render(
                     self.request,
                     'common/password_form_import.html',
-                    {'error': 'Dálkur ekki til, reyndu aftur'}
+                    {'error': 'Villa í skjali: "' + str(e) + ', lína: ' + str(row + 1)}
                 )
 
         else:
