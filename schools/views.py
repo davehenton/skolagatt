@@ -1667,9 +1667,9 @@ def group_admin_listing_excel(request, survey_title):
                 #print(student.id)
                 supports = SupportResource.objects.filter(student=student.id)
                 for support in supports:
-                    if 'fyrri' in survey_title and '1' in support.longer_time or '2' in support.longer_time:
+                    if 'fyrri' in survey_title:
                         ws.cell('H' + str(index)).value = 'Y'
-                    elif'seinni' in survey_title and '3' in support.longer_time or '2' in support.longer_time:
+                    elif'seinni' in survey_title:
                         ws.cell('H' + str(index)).value = 'Y'
 
                 ws.cell('J' + str(index)).value = str(StudentGroup.objects.filter(students=student.id)[:1].get())
