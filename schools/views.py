@@ -1144,8 +1144,6 @@ class SurveyDetail(common_mixins.SchoolEmployeeMixin, DetailView):
         student_results     = {}
         for student in context['students']:
             sr = SurveyResult.objects.filter(student=student, survey=self.object)
-            print('edadfas')
-            print(sr)
             if sr:
                 r = literal_eval(sr.first().results)  # get student results
                 try:
@@ -1440,7 +1438,6 @@ class SurveyLoginListing(common_mixins.SchoolEmployeeMixin, ListView):
             student__in = Student.objects.filter(school=school)
         ).values('survey_id').distinct()
         context['survey_list'] = Survey.objects.filter(identifier__in =survey_login_list)
-        print(context['survey_list'])
         return context
 
 
@@ -1665,7 +1662,6 @@ def group_admin_listing_excel(request, survey_title):
                 ws.cell('D' + str(index)).value = student.ssn
                 ws.cell('F' + str(index)).value = survey.survey.identifier
                 ws.cell('H' + str(index)).value = 'N'
-                #print(student.id)
                 supports = SupportResource.objects.filter(student=student.id)
                 for support in supports:
                     if 'fyrri' in survey_title:
