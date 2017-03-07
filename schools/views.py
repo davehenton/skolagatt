@@ -1434,10 +1434,12 @@ class SurveyLoginListing(common_mixins.SchoolEmployeeMixin, ListView):
         context                      = super(SurveyLoginListing, self).get_context_data(**kwargs)
         school                       = School.objects.get(pk=self.kwargs['school_id'])
         context['school_id']         = school.id
-        survey_login_list = SurveyLogin.objects.filter(
+        survey_list = SurveyLogin.objects.filter(
             student__in = Student.objects.filter(school=school)
         ).values('survey_id').distinct()
-        context['survey_list'] = Survey.objects.filter(identifier__in =survey_login_list)
+        survey_list = list(set([ x['survey_id'].replace('_stuðningur', '') for x in survey_list ]))
+        context['survey_list'] = Survey.objects.filter(identifier__in = survey_list)
+        print(context['survey_list'])
         return context
 
 
