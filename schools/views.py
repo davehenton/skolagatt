@@ -1439,8 +1439,8 @@ class SurveyLoginListing(common_mixins.SchoolEmployeeMixin, ListView):
         survey_list = SurveyLogin.objects.filter(
             student__in = Student.objects.filter(school=school)
         ).values('survey_id').distinct()
-        survey_list = [ i['survey_id'][:-11] if i['survey_id'].endswith('_stuðningur') else i['survey_id'] for i in survey_list ]
-        context['survey_list'] = Survey.objects.filter(identifier__in =survey_list)
+        survey_list = list(set([ x['survey_id'].replace('_stuðningur', '') for x in survey_list ]))
+        context['survey_list'] = Survey.objects.filter(identifier__in = survey_list)
         print(context['survey_list'])
         return context
 
