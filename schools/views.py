@@ -1657,7 +1657,7 @@ def group_admin_listing_excel(request, survey_title):
     for survey in surveys:
         if survey.studentgroup:
             for student in survey.studentgroup.students.all():
-                names_list = student.name.split()
+                names_list = student.name.strip().split()
                 pos = len(names_list) - 1
                 ws.cell('A' + str(index)).value = ' '.join(names_list[:pos])
                 ws.cell('B' + str(index)).value = ' '.join(names_list[pos:])
