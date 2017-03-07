@@ -1318,7 +1318,7 @@ class SurveyResultCreate(common_mixins.SchoolEmployeeMixin, CreateView):
 
     def form_valid(self, form):
         survey_results             = form.save(commit=False)
-        survey_results.reported_by = Teacher.objects.get(user_id=self.request.user.pk)
+        survey_results.reported_by = Teacher.objects.filter(user_id=self.request.user.pk).first()
         survey_results.student     = Student.objects.get(pk=self.kwargs['student_id'])
         survey_results.survey      = GroupSurvey.objects.get(pk=self.kwargs['survey_id'])
         survey_results.created_at  = timezone.now()
