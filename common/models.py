@@ -161,3 +161,30 @@ class SurveyLogin(models.Model):
     student     = models.ForeignKey(Student)
     survey_id   = models.CharField(max_length = 256)  # external survey identity
     survey_code = models.CharField(max_length = 16)
+
+
+
+# Prófadæmi, spurningar
+class ExampleSurveyQuestion(models.Model):
+    # flýtikóði
+    quickcode = models.CharField()
+    # próftegund
+    quiz_type = models.CharField()
+    # flokkur
+    category = models.CharField()
+    # ĺýsing
+    description = models.CharField()
+    # dæmi
+    example = models.CharField()
+
+
+# Prófadæmi, svör
+class SurveyExampleAnswers(models.Model):
+    # spurning
+    question = models.ForeignKey(ExampleSurveyQuestion)
+    # nemandi
+    student = models.ForeignKey(Student)
+    # próf
+    groupsurvey = models.ForeignKey(GroupSurvey)
+    # Svar (rétt/rangt)
+    answer = models.BooleanField()
