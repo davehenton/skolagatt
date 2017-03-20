@@ -1,0 +1,48 @@
+{% extends 'common/index.html'%}
+{% include staticfiles%}
+{% block content %}
+{{ error }}
+<div class="row">
+	<div class="col-md-6">
+		<form action="" method="post" enctype="multipart/form-data">
+			{% csrf_token %}
+				<div class="form-group">
+					<label for="file">Veldu skrá</label>
+					<input type="file" name="file" id="file" class="btn btn-default"/>
+				</div>
+
+				<div class="form-group">
+					<label for="quickcode">Flýtikóði</label>
+					<input type="number" name="quickcode" id="quickcode" min="0" value="0" class="form-control input-lg" />
+				</div>
+				<div class="form-group">
+					<label for="quiz_type">Próftegund</label>
+					<input type="number" name="quiz_type" id="quiz_type" min="0" value="1" class="form-control input-lg" />
+				</div>
+				<div class="form-group">
+					<label for="category">Spurningaflokkur</label>
+					<input type="number" name="category" id="category" min="0" value="2" class="form-control input-lg" />
+				</div>
+				<div class="form-group">
+					<label for="description">Lýsing</label>
+					<input type="number" name="description" id="description" min="0" value="3" class="form-control input-lg" />
+				</div>
+				<div class="form-group">
+					<label for="example">Dæmi</label>
+					<input type="number" name="example" id="example" min="0" value="3" class="form-control input-lg" />
+				</div>
+				<div class="form-group">
+					<label for="title">Er fyrsta línan með titli</label>
+					<input type="checkbox" id="title" name="title" value="yes" checked="checked" />
+				</div>
+				<div class="form-group">
+					<input type="submit" value="Vista" class="btn btn-success btn-lg"/>
+				</div>
+		</form>
+	</div>
+	<div class="col-md-6 alert-info">
+		<p>Veljið excel skrá sem inniheldur dálka fyrir kennitölur, ... . Skráin verður að vera vistuð sem .xlsx</p>
+		<p>Veljið dálkanúmer flýtikóða, próftegundar, spurningaflokks, lýsingar og dæmis þar sem fremsti dálkurinn er <strong>númer 0</strong>, næsti númer 1 o.s.frv.</p>
+	</div>
+</div>
+{% endblock %}

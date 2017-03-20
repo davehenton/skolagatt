@@ -1634,6 +1634,112 @@ class AdminUpdate(common_mixins.SuperUserMixin, UpdateView):
         return reverse_lazy('schools:admin_listing')
 
 
+class ExampleSurveyQuestionAdminListing(common_mixins.SuperUserMixin, ListView):
+    model = ExampleSurveyQuestion
+    template_name = "common/example_survey/question_admin_list.html"
+    # Success url?
+
+    def get_context_data(self, **kwargs):
+        context = super(ExampleSurveyQuestionAdminListing, self).get_context_data(**kwargs)
+
+        context['questions'] = ExampleSurveyQuestion.objects.all()
+        return context
+
+
+class ExampleSurveyQuestionAdminDetail(common_mixins.SuperUserMixin, ListView):
+    model = ExampleSurveyQuestion
+    template_name = "common/example_survey/question_admin_detail.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(ExampleSurveyQuestionAdminDetail, self).get_context_data(**kwargs)
+
+        context['question'] = ExampleSurveyQuestion.objects.get(pk = self.kwargs['pk'])
+
+
+class ExampleSurveyQuestionAdminCreate(common_mixins.SuperUserMixin, CreateView):
+    model         = ExampleSurveyQuestion
+    form_class    = cm_forms.SurveyLoginForm
+    template_name = "common/example_survey/question_form_import.html"
+
+    def post(self, *args, **kwargs):
+        if(self.request.FILES):
+            u_file    = self.request.FILES['file'].name
+            extension = u_file.split(".")[-1]
+
+            quickcode = self.request.POST.get('quickcode')
+            quiz_type = self.request.POST.get('quiz_type')
+            category = self.request.POST.get('category')
+            description = self.request.POST.get('description')
+            example = self.request.POST.get('example')
+
+            if title == 'yes':
+                first = 1
+            else:
+                first = 0
+
+            data = []
+            try:
+                if extension == 'xlsx':
+                    input_excel = self.request.FILES['file']
+                    book        = xlrd.open_workbook(file_contents=input_excel.read())
+                    for sheetsnumber in range(book.nsheets):
+                        sheet = book.sheet_by_index(sheetsnumber)
+                        for row in range(first, sheet.nrows):
+                            rowdata = {
+                                'quickcode': str(sheet.cell_value(row, int(quickcode))),
+                                'quiz_type'      : str(sheet.cell_value(row, int(quiz_type))),
+                                'category' : str(sheet.cell_value(row, int(category))),
+                                'description' : str(sheet.cell_value(row, int(description))),
+                                'example' : str(sheet.cell_value(row, int(example))),
+                            }
+                            data.append(rowdata)
+                return render(self.request, 'common/survey_example/question_verify_import.html', {'data': data})
+            except Exception as e:
+                return render(
+                    self.request,
+                    'common/survey_example/question_form_import.html',
+                    {'error': 'Villa í skjali: "' + str(e) + ', lína: ' + str(row + 1)}
+                )
+        else:
+            newdata = json.loads(self.request.POST['newdata'])
+            # Iterate through the data
+            for newentry in newdata:
+                # check if quickcode exists, create if not, otherwise update
+                question = ExampleSurveyQuestion.objects.filter(
+                    quickcode = newentry['quickcode']
+                )
+                if question:
+                    question.update(
+                        quiz_type=newentry['quiz_type'],
+                        category=newentry['category'],
+                        description=newentry['description'],
+                        example=newentry['example'],
+                    )
+                else:
+                    question = SurveyLogin.objects.create(
+                        quickcode=newentry['quickcode'],
+                        quiz_type=newentry['quiz_type'],
+                        category=newentry['category'],
+                        description=newentry['description'],
+                        example=newentry['example'],
+                    )
+        return redirect(self.get_success_url())
+
+    def get_success_url(self):
+        return reverse_lazy('schools:example_survey_question_admin_listing')
+
+
+class ExampleSurveyQuestionAdminDelete(common_mixins.SuperUserMixin, DeleteView):
+    model         = ExampleSurveyQuestion
+    template_name = "schools/confirm_delete.html"
+
+    def get_success_url(self):
+        return reverse_lazy('schools:example_survey_question_admin_listing')
+
+    def get_object(self):
+        return ExampleSurveyQuestion.objects.get(pk=self.kwargs['pk'])
+
+
 def group_admin_listing_excel(request, survey_title):
     surveys = GroupSurvey.objects.filter(survey__title=survey_title)
     response                        = HttpResponse(

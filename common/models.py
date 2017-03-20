@@ -163,19 +163,18 @@ class SurveyLogin(models.Model):
     survey_code = models.CharField(max_length = 16)
 
 
-
 # Prófadæmi, spurningar
 class ExampleSurveyQuestion(models.Model):
     # flýtikóði
-    quickcode = models.CharField()
+    quickcode = models.CharField(max_length = 16, unique=True)
     # próftegund
-    quiz_type = models.CharField()
+    quiz_type = models.CharField(max_length = 3)
     # flokkur
-    category = models.CharField()
+    category = models.CharField(max_length = 2)
     # ĺýsing
-    description = models.CharField()
+    description = models.TextField()
     # dæmi
-    example = models.CharField()
+    example = models.TextField()
 
 
 # Prófadæmi, svör
