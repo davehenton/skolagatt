@@ -1739,6 +1739,7 @@ class ExampleSurveyQuestionAdminCreate(common_mixins.SuperUserMixin, CreateView)
             category = self.request.POST.get('category')
             description = self.request.POST.get('description')
             example = self.request.POST.get('example')
+            title = self.request.POST.get('title')
 
             if title == 'yes':
                 first = 1
@@ -1847,6 +1848,7 @@ class ExampleSurveyAnswerAdminCreate(common_mixins.SuperUserMixin, CreateView):
             quickcode = self.request.POST.get('quickcode')
             survey_identifier = self.request.POST.get('survey_identifier')
             answer = self.request.POST.get('answer')
+            title = self.request.POST.get('title')
 
             if title == 'yes':
                 first = 1
