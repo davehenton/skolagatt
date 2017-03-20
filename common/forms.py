@@ -4,7 +4,9 @@ from django.contrib.auth.models import User
 from common.models import (
     Manager, Teacher, Student,
     School, StudentGroup, GroupSurvey,
-    SurveyResult, SurveyLogin, Notification)
+    SurveyResult, SurveyLogin, Notification,
+    ExampleSurveyQuestion, ExampleSurveyAnswer,
+)
 
 
 def add_field_classes(self, field_list):
@@ -238,4 +240,44 @@ class SuperUserForm(forms.ModelForm):
         labels = {
             'username': 'Kennitala',
             'is_superuser': 'Umsjónarmaður',
+        }
+
+
+class ExampleSurveyQuestionForm(forms.ModelForm):
+    file = forms.FileField()
+
+    class Meta:
+        model = ExampleSurveyQuestion
+        fields = [
+            'quickcode',
+            'quiz_type',
+            'category',
+            'description',
+            'example',
+        ]
+        labels = {
+            'quickcode':   'Flýtikóði',
+            'quiz_type':   'Próftegund',
+            'category':    'Spurningaflokkur',
+            'description': 'Lýsing',
+            'example':     'Dæmi',
+        }
+
+
+class ExampleSurveyAnswerForm(forms.ModelForm):
+    file = forms.FileField()
+
+    class Meta:
+        model = ExampleSurveyAnswer
+        fields = [
+            'student',
+            'question',
+            'groupsurvey',
+            'answer',
+        ]
+        labels = {
+            'student': 'Nemandi',
+            'question': 'Prófadæmis spurning',
+            'groupsurvey': 'Próf',
+            'answer': 'Svar',
         }

@@ -178,11 +178,11 @@ class ExampleSurveyQuestion(models.Model):
 
 
 # Prófadæmi, svör
-class SurveyExampleAnswers(models.Model):
-    # spurning
-    question = models.ForeignKey(ExampleSurveyQuestion)
+class ExampleSurveyAnswer(models.Model):
     # nemandi
     student = models.ForeignKey(Student)
+    # spurning
+    question = models.ForeignKey(ExampleSurveyQuestion)
     # próf
     groupsurvey = models.ForeignKey(GroupSurvey)
     # Svar (rétt/rangt)
