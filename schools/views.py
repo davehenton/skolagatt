@@ -1762,11 +1762,11 @@ class ExampleSurveyQuestionAdminCreate(common_mixins.SuperUserMixin, CreateView)
                                 'example' : str(sheet.cell_value(row, int(example))),
                             }
                             data.append(rowdata)
-                return render(self.request, 'common/survey_example/question_verify_import.html', {'data': data})
+                return render(self.request, 'common/example_survey/question_verify_import.html', {'data': data})
             except Exception as e:
                 return render(
                     self.request,
-                    'common/survey_example/question_form_import.html',
+                    'common/example_survey/question_form_import.html',
                     {'error': 'Villa í skjali: "' + str(e) + ', lína: ' + str(row + 1)}
                 )
         else:
@@ -1870,11 +1870,11 @@ class ExampleSurveyAnswerAdminCreate(common_mixins.SuperUserMixin, CreateView):
                                 'answer':            str(sheet.cell_value(row, int(category))),
                             }
                             data.append(rowdata)
-                return render(self.request, 'common/survey_example/answer_verify_import.html', {'data': data})
+                return render(self.request, 'common/example_survey/answer_verify_import.html', {'data': data})
             except Exception as e:
                 return render(
                     self.request,
-                    'common/survey_example/answer_form_import.html',
+                    'common/example_survey/answer_form_import.html',
                     {'error': 'Villa í skjali: "' + str(e) + ', lína: ' + str(row + 1)}
                 )
         else:
