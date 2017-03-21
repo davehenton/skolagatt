@@ -198,7 +198,7 @@ urlpatterns = [
     url(r'^prófadæmi/svör/$',
         views.ExampleSurveyAnswerAdminListing.as_view(),
         name='example_survey_answer_admin_listing'),
-    url(r'^prófadæmi/svör/(?P<pk>\d+)/$0',
+    url(r'^prófadæmi/svör/(?P<pk>\d+)/$',
         views.ExampleSurveyAnswerAdminDetail.as_view(),
         name='example_survey_answer_admin_detail'),
     url(r'prófadæmi/svör/create/$',

@@ -1722,6 +1722,7 @@ class ExampleSurveyQuestionAdminDetail(common_mixins.SuperUserMixin, ListView):
         context = super(ExampleSurveyQuestionAdminDetail, self).get_context_data(**kwargs)
 
         context['question'] = ExampleSurveyQuestion.objects.get(pk = self.kwargs['pk'])
+        return context
 
 
 class ExampleSurveyQuestionAdminCreate(common_mixins.SuperUserMixin, CreateView):
@@ -1829,9 +1830,10 @@ class ExampleSurveyAnswerAdminDetail(common_mixins.SuperUserMixin, ListView):
     template_name = "common/example_survey/answer_admin_detail.html"
 
     def get_context_data(self, **kwargs):
-        context = super(ExampleSurveyQAnswerAdminDetail, self).get_context_data(**kwargs)
+        context = super(ExampleSurveyAnswerAdminDetail, self).get_context_data(**kwargs)
 
-        context['question'] = ExampleSurveyAnswer.objects.get(pk = self.kwargs['pk'])
+        context['answer'] = ExampleSurveyAnswer.objects.get(pk = self.kwargs['pk'])
+        return context
 
 
 class ExampleSurveyAnswerAdminCreate(common_mixins.SuperUserMixin, CreateView):
@@ -1867,7 +1869,7 @@ class ExampleSurveyAnswerAdminCreate(common_mixins.SuperUserMixin, CreateView):
                                 'ssn':               str(sheet.cell_value(row, int(ssn))),
                                 'quickcode':         str(sheet.cell_value(row, int(quickcode))),
                                 'survey_identifier': str(sheet.cell_value(row, int(survey_identifier))),
-                                'answer':            str(sheet.cell_value(row, int(category))),
+                                'answer':            str(sheet.cell_value(row, int(answer))),
                             }
                             data.append(rowdata)
                 return render(self.request, 'common/example_survey/answer_verify_import.html', {'data': data})
@@ -1882,7 +1884,7 @@ class ExampleSurveyAnswerAdminCreate(common_mixins.SuperUserMixin, CreateView):
             # Iterate through the data
             for newentry in newdata:
                 try:
-                    student = Student.objects.get(ssn=newdata['ssn'])  # student already exists
+                    student = Student.objects.get(ssn=newentry['ssn'])  # student already exists
                     question = ExampleSurveyQuestion.objects.get(quickcode = newentry['quickcode'])
                 except Exception(e):
                     print(e)
@@ -1895,17 +1897,18 @@ class ExampleSurveyAnswerAdminCreate(common_mixins.SuperUserMixin, CreateView):
                 studentgroup = StudentGroup.objects.filter(students=student).first()
                 survey = Survey.objects.filter(identifier = newentry['survey_identifier']).first()
                 groupsurvey = GroupSurvey.objects.filter(survey = survey, studentgroup = studentgroup).first()
+                boolanswer = True if newentry['answer'] == '1' else False
                 if answer:
                     answer.update(
                         groupsurvey = groupsurvey,
-                        answer = newentry['answer']
+                        answer = boolanswer,
                     )
                 else:
                     question = ExampleSurveyAnswer.objects.create(
                         student = student,
                         question = question,
                         groupsurvey = groupsurvey,
-                        answer = newentry['answer'],
+                        answer = boolanswer,
                     )
         return redirect(self.get_success_url())
 
