@@ -16,6 +16,7 @@ from ast       import literal_eval
 import json
 import xlrd
 import openpyxl
+import random
 from openpyxl.styles import PatternFill
 from openpyxl.chart import AreaChart, BarChart, LineChart,  Reference
 from openpyxl.chart.layout import Layout, ManualLayout
@@ -1635,67 +1636,77 @@ class AdminUpdate(common_mixins.SuperUserMixin, UpdateView):
         return reverse_lazy('schools:admin_listing')
 
 
+### Prófadæmi
+
 class ExampleSurveyListing(common_mixins.SchoolEmployeeMixin, ListView):
     model = ExampleSurveyAnswer
+    template_name = "common/example_survey/listing.html"
 
     def get_context_data(self, **kwargs):
         # xxx will be available in the template as the related objects
-        context                      = super(SurveyLoginListing, self).get_context_data(**kwargs)
-        school                       = School.objects.get(pk=self.kwargs['school_id'])
-        context['school_id']         = school.id
-        student_list = ExampleSurveyAnswer.objects.filter(
-            student__in = Student.objects.filter(school=school)
-        )
-        context['student_list'] = student_list
-        print(context['student_list'])
+        context           = super(ExampleSurveyListing, self).get_context_data(**kwargs)
+        school            = School.objects.get(pk=self.kwargs['school_id'])
+        context['school'] = school
+
+        groupsurveys = GroupSurvey.objects.filter(
+            pk__in = ExampleSurveyAnswer.objects.filter(
+                student__in = Student.objects.filter(school=school)
+            ).values_list('groupsurvey', flat=True).distinct().order_by('-id')
+        ).order_by('-active_to').all()
+        print(groupsurveys)
+
+        surveys = []
+        for groupsurvey in groupsurveys:
+            students = groupsurvey.studentgroup.students.all()
+
+            students_list = []
+            for student in students:
+                quiz_type_list = ExampleSurveyQuestion.objects.filter(
+                    pk__in = ExampleSurveyAnswer.objects.filter(
+                        student=student,
+                        groupsurvey = groupsurvey,
+                    ).values_list('question_id')
+                ).values_list('quiz_type', flat=True).distinct()
+                students_list.append((student, quiz_type_list))
+            surveys.append((groupsurvey, students_list))
+
+        context['surveys'] = surveys
         return context
 
 
-class ExampleSurveyDetail(common_mixins.SchoolManagerMixin, DetailView):
+class ExampleSurveyDetail(common_mixins.SchoolManagerMixin, ListView):
     model = ExampleSurveyAnswer
-
-    def get_object(self, **kwargs):
-        return ExampleSurveyAnswer.objects.filter(
-            school_id = self.kwargs['school_id'],
-            student_id = self.kwargs['student_id'],
-            quiz_type = self.kwargs['quiz_type'],
-            ).first()
-
-    def get_template_names(self, **kwargs):
-        if 'print' in self.kwargs:
-            if self.kwargs['print'] == 'listi':
-                return ['surveylogin_detail_print_list.html']
-            elif self.kwargs['print'] == 'einstaklingsblod':
-                return ['surveylogin_detail_print_singles.html']
-        return ['surveylogin_detail.html']
+    template_name = "common/example_survey/detail.html"
 
     def get_context_data(self, **kwargs):
         # xxx will be available in the template as the related objects
-        context              = super(SurveyLoginDetail, self).get_context_data(**kwargs)
-        context['survey_id'] = self.kwargs['survey_id']
-        identifier = self.kwargs['survey_id']
-        if 'stuðningur' in identifier:
-            survey_name = Survey.objects.filter(identifier = identifier[:len(identifier)-11]).values('title')
-        else:
-            survey_name = Survey.objects.filter(identifier = identifier[:len(identifier)]).values('title')
-        context['survey_name'] = survey_name[0]
-        if 'school_id' in self.kwargs:
-            school = School.objects.get(pk=self.kwargs['school_id'])
+        context = super(ExampleSurveyDetail, self).get_context_data(**kwargs)
 
-            context['survey_login_students'] = SurveyLogin.objects.filter(
-                student__in = Student.objects.filter(school=school),
-                survey_id   = self.kwargs['survey_id']
-            )
+        school = School.objects.get(pk=self.kwargs['school_id'])
+        student = Student.objects.get(pk=self.kwargs['student_id'])
+        groupsurvey = GroupSurvey.objects.get(pk=self.kwargs['groupsurvey_id'])
+
+        answers_list = ExampleSurveyAnswer.objects.filter(
+            student = student,
+            groupsurvey = groupsurvey,
+        )
+
+        quiz_type = self.kwargs['quiz_type']
+
+        answers = []
+        if quiz_type.lower() in ['stæ', 'ens', 'ísl']:
+            answers = [ x for x in answers_list if x.question.quiz_type == quiz_type ]
         else:
-            context['survey_login_students'] = SurveyLogin.objects.filter(
-                survey_id=self.kwargs['survey_id']
-            )
-        if 'íslenska' in self.kwargs['survey_id']:
-            context['exam'] = '1'
-        elif 'enska' in self.kwargs['survey_id']:
-            context['exam'] = '2'
-        elif 'stærðfræði' in self.kwargs['survey_id']:
-            context['exam'] = '3'
+            answers = [ x for x in answers_list ]
+
+        random.shuffle(answers)
+        context['answers'] = answers
+        context['school'] = school
+        context['student'] = student
+        context['quiz_type'] = quiz_type
+        context['groupsurvey'] = groupsurvey
+        context['studentgroup'] = groupsurvey.studentgroup
+
         return context
 
 
