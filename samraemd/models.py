@@ -13,22 +13,28 @@ class SamraemdMathResult(models.Model):
     student = models.ForeignKey(Student)
     # data fields
     # Samræmd einkunn
-    ra_se = models.CharField(max_length = 4)
-    rm_se = models.CharField(max_length = 4)
-    tt_se = models.CharField(max_length = 4)
-    se    = models.CharField(max_length = 4)
+    ra_se = models.CharField(max_length = 4, blank=True)
+    rm_se = models.CharField(max_length = 4, blank=True)
+    tt_se = models.CharField(max_length = 4, blank=True)
+    se    = models.CharField(max_length = 4, blank=True)
     # Raðeinkunn
-    ra_re = models.CharField(max_length=4)
-    rm_re = models.CharField(max_length=4)
-    tt_re = models.CharField(max_length=4)
-    re    = models.CharField(max_length=4)
+    al_re = models.CharField(max_length=4, blank=True)
+    hp_re = models.CharField(max_length=4, blank=True)
+    ra_re = models.CharField(max_length=4, blank=True)
+    rm_re = models.CharField(max_length=4, blank=True)
+    tt_re = models.CharField(max_length=4, blank=True)
+    re    = models.CharField(max_length=4, blank=True)
     # Grunnskólaeinkunn
-    ra_sg         = models.CharField(max_length=4)
-    rm_sg         = models.CharField(max_length=4)
-    tt_sg         = models.CharField(max_length=4)
-    sg            = models.CharField(max_length=4)
+    al_sg = models.CharField(max_length=4, blank=True)
+    hp_sg = models.CharField(max_length=4, blank=True)
+    ra_sg = models.CharField(max_length=4, blank=True)
+    rm_sg = models.CharField(max_length=4, blank=True)
+    tt_sg = models.CharField(max_length=4, blank=True)
+    sg    = models.CharField(max_length=4, blank=True)
+    he    = models.CharField(max_length=4, blank=True)
     ord_talna_txt = models.CharField(max_length = 128)
     # Framfaraeinkunn
+    fm     = models.CharField(max_length = 32, blank=True)
     fm_fl  = models.CharField(max_length = 32, blank=True)
     fm_txt = models.CharField(max_length = 256, blank=True)
     # exam fields
@@ -58,7 +64,7 @@ class SamraemdMathResultForm(forms.ModelForm):
     class Meta:
         model = SamraemdMathResult
         fields = [
-            'ra_se', 'rm_se', 'tt_se', 'se', 'ra_re', 'rm_re', 'tt_re', 're',
+            'ra_se', 'rm_se', 'tt_se', 'se', 'ra_re', 'rm_re', 'tt_re', 're', 'he',
             'ra_sg', 'rm_sg', 'tt_sg', 'sg', 'ord_talna_txt', 'fm_fl', 'fm_txt',
             'exam_code', 'exam_date', 'student_year'
         ]
@@ -69,15 +75,21 @@ class SamraemdMathResultForm(forms.ModelForm):
             'rm_se'        : 'Samræmd einkunn - Rúmfræði og mælingar',
             'tt_se'        : 'Samræmd einkunn - Tölur og talnaskilningur',
             'se'           : 'Samræmd einkunn - Heild',
+            'al_re'        : 'Raðeinkunn - Algebra',
+            'hp_re'        : 'Raðeinkunn - Hlutföll og prósentur',
             'ra_re'        : 'Raðeinkunn - Reikningur og aðgerðir',
             'rm_re'        : 'Raðeinkunn - Rúmfræði og mælingar',
             'tt_re'        : 'Raðeinkunn - Tölur og talnaskilningur',
             're'           : 'Raðeinkunn - Heild',
+            'al_sg'        : 'Grunnskólaeinkunn - Algebra',
+            'hp_sg'        : 'Grunnskólaeinkunn - Hlutföll og prósentur',
             'ra_sg'        : 'Grunnskólaeinkunn - Reikningur og aðgerðir',
             'rm_sg'        : 'Grunnskólaeinkunn - Rúmfræði og mælingar',
             'tt_sg'        : 'Grunnskólaeinkunn - Tölur og talnaskilningur',
             'sg'           : 'Grunnskólaeinkunn - Heild',
+            'he'           : 'Grunnskólaeinkunn - Stafeinkunn',
             'ord_talna_txt': 'Orðadæmi og talnadæmi',
+            'fm'           : 'Framfarir',
             'fm_fl'        : 'Framfaraflokkur',
             'fm_txt'       : 'Framfaratexti',
             'exam_date'    : 'Dagsetning prófs (YYYY-MM-DD)',
@@ -89,21 +101,23 @@ class SamraemdISLResult(models.Model):
     student = models.ForeignKey(Student)
     # data fields
     # Samræmd einkunn
-    le_se = models.CharField(max_length=4)
-    mn_se = models.CharField(max_length=4)
-    ri_se = models.CharField(max_length=4)
-    se    = models.CharField(max_length=4)
+    le_se = models.CharField(max_length=4, blank=True)
+    mn_se = models.CharField(max_length=4, blank=True)
+    ri_se = models.CharField(max_length=4, blank=True)
+    se    = models.CharField(max_length=4, blank=True)
     # Raðeinkunn
-    le_re = models.CharField(max_length=4)
-    mn_re = models.CharField(max_length=4)
-    ri_re = models.CharField(max_length=4)
-    re    = models.CharField(max_length=4)
+    le_re = models.CharField(max_length=4, blank=True)
+    mn_re = models.CharField(max_length=4, blank=True)
+    ri_re = models.CharField(max_length=4, blank=True)
+    re    = models.CharField(max_length=4, blank=True)
     # Grunnskólaeinkunn
-    le_sg = models.CharField(max_length=4)
-    mn_sg = models.CharField(max_length=4)
-    ri_sg = models.CharField(max_length=4)
-    sg    = models.CharField(max_length=4)
+    le_sg = models.CharField(max_length=4, blank=True)
+    mn_sg = models.CharField(max_length=4, blank=True)
+    ri_sg = models.CharField(max_length=4, blank=True)
+    sg    = models.CharField(max_length=4, blank=True)
+    he    = models.CharField(max_length=4, blank=True)
     # Framfaraeinkunn
+    fm     = models.CharField(max_length = 256, blank=True)
     fm_fl  = models.CharField(max_length = 32, blank=True)
     fm_txt = models.CharField(max_length = 256, blank=True)
     # exam fields
@@ -134,7 +148,7 @@ class SamraemdISLResultForm(forms.ModelForm):
         model = SamraemdISLResult
         fields = [
             'le_se', 'mn_se', 'ri_se', 'se', 'le_re', 'mn_re', 'ri_re', 're',
-            'le_sg', 'mn_sg', 'ri_sg', 'sg', 'fm_fl', 'fm_txt',
+            'le_sg', 'mn_sg', 'ri_sg', 'sg', 'fm_fl', 'fm_txt', 'he',
             'exam_code', 'exam_date', 'student_year'
         ]
         labels = {
@@ -152,8 +166,66 @@ class SamraemdISLResultForm(forms.ModelForm):
             'mn_sg'       : 'Grunnskólaeinkunn - Málnotkun',
             'ri_sg'       : 'Grunnskólaeinkunn - Ritun',
             'sg'          : 'Grunnskólaeinkunn - Heild',
+            'he'          : 'Grunnskólaeinkunn - Stafeinkunn',
+            'fm'          : 'Framfarir',
             'fm_fl'       : 'Framfaraflokkur',
             'fm_txt'      : 'Framfaratexti',
+            'exam_date'   : 'Dagsetning prófs (YYYY-MM-DD)',
+            'student_year': 'Árgangur'
+        }
+
+
+class SamraemdENSResult(models.Model):
+    student = models.ForeignKey(Student)
+    # data fields
+    # Raðeinkunn
+    le_re = models.CharField(max_length=4)
+    mn_re = models.CharField(max_length=4)
+    re    = models.CharField(max_length=4)
+    # Grunnskólaeinkunn
+    le_sg = models.CharField(max_length=4)
+    mn_sg = models.CharField(max_length=4)
+    sg    = models.CharField(max_length=4, blank=True)
+    he    = models.CharField(max_length=4, blank=True)
+    # exam fields
+    exam_code = models.CharField(max_length = 256)
+    exam_date = models.DateField()
+    YEAR_IN_SCHOOL_CHOICES = (
+        ('1', '1. bekkur'),
+        ('2', '2. bekkur'),
+        ('3', '3. bekkur'),
+        ('4', '4. bekkur'),
+        ('5', '5. bekkur'),
+        ('6', '6. bekkur'),
+        ('7', '7. bekkur'),
+        ('8', '8. bekkur'),
+        ('9', '9. bekkur'),
+        ('10', '10. bekkur'),
+    )
+    student_year = models.CharField(
+        max_length=2,
+        choices=YEAR_IN_SCHOOL_CHOICES,
+    )
+
+
+class SamraemdENSResultForm(forms.ModelForm):
+    file = forms.FileField()
+
+    class Meta:
+        model = SamraemdISLResult
+        fields = [
+            'le_re', 'mn_re', 're', 'le_sg', 'mn_sg', 'he',
+            'sg', 'exam_code', 'exam_date', 'student_year'
+        ]
+        labels = {
+            'exam_code'   : 'Prófkóði',
+            'student'     : 'Nemandi',
+            'le_re'       : 'Raðeinkunn - Lestur',
+            'mn_re'       : 'Raðeinkunn - Málnotkun',
+            're'          : 'Raðeinkunn - Heild',
+            'le_sg'       : 'Grunnskólaeinkunn - Lestur',
+            'mn_sg'       : 'Grunnskólaeinkunn - Málnotkun',
+            'sg'          : 'Grunnskólaeinkunn - Heild',
             'exam_date'   : 'Dagsetning prófs (YYYY-MM-DD)',
             'student_year': 'Árgangur'
         }

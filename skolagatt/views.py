@@ -33,8 +33,11 @@ def login(request):
         if(request.method == "POST"):
             user = User.objects.filter(username=request.POST['user_ssn'])
             if user.exists():
+                print(user.first().username)
                 user = authenticate(username=user.first().username)
+                print(user)
                 auth_login(request, user)
+                print('denni')
                 if util.is_manager(request):
                     return redirect(
                         'schools:manager_overview',
