@@ -1,0 +1,56 @@
+{% extends 'common/index.html' %}
+
+{% block content %}
+<div class="row">
+	<div class="row">
+		<h1>Samræmd könnunarpróf</h1>
+	</div>
+	<div class="row">
+		<div class="col-md-6">{{ school.name }}</div>
+		<div class="col-md-6">{{ student.ssn }}</div>
+	</div>
+	<div class="row">
+		<div class="col-md-6">
+		{% if quiz_type == 'STÆ' %}
+			Stærðfræðihluti
+		{% elif quiz_type == 'ÍSL' %}
+			Íslenskuhluti
+		{% elif quiz_type == 'ENS' %}
+			Enskuhluti
+		{% endif %}
+		{{ studentgroup.name }}
+		</div>
+		<div class="col-md-6">{{ student.name }}</div>
+	</div>
+</div>
+<div style="margin-top: 3em;">
+	<table class="table table-hover table-striped">
+		<thead>
+			<tr>
+				<th>Kóði</th>
+				<th>Svar</th>
+				<th>Flokkur</th>
+				<th>Innihald</th>
+				<th>Útskýring</th>
+			</tr>
+		</thead>
+	<tbody>
+	{% for answer in answers %}
+		<tr>
+			<td>{{ answer.question.quickcode }}</td>
+			<td><strong>
+			{% if answer.answer %}
+				1
+			{% else %}
+				2
+			{% endif %}
+			</strong></td>
+			<td>{{ answer.question.category }}</td>
+			<td>{{ answer.question.description }}</td>
+			<td>{{ answer.question.example }}
+		</tr>
+	{% endfor %}
+	</tbody>
+	</table>
+</div>
+{% endblock %}
