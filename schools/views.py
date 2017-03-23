@@ -1708,7 +1708,7 @@ class ExampleSurveyListing(common_mixins.SchoolEmployeeMixin, ListView):
 
 class ExampleSurveyGSDetail(common_mixins.SchoolManagerMixin, ListView):
     model = ExampleSurveyAnswer
-    template_name = "common/example_survey/detail.html"
+    template_name = "common/example_survey/survey_detail.html"
 
     def get_context_data(self, **kwargs):
         # xxx will be available in the template as the related objects
@@ -1718,24 +1718,15 @@ class ExampleSurveyGSDetail(common_mixins.SchoolManagerMixin, ListView):
         student = Student.objects.get(pk=self.kwargs['student_id'])
         groupsurvey = GroupSurvey.objects.get(pk=self.kwargs['groupsurvey_id'])
 
-        answers_list = ExampleSurveyAnswer.objects.filter(
+        answers = ExampleSurveyAnswer.objects.filter(
             student = student,
             groupsurvey = groupsurvey,
-        )
-
-        quiz_type = self.kwargs['quiz_type']
-
-        answers = []
-        if quiz_type.lower() in ['stæ', 'ens', 'ísl']:
-            answers = [ x for x in answers_list if x.question.quiz_type == quiz_type ]
-        else:
-            answers = [ x for x in answers_list ]
+        ).all()
 
         random.shuffle(answers)
         context['answers'] = answers
         context['school'] = school
         context['student'] = student
-        context['quiz_type'] = quiz_type
         context['groupsurvey'] = groupsurvey
         context['studentgroup'] = groupsurvey.studentgroup
 
@@ -1744,7 +1735,7 @@ class ExampleSurveyGSDetail(common_mixins.SchoolManagerMixin, ListView):
 
 class ExampleSurveySamraemdDetail(common_mixins.SchoolManagerMixin, ListView):
     model = ExampleSurveyAnswer
-    template_name = "common/example_survey/detail.html"
+    template_name = "common/example_survey/samraemd_detail.html"
 
     def get_context_data(self, **kwargs):
         # xxx will be available in the template as the related objects
