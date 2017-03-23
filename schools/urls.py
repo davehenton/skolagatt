@@ -207,7 +207,7 @@ urlpatterns = [
     url(r'^prófadæmi/svör/(?P<pk>\d+)/$',
         views.ExampleSurveyAnswerAdminDetail.as_view(),
         name='example_survey_answer_admin_detail'),
-    url(r'prófadæmi/svör/create/$',
+    url(r'prófadæmi/svör/import/$',
         views.ExampleSurveyAnswerAdminImport.as_view(),
         name='example_survey_answer_admin_import'),
     url(r'^prófadæmi/svör/(?P<pk>\d+)/delete/$',
