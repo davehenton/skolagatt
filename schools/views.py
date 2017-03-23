@@ -1718,12 +1718,13 @@ class ExampleSurveyGSDetail(common_mixins.SchoolManagerMixin, ListView):
         student = Student.objects.get(pk=self.kwargs['student_id'])
         groupsurvey = GroupSurvey.objects.get(pk=self.kwargs['groupsurvey_id'])
 
-        answers = ExampleSurveyAnswer.objects.filter(
+        answers = list(ExampleSurveyAnswer.objects.filter(
             student = student,
             groupsurvey = groupsurvey,
-        ).all()
+        ).all())
 
         random.shuffle(answers)
+
         context['answers'] = answers
         context['school'] = school
         context['student'] = student

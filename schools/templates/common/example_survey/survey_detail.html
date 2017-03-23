@@ -11,13 +11,7 @@
 	</div>
 	<div class="row">
 		<div class="col-md-6">
-		{% if quiz_type == 'STÆ' %}
-			Stærðfræðihluti
-		{% elif quiz_type == 'ÍSL' %}
-			Íslenskuhluti
-		{% elif quiz_type == 'ENS' %}
-			Enskuhluti
-		{% endif %}
+		{{ groupsurvey.survey.title }}
 		{{ studentgroup.name }}
 		</div>
 		<div class="col-md-6">{{ student.name }}</div>
