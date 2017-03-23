@@ -2,6 +2,8 @@
 from django.conf.urls        import url, include
 from django.contrib          import admin
 from .                       import views
+import froala_editor
+
 
 urlpatterns = [
     url(r'^$',
@@ -27,4 +29,5 @@ urlpatterns = [
         include('samraemd.urls')),
     url(r'^profagrunnur/',
         include('survey.urls')),
+    url(r'^froala_editor/', include('froala_editor.urls')),
 ]

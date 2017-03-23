@@ -47,7 +47,7 @@
 			</strong></td>
 			<td>{{ answer.question.category }}</td>
 			<td>{{ answer.question.description }}</td>
-			<td>{{ answer.question.example }}
+			<td>{{ answer.question.example|safe }}
 		</tr>
 	{% endfor %}
 	</tbody>

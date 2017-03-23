@@ -244,8 +244,6 @@ class SuperUserForm(forms.ModelForm):
 
 
 class ExampleSurveyQuestionForm(forms.ModelForm):
-    file = forms.FileField()
-
     class Meta:
         model = ExampleSurveyQuestion
         fields = [
