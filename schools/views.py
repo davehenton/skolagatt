@@ -1947,7 +1947,7 @@ class ExampleSurveyAnswerAdminDelete(common_mixins.SuperUserMixin, DeleteView):
     template_name = "schools/confirm_delete.html"
 
     def get_success_url(self):
-        return reverse_lazy('schools:example_survey_question_admin_listing')
+        return reverse_lazy('schools:example_survey_answer_admin_listing')
 
     def get_object(self):
         return ExampleSurveyQuestion.objects.get(pk=self.kwargs['pk'])
