@@ -3,7 +3,7 @@
 {% block content %}
 <h3>Prófadæma svör</h3>
 <div class="row">
-	<a href="{% url 'schools:example_survey_answer_admin_create' %}" class="btn btn-default">
+	<a href="{% url 'schools:example_survey_answer_admin_import' %}" class="btn btn-default">
 		<span class="glyphicon glyphicon-plus"></span>&nbsp;Bæta við svörum
 	</a>
 </div>
@@ -23,7 +23,13 @@
 			<tr>
 				<td>{{answer.student.ssn}}</td>
 				<td>{{answer.question.quickcode}}</td>
-				<td>{{answer.groupsurvey.survey.identifier}}</td>
+				<td>
+				{% if answer.groupsurvey %}
+					{{answer.groupsurvey.survey.identifier}}
+				{% else %}
+					SKP {{answer.date.year}}
+				{% endif %}
+				</td>
 				<td>
 				{% if answer.answer %}
 					<span class="glyphicon glyphicon-ok" style="color:green"></span>&nbsp;

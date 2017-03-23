@@ -201,6 +201,8 @@ class ExampleSurveyAnswer(models.Model):
     # spurning
     question = models.ForeignKey(ExampleSurveyQuestion)
     # próf
-    groupsurvey = models.ForeignKey(GroupSurvey)
+    groupsurvey = models.ForeignKey(GroupSurvey, null=True)
+    # dags
+    date = models.DateField(default=timezone.now)
     # Svar (rétt/rangt)
     answer = models.BooleanField()

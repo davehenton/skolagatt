@@ -1648,14 +1648,44 @@ class ExampleSurveyListing(common_mixins.SchoolEmployeeMixin, ListView):
         school            = School.objects.get(pk=self.kwargs['school_id'])
         context['school'] = school
 
+        #samraemd_cats = ExampleSurveyQuestion.objects.all().values_list('category', flat = True).distinct()
+        samraemd_cats = ['ÍSL', 'ENS', 'STÆ']
+
+        dates = ExampleSurveyAnswer.objects.filter(
+            student__in = Student.objects.filter(school=school),
+            groupsurvey__isnull = True
+        ).values_list('date', flat=True).distinct()
+
+        samraemd = []
+        for date in dates:
+            students_list = []
+            students = Student.objects.filter(
+                pk__in = ExampleSurveyAnswer.objects.filter(
+                    student__in = Student.objects.filter(school=school),
+                    date = date,
+                    groupsurvey__isnull = True,
+                ).values_list('student', flat=True).distinct()
+            ).all()
+            # import pdb; pdb.set_trace()
+            for student in students:
+                quiz_type_list = ExampleSurveyQuestion.objects.filter(
+                    pk__in = ExampleSurveyAnswer.objects.filter(
+                        student=student,
+                        date = date,
+                        groupsurvey__isnull = True,
+                    ).values_list('question_id')
+                ).values_list('quiz_type', flat=True).distinct()
+                students_list.append((student, quiz_type_list))
+            samraemd.append((date, students_list))
+
+        print(samraemd)
+        surveys = []
         groupsurveys = GroupSurvey.objects.filter(
             pk__in = ExampleSurveyAnswer.objects.filter(
                 student__in = Student.objects.filter(school=school)
             ).values_list('groupsurvey', flat=True).distinct().order_by('-id')
         ).order_by('-active_to').all()
-        print(groupsurveys)
 
-        surveys = []
         for groupsurvey in groupsurveys:
             students = groupsurvey.studentgroup.students.all()
 
@@ -1671,16 +1701,18 @@ class ExampleSurveyListing(common_mixins.SchoolEmployeeMixin, ListView):
             surveys.append((groupsurvey, students_list))
 
         context['surveys'] = surveys
+        context['samraemd'] = samraemd
+        context['samraemd_cats'] = samraemd_cats
         return context
 
 
-class ExampleSurveyDetail(common_mixins.SchoolManagerMixin, ListView):
+class ExampleSurveyGSDetail(common_mixins.SchoolManagerMixin, ListView):
     model = ExampleSurveyAnswer
     template_name = "common/example_survey/detail.html"
 
     def get_context_data(self, **kwargs):
         # xxx will be available in the template as the related objects
-        context = super(ExampleSurveyDetail, self).get_context_data(**kwargs)
+        context = super(ExampleSurveyGSDetail, self).get_context_data(**kwargs)
 
         school = School.objects.get(pk=self.kwargs['school_id'])
         student = Student.objects.get(pk=self.kwargs['student_id'])
@@ -1709,6 +1741,41 @@ class ExampleSurveyDetail(common_mixins.SchoolManagerMixin, ListView):
 
         return context
 
+
+class ExampleSurveySamraemdDetail(common_mixins.SchoolManagerMixin, ListView):
+    model = ExampleSurveyAnswer
+    template_name = "common/example_survey/detail.html"
+
+    def get_context_data(self, **kwargs):
+        # xxx will be available in the template as the related objects
+        context = super(ExampleSurveySamraemdDetail, self).get_context_data(**kwargs)
+
+        school = School.objects.get(pk=self.kwargs['school_id'])
+        student = Student.objects.get(pk=self.kwargs['student_id'])
+
+        answers_list = ExampleSurveyAnswer.objects.filter(
+            student = student,
+            groupsurvey__isnull = True,
+            date__year = self.kwargs['year'],
+        )
+
+        quiz_type = self.kwargs['quiz_type']
+
+        answers = []
+        if quiz_type.lower() in ['stæ', 'ens', 'ísl']:
+            answers = [ x for x in answers_list if x.question.quiz_type == quiz_type ]
+        else:
+            answers = [ x for x in answers_list ]
+
+        random.shuffle(answers)
+        context['answers'] = answers
+        context['school'] = school
+        context['student'] = student
+        context['quiz_type'] = quiz_type
+        context['groupsurvey'] = None
+        context['studentgroup'] = None
+
+        return context
 
 ### Example Survey Questions
 
@@ -1861,7 +1928,7 @@ class ExampleSurveyAnswerAdminDetail(common_mixins.SuperUserMixin, ListView):
         return context
 
 
-class ExampleSurveyAnswerAdminCreate(common_mixins.SuperUserMixin, CreateView):
+class ExampleSurveyAnswerAdminImport(common_mixins.SuperUserMixin, CreateView):
     model         = ExampleSurveyQuestion
     form_class    = cm_forms.ExampleSurveyAnswerForm
     template_name = "common/example_survey/answer_form_import.html"
@@ -1920,8 +1987,10 @@ class ExampleSurveyAnswerAdminCreate(common_mixins.SuperUserMixin, CreateView):
                     question = question,
                 )
                 studentgroup = StudentGroup.objects.filter(students=student).first()
-                survey = Survey.objects.filter(identifier = newentry['survey_identifier']).first()
-                groupsurvey = GroupSurvey.objects.filter(survey = survey, studentgroup = studentgroup).first()
+                groupsurvey = None
+                if newentry['survey_identifier']:
+                    survey = Survey.objects.filter(identifier = newentry['survey_identifier']).first()
+                    groupsurvey = GroupSurvey.objects.filter(survey = survey, studentgroup = studentgroup).first()
                 boolanswer = True if newentry['answer'] == '1' else False
                 if answer:
                     answer.update(
