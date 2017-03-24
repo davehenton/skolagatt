@@ -1951,6 +1951,7 @@ class ExampleSurveyAnswerAdminImport(common_mixins.SuperUserMixin, CreateView):
                 first = 0
 
             data = []
+            errors = []
             try:
                 if extension == 'xlsx':
                     input_excel = self.request.FILES['file']
@@ -1958,14 +1959,42 @@ class ExampleSurveyAnswerAdminImport(common_mixins.SuperUserMixin, CreateView):
                     for sheetsnumber in range(book.nsheets):
                         sheet = book.sheet_by_index(sheetsnumber)
                         for row in range(first, sheet.nrows):
-                            rowdata = {
-                                'ssn':               str(sheet.cell_value(row, int(ssn))),
-                                'quickcode':         str(sheet.cell_value(row, int(quickcode))),
-                                'survey_identifier': str(sheet.cell_value(row, int(survey_identifier))),
-                                'answer':            str(sheet.cell_value(row, int(answer))),
-                            }
-                            data.append(rowdata)
-                return render(self.request, 'common/example_survey/answer_verify_import.html', {'data': data})
+                            ssn_str = str(sheet.cell_value(row, int(ssn)))
+                            quickcode_str = str(sheet.cell_value(row, int(quickcode)))
+                            survey_identifier_str = str(sheet.cell_value(row, int(survey_identifier)))
+                            answer_str = str(sheet.cell_value(row, int(answer)))
+
+                            rowerrors = []
+                            if not Student.objects.filter(ssn = ssn_str).exists():
+                                rowerrors.append({
+                                    'text': 'Nemandi {} er ekki til'.format(ssn_str),
+                                    'row': row,
+                                })
+                            if not ExampleSurveyQuestion.objects.filter(quickcode = quickcode_str).exists():
+                                rowerrors.append({
+                                    'text': 'Prófdæmi {} er ekki til'.format(quickcode_str),
+                                    'row': row,
+                                })
+                            if survey_identifier_str and not Survey.objects.filter(identifier = survey_identifier_str):
+                                rowerrors.append({
+                                    'text': 'Próf {} er ekki til'.format(survey_identifier_str),
+                                    'row': row,
+                                })
+                            if answer_str not in ['1', '0']:
+                                rowerrors.append({
+                                    'text': 'Get ekki notað svar {}'.format(answer_str),
+                                    'row': row,
+                                })
+                            data.append({
+                                'ssn':               ssn_str,
+                                'quickcode':         quickcode_str,
+                                'survey_identifier': survey_identifier_str,
+                                'answer':            answer_str,
+                                'error':             True if rowerrors else False,
+                            })
+                            if rowerrors:
+                                errors += rowerrors
+                return render(self.request, 'common/example_survey/answer_verify_import.html', {'data': data, 'errors': errors})
             except Exception as e:
                 return render(
                     self.request,

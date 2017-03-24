@@ -15,9 +15,17 @@
 			<a class="btn btn-danger" href="{% url 'schools:example_survey_answer_admin_listing' %}"><span class="glyphicon glyphicon-remove"></span>&nbsp;Hætta við</a>
 		</div>
 	</div>
+	{% if errors %}
+	<div class="alert alert-danger">
+		{% for error in errors %}
+		<p><strong>Villa í röð {{error.row}}:</strong> {{error.text}}</p>
+		{% endfor %}
+	</div>
+	{% endif %}
 	<table class="table table-hover table-striped">
 		<thead>
 			<tr>
+				<th>&nbsp;</th>
 				<th>Kennitala</th>
 				<th>Flýtikóði</th>
 				<th>Próf</th>
@@ -26,7 +34,8 @@
 		</thead>
 		<tbody>
 			{% for entry in data %}
-				<tr>
+				<tr{% if entry.error %} class="danger"{% endif %}>
+					<td>{{ forloop.counter }}</td>
 					<td>{{ entry.ssn }}</td>
 					<td>{{ entry.quickcode }}</td>
 					<td>{{ entry.survey_identifier }}</td>
