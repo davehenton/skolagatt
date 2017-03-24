@@ -93,8 +93,4 @@ urlpatterns = [
         views.SurveyInputFieldDelete.as_view(),
         name='survey_input_delete'),
 
-    # ========== SURVEY ADMIN OUTPUT ========== #
-    url(r'^adminoutput/$',
-        views.AdminOutput.as_view(),
-        name='admin_output'),
 ]

@@ -388,22 +388,6 @@ class SurveyTransformationDelete(SurveyDeleteSuperSuccessMixin, DeleteView):
     model         = SurveyTransformation
 
 
-class AdminOutput(UserPassesTestMixin, ListView):
-    model      = Survey
-    template_name = "survey/survey_admin_filter.html"
-
-    def get_context_data(self, **kwargs):
-        # xxx will be available in the template as the related objects
-        context           = super(AdminOutput, self).get_context_data(**kwargs)
-        context['schools'] = School.objects.all()
-        context['surveytypes'] = SurveyType.objects.all()
-        context['surveys'] = Survey.objects.all()
-        return context
-
-    def test_func(self):
-        return self.request.user.is_superuser
-
-
 def _generate_excel_audun():
     # def admin_output_excel(request):
 
