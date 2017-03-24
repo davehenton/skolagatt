@@ -175,13 +175,13 @@ urlpatterns = [
         views.SurveyLoginDelete.as_view(),
         name='surveylogin_delete'),
 
-    url(r'^(?P<school_id>\d+)/prófadæmi/$',
+    url(r'^(?P<school_id>\d+)/hrágögn/$',
         views.ExampleSurveyListing.as_view(),
         name='example_survey_listing'),
-    url(r'^(?P<school_id>\d+)/prófadæmi/almennt/(?P<groupsurvey_id>\d+)/nemandi/(?P<student_id>\d+)/$',
+    url(r'^(?P<school_id>\d+)/hrágögn/almennt/(?P<groupsurvey_id>\d+)/nemandi/(?P<student_id>\d+)/$',
         views.ExampleSurveyGSDetail.as_view(),
         name='example_survey_groupsurvey_detail'),
-    url(r'^(?P<school_id>\d+)/prófadæmi/samraemd/(?P<year>\d+)/nemandi/(?P<student_id>\d+)/(?P<quiz_type>[\w ]+)/$',
+    url(r'^(?P<school_id>\d+)/hrágögn/samraemd/(?P<year>\d+)/nemandi/(?P<student_id>\d+)/(?P<quiz_type>[\w ]+)/$',
         views.ExampleSurveySamraemdDetail.as_view(),
         name='example_survey_samraemd_detail'),
 
