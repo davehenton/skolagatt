@@ -30,4 +30,5 @@ urlpatterns = [
     url(r'^profagrunnur/',
         include('survey.urls')),
     url(r'^froala_editor/', include('froala_editor.urls')),
+    url(r'^images$', views.images, name='images'),
 ]

@@ -135,4 +135,4 @@ JSON_API_KEY = 'some-random-string'
 ICEKEY_VERIFICATION = 'https://innskraning.mms.is/verify_login/'
 ICEKEY_LOGIN = 'https://innskraning.mms.is/island_innskraning'
 
-FROALA_UPLOAD_PATH = 'static/froala_editor/images/'
+FROALA_UPLOAD_PATH = 'uploads/froala_editor/images/'
