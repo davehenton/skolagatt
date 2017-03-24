@@ -1,0 +1,83 @@
+{% extends 'common/index.html'%}
+
+{% block content %}
+
+{% if samraemd %}
+	<h3>Hrágögn úr samræmdum prófum</h3>
+	{% for date, student_list in samraemd %}
+	<div>
+		<h4>{{ date.year }}</h4>
+		<table class="table table-hover table-striped">
+			<thead>
+				<tr>
+					<th>Kennitala</th>
+					<th>Nafn</th>
+					{% for cat in samraemd_cats %}
+						<th>{{ cat }}</th>
+					{% endfor %}
+				</tr>
+			</thead>
+			<tbody>
+				{% for student, quiz_types in student_list %}
+				<tr>
+					<td>{{ student.ssn }}</td>
+					<td>{{ student.name }}</td>
+					{% for cat in samraemd_cats %}
+						<td>
+						{% if cat in quiz_types %}
+							<a href="{% url 'schools:example_survey_samraemd_detail' school.id date.year student.id cat %}">
+								<span class="glyphicon glyphicon-eye-open style="color:green"></span>&nbsp;
+							</a>
+						{% else %}
+							<span class="glyphicon glyphicon-remove" style="color:red"></span>&nbsp;
+						{% endif %}
+						</td>
+					{% endfor %}
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+	{% endfor %}
+{% endif %}
+
+{% if surveys %}
+	<h3>Hrágögn úr almennum prófum</h3>
+	{% for survey, student_list in surveys %}
+	<div>
+		<h4>{{ survey.survey.title }}</h4>
+		<table class="table table-hover table-striped">
+			<thead>
+				<tr>
+					<th>Kennitala</th>
+					<th>Nafn</th>
+					<th>Aðgerðir</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for student, quiz_types in student_list %}
+				<tr>
+					<td>{{ student.ssn }}</td>
+					<td>{{ student.name }}</td>
+					<td>
+					<a href="{% url 'schools:example_survey_groupsurvey_detail' school.id survey.id student.id %}">
+								<span class="glyphicon glyphicon-eye-open style="color:green"></span>&nbsp;
+							</a>
+					{% for cat in cats %}
+						{% if cat in quiz_types %}
+						<td>
+							
+						{% else %}
+							<span class="glyphicon glyphicon-remove" style="color:red"></span>&nbsp;
+						{% endif %}
+						</td>
+					{% endfor %}
+					</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+	{% endfor %}
+{% endif %}
+{% endblock %}

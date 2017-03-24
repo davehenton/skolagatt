@@ -16,6 +16,7 @@ from ast       import literal_eval
 import json
 import xlrd
 import openpyxl
+import random
 from openpyxl.styles import PatternFill
 from openpyxl.chart import AreaChart, BarChart, LineChart,  Reference
 from openpyxl.chart.layout import Layout, ManualLayout
@@ -25,7 +26,8 @@ import csv
 import common.mixins as common_mixins
 from common.models import (
     Notification, School, Manager, Teacher, Student,
-    StudentGroup, GroupSurvey, SurveyResult, SurveyLogin
+    StudentGroup, GroupSurvey, SurveyResult, SurveyLogin,
+    ExampleSurveyQuestion, ExampleSurveyAnswer,
 )
 import common.util   as common_util
 import common.forms  as cm_forms
@@ -1632,6 +1634,384 @@ class AdminUpdate(common_mixins.SuperUserMixin, UpdateView):
 
     def get_success_url(self):
         return reverse_lazy('schools:admin_listing')
+
+
+### Prófadæmi
+
+class ExampleSurveyListing(common_mixins.SchoolEmployeeMixin, ListView):
+    model = ExampleSurveyAnswer
+    template_name = "common/example_survey/listing.html"
+
+    def get_context_data(self, **kwargs):
+        # xxx will be available in the template as the related objects
+        context           = super(ExampleSurveyListing, self).get_context_data(**kwargs)
+        school            = School.objects.get(pk=self.kwargs['school_id'])
+        context['school'] = school
+
+        #samraemd_cats = ExampleSurveyQuestion.objects.all().values_list('category', flat = True).distinct()
+        samraemd_cats = ['ÍSL', 'ENS', 'STÆ']
+
+        dates = ExampleSurveyAnswer.objects.filter(
+            student__in = Student.objects.filter(school=school),
+            groupsurvey__isnull = True
+        ).values_list('date', flat=True).distinct()
+
+        samraemd = []
+        for date in dates:
+            students_list = []
+            students = Student.objects.filter(
+                pk__in = ExampleSurveyAnswer.objects.filter(
+                    student__in = Student.objects.filter(school=school),
+                    date = date,
+                    groupsurvey__isnull = True,
+                ).values_list('student', flat=True).distinct()
+            ).all()
+            # import pdb; pdb.set_trace()
+            for student in students:
+                quiz_type_list = ExampleSurveyQuestion.objects.filter(
+                    pk__in = ExampleSurveyAnswer.objects.filter(
+                        student=student,
+                        date = date,
+                        groupsurvey__isnull = True,
+                    ).values_list('question_id')
+                ).values_list('quiz_type', flat=True).distinct()
+                students_list.append((student, quiz_type_list))
+            samraemd.append((date, students_list))
+
+        print(samraemd)
+        surveys = []
+        groupsurveys = GroupSurvey.objects.filter(
+            pk__in = ExampleSurveyAnswer.objects.filter(
+                student__in = Student.objects.filter(school=school)
+            ).values_list('groupsurvey', flat=True).distinct().order_by('-id')
+        ).order_by('-active_to').all()
+
+        for groupsurvey in groupsurveys:
+            students = groupsurvey.studentgroup.students.all()
+
+            students_list = []
+            for student in students:
+                quiz_type_list = ExampleSurveyQuestion.objects.filter(
+                    pk__in = ExampleSurveyAnswer.objects.filter(
+                        student=student,
+                        groupsurvey = groupsurvey,
+                    ).values_list('question_id')
+                ).values_list('quiz_type', flat=True).distinct()
+                students_list.append((student, quiz_type_list))
+            surveys.append((groupsurvey, students_list))
+
+        context['surveys'] = surveys
+        context['samraemd'] = samraemd
+        context['samraemd_cats'] = samraemd_cats
+        return context
+
+
+class ExampleSurveyGSDetail(common_mixins.SchoolManagerMixin, ListView):
+    model = ExampleSurveyAnswer
+    template_name = "common/example_survey/survey_detail.html"
+
+    def get_context_data(self, **kwargs):
+        # xxx will be available in the template as the related objects
+        context = super(ExampleSurveyGSDetail, self).get_context_data(**kwargs)
+
+        school = School.objects.get(pk=self.kwargs['school_id'])
+        student = Student.objects.get(pk=self.kwargs['student_id'])
+        groupsurvey = GroupSurvey.objects.get(pk=self.kwargs['groupsurvey_id'])
+
+        answers = list(ExampleSurveyAnswer.objects.filter(
+            student = student,
+            groupsurvey = groupsurvey,
+        ).all())
+
+        random.shuffle(answers)
+
+        context['answers'] = answers
+        context['school'] = school
+        context['student'] = student
+        context['groupsurvey'] = groupsurvey
+        context['studentgroup'] = groupsurvey.studentgroup
+
+        return context
+
+
+class ExampleSurveySamraemdDetail(common_mixins.SchoolManagerMixin, ListView):
+    model = ExampleSurveyAnswer
+    template_name = "common/example_survey/samraemd_detail.html"
+
+    def get_context_data(self, **kwargs):
+        # xxx will be available in the template as the related objects
+        context = super(ExampleSurveySamraemdDetail, self).get_context_data(**kwargs)
+
+        school = School.objects.get(pk=self.kwargs['school_id'])
+        student = Student.objects.get(pk=self.kwargs['student_id'])
+
+        answers_list = ExampleSurveyAnswer.objects.filter(
+            student = student,
+            groupsurvey__isnull = True,
+            date__year = self.kwargs['year'],
+        )
+
+        quiz_type = self.kwargs['quiz_type']
+
+        answers = []
+        if quiz_type.lower() in ['stæ', 'ens', 'ísl']:
+            answers = [ x for x in answers_list if x.question.quiz_type == quiz_type ]
+        else:
+            answers = [ x for x in answers_list ]
+
+        random.shuffle(answers)
+        context['answers'] = answers
+        context['school'] = school
+        context['student'] = student
+        context['quiz_type'] = quiz_type
+        context['groupsurvey'] = None
+        context['studentgroup'] = None
+
+        return context
+
+### Example Survey Questions
+
+
+class ExampleSurveyQuestionAdminListing(common_mixins.SuperUserMixin, ListView):
+    model = ExampleSurveyQuestion
+    template_name = "common/example_survey/question_admin_list.html"
+    # Success url?
+
+    def get_context_data(self, **kwargs):
+        context = super(ExampleSurveyQuestionAdminListing, self).get_context_data(**kwargs)
+
+        context['questions'] = ExampleSurveyQuestion.objects.all()
+        return context
+
+
+class ExampleSurveyQuestionAdminDetail(common_mixins.SuperUserMixin, ListView):
+    model = ExampleSurveyQuestion
+    template_name = "common/example_survey/question_admin_detail.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(ExampleSurveyQuestionAdminDetail, self).get_context_data(**kwargs)
+
+        context['question'] = ExampleSurveyQuestion.objects.get(pk = self.kwargs['pk'])
+        return context
+
+
+class ExampleSurveyQuestionAdminCreate(common_mixins.SuperUserMixin, CreateView):
+    model = ExampleSurveyQuestion
+    form_class = cm_forms.ExampleSurveyQuestionForm
+    template_name = "common/example_survey/question_admin_create.html"
+
+    def form_valid(self, form):
+        survey            = form.save(commit=False)
+        survey.created_by = self.request.user
+        return super(ExampleSurveyQuestionAdminCreate, self).form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy('schools:example_survey_question_admin_listing')
+
+
+class ExampleSurveyQuestionAdminImport(common_mixins.SuperUserMixin, CreateView):
+    model         = ExampleSurveyQuestion
+    form_class    = cm_forms.ExampleSurveyQuestionForm
+    template_name = "common/example_survey/question_form_import.html"
+
+    def post(self, *args, **kwargs):
+        if(self.request.FILES):
+            u_file    = self.request.FILES['file'].name
+            extension = u_file.split(".")[-1]
+
+            quickcode = self.request.POST.get('quickcode')
+            quiz_type = self.request.POST.get('quiz_type')
+            category = self.request.POST.get('category')
+            description = self.request.POST.get('description')
+            example = self.request.POST.get('example')
+            title = self.request.POST.get('title')
+
+            if title == 'yes':
+                first = 1
+            else:
+                first = 0
+
+            data = []
+            try:
+                if extension == 'xlsx':
+                    input_excel = self.request.FILES['file']
+                    book        = xlrd.open_workbook(file_contents=input_excel.read())
+                    for sheetsnumber in range(book.nsheets):
+                        sheet = book.sheet_by_index(sheetsnumber)
+                        for row in range(first, sheet.nrows):
+                            rowdata = {
+                                'quickcode': str(sheet.cell_value(row, int(quickcode))),
+                                'quiz_type'      : str(sheet.cell_value(row, int(quiz_type))),
+                                'category' : str(sheet.cell_value(row, int(category))),
+                                'description' : str(sheet.cell_value(row, int(description))),
+                                'example' : str(sheet.cell_value(row, int(example))),
+                            }
+                            data.append(rowdata)
+                return render(self.request, 'common/example_survey/question_verify_import.html', {'data': data})
+            except Exception as e:
+                return render(
+                    self.request,
+                    'common/example_survey/question_form_import.html',
+                    {'error': 'Villa í skjali: "' + str(e) + ', lína: ' + str(row + 1)}
+                )
+        else:
+            newdata = json.loads(self.request.POST['newdata'])
+            # Iterate through the data
+            for newentry in newdata:
+                # check if quickcode exists, create if not, otherwise update
+                question = ExampleSurveyQuestion.objects.filter(
+                    quickcode = newentry['quickcode']
+                )
+                if question:
+                    question.update(
+                        quiz_type=newentry['quiz_type'],
+                        category=newentry['category'],
+                        description=newentry['description'],
+                        example=newentry['example'],
+                    )
+                else:
+                    question = ExampleSurveyQuestion.objects.create(
+                        quickcode=newentry['quickcode'],
+                        quiz_type=newentry['quiz_type'],
+                        category=newentry['category'],
+                        description=newentry['description'],
+                        example=newentry['example'],
+                    )
+        return redirect(self.get_success_url())
+
+    def get_success_url(self):
+        return reverse_lazy('schools:example_survey_question_admin_listing')
+
+
+class ExampleSurveyQuestionAdminDelete(common_mixins.SuperUserMixin, DeleteView):
+    model         = ExampleSurveyQuestion
+    template_name = "schools/confirm_delete.html"
+
+    def get_success_url(self):
+        return reverse_lazy('schools:example_survey_question_admin_listing')
+
+    def get_object(self):
+        return ExampleSurveyQuestion.objects.get(pk=self.kwargs['pk'])
+
+
+### Example Survey Answers
+
+
+class ExampleSurveyAnswerAdminListing(common_mixins.SuperUserMixin, ListView):
+    model = ExampleSurveyAnswer
+    template_name = "common/example_survey/answer_admin_list.html"
+    # Success url?
+
+    def get_context_data(self, **kwargs):
+        context = super(ExampleSurveyAnswerAdminListing, self).get_context_data(**kwargs)
+
+        context['answers'] = ExampleSurveyAnswer.objects.all()
+        return context
+
+
+class ExampleSurveyAnswerAdminDetail(common_mixins.SuperUserMixin, ListView):
+    model = ExampleSurveyQuestion
+    template_name = "common/example_survey/answer_admin_detail.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(ExampleSurveyAnswerAdminDetail, self).get_context_data(**kwargs)
+
+        context['answer'] = ExampleSurveyAnswer.objects.get(pk = self.kwargs['pk'])
+        return context
+
+
+class ExampleSurveyAnswerAdminImport(common_mixins.SuperUserMixin, CreateView):
+    model         = ExampleSurveyQuestion
+    form_class    = cm_forms.ExampleSurveyAnswerForm
+    template_name = "common/example_survey/answer_form_import.html"
+
+    def post(self, *args, **kwargs):
+        if(self.request.FILES):
+            u_file    = self.request.FILES['file'].name
+            extension = u_file.split(".")[-1]
+
+            ssn = self.request.POST.get('ssn')
+            quickcode = self.request.POST.get('quickcode')
+            survey_identifier = self.request.POST.get('survey_identifier')
+            answer = self.request.POST.get('answer')
+            title = self.request.POST.get('title')
+
+            if title == 'yes':
+                first = 1
+            else:
+                first = 0
+
+            data = []
+            try:
+                if extension == 'xlsx':
+                    input_excel = self.request.FILES['file']
+                    book        = xlrd.open_workbook(file_contents=input_excel.read())
+                    for sheetsnumber in range(book.nsheets):
+                        sheet = book.sheet_by_index(sheetsnumber)
+                        for row in range(first, sheet.nrows):
+                            rowdata = {
+                                'ssn':               str(sheet.cell_value(row, int(ssn))),
+                                'quickcode':         str(sheet.cell_value(row, int(quickcode))),
+                                'survey_identifier': str(sheet.cell_value(row, int(survey_identifier))),
+                                'answer':            str(sheet.cell_value(row, int(answer))),
+                            }
+                            data.append(rowdata)
+                return render(self.request, 'common/example_survey/answer_verify_import.html', {'data': data})
+            except Exception as e:
+                return render(
+                    self.request,
+                    'common/example_survey/answer_form_import.html',
+                    {'error': 'Villa í skjali: "' + str(e) + ', lína: ' + str(row + 1)}
+                )
+        else:
+            newdata = json.loads(self.request.POST['newdata'])
+            # Iterate through the data
+            for newentry in newdata:
+                try:
+                    student = Student.objects.get(ssn=newentry['ssn'])  # student already exists
+                    question = ExampleSurveyQuestion.objects.get(quickcode = newentry['quickcode'])
+                except Exception(e):
+                    print(e)
+                    continue
+                # check if quickcode exists, create if not, otherwise update
+                answer = ExampleSurveyAnswer.objects.filter(
+                    student = student,
+                    question = question,
+                )
+                studentgroup = StudentGroup.objects.filter(students=student).first()
+                groupsurvey = None
+                if newentry['survey_identifier']:
+                    survey = Survey.objects.filter(identifier = newentry['survey_identifier']).first()
+                    groupsurvey = GroupSurvey.objects.filter(survey = survey, studentgroup = studentgroup).first()
+                boolanswer = True if newentry['answer'] == '1' else False
+                if answer:
+                    answer.update(
+                        groupsurvey = groupsurvey,
+                        answer = boolanswer,
+                    )
+                else:
+                    question = ExampleSurveyAnswer.objects.create(
+                        student = student,
+                        question = question,
+                        groupsurvey = groupsurvey,
+                        answer = boolanswer,
+                    )
+        return redirect(self.get_success_url())
+
+    def get_success_url(self):
+        return reverse_lazy('schools:example_survey_question_admin_listing')
+
+
+
+class ExampleSurveyAnswerAdminDelete(common_mixins.SuperUserMixin, DeleteView):
+    model         = ExampleSurveyQuestion
+    template_name = "schools/confirm_delete.html"
+
+    def get_success_url(self):
+        return reverse_lazy('schools:example_survey_answer_admin_listing')
+
+    def get_object(self):
+        return ExampleSurveyQuestion.objects.get(pk=self.kwargs['pk'])
 
 
 def group_admin_listing_excel(request, survey_title):

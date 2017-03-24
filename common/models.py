@@ -8,6 +8,8 @@ from django.utils               import timezone
 
 import json
 
+from froala_editor.fields import FroalaField
+
 from survey.models import Survey
 
 
@@ -161,3 +163,46 @@ class SurveyLogin(models.Model):
     student     = models.ForeignKey(Student)
     survey_id   = models.CharField(max_length = 256)  # external survey identity
     survey_code = models.CharField(max_length = 16)
+
+
+# Prófadæmi, spurningar
+class ExampleSurveyQuestion(models.Model):
+    quiz_type_choices = (
+        ('STÆ', 'Stærðfræði'),
+        ('ENS', 'Enska'),
+        ('ÍSL', 'Íslenska'),
+    )
+    category_choices = (
+        ('RA', 'Reikningur og aðgerðir'),
+        ('RM', 'Rúmfræði'),
+        ('TT', 'Tölur og talnaskilningur'),
+        ('AL', 'Algebra'),
+        ('HP', 'Hlutföll og prósentur'),
+        ('LE', 'Lesskilningur'),
+        ('MN', 'Málnotkun'),
+    )
+    created_by = models.ForeignKey(User, null=True)
+    # flýtikóði
+    quickcode = models.CharField(max_length = 16, unique=True)
+    # próftegund
+    quiz_type = models.CharField(max_length = 3, choices=quiz_type_choices)
+    # flokkur
+    category = models.CharField(max_length = 2, choices=category_choices)
+    # ĺýsing
+    description = models.TextField()
+    # dæmi
+    example = FroalaField()
+
+
+# Prófadæmi, svör
+class ExampleSurveyAnswer(models.Model):
+    # nemandi
+    student = models.ForeignKey(Student)
+    # spurning
+    question = models.ForeignKey(ExampleSurveyQuestion)
+    # próf
+    groupsurvey = models.ForeignKey(GroupSurvey, null=True)
+    # dags
+    date = models.DateField(default=timezone.now)
+    # Svar (rétt/rangt)
+    answer = models.BooleanField()

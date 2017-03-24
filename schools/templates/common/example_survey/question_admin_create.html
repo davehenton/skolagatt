@@ -1,0 +1,108 @@
+{% extends 'common/index.html'%}
+{% load staticfiles %}
+
+
+{% block stylesheet %}
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css" type="text/css" media="all" rel="stylesheet" />
+<link href="{% static 'froala_editor/css/froala_editor.min.css' %}" type="text/css" media="all" rel="stylesheet" />
+<link href="{% static 'froala_editor/css/froala_style.min.css' %}" type="text/css" media="all" rel="stylesheet" />
+{% endblock %}
+
+{% block content %}
+
+<!-- FORM BEGINS -->
+
+<form id="example_survey_question_form" action="" method="post">
+	{% csrf_token %}
+	<div class="row">
+		<div class="col-md-6">
+			{# quickcode #}
+			<div class="form-group form-group-lg has-feedback {% if form.quickcode.errors %}has-error{% endif %}">
+				<label for="{{ form.quickcode.name }}">{{ form.quickcode.label }}</label>
+				{{ form.quickcode }}
+				{% if form.quickcode.errors %}
+					<span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+					<span id="inputError2Status" class="sr-only">(villa)</span>
+					<p class="text-danger">{{ form.quickcode.errors.as_text }}</p>
+				{% endif %}
+			</div>
+			{# quiz_type #}
+			<div class="form-group form-group-lg has-feedback {% if form.quiz_type.errors %}has-error{% endif %}">
+				<label for="{{ form.quiz_type.name }}">{{ form.quiz_type.label }}</label>
+				{{ form.quiz_type }}
+				{% if form.quiz_type.errors %}
+					<span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+					<span id="inputError2Status" class="sr-only">(villa)</span>
+					<p class="text-danger">{{ form.quiz_type.errors.as_text }}</p>
+				{% endif %}
+			</div>
+			{# category #}
+			<div class="form-group form-group-lg has-feedback {% if form.category.errors %}has-error{% endif %}">
+				<label for="{{ form.category.name }}">{{ form.category.label }}</label>
+				{{ form.category }}
+				{% if form.category.errors %}
+					<span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+					<span id="inputError2Status" class="sr-only">(villa)</span>
+					<p class="text-danger">{{ form.category.errors.as_text }}</p>
+				{% endif %}
+			</div>
+		</div>
+		<div class="col-md-6">
+			<div class="row">
+				{# description #}
+				<div class="form-group form-group-lg has-feedback {% if form.description.errors %}has-error{% endif %}">
+					<label for="{{ form.description.name }}">{{ form.description.label }}</label>
+					{{ form.description }}
+					{% if form.description.errors %}
+						<span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+						<span id="inputError2Status" class="sr-only">(villa)</span>
+						<p class="text-danger">{{ form.description.errors.as_text }}</p>
+					{% endif %}
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		{# example #}
+		<div class="form-group form-group-lg has-feedback {% if form.example.errors %}has-error{% endif %}">
+			<label for="{{ form.example.name }}">{{ form.example.label }}</label>
+			{# form.example #}
+			<textarea cols="40" id="id_example" name="example" rows="10"></textarea>
+			{% if form.example.errors %}
+				<span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+				<span id="inputError2Status" class="sr-only">(villa)</span>
+				<p class="text-danger">{{ form.example.errors.as_text }}</p>
+			{% endif %}
+		</div>
+	</div>
+	
+	<input type="submit" value="Vista" class="btn btn-success btn-lg" />
+</form>
+{% endblock %}
+
+{% block script %}
+{{ form.media }}
+{# <script type="text/javascript" src="{% static 'froala_editor/js/froala_editor.min.js' %}"></script> #}
+<script>
+    $(function(){
+        $('#id_example').froalaEditor({"inlineMode": false, "imageManagerLoadURL": "/images", "imageUploadURL": "/froala_editor/image_upload/", "imageUploadParams": {"csrfmiddlewaretoken": getCookie("csrftoken")}, "fileUploadURL": "/froala_editor/file_upload/", "fileUploadParams": {"csrfmiddlewaretoken": getCookie("csrftoken")}})
+    });
+    $('#id_quickcode').change(function () {
+    	var cat = $('#id_quickcode').val().substr(0, 2);
+    	switch (cat) {
+    		case 'RA':
+    		case 'RM':
+    		case 'TT':
+    		case 'AL':
+    		case 'HP':
+    			$('#id_quiz_type').val('STÆ')
+    			$('#id_category').val(cat)
+    			break;
+    		case 'LE':
+    		case 'MN':
+    			$('#id_category').val(cat)
+    			break;
+    	}
+    })
+</script>
+{% endblock %}
