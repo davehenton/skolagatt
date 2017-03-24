@@ -85,7 +85,7 @@
 {# <script type="text/javascript" src="{% static 'froala_editor/js/froala_editor.min.js' %}"></script> #}
 <script>
     $(function(){
-        $('#id_example').froalaEditor({"inlineMode": false, "imageUploadURL": "/froala_editor/image_upload/", "imageUploadParams": {"csrfmiddlewaretoken": getCookie("csrftoken")}, "fileUploadURL": "/froala_editor/file_upload/", "fileUploadParams": {"csrfmiddlewaretoken": getCookie("csrftoken")}})
+        $('#id_example').froalaEditor({"inlineMode": false, "imageManagerLoadURL": "/images", "imageUploadURL": "/froala_editor/image_upload/", "imageUploadParams": {"csrfmiddlewaretoken": getCookie("csrftoken")}, "fileUploadURL": "/froala_editor/file_upload/", "fileUploadParams": {"csrfmiddlewaretoken": getCookie("csrftoken")}})
     });
     $('#id_quickcode').change(function () {
     	var cat = $('#id_quickcode').val().substr(0, 2);
