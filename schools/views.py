@@ -1809,6 +1809,15 @@ class ExampleSurveyQuestionAdminCreate(common_mixins.SuperUserMixin, CreateView)
         return reverse_lazy('schools:example_survey_question_admin_listing')
 
 
+class ExampleSurveyQuestionAdminUpdate(common_mixins.SuperUserMixin, UpdateView):
+    model = ExampleSurveyQuestion
+    form_class = cm_forms.ExampleSurveyQuestionForm
+    template_name = "common/example_survey/question_admin_create.html"
+
+    def get_success_url(self):
+        return reverse_lazy('schools:example_survey_question_admin_listing')
+
+
 class ExampleSurveyQuestionAdminImport(common_mixins.SuperUserMixin, CreateView):
     model         = ExampleSurveyQuestion
     form_class    = cm_forms.ExampleSurveyQuestionForm

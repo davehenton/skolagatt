@@ -67,7 +67,7 @@
 		<div class="form-group form-group-lg has-feedback {% if form.example.errors %}has-error{% endif %}">
 			<label for="{{ form.example.name }}">{{ form.example.label }}</label>
 			{# form.example #}
-			<textarea cols="40" id="id_example" name="example" rows="10"></textarea>
+			<textarea cols="40" id="id_example" name="example" rows="10">{{ form.example.value }}</textarea>
 			{% if form.example.errors %}
 				<span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
 				<span id="inputError2Status" class="sr-only">(villa)</span>
