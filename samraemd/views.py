@@ -209,15 +209,18 @@ class SamraemdResultDetail(cm_mixins.SchoolManagerMixin, DetailView):
                     s_models.SamraemdISLResult.objects.filter(
                         student         = student,
                         student_year    = group,
-                        exam_date__year = year),
+                        exam_date__year = year,
+                    ).annotate(result_type='ÍSL'),
                     s_models.SamraemdMathResult.objects.filter(
                         student         = student,
                         student_year    = group,
-                        exam_date__year = year),
+                        exam_date__year = year,
+                    ).annotate(result_type='STÆ'),
                     s_models.SamraemdENSResult.objects.filter(
                         student         = student,
                         student_year    = group,
-                        exam_date__year = year),
+                        exam_date__year = year,
+                    ).annotate(result_type='ENS'),
                 )):
                     if result.student in student_results:
                         student_results[result.student].append(result)
@@ -228,15 +231,18 @@ class SamraemdResultDetail(cm_mixins.SchoolManagerMixin, DetailView):
                     s_models.SamraemdISLResult.objects.filter(
                         student__in     = cm_models.Student.objects.filter(school=school),
                         student_year    = group,
-                        exam_date__year = year),
+                        exam_date__year = year,
+                    ).annotate(result_type='ÍSL'),
                     s_models.SamraemdMathResult.objects.filter(
                         student__in     = cm_models.Student.objects.filter(school=school),
                         student_year    = group,
-                        exam_date__year = year),
+                        exam_date__year = year,
+                    ).annotate(result_type='STÆ'),
                     s_models.SamraemdENSResult.objects.filter(
                         student__in     = cm_models.Student.objects.filter(school=school),
                         student_year    = group,
-                        exam_date__year = year),
+                        exam_date__year = year,
+                    ).annotate(result_type='ENS'),
                 )):
                     if result.student in student_results:
                         student_results[result.student].append(result)
