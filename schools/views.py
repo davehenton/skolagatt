@@ -23,6 +23,8 @@ from openpyxl.chart.layout import Layout, ManualLayout
 
 import csv
 
+from kennitala import Kennitala
+
 import common.mixins as common_mixins
 from common.models import (
     Notification, School, Manager, Teacher, Student,
@@ -158,23 +160,34 @@ class SchoolCreateImport(common_mixins.SchoolManagerMixin, CreateView):
             else:
                 first = 0
             data = []
-            if extension == 'csv':
-                for row in self.request.FILES['file'].readlines()[first:]:
-                    row         = row.decode('utf-8')
-                    school_ssn  = row.split(',')[int(ssn)]
-                    school_name = row.split(',')[int(name)]
-                    data.append({'name': school_name.strip(), 'ssn': school_ssn.strip()})
-            elif extension == 'xlsx':
+            errors = []
+            if extension == 'xlsx':
                 input_excel = self.request.FILES['file']
                 book        = xlrd.open_workbook(file_contents=input_excel.read())
                 for sheetsnumber in range(book.nsheets):
                     sheet = book.sheet_by_index(sheetsnumber)
                     for row in range(first, sheet.nrows):
+                        rowerrors = []
+                        ssn_str = str(int(sheet.cell_value(row, int(ssn))))
+                        kt = Kennitala(ssn_str)
+                        if not kt.validate() or not kt.is_personal(ssn_str):
+                            rowerrors.append({
+                                'text': 'Kennitala ekki rétt slegin inn',
+                                'row': row,
+                            })
                         data.append({
                             'name': sheet.cell_value(row, int(name)),
-                            'ssn' : str(int(sheet.cell_value(row, int(ssn))))})
+                            'ssn' : ssn_str,
+                            'error': True if rowerrors else False,
+                        })
+                        if rowerrors:
+                            errors += rowerrors
 
-            return render(self.request, 'common/school_verify_import.html', {'data': data})
+            return render(self.request, 'excel_verify_import.html', {
+                'data': data,
+                'errors': errors,
+                'cancel_url': reverse_lazy('schools:school_listing'),
+            })
         else:
             school_data = json.loads(self.request.POST['schools'])
             # iterate through students, add them if they don't exist then add to school
@@ -313,30 +326,51 @@ class ManagerCreateImport(common_mixins.SchoolManagerMixin, CreateView):
             else:
                 first = 0
             data = []
-            if extension == 'csv':
-                for row in self.request.FILES['file'].readlines()[first:]:
-                    row        = row.decode('utf-8')
-                    school_ssn = row.split(',')[int(school_ssn)]
-                    ssn        = row.split(',')[ssn]
-                    name       = row.split(',')[name]
-                    data.append({
-                        'name'      : name.strip(),
-                        'ssn'       : ssn.strip(),
-                        'school_ssn': school_ssn.strip()
-                    })
-            elif extension == 'xlsx':
+            errors = []
+            if extension == 'xlsx':
                 input_excel = self.request.FILES['file']
                 book        = xlrd.open_workbook(file_contents=input_excel.read())
                 for sheetsnumber in range(book.nsheets):
                     sheet = book.sheet_by_index(sheetsnumber)
                     for row in range(first, sheet.nrows):
+                        rowerrors = []
+                        ssn_str = str(int(sheet.cell_value(row, int(ssn))))
+                        school_ssn_str = str(int(sheet.cell_value(row, int(school_ssn))))
+
+                        ssn_kt = Kennitala(ssn_str)
+                        if not ssn_kt.validate() or not ssn_kt.is_personal(ssn_str):
+                            rowerrors.append({
+                                'text': 'Kennitala ekki rétt slegin inn',
+                                'row': row,
+                            })
+                        
+                        school_ssn_kt = Kennitala(school_ssn_str)
+                        if not ssn_kt.validate():
+                            rowerrors.append({
+                                'text': 'Kennitala skóla ekki rétt slegin inn',
+                                'row': row
+                            })
+
+                        if not School.objects.filter(ssn=school_ssn_str).exists():
+                            rowerrors.append({
+                                'text': 'Skóli ekki til',
+                                'row': row
+                            })
+
                         data.append({
                             'name'      : sheet.cell_value(row, int(name)),
-                            'ssn'       : str(int(sheet.cell_value(row, int(ssn)))),
-                            'school_ssn': str(int(sheet.cell_value(row, int(school_ssn))))
+                            'ssn'       : ssn_str,
+                            'school_ssn': school_ssn_str,
+                            'error'     : True if rowerrors else False
                         })
+                        if rowerrors:
+                            errors += rowerrors
 
-            return render(self.request, 'common/manager_verify_import.html', {'data': data})
+            return render(self.request, 'excel_verify_import.html', {
+                'data': data,
+                'errors': errors,
+                'cancel_url': reverse_lazy('schools:school_listing')
+            })
         else:
             manager_data = json.loads(self.request.POST['managers'])
             # iterate through managers, add them if they don't exist then add to school
@@ -534,43 +568,40 @@ class TeacherCreateImport(common_mixins.SchoolManagerMixin, CreateView):
             else:
                 first = 0
             data = []
-            if extension == 'csv':
-                for row in self.request.FILES['file'].readlines()[first:]:
-                    row  = row.decode('utf-8')
-                    ssn  = row.split(',')[ssn]
-                    name = row.split(',')[name]
-                    data.append({
-                        'name': name.strip(),
-                        'ssn' : ssn.strip().zfill(10),
-                    })
-            elif extension == 'xlsx':
+            errors = []
+
+            if extension == 'xlsx':
                 input_excel = self.request.FILES['file']
                 book        = xlrd.open_workbook(file_contents=input_excel.read())
                 for sheetsnumber in range(book.nsheets):
                     sheet = book.sheet_by_index(sheetsnumber)
                     for row in range(first, sheet.nrows):
-                        if str(sheet.cell_value(row, int(ssn)))[0].isspace():
-                            data.append({
-                                'name': str(sheet.cell_value(row, int(name))),
-                                'ssn' : str(sheet.cell_value(row, int(ssn)))[1:].zfill(10)
+                        rowerrors = []
+                        ssn_str = str(sheet.cell_value(row, int(ssn)))
+                        ssn_kt = Kennitala(ssn_str)
+
+                        if not ssn_kt.validate() or not ssn_kt.is_personal(ssn_kt):
+                            rowerrors.append({
+                                'text': 'Kennitala ekki rétt slegin inn',
+                                'row': row,
                             })
-                        elif isinstance(sheet.cell_value(row, int(ssn)), float):
-                            data.append({
-                                'name': str(sheet.cell_value(row, int(name))),
-                                'ssn' : str(int(sheet.cell_value(row, int(ssn)))).zfill(10)
-                            })
-                        else:
-                            data.append({
-                                'name': str(sheet.cell_value(row, int(name))),
-                                'ssn' : str(sheet.cell_value(row, int(ssn))).zfill(10)
-                            })
+
+                        data.append({
+                            'name': str(sheet.cell_value(row, int(name))),
+                            'ssn': ssn_str,
+                            'error': True if rowerrors else False,
+                        })
+
+                        if rowerrors:
+                            errors += rowerrors
 
             return render(
                 self.request,
-                'common/teacher_verify_import.html',
+                'excel_verify_import.html',
                 {
                     'data': data,
-                    'school': School.objects.get(pk=self.kwargs['school_id'])
+                    'errors': errors,
+                    'cancel_url': reverse_lazy('schools:school_listing')
                 }
             )
         else:
@@ -723,37 +754,35 @@ class StudentCreateImport(common_mixins.SchoolManagerMixin, CreateView):
             else:
                 first = 0
             data = []
-            if extension == 'csv':
-                for row in self.request.FILES['file'].readlines()[first:]:
-                    row          = row.decode('utf-8')
-                    student_ssn  = row.split(',')[int(ssn)]
-                    student_name = row.split(',')[int(name)]
-                    if len(student_ssn.strip()) == 10:
-                        data.append({
-                            'name': student_name.strip(),
-                            'ssn': student_ssn.strip().zfill(10)
-                        })
-                    else:
-                        return render(self.request, 'common/student_error_import.html')
-            elif extension == 'xlsx':
+            errors = []
+            if extension == 'xlsx':
                 input_excel = self.request.FILES['file']
                 book        = xlrd.open_workbook(file_contents=input_excel.read())
                 for sheetsnumber in range(book.nsheets):
+                    rowerrors = []
                     sheet = book.sheet_by_index(sheetsnumber)
                     for row in range(first, sheet.nrows):
-                        if len(str(sheet.cell_value(row, int(ssn))).strip()) == 10:
-                            data.append({
-                                'name': str(sheet.cell_value(row, int(name))).strip(),
-                                'ssn' : str(sheet.cell_value(row, int(ssn))).strip().zfill(10)
+                        ssn_str = str(sheet.cell_value(row, int(ssn)))
+                        ssn_kt = Kennitala(ssn_str)
+                        if not ssn_kt.validate() or not ssn_kt.is_personal(ssn_str):
+                            rowerrors.append({
+                                'text': 'Kennitala rangt slegin inn',
+                                row: row,
                             })
-                        else:
-                            return render(self.request, 'common/student_error_import.html')
+                        data.append({
+                            'name' : str(sheet.cell_value(row, int(name))).strip(),
+                            'ssn'  : ssn_str,
+                            'error': True if rowerrors else False, 
+                        })
+                        if rowerrors:
+                            errors += rowerrors
             return render(
                 self.request,
-                'common/student_verify_import.html',
+                'excel_verify_import.html',
                 {
                     'data': data,
-                    'school': School.objects.get(pk=self.kwargs['school_id'])
+                    'errors': errors,
+                    'cancel_url': reverse_lazy('schools:school_detail', kwargs={'pk': self.kwargs['school_id']})
                 }
             )
         else:
@@ -1523,30 +1552,42 @@ class SurveyLoginCreate(common_mixins.SuperUserMixin, CreateView):
                 first = 0
 
             data = []
+            errors = []
             try:
-                if extension == 'csv':
-                    for row in self.request.FILES['file'].readlines()[first:]:
-                        row               = row.decode('utf-8')
-                        student_ssn       = row.split(',')[int(ssn)]
-                        student_survey_id = row.split(',')[int(survey_id)]
-                        student_password  = row.split(',')[int(password)]
-                        data.append({
-                            'survey_id': student_survey_id.strip(),
-                            'ssn'      : student_ssn.strip(),
-                            'password' : student_password.strip()})
-                elif extension == 'xlsx':
+                if extension == 'xlsx':
                     input_excel = self.request.FILES['file']
                     book        = xlrd.open_workbook(file_contents=input_excel.read())
                     for sheetsnumber in range(book.nsheets):
                         sheet = book.sheet_by_index(sheetsnumber)
                         for row in range(first, sheet.nrows):
+                            rowerrors = []
+                            ssn_str = str(sheet.cell_value(row, int(ssn)))
+                            ssn_kt = Kennitala(ssn_str)
+                            if not ssn_kt.validate() or not ssn_kt.is_personal(ssn_str):
+                                rowerrors.append({
+                                    'text': 'Kennitala ekki rétt slegin inn',
+                                    'row': row,
+                                })
+
+                            if not Student.objects.filter(ssn=ssn_str).exists():
+                                rowerrors.append({
+                                    'text': 'Nemandi ekki til',
+                                    'row': row,
+                                })
                             rowdata = {
                                 'survey_id': str(sheet.cell_value(row, int(survey_id))),
-                                'ssn'      : str(sheet.cell_value(row, int(ssn))),
+                                'ssn'      : ssn_str,
                                 'password' : str(sheet.cell_value(row, int(password))),
+                                'error'    : True if rowerrors else False
                             }
                             data.append(rowdata)
-                return render(self.request, 'common/password_verify_import.html', {'data': data})
+                            if rowerrors:
+                                errors += rowerrors
+                return render(self.request, 'excel_verify_import.html', {
+                    'data': data,
+                    'errors': errors,
+                    'cancel_url': reverse_lazy('schools:school_listing'),
+                })
             except Exception as e:
                 return render(
                     self.request,
@@ -1818,80 +1859,6 @@ class ExampleSurveyQuestionAdminUpdate(common_mixins.SuperUserMixin, UpdateView)
         return reverse_lazy('schools:example_survey_question_admin_listing')
 
 
-class ExampleSurveyQuestionAdminImport(common_mixins.SuperUserMixin, CreateView):
-    model         = ExampleSurveyQuestion
-    form_class    = cm_forms.ExampleSurveyQuestionForm
-    template_name = "common/example_survey/question_form_import.html"
-
-    def post(self, *args, **kwargs):
-        if(self.request.FILES):
-            u_file    = self.request.FILES['file'].name
-            extension = u_file.split(".")[-1]
-
-            quickcode = self.request.POST.get('quickcode')
-            quiz_type = self.request.POST.get('quiz_type')
-            category = self.request.POST.get('category')
-            description = self.request.POST.get('description')
-            example = self.request.POST.get('example')
-            title = self.request.POST.get('title')
-
-            if title == 'yes':
-                first = 1
-            else:
-                first = 0
-
-            data = []
-            try:
-                if extension == 'xlsx':
-                    input_excel = self.request.FILES['file']
-                    book        = xlrd.open_workbook(file_contents=input_excel.read())
-                    for sheetsnumber in range(book.nsheets):
-                        sheet = book.sheet_by_index(sheetsnumber)
-                        for row in range(first, sheet.nrows):
-                            rowdata = {
-                                'quickcode': str(sheet.cell_value(row, int(quickcode))),
-                                'quiz_type'      : str(sheet.cell_value(row, int(quiz_type))),
-                                'category' : str(sheet.cell_value(row, int(category))),
-                                'description' : str(sheet.cell_value(row, int(description))),
-                                'example' : str(sheet.cell_value(row, int(example))),
-                            }
-                            data.append(rowdata)
-                return render(self.request, 'common/example_survey/question_verify_import.html', {'data': data})
-            except Exception as e:
-                return render(
-                    self.request,
-                    'common/example_survey/question_form_import.html',
-                    {'error': 'Villa í skjali: "' + str(e) + ', lína: ' + str(row + 1)}
-                )
-        else:
-            newdata = json.loads(self.request.POST['newdata'])
-            # Iterate through the data
-            for newentry in newdata:
-                # check if quickcode exists, create if not, otherwise update
-                question = ExampleSurveyQuestion.objects.filter(
-                    quickcode = newentry['quickcode']
-                )
-                if question:
-                    question.update(
-                        quiz_type=newentry['quiz_type'],
-                        category=newentry['category'],
-                        description=newentry['description'],
-                        example=newentry['example'],
-                    )
-                else:
-                    question = ExampleSurveyQuestion.objects.create(
-                        quickcode=newentry['quickcode'],
-                        quiz_type=newentry['quiz_type'],
-                        category=newentry['category'],
-                        description=newentry['description'],
-                        example=newentry['example'],
-                    )
-        return redirect(self.get_success_url())
-
-    def get_success_url(self):
-        return reverse_lazy('schools:example_survey_question_admin_listing')
-
-
 class ExampleSurveyQuestionAdminDelete(common_mixins.SuperUserMixin, DeleteView):
     model         = ExampleSurveyQuestion
     template_name = "schools/confirm_delete.html"
@@ -1994,7 +1961,11 @@ class ExampleSurveyAnswerAdminImport(common_mixins.SuperUserMixin, CreateView):
                             })
                             if rowerrors:
                                 errors += rowerrors
-                return render(self.request, 'common/example_survey/answer_verify_import.html', {'data': data, 'errors': errors})
+                return render(self.request, 'excel_verify_import.html', {
+                    'data': data,
+                    'errors': errors,
+                    'cancel_url': reverse_lazy('schools:example_survey_answer_admin_listing')
+                })
             except Exception as e:
                 return render(
                     self.request,
