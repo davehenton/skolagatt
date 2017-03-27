@@ -13,6 +13,7 @@ import common.mixins   as cm_mixins
 
 import samraemd.models as s_models
 import samraemd.util   as s_util
+import samraemd.forms as forms
 
 
 def excel_result(request, school_id, year, group):
@@ -257,7 +258,7 @@ class SamraemdResultDetail(cm_mixins.SchoolManagerMixin, DetailView):
 
 class SamraemdMathResultCreate(cm_mixins.SuperUserMixin, CreateView):
     model         = s_models.SamraemdMathResult
-    form_class    = s_models.SamraemdMathResultForm
+    form_class    = forms.SamraemdMathResultForm
     template_name = "samraemd/form_import.html"
 
     def post(self, *args, **kwargs):
@@ -419,7 +420,7 @@ class SamraemdISLResultListing(cm_mixins.SchoolEmployeeMixin, ListView):
 
 class SamraemdISLResultCreate(cm_mixins.SuperUserMixin, CreateView):
     model = s_models.SamraemdISLResult
-    form_class = s_models.SamraemdISLResultForm
+    form_class = forms.SamraemdISLResultForm
     template_name = "samraemd/form_import.html"
 
     def post(self, *args, **kwargs):
@@ -540,7 +541,7 @@ class SamraemdISLResultDelete(cm_mixins.SchoolManagerMixin, DeleteView):
 
 class RawDataCreate(cm_mixins.SuperUserMixin, CreateView):
     model         = s_models.SamraemdResult
-    form_class    = s_models.SamraemdISLResultForm
+    form_class    = forms.SamraemdISLResultForm
     template_name = "samraemd/form_import_raw.html"
 
     def post(self, *args, **kwargs):
