@@ -757,8 +757,11 @@ def excel_result_raw(request, school_id, year, group):
                 cm_models.School.objects.get(students=result.student).name)
             ws.cell(row=index, column=2).value = str(result.student.ssn)
             ws.cell(row=index, column=3).value = str(result.student)
-            ws.cell(row=index, column=4).value = str(
-                cm_models.StudentGroup.objects.get(students=result.student))
+            try:
+                ws.cell(row=index, column=4).value = str(
+                    cm_models.StudentGroup.objects.get(students=result.student))
+            except:
+                ws.cell(row=index, column=4).value = "Enginn bekkur"
             for key, values in result.result_data.items():
                 ws.cell(row=index, column=int(key) + 5).value = values['value']
 
