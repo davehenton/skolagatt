@@ -1648,7 +1648,7 @@ class ExampleSurveyListing(common_mixins.SchoolEmployeeMixin, ListView):
         school            = School.objects.get(pk=self.kwargs['school_id'])
         context['school'] = school
 
-        samraemd_cats = ExampleSurveyQuestion.objects.all().values_list('category', flat = True).distinct()
+        samraemd_cats = ExampleSurveyQuestion.objects.all().values_list('quiz_type', flat = True).distinct()
         #samraemd_cats = ['ÍSL', 'ENS', 'STÆ']
 
         dates = ExampleSurveyAnswer.objects.filter(

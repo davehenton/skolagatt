@@ -26,7 +26,7 @@
 						<td>
 						{% if cat in quiz_types %}
 							<a href="{% url 'schools:example_survey_samraemd_detail' school.id date.year student.id cat %}">
-								<span class="glyphicon glyphicon-eye-open" style="color:green"></span>&nbsp;
+								<span class="glyphicon glyphicon-eye-open"></span>&nbsp;
 							</a>
 						{% else %}
 							<span class="glyphicon glyphicon-remove" style="color:red"></span>&nbsp;

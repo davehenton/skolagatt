@@ -38,9 +38,42 @@
 							<td>Samræmd einkunn</td>
 						</tr>
 						{% for result in results %}
-							{% if result.le_se %}
+							{% if result.result_type == 'ÍSL' %}
 								<tr class="thead-subject">
 									<td>Íslenska</td>
+									<td></td>
+									<td>{{result.re}}</td>
+									<td>{{result.se}}</td>
+								</tr>
+								<tr class="tbody">
+									<td>Lestur</td>
+									<td>(50%)</td>
+									<td>{{result.le_re}}</td>
+									<td>{{result.le_se}}</td>
+								</tr>
+								<tr class="tbody">
+									<td>Málnotkun</td>
+									<td>(30%)</td>
+									<td>{{result.mn_re}}</td>
+									<td>{{result.mn_se}}</td>
+								</tr>
+								<tr class="tbody">
+									<td>Ritun</td>
+									<td>(20%)</td>
+									<td>{{result.ri_re}}</td>
+									<td>{{result.ri_se}}</td>
+								</tr>
+								{% if group != "4" %}
+								<tr class="tbody">
+									<td>Framfaraeinkunn</td>
+									<td colspan="3">
+										<small>{{result.fm_txt}}</small>
+									</td>
+								</tr>
+								{% endif %}
+							{% elif result.result_type == 'ENS' %}
+								<tr class="thead-subject">
+									<td>Enska</td>
 									<td></td>
 									<td>{{result.re}}</td>
 									<td>{{result.se}}</td>
