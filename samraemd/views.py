@@ -6,7 +6,7 @@ from django.http                import HttpResponse
 import xlrd
 import openpyxl
 from itertools        import chain
-from django.db.models import Count
+from django.db.models import Count, Value, CharField
 
 import common.models   as cm_models
 import common.mixins   as cm_mixins
@@ -210,17 +210,17 @@ class SamraemdResultDetail(cm_mixins.SchoolManagerMixin, DetailView):
                         student         = student,
                         student_year    = group,
                         exam_date__year = year,
-                    ).annotate(result_type='ÍSL'),
+                    ).annotate(result_type = Value('ÍSL', CharField())),
                     s_models.SamraemdMathResult.objects.filter(
                         student         = student,
                         student_year    = group,
                         exam_date__year = year,
-                    ).annotate(result_type='STÆ'),
+                    ).annotate(result_type = Value('STÆ', CharField())),
                     s_models.SamraemdENSResult.objects.filter(
                         student         = student,
                         student_year    = group,
                         exam_date__year = year,
-                    ).annotate(result_type='ENS'),
+                    ).annotate(result_type = Value('ENS', CharField())),
                 )):
                     if result.student in student_results:
                         student_results[result.student].append(result)
@@ -232,17 +232,17 @@ class SamraemdResultDetail(cm_mixins.SchoolManagerMixin, DetailView):
                         student__in     = cm_models.Student.objects.filter(school=school),
                         student_year    = group,
                         exam_date__year = year,
-                    ).annotate(result_type='ÍSL'),
+                    ).annotate(result_type = Value('ÍSL', CharField())),
                     s_models.SamraemdMathResult.objects.filter(
                         student__in     = cm_models.Student.objects.filter(school=school),
                         student_year    = group,
                         exam_date__year = year,
-                    ).annotate(result_type='STÆ'),
+                    ).annotate(result_type = Value('STÆ', CharField())),
                     s_models.SamraemdENSResult.objects.filter(
                         student__in     = cm_models.Student.objects.filter(school=school),
                         student_year    = group,
                         exam_date__year = year,
-                    ).annotate(result_type='ENS'),
+                    ).annotate(result_type = Value('ENS', CharField())),
                 )):
                     if result.student in student_results:
                         student_results[result.student].append(result)
