@@ -63,6 +63,20 @@ urlpatterns = [
         views.SamraemdISLResultDelete.as_view(),
         name='isl_delete'),
 
+    # English results
+    url(r'^ens/$',
+        views.SamraemdENSResultAdminListing.as_view(),
+        name='ens_admin_listing'),
+    url(r'^ens/(?P<school_id>\d+)/$',
+        views.SamraemdENSResultListing.as_view(),
+        name='ens_listing'),
+    url(r'^ens/niðurstöður/create/$',
+        views.SamraemdENSResultCreate.as_view(),
+        name='ens_create'),
+    url(r'^ens/niðurstöður/(?P<exam_code>[\w ]+)/delete/$',
+        views.SamraemdENSResultDelete.as_view(),
+        name='ens_delete'),
+
     # Results for Admins
     # General results
     url(r'^niðurstöður/(?P<year>\d+)/(?P<group>\d+)/einkunnablod/$',

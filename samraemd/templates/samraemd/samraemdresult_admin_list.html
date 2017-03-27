@@ -5,6 +5,8 @@
 	<h3>Samræmd stærðfræðipróf</h3>
 	{% elif 'isl' in request.path %}
 	<h3>Samræmd íslenskupróf</h3>
+	{% elif 'ens' in request.path %}
+	<h3>Samræmd enskupróf</h3>
 	{% endif %}
 	<div class="row">
 		{% if 'stæ' in request.path %}
@@ -13,6 +15,10 @@
 			</a>
 		{% elif 'isl' in request.path %}
 			<a href="{% url 'samraemd:isl_create'%}" class="btn btn-default">
+				<span class="glyphicon glyphicon-plus"></span>&nbsp;Bæta við niðurstöðum
+			</a>
+		{% elif 'ens' in request.path %}
+			<a href="{% url 'samraemd:ens_create'%}" class="btn btn-default">
 				<span class="glyphicon glyphicon-plus"></span>&nbsp;Bæta við niðurstöðum
 			</a>
 		{% endif %}	
@@ -30,6 +36,9 @@
 			{% elif 'isl' in request.path %}
 			<div class="col-md-4"><a href="{% url 'samraemd:isl_admin_result_detail'  exam.exam_date|date:'Y' exam.student_year %}">{{exam.exam_code}}</a></div>
 			<div class="col-md-2"><a href="{% url 'samraemd:isl_delete' exam.exam_code %}"><span class="glyphicon glyphicon-trash"></span></a></div>
+			{% elif 'ens' in request.path %}
+			<div class="col-md-4"><a href="{% url 'samraemd:ens_admin_result_detail'  exam.exam_date|date:'Y' exam.student_year %}">{{exam.exam_code}}</a></div>
+			<div class="col-md-2"><a href="{% url 'samraemd:ens_delete' exam.exam_code %}"><span class="glyphicon glyphicon-trash"></span></a></div>
 			{% endif %}
 			
 		</div>
