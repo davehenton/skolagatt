@@ -98,6 +98,53 @@
 								</tbody>
 							</table>
 						</div>
+						{% elif 'ens' in request.path %}
+						<div class="table-responsive">
+							<table class="table table-striped table-bordered table-hover table-responsive">
+								<thead class="thead-default">
+									<tr class="info">
+										<th colspan="4">Samræmd einkunn</th>
+										<th colspan="4">Raðeinkunn</th>
+										<th colspan="4">Grunnskólaeinkunn</th>
+										<th colspan="2">Framfaraeinkunn</th>
+									</tr>
+									<tr>
+										<th>Lestur</th>
+										<th>Málnotkun</th>
+										<th>Ritun</th>
+										<th>Heild</th>
+										<th>Lestur</th>
+										<th>Málnotkun</th>
+										<th>Ritun</th>
+										<th>Heild</th>
+										<th>Lestur</th>
+										<th>Málnotkun</th>
+										<th>Ritun</th>
+										<th>Heild</th>
+										<th>Framfaraflokkur</th>
+										<th>Framfaratexti</th
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>{{ result.le_se }}</td>
+										<td>{{ result.mn_se }}</td>
+										<td>{{ result.ri_se }}</td>
+										<td>{{ result.se }}</td>
+										<td>{{ result.le_re }}</td>
+										<td>{{ result.mn_re }}</td>
+										<td>{{ result.ri_re }}</td>
+										<td>{{ result.re }}</td>
+										<td>{{ result.le_sg }}</td>
+										<td>{{ result.mn_sg }}</td>
+										<td>{{ result.ri_sg }}</td>
+										<td>{{ result.sg }}</td>
+										<td>{{ result.fm_fl }}</td>
+										<td>{{ result.fm_txt }}</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
 						{% elif 'stæ' in request.path %}
 						<div class="table-responsive">
 							<table class="table table-striped table-bordered table-hover table-responsive">
