@@ -270,44 +270,7 @@ class SamraemdMathResultCreate(cm_mixins.SuperUserMixin, CreateView):
             student_year = self.request.POST.get('student_year').strip()
 
             try:
-                # Why declare all these unused vars?
-                # student_ssn=ra_se=rm_se=tt_se=se=ra_re=rm_re=tt_re=re=ra_sg=rm_sg=tt_sg=sg=fm_fl=fm_txt=ord_talna_txt=''
-                if extension.lower() == 'csv':
-                    for row in self.request.FILES['file'].readlines()[1:]:
-                        row      = row.decode('utf-8')
-                        row      = row.replace('"', '')
-                        row_data = row.split(',')
-                        student  = cm_models.Student.objects.filter(ssn=row_data[0].strip())
-                        if student:
-                            # check if results for student exists, create if not, otherwise update
-                            results = s_models.SamraemdMathResult.objects.filter(
-                                student=student, exam_code=exam_code)
-                            results_dict = {
-                                'student'      : student.first(),
-                                'ra_se'        : row_data[1].strip(),
-                                'rm_se'        : row_data[2].strip(),
-                                'tt_se'        : row_data[3].strip(),
-                                'se'           : row_data[4].strip(),
-                                'ra_re'        : row_data[5].strip(),
-                                'rm_re'        : row_data[6].strip(),
-                                'tt_re'        : row_data[7].strip(),
-                                're'           : row_data[8].strip(),
-                                'ra_sg'        : row_data[9].strip(),
-                                'rm_sg'        : row_data[10].strip(),
-                                'tt_sg'        : row_data[11].strip(),
-                                'sg'           : row_data[12].strip(),
-                                'fm_fl'        : row_data[13].strip(),
-                                'fm_txt'       : row_data[14].strip(),
-                                'ord_talna_txt': row_data[15].strip(),
-                                'exam_code'    : exam_code,
-                                'exam_date'    : exam_date,
-                                'student_year' : student_year
-                            }
-                            if results:
-                                results.update(**results_dict)
-                            else:
-                                results = s_models.SamraemdMathResult.objects.create(**results_dict)
-                elif extension == 'xlsx':
+                if extension == 'xlsx':
                     input_excel = self.request.FILES['file']
                     book = xlrd.open_workbook(file_contents=input_excel.read())
                     for sheetsnumber in range(book.nsheets):
@@ -432,45 +395,7 @@ class SamraemdISLResultCreate(cm_mixins.SuperUserMixin, CreateView):
             student_year = self.request.POST.get('student_year').strip()
 
             try:
-                # student_ssn=le_se=mn_se=ri_se=se=le_re=mn_re=ri_re=re=le_sg=mn_sg=ri_sg=sg=fm_fl=fm_txt=ord_talna_txt=''
-                if extension.lower() == 'csv':
-                    for row in self.request.FILES['file'].readlines()[1:]:
-                        row      = row.decode('utf-8')
-                        row      = row.replace('"', '')
-                        row_data = row.split(',')
-                        student  = cm_models.Student.objects.filter(ssn=row_data[0].strip())
-                        if student:
-                            # check if results for student exists, create if not, otherwise update
-                            results = s_models.SamraemdISLResult.objects.filter(
-                                student=student, exam_code=exam_code)
-                            results_dict = {
-                                'student'     : student.first(),
-                                'le_se'       : row_data[1].strip(),
-                                'mn_se'       : row_data[2].strip(),
-                                'ri_se'       : row_data[3].strip(),
-                                'se'          : row_data[4].strip(),
-                                'le_re'       : row_data[5].strip(),
-                                'mn_re'       : row_data[6].strip(),
-                                'ri_re'       : row_data[7].strip(),
-                                're'          : row_data[8].strip(),
-                                'le_sg'       : row_data[9].strip(),
-                                'mn_sg'       : row_data[10].strip(),
-                                'ri_sg'       : row_data[11].strip(),
-                                'sg'          : row_data[12].strip(),
-                                'fm_fl'       : row_data[13].strip(),
-                                'fm_txt'      : row_data[14].strip(),
-                                'exam_code'   : exam_code,
-                                'exam_date'   : exam_date,
-                                'student_year': student_year
-                            }
-                            if results:
-                                results.update(**results_dict)
-                            else:
-                                results = s_models.SamraemdISLResult.objects.create(**results_dict)
-                        else:
-                            # student not found
-                            pass  # for now
-                elif extension == 'xlsx':
+                if extension == 'xlsx':
                     input_excel = self.request.FILES['file']
                     book        = xlrd.open_workbook(file_contents=input_excel.read())
                     for sheetsnumber in range(book.nsheets):
