@@ -1808,6 +1808,7 @@ class ExampleSurveySamraemdDetail(common_mixins.SchoolManagerMixin, ListView):
         context['answers'] = answers
         context['school'] = school
         context['student'] = student
+        context['year'] = self.kwargs['year']
         context['quiz_type'] = quiz_type
         context['groupsurvey'] = None
         context['studentgroup'] = None
