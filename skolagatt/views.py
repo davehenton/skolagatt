@@ -94,6 +94,8 @@ def images(request):
     image_dir = os.path.join(settings.BASE_DIR, settings.FROALA_UPLOAD_PATH)
     context = []
     for filename in os.listdir(image_dir):
+        if not os.path.splitext(filename)[-1].lower() in ['.jpg', '.png', '.jpeg']:
+            continue
         tag = [ x[1] for x in ExampleSurveyQuestion.category_choices if x[0] == filename[:2] ][0]
         if not tag:
             tag = 'unknown'
