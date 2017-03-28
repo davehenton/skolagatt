@@ -1777,33 +1777,56 @@ class ExampleSurveyGSDetail(common_mixins.SchoolManagerMixin, ListView):
 
 class ExampleSurveySamraemdDetail(common_mixins.SchoolManagerMixin, ListView):
     model = ExampleSurveyAnswer
-    template_name = "common/example_survey/samraemd_detail.html"
+
+    def get_template_names(self, **kwargs):
+        if 'print' in self.request.path:
+            return ['common/example_survey/samraemd_detail_print.html']
+        return ['common/example_survey/samraemd_detail.html']
+    def _get_student_answers_list(self, student, quiz_type, year):
+        answers_list = ExampleSurveyAnswer.objects.filter(
+                student = student,
+                groupsurvey__isnull = True,
+                date__year = year,
+            )
+
+        answers = []
+
+        if quiz_type.lower() in ['stæ', 'ens', 'ísl']:
+            answers = [ x for x in answers_list if x.question.quiz_type == quiz_type ]
+        else:
+            answers = [ x for x in answers_list ]
+
+        return answers
 
     def get_context_data(self, **kwargs):
         # xxx will be available in the template as the related objects
         context = super(ExampleSurveySamraemdDetail, self).get_context_data(**kwargs)
 
         school = School.objects.get(pk=self.kwargs['school_id'])
-        student = Student.objects.get(pk=self.kwargs['student_id'])
-
-        answers_list = ExampleSurveyAnswer.objects.filter(
-            student = student,
-            groupsurvey__isnull = True,
-            date__year = self.kwargs['year'],
-        )
-
+        year = self.kwargs['year']
         quiz_type = self.kwargs['quiz_type']
-
-        answers = []
-        if quiz_type.lower() in ['stæ', 'ens', 'ísl']:
-            answers = [ x for x in answers_list if x.question.quiz_type == quiz_type ]
+        student_answers = []
+        if 'student_id' in self.kwargs:
+            student = Student.objects.get(pk=self.kwargs['student_id'])
+            answers = self._get_student_answers_list(student, quiz_type, year)
+            random.shuffle(answers)
+            student_answers.append((student, answers))
         else:
-            answers = [ x for x in answers_list ]
-
-        random.shuffle(answers)
-        context['answers'] = answers
+            students = Student.objects.filter(
+                pk__in = ExampleSurveyAnswer.objects.filter(
+                    student__in = Student.objects.filter(school=school),
+                    date__year = year,
+                    groupsurvey__isnull = True,
+                ).values_list('student', flat=True).distinct()
+            ).all()
+            for student in students:
+                answers = self._get_student_answers_list(student, quiz_type, year)
+                random.shuffle(answers)
+                student_answers.append((student, answers))
+        
+        context['student_answers'] = student_answers
         context['school'] = school
-        context['student'] = student
+        context['year'] = year
         context['quiz_type'] = quiz_type
         context['groupsurvey'] = None
         context['studentgroup'] = None
