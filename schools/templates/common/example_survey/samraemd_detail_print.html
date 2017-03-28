@@ -1,56 +1,82 @@
-{% extends 'common/index.html' %}
+{% extends 'second_base.html'%}
+{% load staticfiles %}
+{% block stylesheet %}
+	<link href="{% static 'schools/css/example_survey_samraemd_detail_print.css' %}" rel="stylesheet">
+	<meta name="name" content="content">
+{% endblock %}
 
 {% block content %}
-<div class="row">
-	<div class="row">
-		<h1>Samræmd könnunarpróf</h1>
-	</div>
-	<div class="row">
-		<div class="col-md-6">{{ school.name }}</div>
-		<div class="col-md-6">{{ student.ssn }}</div>
-	</div>
-	<div class="row">
-		<div class="col-md-6">
-		{% if quiz_type == 'STÆ' %}
-			Stærðfræðihluti
-		{% elif quiz_type == 'ÍSL' %}
-			Íslenskuhluti
-		{% elif quiz_type == 'ENS' %}
-			Enskuhluti
-		{% endif %}
-		{{ studentgroup.name }}
+<page size="A4">
+	<div class="outer-border">
+		<img src="{% static 'img/logo-3litur.png'%}" class="img-responsive mms-logo"/>
+		<h1 class="text-center">Samræmd könnunarpróf</h1>
+		<div class="row headinfo">
+			<div class="info col-xs-6">
+				<p>{{ school.name }}</p>
+				<p>
+				{% if quiz_type == 'STÆ' %}
+					Stærðfræðihluti
+				{% elif quiz_type == 'ÍSL' %}
+					Íslenskuhluti
+				{% elif quiz_type == 'ENS' %}
+					Enskuhluti
+				{% endif %}
+				{{ studentgroup.name }}
+				</p>
+			</div>
+			<div class="info col-xs-6">
+				<p>
+					{{ student.ssn|slice:':6' }}-{{ student.ssn|slice:'6:' }}
+				</p>
+				<p>
+					{{ student.name }}
+				</p>
+			</div>
 		</div>
-		<div class="col-md-6">{{ student.name }}</div>
+		<div class="table-container">
+			<div class="row">
+				<div class="col-xs-12">
+					<table class="table">
+						<thead>
+							<tr>
+								<th>Kóði</th>
+								<th>Svar*</th>
+								<th>Flokkur</th>
+								<th>Lýsing</th>
+								<th>Dæmi</th>
+							</tr>
+						</thead>
+						<tbody>
+							{% for answer in answers %}
+								<tr>
+									<td>{{ answer.question.quickcode }}</td>
+									<td><strong>
+									{% if answer.answer %}
+										1
+									{% else %}
+										0
+									{% endif %}
+									</strong></td>
+									<td>{{ answer.question.category }}</td>
+									<td>{{ answer.question.description }}</td>
+									<td>{{ answer.question.example|safe }}
+								</tr>
+							{% endfor %}
+						</tbody>
+						<tfoot>
+							<tr>
+								<td colspan="5"><small>*(0=rangt)</small></td>
+							</tr>
+							<tr>
+								<td colspan="5">
+									<p class="footer text-center col-xs-12">Menntamálastofnun - Víkurhvarfi 3 - 203 Kópavogi</p>
+								</td>
+							</tr>
+						</tfoot>
+					</table>
+				</div>
+			</div>
+		</div>
 	</div>
-</div>
-<div style="margin-top: 3em;">
-	<table class="table table-hover table-striped">
-		<thead>
-			<tr>
-				<th class="col-md-1">Kóði</th>
-				<th class="col-md-1">Svar</th>
-				<th class="col-md-1">Flokkur</th>
-				<th class="col-md-4">Lýsing</th>
-				<th class="col-md-5">Dæmi</th>
-			</tr>
-		</thead>
-	<tbody>
-	{% for answer in answers %}
-		<tr>
-			<td>{{ answer.question.quickcode }}</td>
-			<td><strong>
-			{% if answer.answer %}
-				1
-			{% else %}
-				0
-			{% endif %}
-			</strong></td>
-			<td>{{ answer.question.category }}</td>
-			<td>{{ answer.question.description }}</td>
-			<td>{{ answer.question.example|safe }}
-		</tr>
-	{% endfor %}
-	</tbody>
-	</table>
-</div>
+</page>
 {% endblock %}
