@@ -6,6 +6,7 @@
 {% endblock %}
 
 {% block content %}
+{% for student, answers in student_answers %}
 <page size="A4">
 	<div class="outer-border">
 		<img src="{% static 'img/logo-3litur.png'%}" class="img-responsive mms-logo"/>
@@ -79,4 +80,5 @@
 		</div>
 	</div>
 </page>
+{% endfor %}
 {% endblock %}
