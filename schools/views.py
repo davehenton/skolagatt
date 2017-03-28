@@ -1777,7 +1777,11 @@ class ExampleSurveyGSDetail(common_mixins.SchoolManagerMixin, ListView):
 
 class ExampleSurveySamraemdDetail(common_mixins.SchoolManagerMixin, ListView):
     model = ExampleSurveyAnswer
-    template_name = "common/example_survey/samraemd_detail.html"
+
+    def get_template_names(self, **kwargs):
+        if 'print' in self.request.path:
+            return ['common/example_survey/samraemd_detail_print.html']
+        return ['common/example_survey/samraemd_detail.html']
 
     def get_context_data(self, **kwargs):
         # xxx will be available in the template as the related objects
