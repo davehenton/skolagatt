@@ -111,6 +111,9 @@ strong {
 .info p {
     margin-bottom: .3em;
 }
+tbody td {
+    color : #000000;
+}
 td {
     font-family   : Avenir;
     font-size     : 10pt;
