@@ -2043,14 +2043,14 @@ class ExampleSurveyAnswerAdminImport(common_mixins.SuperUserMixin, CreateView):
 
 
 class ExampleSurveyAnswerAdminDelete(common_mixins.SuperUserMixin, DeleteView):
-    model         = ExampleSurveyQuestion
+    model         = ExampleSurveyAnswer
     template_name = "schools/confirm_delete.html"
 
     def get_success_url(self):
         return reverse_lazy('schools:example_survey_answer_admin_listing')
 
     def get_object(self):
-        return ExampleSurveyQuestion.objects.get(pk=self.kwargs['pk'])
+        return ExampleSurveyAnswer.objects.get(pk=self.kwargs['pk'])
 
 
 def group_admin_listing_excel(request, survey_title):
