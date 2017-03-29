@@ -6,26 +6,33 @@
 	<div class="col-md-6">
 		<form action="" method="post" enctype="multipart/form-data">
 			{% csrf_token %}
-				<div class="form-group">
-					<label for="file">Veldu skrá</label>
-					<input type="file" name="file" id="file" class="btn btn-default"/>
+				<div class="row">
+					<div class="form-group col-xs-6">
+						<label for="file">Veldu skrá</label>
+						<input type="file" name="file" id="file" class="btn btn-default"/>
+					</div>
 				</div>
-
+				<div class="row">
+					<div class="form-group col-xs-6">
+						<label for="exam_date">Dagsetnings prófs</label>
+						<input type="text" name="exam_date" id="exam_date" placeholder='YYYY-MM-DD' class="form-control"/>
+					</div>
+					<div class="form-group col-xs-6">
+						<label for="survey_identifier">Kóði prófs</label>
+						<input type="text" name="survey_identifier" id="survey_identifier" placeholder='N_bekkur_stærðfræði_YYYY' class="form-control" />
+					</div>
+				</div>
 				<div class="form-group">
-					<label for="ssn">Kennitala</label>
+					<label for="ssn">Dálkur fyrir kennitölu</label>
 					<input type="number" name="ssn" id="ssn" min="0" value="0" class="form-control input-lg" />
 				</div>
 				<div class="form-group">
-					<label for="quickcode">Flýtikóði</label>
+					<label for="quickcode">Dálkur fyrir flýtikóða</label>
 					<input type="number" name="quickcode" id="quickcode" min="0" value="1" class="form-control input-lg" />
 				</div>
 				<div class="form-group">
-					<label for="survey_identifier">Próf</label>
-					<input type="number" name="survey_identifier" id="survey_identifier" min="0" value="2" class="form-control input-lg" />
-				</div>
-				<div class="form-group">
-					<label for="answer">Svar</label>
-					<input type="number" name="answer" id="answer" min="0" value="3" class="form-control input-lg" />
+					<label for="answer">Dálkur fyrir svar</label>
+					<input type="number" name="answer" id="answer" min="0" value="2" class="form-control input-lg" />
 				</div>
 				<div class="form-group">
 					<label for="title">Er fyrsta línan með titli</label>

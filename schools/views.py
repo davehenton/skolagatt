@@ -1929,11 +1929,13 @@ class ExampleSurveyAnswerAdminImport(common_mixins.SuperUserMixin, CreateView):
             u_file    = self.request.FILES['file'].name
             extension = u_file.split(".")[-1]
 
-            ssn = self.request.POST.get('ssn')
-            quickcode = self.request.POST.get('quickcode')
-            survey_identifier = self.request.POST.get('survey_identifier')
-            answer = self.request.POST.get('answer')
+            ssn = int(self.request.POST.get('ssn'))
+            quickcode = int(self.request.POST.get('quickcode'))
+            answer = int(self.request.POST.get('answer'))
             title = self.request.POST.get('title')
+
+            exam_date    = self.request.POST.get('exam_date').strip()
+            survey_identifier = self.request.POST.get('survey_identifier')
 
             if title == 'yes':
                 first = 1
@@ -1949,10 +1951,9 @@ class ExampleSurveyAnswerAdminImport(common_mixins.SuperUserMixin, CreateView):
                     for sheetsnumber in range(book.nsheets):
                         sheet = book.sheet_by_index(sheetsnumber)
                         for row in range(first, sheet.nrows):
-                            ssn_str = str(sheet.cell_value(row, int(ssn)))
-                            quickcode_str = str(sheet.cell_value(row, int(quickcode)))
-                            survey_identifier_str = str(sheet.cell_value(row, int(survey_identifier)))
-                            answer_str = str(sheet.cell_value(row, int(answer)))
+                            ssn_str = str(sheet.cell_value(row, ssn))
+                            quickcode_str = str(sheet.cell_value(row, quickcode))
+                            answer_str = str(sheet.cell_value(row, answer))
 
                             rowerrors = []
                             if not Student.objects.filter(ssn = ssn_str).exists():
@@ -1970,15 +1971,12 @@ class ExampleSurveyAnswerAdminImport(common_mixins.SuperUserMixin, CreateView):
                                     'text': 'Get ekki notað svar {}'.format(answer_str),
                                     'row': row,
                                 })
-                            if not survey_identifier_str:
-                                rowerrors.append({
-                                    'text': 'Verður að skilgreina próf',
-                                    'row': row,
-                                })
+
                             data.append({
                                 'ssn':               ssn_str,
                                 'quickcode':         quickcode_str,
-                                'survey_identifier': survey_identifier_str,
+                                'survey_identifier': survey_identifier,
+                                'exam_date':         exam_date,
                                 'answer':            answer_str,
                                 'error':             True if rowerrors else False,
                             })
@@ -2016,7 +2014,7 @@ class ExampleSurveyAnswerAdminImport(common_mixins.SuperUserMixin, CreateView):
                 answer = ExampleSurveyAnswer.objects.filter(
                     student = student,
                     question = question,
-                    exam_code = exam_code
+                    date = newentry['exam_date'],
                 )
                 studentgroup = StudentGroup.objects.filter(students=student).first()
                 groupsurvey = None
@@ -2034,6 +2032,7 @@ class ExampleSurveyAnswerAdminImport(common_mixins.SuperUserMixin, CreateView):
                         question = question,
                         groupsurvey = groupsurvey,
                         exam_code = exam_code,
+                        date = newentry['exam_date'],
                         answer = boolanswer,
                     )
         return redirect(self.get_success_url())
