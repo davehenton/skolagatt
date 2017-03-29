@@ -202,6 +202,7 @@ class ExampleSurveyAnswer(models.Model):
     question = models.ForeignKey(ExampleSurveyQuestion)
     # próf
     groupsurvey = models.ForeignKey(GroupSurvey, null=True)
+    exam_code = models.CharField(max_length = 128, null=True)
     # dags
     date = models.DateField(default=timezone.now)
     # Svar (rétt/rangt)

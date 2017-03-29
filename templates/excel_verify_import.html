@@ -1,5 +1,7 @@
-{% extends 'common/index.html'%}
-{% include staticfiles%}
+{% extends 'common/index.html' %}
+{% include staticfiles %}
+{% load common_helpers %}
+
 {% block content %}
 
 	<div class="row">
@@ -49,7 +51,8 @@
 {% endblock %}
 {% block script %}
 	<script type='text/javascript'>
-		var data = {{data|safe}};
+
+		var data = {{ data|jsonify|safe }};
 		$( document ).on("click", "#save_data", function(){
 			$.ajax({
 				type: "POST",

@@ -70,6 +70,14 @@ def get_json(text):
 
 
 @register.filter
+def jsonify(object):
+    try:
+        return json.dumps(object)
+    except:
+        return ''
+
+
+@register.filter
 def get_graph(text):
     try:
         return json.loads(text)

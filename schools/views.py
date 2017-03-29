@@ -1965,14 +1965,14 @@ class ExampleSurveyAnswerAdminImport(common_mixins.SuperUserMixin, CreateView):
                                     'text': 'Prófdæmi {} er ekki til'.format(quickcode_str),
                                     'row': row,
                                 })
-                            if survey_identifier_str and not Survey.objects.filter(identifier = survey_identifier_str):
-                                rowerrors.append({
-                                    'text': 'Próf {} er ekki til'.format(survey_identifier_str),
-                                    'row': row,
-                                })
                             if answer_str not in ['1', '0']:
                                 rowerrors.append({
                                     'text': 'Get ekki notað svar {}'.format(answer_str),
+                                    'row': row,
+                                })
+                            if not survey_identifier_str:
+                                rowerrors.append({
+                                    'text': 'Verður að skilgreina próf',
                                     'row': row,
                                 })
                             data.append({
@@ -2002,30 +2002,38 @@ class ExampleSurveyAnswerAdminImport(common_mixins.SuperUserMixin, CreateView):
                 try:
                     student = Student.objects.get(ssn=newentry['ssn'])  # student already exists
                     question = ExampleSurveyQuestion.objects.get(quickcode = newentry['quickcode'])
-                except Exception(e):
-                    print(e)
+                except:
                     continue
-                # check if quickcode exists, create if not, otherwise update
+
+                exam_code = None
+                if newentry['survey_identifier']:
+                    survey = Survey.objects.filter(identifier = newentry['survey_identifier']).first()
+                    if survey:
+                        groupsurvey = GroupSurvey.objects.filter(survey = survey, studentgroup = studentgroup).first()
+                    else:
+                        exam_code = newentry['survey_identifier']
+
                 answer = ExampleSurveyAnswer.objects.filter(
                     student = student,
                     question = question,
+                    exam_code = exam_code
                 )
                 studentgroup = StudentGroup.objects.filter(students=student).first()
                 groupsurvey = None
-                if newentry['survey_identifier']:
-                    survey = Survey.objects.filter(identifier = newentry['survey_identifier']).first()
-                    groupsurvey = GroupSurvey.objects.filter(survey = survey, studentgroup = studentgroup).first()
+
                 boolanswer = True if newentry['answer'] == '1' else False
                 if answer:
                     answer.update(
                         groupsurvey = groupsurvey,
+                        exam_code = exam_code,
                         answer = boolanswer,
                     )
                 else:
-                    question = ExampleSurveyAnswer.objects.create(
+                    answer = ExampleSurveyAnswer.objects.create(
                         student = student,
                         question = question,
                         groupsurvey = groupsurvey,
+                        exam_code = exam_code,
                         answer = boolanswer,
                     )
         return redirect(self.get_success_url())
