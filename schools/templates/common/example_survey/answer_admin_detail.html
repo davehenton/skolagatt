@@ -26,7 +26,13 @@
 			</tr>
 			<tr>
 				<td>Próf</td>
-				<td>{{ answer.groupsurvey.survey.title }} ({{ answer.groupsurvey.survey.identifier }})</td>
+				<td>
+				{% if answer.groupsurvey %}
+					{{ answer.groupsurvey.survey.title }} ({{ answer.groupsurvey.survey.identifier }})
+				{% else %}
+					{{ answer.exam_code }}
+				{% endif %}
+				</td>
 			</tr>
 			<tr>
 				<td>Svar</td>
@@ -37,6 +43,14 @@
 					<span class="glyphicon glyphicon-remove" style="color:red"></span>&nbsp;
 				{% endif %}
 				</td>
+			</tr>
+			<tr>
+				<td>Lýsing spurningar</td>
+				<td>{{ answer.question.description }}</td>
+			</tr>
+			<tr>
+				<td>Dæmi</td>
+				<td>{{ answer.question.example|safe }}</td>
 			</tr>
 		</tbody>
 	</table>
