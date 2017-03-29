@@ -123,18 +123,30 @@ def excel_result(request, school_id, year, group):
     return response
 
 
-class SamraemdMathResultAdminListing(cm_mixins.SuperUserMixin, ListView):
+class SamraemdResultAdminListing(cm_mixins.SuperUserMixin, ListView):
     model         = s_models.SamraemdMathResult
     template_name = 'samraemd/samraemdresult_admin_list.html'
 
     def get_context_data(self, **kwargs):
         # xxx will be available in the template as the related objects
-        context = super(SamraemdMathResultAdminListing, self).get_context_data(**kwargs)
+        context = super(SamraemdResultAdminListing, self).get_context_data(**kwargs)
 
-        context['exams']     = s_models.SamraemdMathResult.objects.all().values(
-            'exam_date', 'student_year', 'exam_code').distinct()
-        context['raw_exams'] = s_models.SamraemdResult.objects.filter(exam_code=3).values(
-            'exam_date', 'student_year', 'exam_name', 'exam_code').distinct()
+        isl_exams = s_models.SamraemdISLResult.objects.all().values(
+            'exam_date', 'student_year', 'exam_code'
+        ).distinct()
+
+        math_exams = s_models.SamraemdMathResult.objects.all().values(
+            'exam_date', 'student_year', 'exam_code'
+        ).distinct()
+
+        ens_exams = s_models.SamraemdENSResult.objects.all().values(
+            'exam_date', 'student_year', 'exam_code'
+        ).distinct()
+
+        context['isl_exams'] = isl_exams
+        context['math_exams'] = math_exams
+        context['ens_exams'] = ens_exams
+
         return context
 
 
@@ -297,6 +309,7 @@ class SamraemdResultCreate(cm_mixins.SuperUserMixin, CreateView):
             exam_code    = self.request.POST.get('exam_code').strip()
             exam_date    = self.request.POST.get('exam_date').strip()
             student_year = self.request.POST.get('student_year').strip()
+            exam_type    = self.request.POST.get('exam_type').strip()
             
             data = []
             errors = []
@@ -310,7 +323,23 @@ class SamraemdResultCreate(cm_mixins.SuperUserMixin, CreateView):
                     # First line is reserved for a header with field names
                     for col in range(0, sheet.ncols):
                         # Get column names based on header
-                        cols.append(str(sheet.cell_value(0, col)))
+                        col_name = str(sheet.cell_value(0, col))
+                        cols.append(col_name)
+
+                        fieldlist = []
+                        if exam_type == 'STÆ':
+                            fieldlist = [ f.name for f in s_models.SamraemdMathResult._meta.get_fields() ]
+                        elif exam_type == 'ÍSL':
+                            fieldlist = [ f.name for f in s_models.SamraemdISLResult._meta.get_fields() ]
+                        elif exam_type == 'ENS':
+                            fieldlist = [ f.name for f in s_models.SamraemdENSResult._meta.get_fields() ]
+
+                        if not col_name in fieldlist:
+                            if not col_name == 'ssn':
+                                errors.append({
+                                'text': 'Dálkur {} er ekki til'.format(col_name),
+                                'col': col,
+                            })                            
 
                     # Run through each line
                     for row in range(1, sheet.nrows):
@@ -354,9 +383,10 @@ class SamraemdResultCreate(cm_mixins.SuperUserMixin, CreateView):
                                         })
                                 results_dict[col_type] = col_value
 
-                        results_dict['exam_code'] = exam_code
-                        results_dict['exam_date'] = exam_date
+                        results_dict['exam_code']    = exam_code
+                        results_dict['exam_date']    = exam_date
                         results_dict['student_year'] = student_year
+                        results_dict['exam_type']    = exam_type
 
                         if not 'ssn' in results_dict or not results_dict['ssn']:
                             rowerrors.append({
@@ -369,18 +399,10 @@ class SamraemdResultCreate(cm_mixins.SuperUserMixin, CreateView):
 
                         data.append(results_dict)
 
-            cancel_url = ''
-            if 'stæ' in self.request.path:
-                cancel_url = reverse_lazy('samraemd:math_admin_listing')
-            elif 'ens' in self.request.path:
-                cancel_url = reverse_lazy('samraemd:ens_admin_listing')
-            elif 'ísl' in self.request.path:
-                cancel_url = reverse_lazy('samraemd:isl_admin_listing')
-
             return render(self.request, 'excel_verify_import.html', {
                 'data': data,
                 'errors': errors,
-                'cancel_url': cancel_url,
+                'cancel_url': reverse_lazy('samraemd:result_admin_listing'),
             })
         else:
             newdata = json.loads(self.request.POST['newdata'])
@@ -396,7 +418,10 @@ class SamraemdResultCreate(cm_mixins.SuperUserMixin, CreateView):
                 del(newentry['ssn'])
                 newentry['student'] = student.first()
 
-                if 'stæ' in self.request.path:
+                exam_type = newentry['exam_type']
+                del(newentry['exam_type'])
+
+                if exam_type == 'STÆ':
                     results = s_models.SamraemdMathResult.objects.filter(
                         student=newentry['student'], exam_code=newentry['exam_code'])
 
@@ -404,7 +429,7 @@ class SamraemdResultCreate(cm_mixins.SuperUserMixin, CreateView):
                         results.update(**newentry)
                     else:
                         results = s_models.SamraemdMathResult.objects.create(**newentry)
-                elif 'ens' in self.request.path:
+                elif exam_type == 'ENS':
                     results = s_models.SamraemdENSResult.objects.filter(
                         student=newentry['student'], exam_code=newentry['exam_code'])
 
@@ -412,7 +437,7 @@ class SamraemdResultCreate(cm_mixins.SuperUserMixin, CreateView):
                         results.update(**newentry)
                     else:
                         results = s_models.SamraemdENSResult.objects.create(**newentry)
-                elif 'ísl' in self.request.path:
+                elif exam_type == 'ÍSL':
                     results = s_models.SamraemdISLResult.objects.filter(
                         student=newentry['student'], exam_code=newentry['exam_code'])
 
@@ -420,7 +445,7 @@ class SamraemdResultCreate(cm_mixins.SuperUserMixin, CreateView):
                         results.update(**newentry)
                     else:
                         results = s_models.SamraemdISLResult.objects.create(**newentry)
-            return HttpResponseRedirect(self.get_success_url())
+            # return HttpResponseRedirect(self.get_success_url())
 
         return redirect(self.get_success_url())
 
@@ -482,20 +507,6 @@ class SamraemdMathResultDelete(cm_mixins.SchoolManagerMixin, DeleteView):
         return s_models.SamraemdMathResult.objects.filter(exam_code=self.kwargs['exam_code'])
 
 
-class SamraemdISLResultAdminListing(cm_mixins.SuperUserMixin, ListView):
-    model = s_models.SamraemdISLResult
-    template_name = 'samraemd/samraemdresult_admin_list.html'
-
-    def get_context_data(self, **kwargs):
-        # xxx will be available in the template as the related objects
-        context              = super(SamraemdISLResultAdminListing, self).get_context_data(**kwargs)
-        context['exams']     = s_models.SamraemdISLResult.objects.all().values(
-            'exam_date', 'student_year', 'exam_code').distinct()
-        context['raw_exams'] = s_models.SamraemdResult.objects.filter(exam_code=1).values(
-            'exam_date', 'student_year', 'exam_name', 'exam_code').distinct()
-        return context
-
-
 class SamraemdISLResultListing(cm_mixins.SchoolEmployeeMixin, ListView):
     model = s_models.SamraemdISLResult
 
@@ -519,21 +530,6 @@ class SamraemdISLResultDelete(cm_mixins.SchoolManagerMixin, DeleteView):
 
     def get_object(self):
         return s_models.SamraemdISLResult.objects.filter(exam_code=self.kwargs['exam_code'])
-
-
-### NEW START
-class SamraemdENSResultAdminListing(cm_mixins.SuperUserMixin, ListView):
-    model = s_models.SamraemdENSResult
-    template_name = 'samraemd/samraemdresult_admin_list.html'
-
-    def get_context_data(self, **kwargs):
-        # xxx will be available in the template as the related objects
-        context              = super(SamraemdENSResultAdminListing, self).get_context_data(**kwargs)
-        context['exams']     = s_models.SamraemdENSResult.objects.all().values(
-            'exam_date', 'student_year', 'exam_code').distinct()
-        context['raw_exams'] = s_models.SamraemdResult.objects.filter(exam_code=1).values(
-            'exam_date', 'student_year', 'exam_name', 'exam_code').distinct()
-        return context
 
 
 class SamraemdENSResultListing(cm_mixins.SchoolEmployeeMixin, ListView):
@@ -560,8 +556,6 @@ class SamraemdENSResultDelete(cm_mixins.SchoolManagerMixin, DeleteView):
 
     def get_object(self):
         return s_models.SamraemdENSResult.objects.filter(exam_code=self.kwargs['exam_code'])
-
-### NEW END
 
 
 class RawDataCreate(cm_mixins.SuperUserMixin, CreateView):
