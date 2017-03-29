@@ -1,12 +1,15 @@
 from django.shortcuts           import render, redirect
 from django.views.generic       import ListView, CreateView, DetailView, DeleteView
 from django.core.urlresolvers   import reverse_lazy
-from django.http                import HttpResponse
+from django.http                import HttpResponse, HttpResponseRedirect
 
 import xlrd
+import json
 import openpyxl
 from itertools        import chain
 from django.db.models import Count, Value, CharField
+
+from kennitala import Kennitala
 
 import common.models   as cm_models
 import common.mixins   as cm_mixins
@@ -282,76 +285,176 @@ class SamraemdResultDetail(cm_mixins.SchoolManagerMixin, DetailView):
         return context
 
 
-class SamraemdMathResultCreate(cm_mixins.SuperUserMixin, CreateView):
+class SamraemdResultCreate(cm_mixins.SuperUserMixin, CreateView):
     model         = s_models.SamraemdMathResult
     form_class    = forms.SamraemdMathResultForm
     template_name = "samraemd/form_import.html"
 
     def post(self, *args, **kwargs):
-        if(self.request.FILES):
+        if (self.request.FILES):
             u_file       = self.request.FILES['file'].name
             extension    = u_file.split(".")[-1]
             exam_code    = self.request.POST.get('exam_code').strip()
             exam_date    = self.request.POST.get('exam_date').strip()
             student_year = self.request.POST.get('student_year').strip()
+            
+            data = []
+            errors = []
+            if extension == 'xlsx':
+                input_excel = self.request.FILES['file']
+                book = xlrd.open_workbook(file_contents = input_excel.read())
 
-            try:
-                if extension == 'xlsx':
-                    input_excel = self.request.FILES['file']
-                    book = xlrd.open_workbook(file_contents=input_excel.read())
-                    for sheetsnumber in range(book.nsheets):
-                        sheet = book.sheet_by_index(sheetsnumber)
-                        for row in range(1, sheet.nrows):
-                            student = cm_models.Student.objects.filter(
-                                ssn=str(sheet.cell_value(row, 0)).strip())  # student already exists
-                            if student:
-                                # Check if results for student exists. True: update, False: Create
-                                results = s_models.SamraemdMathResult.objects.filter(
-                                    student=student, exam_code=exam_code)
-                                results_dict = {
-                                    'student'      : student.first(),
-                                    'ra_se'        : str(sheet.cell_value(row, 1)).strip(),
-                                    'rm_se'        : str(sheet.cell_value(row, 2)).strip(),
-                                    'tt_se'        : str(sheet.cell_value(row, 3)).strip(),
-                                    'se'           : str(sheet.cell_value(row, 4)).strip(),
-                                    'ra_re'        : str(int(sheet.cell_value(row, 5))).strip(),
-                                    'rm_re'        : str(int(sheet.cell_value(row, 6))).strip(),
-                                    'tt_re'        : str(int(sheet.cell_value(row, 7))).strip(),
-                                    're'           : str(int(sheet.cell_value(row, 8))).strip(),
-                                    'ra_sg'        : str(int(sheet.cell_value(row, 9))).strip(),
-                                    'rm_sg'        : str(int(sheet.cell_value(row, 10))).strip(),
-                                    'tt_sg'        : str(int(sheet.cell_value(row, 11))).strip(),
-                                    'sg'           : str(int(sheet.cell_value(row, 12))).strip(),
-                                    'fm_fl'        : str(sheet.cell_value(row, 13)).strip(),
-                                    'fm_txt'       : str(sheet.cell_value(row, 14)).strip(),
-                                    'ord_talna_txt': str(sheet.cell_value(row, 15)).strip(),
-                                    'exam_code'    : exam_code,
-                                    'exam_date'    : exam_date,
-                                    'student_year' : student_year
-                                }
-                                if results:
-                                    results.update(**results_dict)
-                                else:
-                                    results = s_models.SamraemdMathResult.objects.create(
-                                        **results_dict)
-                            else:
-                                # student missing
-                                pass  # for now
-            except Exception as e:
-                return render(
-                    self.request,
-                    'samraemd/form_import.html',
-                    {'error': 'Dálkur ekki til, reyndu aftur'}
-                )
+                for sheetsnumber in range(book.nsheets):
+                    sheet = book.sheet_by_index(sheetsnumber)
+                    cols = []
+                    # First line is reserved for a header with field names
+                    for col in range(0, sheet.ncols):
+                        # Get column names based on header
+                        cols.append(str(sheet.cell_value(0, col)))
+
+                    # Run through each line
+                    for row in range(1, sheet.nrows):
+                        rowerrors = []
+                        results_dict = {}
+                        # Run through each column of the line
+                        for col in range(0, len(cols)):
+                            col_type = cols[col]
+                            col_value = str(sheet.cell_value(row,col)).strip()
+
+                            if col_value:
+                                if col_type == 'ssn':
+                                    kt = Kennitala(col_value)
+                                    if not kt.validate() or not kt.is_personal(col_value):
+                                        rowerrors.append({
+                                            'text': 'Kennitala ekki rétt slegin inn',
+                                            'row': row,
+                                        })
+
+                                    if not cm_models.Student.objects.filter(ssn = col_value).exists():
+                                        rowerrors.append({
+                                            'text': 'Nemandi ekki til í skólagátt',
+                                            'row': row,
+                                        })
+                                if col_type == 're' or col_type.endswith('_re'):
+                                    if int(col_value) > 100 or int(col_value) < 0:
+                                        rowerrors.append({
+                                            'text': '{}: Einkunn utan raðeinkunnarsviðs'.format(col_type),
+                                            'row': row,
+                                        })
+                                elif col_type == 'he' and col_value not in ['A', 'B', 'C', 'D']:
+                                    rowerrors.append({
+                                        'text': '{}: Einkunn utan Hæfnieinkunnarsviðs'.format(col_type),
+                                        'row': row,
+                                    })
+                                elif col_type == 'se' or col_type.endswith('_se'):
+                                    if int(col_value) > 10 or int(col_value) < 0:
+                                        rowerrors.append({
+                                            'text': '{}: Einkunn utan samræmdrareinkunnarsviðs'.format(col_type),
+                                            'row': row,
+                                        })
+                                results_dict[col_type] = col_value
+
+                        results_dict['exam_code'] = exam_code
+                        results_dict['exam_date'] = exam_date
+                        results_dict['student_year'] = student_year
+
+                        if not 'ssn' in results_dict or not results_dict['ssn']:
+                            rowerrors.append({
+                                'text': 'Engin kennitala',
+                                'row': row
+                            })
+
+                        if rowerrors:
+                            errors += rowerrors
+
+                        data.append(results_dict)
+
+            cancel_url = ''
+            if 'stæ' in self.request.path:
+                cancel_url = reverse_lazy('samraemd:math_admin_listing')
+            elif 'ens' in self.request.path:
+                cancel_url = reverse_lazy('samraemd:ens_admin_listing')
+            elif 'ísl' in self.request.path:
+                cancel_url = reverse_lazy('samraemd:isl_admin_listing')
+
+            return render(self.request, 'excel_verify_import.html', {
+                'data': data,
+                'errors': errors,
+                'cancel_url': cancel_url,
+            })
+        else:
+            newdata = json.loads(self.request.POST['newdata'])
+            # Iterate through the data
+            for newentry in newdata:
+                print("looking up {}".format(newentry['ssn']))
+                student = cm_models.Student.objects.filter(ssn = newentry['ssn'])
+                
+                if not student.exists():
+                    print ("Not found: {}".format(newentry['ssn']))
+                    continue
+
+                del(newentry['ssn'])
+                newentry['student'] = student.first()
+
+                if 'stæ' in self.request.path:
+                    results = s_models.SamraemdMathResult.objects.filter(
+                        student=newentry['student'], exam_code=newentry['exam_code'])
+
+                    if results:
+                        results.update(**newentry)
+                    else:
+                        results = s_models.SamraemdMathResult.objects.create(**newentry)
+                elif 'ens' in self.request.path:
+                    results = s_models.SamraemdENSResult.objects.filter(
+                        student=newentry['student'], exam_code=newentry['exam_code'])
+
+                    if results:
+                        results.update(**newentry)
+                    else:
+                        results = s_models.SamraemdENSResult.objects.create(**newentry)
+                elif 'ísl' in self.request.path:
+                    results = s_models.SamraemdISLResult.objects.filter(
+                        student=newentry['student'], exam_code=newentry['exam_code'])
+
+                    if results:
+                        results.update(**newentry)
+                    else:
+                        results = s_models.SamraemdISLResult.objects.create(**newentry)
+            return HttpResponseRedirect(self.get_success_url())
+
         return redirect(self.get_success_url())
 
     def get_success_url(self):
-        if 'school_id' in self.kwargs:
-            return reverse_lazy(
-                'samraemd:math_listing',
-                kwargs={'school_id': self.kwargs['school_id']}
-            )
-        return reverse_lazy('samraemd:math_admin_listing')
+        if 'stæ' in self.request.path:
+            if 'school_id' in self.kwargs:
+                return reverse_lazy(
+                    'samraemd:math_listing',
+                    kwargs={'school_id': self.kwargs['school_id']}
+                )
+            else:
+                return reverse_lazy('samraemd:math_admin_listing')
+        elif 'ens' in self.request.path:
+            if 'school_id' in self.kwargs:
+                return reverse_lazy(
+                    'samraemd:ens_listing',
+                    kwargs={'school_id': self.kwargs['school_id']}
+                )
+            else:
+                return reverse_lazy('samraemd:ens_admin_listing')
+        elif 'ísl' in self.request.path:
+            if 'school_id' in self.kwargs:
+                return reverse_lazy(
+                    'samraemd:isl_listing',
+                    kwargs={'school_id': self.kwargs['school_id']}
+                )
+            else:
+                return reverse_lazy('samraemd:isl_admin_listing')
+
+    def get_context_data(self, **kwargs):
+        # xxx will be available in the template as the related objects
+        context         = super(SamraemdResultCreate, self).get_context_data(**kwargs)
+        context['type'] = 'STÆ'
+        return context
 
 
 class SamraemdResultDelete(cm_mixins.SchoolManagerMixin, DeleteView):
@@ -407,78 +510,6 @@ class SamraemdISLResultListing(cm_mixins.SchoolEmployeeMixin, ListView):
         return context
 
 
-class SamraemdISLResultCreate(cm_mixins.SuperUserMixin, CreateView):
-    model = s_models.SamraemdISLResult
-    form_class = forms.SamraemdISLResultForm
-    template_name = "samraemd/form_import.html"
-
-    def post(self, *args, **kwargs):
-        if(self.request.FILES):
-            u_file       = self.request.FILES['file'].name
-            extension    = u_file.split(".")[-1]
-            exam_code    = self.request.POST.get('exam_code').strip()
-            exam_date    = self.request.POST.get('exam_date').strip()
-            student_year = self.request.POST.get('student_year').strip()
-
-            try:
-                if extension == 'xlsx':
-                    input_excel = self.request.FILES['file']
-                    book        = xlrd.open_workbook(file_contents=input_excel.read())
-                    for sheetsnumber in range(book.nsheets):
-                        sheet = book.sheet_by_index(sheetsnumber)
-                        for row in range(1, sheet.nrows):
-                            student = cm_models.Student.objects.filter(
-                                ssn=str(sheet.cell_value(row, 0)).strip())  # Student already exists
-                            if student:
-                                # check if results for student exists, True: Update, False: Create
-                                results = s_models.SamraemdISLResult.objects.filter(
-                                    student=student, exam_code=exam_code)
-                                results_dict = {
-                                    'student'     : student.first(),
-                                    'le_se'       : str(sheet.cell_value(row, 1)).strip(),
-                                    'mn_se'       : str(sheet.cell_value(row, 2)).strip(),
-                                    'ri_se'       : str(sheet.cell_value(row, 3)).strip(),
-                                    'se'          : str(sheet.cell_value(row, 4)).strip(),
-                                    'le_re'       : str(int(sheet.cell_value(row, 5))).strip(),
-                                    'mn_re'       : str(int(sheet.cell_value(row, 6))).strip(),
-                                    'ri_re'       : str(int(sheet.cell_value(row, 7))).strip(),
-                                    're'          : str(int(sheet.cell_value(row, 8))).strip(),
-                                    'le_sg'       : str(int(sheet.cell_value(row, 9))).strip(),
-                                    'mn_sg'       : str(int(sheet.cell_value(row, 10))).strip(),
-                                    'ri_sg'       : str(int(sheet.cell_value(row, 11))).strip(),
-                                    'sg'          : str(int(sheet.cell_value(row, 12))).strip(),
-                                    'fm_fl'       : str(sheet.cell_value(row, 13)).strip(),
-                                    'fm_txt'      : str(sheet.cell_value(row, 14)).strip(),
-                                    'exam_code'   : exam_code,
-                                    'exam_date'   : exam_date,
-                                    'student_year': student_year
-                                }
-                                if results:
-                                    results.update(**results_dict)
-                                else:
-                                    results = s_models.SamraemdISLResult.objects.create(
-                                        **results_dict)
-                            else:
-                                # student not found
-                                pass  # for now
-            except Exception as e:
-                return render(
-                    self.request,
-                    'samraemd/form_import.html',
-                    {'error': 'Dálkur ekki til, reyndu aftur'}
-                )
-
-        return redirect(self.get_success_url())
-
-    def get_success_url(self):
-        if 'school_id' in self.kwargs:
-            return reverse_lazy(
-                'samraemd:isl_listing',
-                kwargs={'school_id': self.kwargs['school_id']}
-            )
-        return reverse_lazy('samraemd:isl_admin_listing')
-
-
 class SamraemdISLResultDelete(cm_mixins.SchoolManagerMixin, DeleteView):
     model         = s_models.SamraemdISLResult
     template_name = "schools/confirm_delete.html"
@@ -518,77 +549,6 @@ class SamraemdENSResultListing(cm_mixins.SchoolEmployeeMixin, ListView):
         context['school_id'] = school.id
         return context
 
-
-class SamraemdENSResultCreate(cm_mixins.SuperUserMixin, CreateView):
-    model = s_models.SamraemdENSResult
-    form_class = forms.SamraemdENSResultForm
-    template_name = "samraemd/form_import.html"
-
-    def post(self, *args, **kwargs):
-        if(self.request.FILES):
-            u_file       = self.request.FILES['file'].name
-            extension    = u_file.split(".")[-1]
-            exam_code    = self.request.POST.get('exam_code').strip()
-            exam_date    = self.request.POST.get('exam_date').strip()
-            student_year = self.request.POST.get('student_year').strip()
-
-            try:
-                if extension == 'xlsx':
-                    input_excel = self.request.FILES['file']
-                    book        = xlrd.open_workbook(file_contents=input_excel.read())
-                    for sheetsnumber in range(book.nsheets):
-                        sheet = book.sheet_by_index(sheetsnumber)
-                        for row in range(1, sheet.nrows):
-                            student = cm_models.Student.objects.filter(
-                                ssn=str(sheet.cell_value(row, 0)).strip())  # Student already exists
-                            if student:
-                                # check if results for student exists, True: Update, False: Create
-                                results = s_models.SamraemdENSResult.objects.filter(
-                                    student=student, exam_code=exam_code)
-                                results_dict = {
-                                    'student'     : student.first(),
-                                    'le_se'       : str(sheet.cell_value(row, 1)).strip(),
-                                    'mn_se'       : str(sheet.cell_value(row, 2)).strip(),
-                                    'ri_se'       : str(sheet.cell_value(row, 3)).strip(),
-                                    'se'          : str(sheet.cell_value(row, 4)).strip(),
-                                    'le_re'       : str(int(sheet.cell_value(row, 5))).strip(),
-                                    'mn_re'       : str(int(sheet.cell_value(row, 6))).strip(),
-                                    'ri_re'       : str(int(sheet.cell_value(row, 7))).strip(),
-                                    're'          : str(int(sheet.cell_value(row, 8))).strip(),
-                                    'le_sg'       : str(int(sheet.cell_value(row, 9))).strip(),
-                                    'mn_sg'       : str(int(sheet.cell_value(row, 10))).strip(),
-                                    'ri_sg'       : str(int(sheet.cell_value(row, 11))).strip(),
-                                    'sg'          : str(int(sheet.cell_value(row, 12))).strip(),
-                                    'fm_fl'       : str(sheet.cell_value(row, 13)).strip(),
-                                    'fm_txt'      : str(sheet.cell_value(row, 14)).strip(),
-                                    'exam_code'   : exam_code,
-                                    'exam_date'   : exam_date,
-                                    'student_year': student_year
-                                }
-                                if results:
-                                    results.update(**results_dict)
-                                else:
-                                    results = s_models.SamraemdENSResult.objects.create(
-                                        **results_dict)
-                            else:
-                                # student not found
-                                pass  # for now
-            except Exception as e:
-                return render(
-                    self.request,
-                    'samraemd/form_import.html',
-                    {'error': 'Dálkur ekki til, reyndu aftur'}
-                )
-
-        return redirect(self.get_success_url())
-
-    def get_success_url(self):
-        if 'school_id' in self.kwargs:
-            return reverse_lazy(
-                'samraemd:ens_listing',
-                kwargs={'school_id': self.kwargs['school_id']}
-            )
-        return reverse_lazy('samraemd:ens_admin_listing')
 
 
 class SamraemdENSResultDelete(cm_mixins.SchoolManagerMixin, DeleteView):

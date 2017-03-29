@@ -11,14 +11,15 @@
 				<input type="file" name="file" id="file" class="btn btn-default"/>
 				<p class="help-block">Veljið Excel skrá sem inniheldur gögn fyrir samræmd próf.</p>
 				<p class="help-block">Skráin verður að vera vistuð sem .xlsx á UTF-8 sniðmáti</p>
+				<p class="help-block">Efsta línan skal vera haus með dálkanöfnum&nbsp;<small>*</small></p>
 			</div>
 			<div class="form-group form-group-lg">
-				<label for="student_ssn">Prófkóði</label>
+				<label for="exam_code">Prófkóði</label>
 				<input type="text" name="exam_code" id="exam_code" class="form-control" />
 			</div>
 			<div class="row">
 				<div class="form-group form-group-lg col-xs-6">
-					<label for="student_name">Dagsetnings prófs</label>
+					<label for="exam_date">Dagsetnings prófs</label>
 					<input type="text" name="exam_date" id="exam_date" placeholder='YYYY-MM-DD' class="form-control"/>
 				</div>
 				<div class="form-group form-group-lg col-xs-6">
@@ -41,6 +42,46 @@
 				<input type="submit" value="Vista" class="btn btn-success btn-lg"/>
 			</div>	
 		</form>
+		<p class="help-block"><small>*</small>&nbsp;dálkar sem má notast við:</p>
+		<ul>
+			<li><i>ssn</i> - Kennitala (Nauðsynlegt)</li>
+			<li><i>he</i> - Hæfnieinkunn (A, B, C eða D)</li>
+			{% if type == 'STÆ' %}
+				<li><i>ra_se</i> - Reikningur og aðgerðir, samræmd einkunn</li>
+				<li><i>rm_se</i> - Rúmfræði, samræmd einkunn</li>
+				<li><i>tt_se</i> - Tölur og talnaskilningur, samræmd einkunn</li>
+				<li><i>hp_re</i> - Hlutföll og prósentur, raðeinkunn</li>
+				<li><i>al_re</i> - Algebra, raðeinkunn</li>
+				<li><i>ra_re</i> - Reikningur og aðgerðir, raðeinkunn</li>
+				<li><i>rm_re</i> - Rúmfræði, raðeinkunn</li>
+				<li><i>tt_re</i> - Tölur og talnaskilningur, raðeinkunn</li>
+				<li><i>re</i> - Raðeinkunn</li>
+				<li><i>ra_se</i> - Reikningur og aðgerðir, samræmd einkunn</li>
+	    		<li><i>rm_se</i> - Rúmfræði, samræmd einkunn</li>
+	    		<li><i>tt_se</i> - Tölur og talnaskilningur, samræmd einkunn</li>
+				<li><i>se</i> - Samræmd einkunn</li>
+				<li><i>ra_sg</i> - Reikningur og aðgerðir, grunnskólaeinkunn</li>
+			    <li><i>rm_sg</i> - Rúmfræði, grunnskólaeinkunn</li>
+			    <li><i>tt_sg</i> - Tölur og talnaskilningur, grunnskólaeinkunn</li>
+			    <li><i>sg</i> - Grunnskólaeinkunn
+			    <li><i>ord_talna_txt</i> - Orða- og talnadæmi</li>
+		    {% else %}
+			    <li><i>le_se</i> - Lesskilningur, samræmd einkunn</li>
+			    <li><i>mn_se</i> - Málnotkun, samræmd einkunn</li>
+			    <li><i>ri_se</i> - Ritun, samræmd einkunn</li>
+			    <li><i>se</i> - Samræmd einkunn</li>
+			    <li><i>le_re</i> - Lesskilningur, raðeinkunn</li>
+			    <li><i>mn_re</i> - Málnotkun, raðeinkunn</li>
+			    <li><i>ri_re</i> - Ritun, raðeinkunn</li>
+			    <li><i>re</i> - Raðeinkunn</li>
+			    <li><i>le_sg</i> - Lesskilningur, grunnskólaeinkunn</li>
+			    <li><i>mn_sg</i> - Málnotkun, grunnskólaeinkunn</li>
+			    <li><i>ri_sg</i> - Ritun, grunnskólaeinkunn</li>
+			    <li><i>sg</i> - Grunnskólaeinkunn</li>
+		    {% endif %}
+			    <li><i>fm_fl</i> - Framfaraflokkur</li>
+			    <li><i>fm_txt</i> - Framfaratexti</li>
+		</ul>
 	</div>
 </div>
 {% endblock %}
