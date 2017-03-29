@@ -1,49 +1,96 @@
 {% extends 'common/index.html'%}
 {% include staticfiles%}
 {% block content %}
-	{% if 'stæ' in request.path %}
-	<h3>Samræmd stærðfræðipróf</h3>
-	{% elif 'isl' in request.path %}
-	<h3>Samræmd íslenskupróf</h3>
-	{% elif 'ens' in request.path %}
-	<h3>Samræmd enskupróf</h3>
-	{% endif %}
+
 	<div class="row">
-		{% if 'stæ' in request.path %}
-			<a href="{% url 'samraemd:math_create'%}" class="btn btn-default">
-				<span class="glyphicon glyphicon-plus"></span>&nbsp;Bæta við niðurstöðum
-			</a>
-		{% elif 'isl' in request.path %}
-			<a href="{% url 'samraemd:isl_create'%}" class="btn btn-default">
-				<span class="glyphicon glyphicon-plus"></span>&nbsp;Bæta við niðurstöðum
-			</a>
-		{% elif 'ens' in request.path %}
-			<a href="{% url 'samraemd:ens_create'%}" class="btn btn-default">
-				<span class="glyphicon glyphicon-plus"></span>&nbsp;Bæta við niðurstöðum
-			</a>
-		{% endif %}	
+		<a href="{% url 'samraemd:result_create'%}" class="btn btn-default">
+			<span class="glyphicon glyphicon-plus"></span>&nbsp;Bæta við niðurstöðum
+		</a>
 	</div>
-	<div>
-		<div class="row">
-			<div class="col-md-4"><h4>Próf</h4></div>
-			<div class="col-md-2"><h4>Aðgerðir</h4></div>
-		</div>
-		{% for exam in exams %}
-		<div class="row">
-			{% if 'stæ' in request.path %}
-			<div class="col-md-4"><a href="{% url 'samraemd:math_admin_result_detail' exam.exam_date|date:'Y' exam.student_year %}">{{exam.exam_code}}</a></div>
-			<div class="col-md-2"><a href="{% url 'samraemd:math_delete' exam.exam_code %}"><span class="glyphicon glyphicon-trash"></span></a></div>
-			{% elif 'isl' in request.path %}
-			<div class="col-md-4"><a href="{% url 'samraemd:isl_admin_result_detail'  exam.exam_date|date:'Y' exam.student_year %}">{{exam.exam_code}}</a></div>
-			<div class="col-md-2"><a href="{% url 'samraemd:isl_delete' exam.exam_code %}"><span class="glyphicon glyphicon-trash"></span></a></div>
-			{% elif 'ens' in request.path %}
-			<div class="col-md-4"><a href="{% url 'samraemd:ens_admin_result_detail'  exam.exam_date|date:'Y' exam.student_year %}">{{exam.exam_code}}</a></div>
-			<div class="col-md-2"><a href="{% url 'samraemd:ens_delete' exam.exam_code %}"><span class="glyphicon glyphicon-trash"></span></a></div>
-			{% endif %}
-			
-		</div>
-		{% endfor %}
-	</div><!--
+	<div class="row">
+		<h2>Samræmd próf í stærðfræði</h2>
+		<table class="table table-hover table-striped">
+			<thead>
+				<tr>
+					<th class="col-md-10">Kóði</th>
+					<th class="col-md-2">Aðgerðir</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for exam in math_exams %}
+				<tr>
+					<td>
+						<a href="{% url 'samraemd:math_admin_result_detail' exam.exam_date|date:'Y' exam.student_year %}">
+							{{ exam.exam_code }}
+						</a>
+					</td>
+					<td>
+						<a href="{% url 'samraemd:math_delete' exam.exam_code %}">
+							<span class="glyphicon glyphicon-trash"></span>
+						</a>
+					</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+
+	<div class="row">
+		<h2>Samræmd próf í íslensku</h2>
+		<table class="table table-hover table-striped">
+			<thead>
+				<tr>
+					<th class="col-md-10">Kóði</th>
+					<th class="col-md-2">Aðgerðir</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for exam in isl_exams %}
+				<tr>
+					<td>
+						<a href="{% url 'samraemd:isl_admin_result_detail' exam.exam_date|date:'Y' exam.student_year %}">
+							{{ exam.exam_code }}
+						</a>
+					</td>
+					<td>
+						<a href="{% url 'samraemd:isl_delete' exam.exam_code %}">
+							<span class="glyphicon glyphicon-trash"></span>
+						</a>
+					</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+
+	<div class="row">
+		<h2>Samræmd próf í ensku</h2>
+		<table class="table table-hover table-striped">
+			<thead>
+				<tr>
+					<th class="col-md-10">Kóði</th>
+					<th class="col-md-2">Aðgerðir</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for exam in ens_exams %}
+				<tr>
+					<td>
+						<a href="{% url 'samraemd:ens_admin_result_detail' exam.exam_date|date:'Y' exam.student_year %}">
+							{{ exam.exam_code }}
+						</a>
+					</td>
+					<td>
+						<a href="{% url 'samraemd:ens_delete' exam.exam_code %}">
+							<span class="glyphicon glyphicon-trash"></span>
+						</a>
+					</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+	<!--
 	<h3>Hrágögn</h3>
 	<div class="row">
 		<a href="{% url 'samraemd:rawdatacreate'%}" class="btn btn-default">
