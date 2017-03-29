@@ -14,6 +14,7 @@
 				<th>Kennitala</th>
 				<th>Flýtikóði</th>
 				<th>Próf</th>
+				<th>Dags</th>
 				<th>Svar</th>
 				<th>Aðgerðir</th>
 			</tr>
@@ -27,9 +28,10 @@
 				{% if answer.groupsurvey %}
 					{{answer.groupsurvey.survey.identifier}}
 				{% else %}
-					SKP {{answer.date.year}}
+					{{ answer.exam_code }}
 				{% endif %}
 				</td>
+				<td>{{answer.date}}</td>
 				<td>
 				{% if answer.answer %}
 					<span class="glyphicon glyphicon-ok" style="color:green"></span>&nbsp;
