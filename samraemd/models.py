@@ -42,8 +42,14 @@ class _SamraemdStudentYear(models.Model):
 
 class SamraemdMathResult(_SamraemdBaseModel, _SamraemdStudentYear):
     # data fields
-    # Hæfnieinkunn (A, B, C, D)
-    he = models.CharField(max_length = 1)
+    # Hæfnieinkunn (A, B+, B, C+, C, D)
+    hp_he = models.CharField(max_length = 2) # Hlutföll og prósentur, hæfnieinkunn
+    al_he = models.CharField(max_length = 2) # Algebra, hæfnieinkunn
+    ra_he = models.CharField(max_length = 2) # Reikningur og aðgerðir, hæfnieinkunn
+    rm_he = models.CharField(max_length = 2) # Rúmfræði, hæfnieinkunn
+    tt_he = models.CharField(max_length = 2) # Tölur og talnaskilningur, hæfnieinkunn
+    he    = models.CharField(max_length = 2)
+
     # Samræmd einkunn (0-10)
     ra_se = models.CharField(max_length = 4) # Reikningur og aðgerðir, samræmd einkunn
     rm_se = models.CharField(max_length = 4) # Rúmfræði, samræmd einkunn
@@ -57,6 +63,8 @@ class SamraemdMathResult(_SamraemdBaseModel, _SamraemdStudentYear):
     tt_re = models.CharField(max_length = 4) # Tölur og talnaskilningur, raðeinkunn
     re    = models.CharField(max_length = 4) # Raðeinkunn
     # Grunnskólaeinkunn
+    hp_sg         = models.CharField(max_length = 4) # Hlutföll og prósentur, grunnskólaeinkunn
+    al_sg         = models.CharField(max_length = 4) # Algebra, grunnskólaeinkunn
     ra_sg         = models.CharField(max_length = 4) # Reikningur og aðgerðir, grunnskólaeinkunn
     rm_sg         = models.CharField(max_length = 4) # Rúmfræði, grunnskólaeinkunn
     tt_sg         = models.CharField(max_length = 4) # Tölur og talnaskilningur, grunnskólaeinkunn
@@ -72,7 +80,10 @@ class SamraemdMathResult(_SamraemdBaseModel, _SamraemdStudentYear):
 class _SamraemdLANGResult(_SamraemdBaseModel, _SamraemdStudentYear):
     # data fields
     # Hæfnieinkunn (A, B, C, D)
-    he = models.CharField(max_length = 1)
+    le_he = models.CharField(max_length = 2) # Lesskilningur, hæfnieinkunn
+    mn_he = models.CharField(max_length = 2) # Málnotkun, hæfnieinkunn
+    ri_he = models.CharField(max_length = 2) # Ritun, hæfnieinkunn
+    he = models.CharField(max_length = 2)    # Hæfnieinkunn
     # Samræmd einkunn (0-10)
     le_se = models.CharField(max_length = 4) # Lesskilningur, samræmd einkunn
     mn_se = models.CharField(max_length = 4) # Málnotkun, samræmd einkunn

@@ -199,6 +199,8 @@ class SamraemdResultDetail(cm_mixins.SchoolManagerMixin, DetailView):
 
     def get_template_names(self, **kwargs):
         if 'einkunnablod' in self.request.path:
+            if int(self.kwargs['year']) > 2016:
+                return ['samraemd/samraemd_detail_print_singles_2017.html']
             return ['samraemd/samraemd_detail_print_singles.html']
         return ['samraemd/samraemdresult_detail.html']
 
@@ -446,34 +448,12 @@ class SamraemdResultCreate(cm_mixins.SuperUserMixin, CreateView):
                     else:
                         results = s_models.SamraemdISLResult.objects.create(**newentry)
             # return HttpResponseRedirect(self.get_success_url())
-
-        return redirect(self.get_success_url())
+        redir = self.get_success_url()
+        print("Redirecting to {}".format(redir))
+        return HttpResponseRedirect(redir)
 
     def get_success_url(self):
-        if 'stæ' in self.request.path:
-            if 'school_id' in self.kwargs:
-                return reverse_lazy(
-                    'samraemd:math_listing',
-                    kwargs={'school_id': self.kwargs['school_id']}
-                )
-            else:
-                return reverse_lazy('samraemd:math_admin_listing')
-        elif 'ens' in self.request.path:
-            if 'school_id' in self.kwargs:
-                return reverse_lazy(
-                    'samraemd:ens_listing',
-                    kwargs={'school_id': self.kwargs['school_id']}
-                )
-            else:
-                return reverse_lazy('samraemd:ens_admin_listing')
-        elif 'ísl' in self.request.path:
-            if 'school_id' in self.kwargs:
-                return reverse_lazy(
-                    'samraemd:isl_listing',
-                    kwargs={'school_id': self.kwargs['school_id']}
-                )
-            else:
-                return reverse_lazy('samraemd:isl_admin_listing')
+        return reverse_lazy('samraemd:result_admin_listing')
 
     def get_context_data(self, **kwargs):
         # xxx will be available in the template as the related objects
