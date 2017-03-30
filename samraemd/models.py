@@ -43,12 +43,12 @@ class _SamraemdStudentYear(models.Model):
 class SamraemdMathResult(_SamraemdBaseModel, _SamraemdStudentYear):
     # data fields
     # Hæfnieinkunn (A, B+, B, C+, C, D)
-    hp_he = models.CharField(max_length = 2) # Hlutföll og prósentur, hæfnieinkunn
-    al_he = models.CharField(max_length = 2) # Algebra, hæfnieinkunn
-    ra_he = models.CharField(max_length = 2) # Reikningur og aðgerðir, hæfnieinkunn
-    rm_he = models.CharField(max_length = 2) # Rúmfræði, hæfnieinkunn
-    tt_he = models.CharField(max_length = 2) # Tölur og talnaskilningur, hæfnieinkunn
-    he    = models.CharField(max_length = 2)
+    hp_he = models.CharField(max_length = 2, default='', blank=True) # Hlutföll og prósentur, hæfnieinkunn
+    al_he = models.CharField(max_length = 2, default='', blank=True) # Algebra, hæfnieinkunn
+    ra_he = models.CharField(max_length = 2, default='', blank=True) # Reikningur og aðgerðir, hæfnieinkunn
+    rm_he = models.CharField(max_length = 2, default='', blank=True) # Rúmfræði, hæfnieinkunn
+    tt_he = models.CharField(max_length = 2, default='', blank=True) # Tölur og talnaskilningur, hæfnieinkunn
+    he    = models.CharField(max_length = 2, default='', blank=True)
 
     # Samræmd einkunn (0-10)
     ra_se = models.CharField(max_length = 4) # Reikningur og aðgerðir, samræmd einkunn
@@ -63,12 +63,12 @@ class SamraemdMathResult(_SamraemdBaseModel, _SamraemdStudentYear):
     tt_re = models.CharField(max_length = 4) # Tölur og talnaskilningur, raðeinkunn
     re    = models.CharField(max_length = 4) # Raðeinkunn
     # Grunnskólaeinkunn
-    hp_sg         = models.CharField(max_length = 4) # Hlutföll og prósentur, grunnskólaeinkunn
-    al_sg         = models.CharField(max_length = 4) # Algebra, grunnskólaeinkunn
-    ra_sg         = models.CharField(max_length = 4) # Reikningur og aðgerðir, grunnskólaeinkunn
-    rm_sg         = models.CharField(max_length = 4) # Rúmfræði, grunnskólaeinkunn
-    tt_sg         = models.CharField(max_length = 4) # Tölur og talnaskilningur, grunnskólaeinkunn
-    sg            = models.CharField(max_length = 4) # Grunnskólaeinkunn
+    hp_sg         = models.CharField(max_length = 4, default='', blank=True) # Hlutföll og prósentur, grunnskólaeinkunn
+    al_sg         = models.CharField(max_length = 4, default='', blank=True) # Algebra, grunnskólaeinkunn
+    ra_sg         = models.CharField(max_length = 4, default='', blank=True) # Reikningur og aðgerðir, grunnskólaeinkunn
+    rm_sg         = models.CharField(max_length = 4, default='', blank=True) # Rúmfræði, grunnskólaeinkunn
+    tt_sg         = models.CharField(max_length = 4, default='', blank=True) # Tölur og talnaskilningur, grunnskólaeinkunn
+    sg            = models.CharField(max_length = 4, default='', blank=True) # Grunnskólaeinkunn
     ord_talna_txt = models.CharField(max_length = 128)
     # Framfaraeinkunn
     fm_fl  = models.CharField(max_length = 32, blank=True)
@@ -80,25 +80,25 @@ class SamraemdMathResult(_SamraemdBaseModel, _SamraemdStudentYear):
 class _SamraemdLANGResult(_SamraemdBaseModel, _SamraemdStudentYear):
     # data fields
     # Hæfnieinkunn (A, B, C, D)
-    le_he = models.CharField(max_length = 2) # Lesskilningur, hæfnieinkunn
-    mn_he = models.CharField(max_length = 2) # Málnotkun, hæfnieinkunn
-    ri_he = models.CharField(max_length = 2) # Ritun, hæfnieinkunn
-    he = models.CharField(max_length = 2)    # Hæfnieinkunn
+    le_he = models.CharField(max_length = 2, default='', blank=True) # Lesskilningur, hæfnieinkunn
+    mn_he = models.CharField(max_length = 2, default='', blank=True) # Málnotkun, hæfnieinkunn
+    ri_he = models.CharField(max_length = 2, default='', blank=True) # Ritun, hæfnieinkunn
+    he = models.CharField(max_length = 2, default='', blank=True)    # Hæfnieinkunn
     # Samræmd einkunn (0-10)
-    le_se = models.CharField(max_length = 4) # Lesskilningur, samræmd einkunn
-    mn_se = models.CharField(max_length = 4) # Málnotkun, samræmd einkunn
-    ri_se = models.CharField(max_length = 4) # Ritun, samræmd einkunn
-    se    = models.CharField(max_length = 4) # Samræmd einkunn
+    le_se = models.CharField(max_length = 4, default='', blank=True) # Lesskilningur, samræmd einkunn
+    mn_se = models.CharField(max_length = 4, default='', blank=True) # Málnotkun, samræmd einkunn
+    ri_se = models.CharField(max_length = 4, default='', blank=True) # Ritun, samræmd einkunn
+    se    = models.CharField(max_length = 4, default='', blank=True) # Samræmd einkunn
     # Raðeinkunn (1-100)
-    le_re = models.CharField(max_length = 4) # Lesskilningur, raðeinkunn
-    mn_re = models.CharField(max_length = 4) # Málnotkun, raðeinkunn
-    ri_re = models.CharField(max_length = 4) # Ritun, raðeinkunn
-    re    = models.CharField(max_length = 4) # Raðeinkunn
+    le_re = models.CharField(max_length = 4, default='', blank=True) # Lesskilningur, raðeinkunn
+    mn_re = models.CharField(max_length = 4, default='', blank=True) # Málnotkun, raðeinkunn
+    ri_re = models.CharField(max_length = 4, default='', blank=True) # Ritun, raðeinkunn
+    re    = models.CharField(max_length = 4, default='', blank=True) # Raðeinkunn
     # Grunnskólaeinkunn
-    le_sg = models.CharField(max_length = 4) # Lesskilningur, grunnskólaeinkunn
-    mn_sg = models.CharField(max_length = 4) # Málnotkun, grunnskólaeinkunn
-    ri_sg = models.CharField(max_length = 4) # Ritun, grunnskólaeinkunn
-    sg    = models.CharField(max_length = 4) # Grunnskólaeinkunn
+    le_sg = models.CharField(max_length = 4, default='', blank=True) # Lesskilningur, grunnskólaeinkunn
+    mn_sg = models.CharField(max_length = 4, default='', blank=True) # Málnotkun, grunnskólaeinkunn
+    ri_sg = models.CharField(max_length = 4, default='', blank=True) # Ritun, grunnskólaeinkunn
+    sg    = models.CharField(max_length = 4, default='', blank=True) # Grunnskólaeinkunn
     # Framfaraeinkunn
     fm_fl  = models.CharField(max_length = 32, blank=True)
     fm_txt = models.CharField(max_length = 256, blank=True)
