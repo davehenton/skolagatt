@@ -51,7 +51,8 @@
 			      </div>
 			      <div class="modal-body">
 			        {% for result in results %}
-						{% if 'isl' in request.path %}
+						{% if result.result_type == 'ÍSL' %}
+						<h4>Íslenska</h4>
 						<div class="table-responsive">
 							<table class="table table-striped table-bordered table-hover table-responsive">
 								<thead class="thead-default">
@@ -98,7 +99,8 @@
 								</tbody>
 							</table>
 						</div>
-						{% elif 'ens' in request.path %}
+						{% elif result.result_type == 'ENS' %}
+						<h4>Enska</h4>
 						<div class="table-responsive">
 							<table class="table table-striped table-bordered table-hover table-responsive">
 								<thead class="thead-default">
@@ -145,7 +147,8 @@
 								</tbody>
 							</table>
 						</div>
-						{% elif 'stæ' in request.path %}
+						{% elif result.result_type == 'STÆ' %}
+						<h4>Stærðfræði</h4>
 						<div class="table-responsive">
 							<table class="table table-striped table-bordered table-hover table-responsive">
 								<thead class="thead-default">
