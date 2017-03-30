@@ -403,13 +403,14 @@ class SamraemdResultCreate(cm_mixins.SuperUserMixin, CreateView):
 
                         data.append(results_dict)
 
+            self.request.session['newdata'] = data
             return render(self.request, 'excel_verify_import.html', {
                 'data': data,
                 'errors': errors,
                 'cancel_url': reverse_lazy('samraemd:result_admin_listing'),
             })
         else:
-            newdata = json.loads(self.request.POST['newdata'])
+            newdata = self.request.session['newdata']
             # Iterate through the data
             for newentry in newdata:
                 print("looking up {}".format(newentry['ssn']))

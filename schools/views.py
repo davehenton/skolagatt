@@ -182,14 +182,14 @@ class SchoolCreateImport(common_mixins.SchoolManagerMixin, CreateView):
                         })
                         if rowerrors:
                             errors += rowerrors
-
+            self.request.session['newdata'] = data
             return render(self.request, 'excel_verify_import.html', {
                 'data': data,
                 'errors': errors,
                 'cancel_url': reverse_lazy('schools:school_listing'),
             })
         else:
-            school_data = json.loads(self.request.POST['newdata'])
+            school_data = self.request.session['newdata']
             # iterate through students, add them if they don't exist then add to school
             for school in school_data:
                 try:
@@ -365,14 +365,14 @@ class ManagerCreateImport(common_mixins.SchoolManagerMixin, CreateView):
                         })
                         if rowerrors:
                             errors += rowerrors
-
+            self.request.session['newdata'] = data
             return render(self.request, 'excel_verify_import.html', {
                 'data': data,
                 'errors': errors,
                 'cancel_url': reverse_lazy('schools:school_listing')
             })
         else:
-            manager_data = json.loads(self.request.POST['newdata'])
+            manager_data = self.request.session['newdata']
             # iterate through managers, add them if they don't exist then add to school
             for manager in manager_data:
                 try:
@@ -595,6 +595,7 @@ class TeacherCreateImport(common_mixins.SchoolManagerMixin, CreateView):
                         if rowerrors:
                             errors += rowerrors
 
+            self.request.session['newdata'] = data
             return render(
                 self.request,
                 'excel_verify_import.html',
@@ -605,7 +606,7 @@ class TeacherCreateImport(common_mixins.SchoolManagerMixin, CreateView):
                 }
             )
         else:
-            teacher_data = json.loads(self.request.POST['newdata'])
+            teacher_data = self.request.session['newdata']
             # iterate through teachers, add them if they don't exist then add to school
             for teacher in teacher_data:
                 try:
@@ -776,6 +777,7 @@ class StudentCreateImport(common_mixins.SchoolManagerMixin, CreateView):
                         })
                         if rowerrors:
                             errors += rowerrors
+            self.request.session['newdata'] = data
             return render(
                 self.request,
                 'excel_verify_import.html',
@@ -786,7 +788,7 @@ class StudentCreateImport(common_mixins.SchoolManagerMixin, CreateView):
                 }
             )
         else:
-            student_data = json.loads(self.request.POST['newdata'])
+            student_data = self.request.session['newdata']
             school       = School.objects.get(pk=self.kwargs['school_id'])
             # iterate through students, add them if they don't exist then add to school
             for data in student_data:
@@ -1583,6 +1585,7 @@ class SurveyLoginCreate(common_mixins.SuperUserMixin, CreateView):
                             data.append(rowdata)
                             if rowerrors:
                                 errors += rowerrors
+                self.request.session['newdata'] = data
                 return render(self.request, 'excel_verify_import.html', {
                     'data': data,
                     'errors': errors,
@@ -1596,7 +1599,7 @@ class SurveyLoginCreate(common_mixins.SuperUserMixin, CreateView):
                 )
 
         else:
-            student_data = json.loads(self.request.POST['newdata'])
+            student_data = self.request.session['newdata']
             # Iterate through the data
             # Add students if they don't exist then create a survey_login object
             for data in student_data:
@@ -1974,7 +1977,7 @@ class ExampleSurveyAnswerAdminImport(common_mixins.SuperUserMixin, CreateView):
                                     'text': 'Prófdæmi {} er ekki til'.format(quickcode_str),
                                     'row': row,
                                 })
-                                
+
                             if answer_str not in ['1', '0']:
                                 rowerrors.append({
                                     'text': 'Get ekki notað svar {}'.format(answer_str),
@@ -1991,6 +1994,7 @@ class ExampleSurveyAnswerAdminImport(common_mixins.SuperUserMixin, CreateView):
                             })
                             if rowerrors:
                                 errors += rowerrors
+                self.request.session['newdata'] = data
                 return render(self.request, 'excel_verify_import.html', {
                     'data': data,
                     'errors': errors,
@@ -2003,12 +2007,21 @@ class ExampleSurveyAnswerAdminImport(common_mixins.SuperUserMixin, CreateView):
                     {'error': 'Villa í skjali: "' + str(e) + ', lína: ' + str(row + 1)}
                 )
         else:
-            newdata = json.loads(self.request.POST['newdata'])
+            newdata = self.request.session['newdata']
+            print("Importing...")
             # Iterate through the data
+            student_cache = {}
+            quickcode_cache = {}
             for newentry in newdata:
+                ssn = newentry['ssn']
+                quickcode = newentry['quickcode']
                 try:
-                    student = Student.objects.get(ssn=newentry['ssn'])  # student already exists
-                    question = ExampleSurveyQuestion.objects.get(quickcode = newentry['quickcode'])
+                    if not ssn in student_cache.keys():
+                        student_cache[ssn] = Student.objects.get(ssn=newentry['ssn'])  # student already exists
+                    student = student_cache[ssn]
+                    if not quickcode in quickcode_cache.keys():
+                        quickcode_cache[quickcode] = ExampleSurveyQuestion.objects.get(quickcode = newentry['quickcode'])
+                    question = quickcode_cache[quickcode]
                 except:
                     continue
 
@@ -2047,7 +2060,7 @@ class ExampleSurveyAnswerAdminImport(common_mixins.SuperUserMixin, CreateView):
         return redirect(self.get_success_url())
 
     def get_success_url(self):
-        return reverse_lazy('schools:example_survey_question_admin_listing')
+        return reverse_lazy('schools:example_survey_answer_admin_listing')
 
 
 
