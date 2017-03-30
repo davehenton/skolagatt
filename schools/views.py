@@ -2026,22 +2026,32 @@ class ExampleSurveyAnswerAdminImport(common_mixins.SuperUserMixin, CreateView):
                     continue
 
                 exam_code = None
-                if newentry['survey_identifier']:
-                    survey = Survey.objects.filter(identifier = newentry['survey_identifier']).first()
-                    if survey:
-                        groupsurvey = GroupSurvey.objects.filter(survey = survey, studentgroup = studentgroup).first()
-                    else:
+                groupsurvey = None
+                survey_cache = {}
+                survey_identifier = newentry['survey_identifier']
+
+                if survey_identifier:
+                    if not survey_identifier in survey_cache.keys():
+                        survey = Survey.objects.filter(identifier = survey_identifier).first()
+                        if survey:
+                            groupsurvey = GroupSurvey.objects.filter(survey = survey, studentgroup = studentgroup).first()
+                            survey_cache[survey_identifier] = groupsurvey
+                        else:
+                            survey_cache[survey_identifier] = False
+
+                    if not survey_cache[survey_identifier]:
                         exam_code = newentry['survey_identifier']
+                    else:
+                        groupsurvey = survey_cache[survey_identifier]
 
                 answer = ExampleSurveyAnswer.objects.filter(
                     student = student,
                     question = question,
                     date = newentry['exam_date'],
                 )
-                studentgroup = StudentGroup.objects.filter(students=student).first()
-                groupsurvey = None
 
                 boolanswer = True if newentry['answer'] == '1' else False
+
                 if answer:
                     answer.update(
                         groupsurvey = groupsurvey,
