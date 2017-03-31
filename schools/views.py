@@ -1704,25 +1704,30 @@ class ExampleSurveyListing(common_mixins.SchoolEmployeeMixin, ListView):
 
         samraemd = []
         for date in dates:
-            students_list = []
-            students = Student.objects.filter(
+            # Get all studentgroups for this school where a student in the studentgroup has results in ExampleSurveyAnswer
+            studentgroups = Student.objects.filter(
                 pk__in = ExampleSurveyAnswer.objects.filter(
                     student__in = Student.objects.filter(school=school),
                     date = date,
                     groupsurvey__isnull = True,
                 ).values_list('student', flat=True).distinct()
-            ).all()
-            # import pdb; pdb.set_trace()
-            for student in students:
-                quiz_type_list = ExampleSurveyQuestion.objects.filter(
-                    pk__in = ExampleSurveyAnswer.objects.filter(
-                        student=student,
-                        date = date,
-                        groupsurvey__isnull = True,
-                    ).values_list('question_id')
-                ).values_list('quiz_type', flat=True).distinct()
-                students_list.append((student, quiz_type_list))
-            samraemd.append((date, students_list))
+            ).values_list('studentgroup', flat=True).distinct()
+            studentgroups_list = []
+            for studentgroup in studentgroup:
+                students_list = []
+                students = Student.objects.filter(studentgroup = studentgroup)
+
+                for student in students:
+                    quiz_type_list = ExampleSurveyQuestion.objects.filter(
+                        pk__in = ExampleSurveyAnswer.objects.filter(
+                            student=student,
+                            date = date,
+                            groupsurvey__isnull = True,
+                        ).values_list('question_id')
+                    ).values_list('quiz_type', flat=True).distinct()
+                    students_list.append((student, quiz_type_list))
+                studentgroups_list.append((studentgroup, students_list))
+            samraemd.append((date, studentgroups_list))
 
         print(samraemd)
         surveys = []
@@ -1817,13 +1822,9 @@ class ExampleSurveySamraemdDetail(common_mixins.SchoolManagerMixin, ListView):
             random.shuffle(answers)
             student_answers.append((student, answers))
         else:
-            students = Student.objects.filter(
-                pk__in = ExampleSurveyAnswer.objects.filter(
-                    student__in = Student.objects.filter(school=school),
-                    date__year = year,
-                    groupsurvey__isnull = True,
-                ).values_list('student', flat=True).distinct()
-            ).all()
+            studentgroup = StudentGroup.objects.get(pk = self.kwargs['studentgroup_id'])
+            students = studentgroup.students
+
             for student in students:
                 answers = self._get_student_answers_list(student, quiz_type, year)
                 random.shuffle(answers)
