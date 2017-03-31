@@ -43,6 +43,7 @@ from supportandexception.models import (
     SupportResource)
 
 import supportandexception.models as sae_models
+from schools.tasks import save_example_survey_answers
 
 
 def lesferill(request):
@@ -1996,7 +1997,7 @@ class ExampleSurveyAnswerAdminImport(common_mixins.SuperUserMixin, CreateView):
                                 errors += rowerrors
                 self.request.session['newdata'] = data
                 return render(self.request, 'excel_verify_import.html', {
-                    'data': data,
+                    'data': [],
                     'errors': errors,
                     'cancel_url': reverse_lazy('schools:example_survey_answer_admin_listing')
                 })
@@ -2009,64 +2010,8 @@ class ExampleSurveyAnswerAdminImport(common_mixins.SuperUserMixin, CreateView):
         else:
             newdata = self.request.session['newdata']
             print("Importing...")
-            # Iterate through the data
-            student_cache = {}
-            quickcode_cache = {}
-            for newentry in newdata:
-                ssn = newentry['ssn']
-                quickcode = newentry['quickcode']
-                try:
-                    if not ssn in student_cache.keys():
-                        student_cache[ssn] = Student.objects.get(ssn=newentry['ssn'])  # student already exists
-                    student = student_cache[ssn]
-                    if not quickcode in quickcode_cache.keys():
-                        quickcode_cache[quickcode] = ExampleSurveyQuestion.objects.get(quickcode = newentry['quickcode'])
-                    question = quickcode_cache[quickcode]
-                except:
-                    continue
-
-                exam_code = None
-                groupsurvey = None
-                survey_cache = {}
-                survey_identifier = newentry['survey_identifier']
-
-                if survey_identifier:
-                    if not survey_identifier in survey_cache.keys():
-                        survey = Survey.objects.filter(identifier = survey_identifier).first()
-                        if survey:
-                            groupsurvey = GroupSurvey.objects.filter(survey = survey, studentgroup = studentgroup).first()
-                            survey_cache[survey_identifier] = groupsurvey
-                        else:
-                            survey_cache[survey_identifier] = False
-
-                    if not survey_cache[survey_identifier]:
-                        exam_code = newentry['survey_identifier']
-                    else:
-                        groupsurvey = survey_cache[survey_identifier]
-
-                answer = ExampleSurveyAnswer.objects.filter(
-                    student = student,
-                    question = question,
-                    date = newentry['exam_date'],
-                )
-
-                boolanswer = True if newentry['answer'] == '1' else False
-
-                if answer:
-                    answer.update(
-                        groupsurvey = groupsurvey,
-                        exam_code = exam_code,
-                        answer = boolanswer,
-                    )
-                else:
-                    answer = ExampleSurveyAnswer.objects.create(
-                        student = student,
-                        question = question,
-                        groupsurvey = groupsurvey,
-                        exam_code = exam_code,
-                        date = newentry['exam_date'],
-                        answer = boolanswer,
-                    )
+            # XXX: ADD THE TASK HERE
+            save_example_survey_answers.delay(newdata)
         return redirect(self.get_success_url())
 
     def get_success_url(self):
