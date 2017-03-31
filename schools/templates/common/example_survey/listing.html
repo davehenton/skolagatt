@@ -7,7 +7,7 @@
 	{% for date, studentgroups_list in samraemd %}
 	<div class="row">
 		<h3>{{ date.year }}</h3>
-		{% for studentgroup, students in studentgroups_list %}
+		{% for studentgroup, student_list in studentgroups_list %}
 			<div class="row"><h4>{{ studentgroup.name }}</h4></div>
 			<table class="table">
 				<tbody>
