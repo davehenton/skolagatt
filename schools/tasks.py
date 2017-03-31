@@ -62,14 +62,14 @@ def save_example_survey_answers(newdata):
         boolanswer = True if newentry['answer'] == '1' else False
 
         if answer:
-        	updated += 1
+            updated += 1
             answer.update(
                 groupsurvey = groupsurvey,
                 exam_code = exam_code,
                 answer = boolanswer,
             )
         else:
-        	added += 1
+            added += 1
             answer = ExampleSurveyAnswer.objects.create(
                 student = student,
                 question = question,
