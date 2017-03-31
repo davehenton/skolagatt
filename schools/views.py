@@ -1713,7 +1713,7 @@ class ExampleSurveyListing(common_mixins.SchoolEmployeeMixin, ListView):
                 ).values_list('student', flat=True).distinct()
             ).values_list('studentgroup', flat=True).distinct()
             studentgroups_list = []
-            for studentgroup in studentgroup:
+            for studentgroup in studentgroups:
                 students_list = []
                 students = Student.objects.filter(studentgroup = studentgroup)
 
