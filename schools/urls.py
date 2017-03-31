@@ -187,7 +187,7 @@ urlpatterns = [
     url(r'^(?P<school_id>\d+)/hrágögn/samraemd/(?P<year>\d+)/nemandi/(?P<student_id>\d+)/(?P<quiz_type>[\w ]+)/print/$',
         views.ExampleSurveySamraemdDetail.as_view(),
         name='example_survey_samraemd_detail_print'),
-    url(r'^(?P<school_id>\d+)/hrágögn/samraemd/(?P<year>\d+)/(?P<quiz_type>[\w ]+)/print/$',
+    url(r'^(?P<school_id>\d+)/hrágögn/samraemd/(?P<year>\d+)/(?P<studentgroup_id>\d+)/(?P<quiz_type>[\w ]+)/print/$',
         views.ExampleSurveySamraemdDetail.as_view(),
         name='example_survey_samraemd_multi_print'),
 

@@ -4,53 +4,56 @@
 
 {% if samraemd %}
 	<h3>Hrágögn úr samræmdum prófum</h3>
-	{% for date, student_list in samraemd %}
-	<div>
-		<h4>{{ date.year }}</h4>
-		<table class="table">
-			<tbody>
-				<tr>
-					<td>Prenthæf hrágagnablöð</td>
-					{% for cat in samraemd_cats %}
-					<td><a href="{% url 'schools:example_survey_samraemd_multi_print' school.id date.year cat %}" class="btn btn-default">
+	{% for date, studentgroups_list in samraemd %}
+	<div class="row">
+		<h3>{{ date.year }}</h3>
+		{% for studentgroup, student_list in studentgroups_list %}
+			<div class="row"><h4>{{ studentgroup.name }}</h4></div>
+			<table class="table">
+				<tbody>
+					<tr>
+						<td>Prenthæf hrágagnablöð</td>
+						{% for cat in samraemd_cats %}
+						<td><a href="{% url 'schools:example_survey_samraemd_multi_print' school.id date.year studentgroup.id cat %}" class="btn btn-default">
                			<span class="glyphicon glyphicon-print">
                			</span>&nbsp;{% if cat == 'STÆ' %}Stærðfræði{% elif cat == 'ÍSL' %}Íslensku{% elif cat == 'ENS' %}Ensku{% else %}{{ cat }}{% endif %}hluti</a>
-               		</td>
-					{% endfor %}
-				</tr>
-			</tbody>
-		</table>
-
-		<table class="table table-hover table-striped">
-			<thead>
-				<tr>
-					<th>Kennitala</th>
-					<th>Nafn</th>
-					{% for cat in samraemd_cats %}
-						<th>{{ cat }}</th>
-					{% endfor %}
-				</tr>
-			</thead>
-			<tbody>
-				{% for student, quiz_types in student_list %}
-				<tr>
-					<td>{{ student.ssn }}</td>
-					<td>{{ student.name }}</td>
-					{% for cat in samraemd_cats %}
-						<td>
-						{% if cat in quiz_types %}
-							<a href="{% url 'schools:example_survey_samraemd_detail' school.id date.year student.id cat %}">
-								<span class="glyphicon glyphicon-eye-open"></span>&nbsp;
-							</a>
-						{% else %}
-							<span class="glyphicon glyphicon-remove" style="color:red"></span>&nbsp;
-						{% endif %}
 						</td>
+						{% endfor %}
+					</tr>
+				</tbody>
+			</table>
+			<table class="table table-hover table-striped">
+				<thead>
+					<tr>
+						<th class="col-md-3">Kennitala</th>
+						<th class="col-md-6">Nafn</th>
+						{% for cat in samraemd_cats %}
+							<th class="col-md-1">{{ cat }}</th>
+						{% endfor %}
+					</tr>
+				</thead>
+				<tbody>
+					{% for student, quiz_types in student_list %}
+					<tr>
+						<td>{{ student.ssn }}</td>
+						<td>{{ student.name }}</td>
+						{% for cat in samraemd_cats %}
+							<td>
+							{% if cat in quiz_types %}
+								<a href="{% url 'schools:example_survey_samraemd_detail' school.id date.year student.id cat %}">
+									<span class="glyphicon glyphicon-eye-open"></span>&nbsp;
+								</a>
+							{% else %}
+								<span class="glyphicon glyphicon-remove" style="color:red"></span>&nbsp;
+							{% endif %}
+							</td>
+						{% endfor %}
+					</tr>
 					{% endfor %}
-				</tr>
-				{% endfor %}
-			</tbody>
-		</table>
+				</tbody>
+			</table>
+		{% endfor %}
+
 	</div>
 	{% endfor %}
 {% endif %}

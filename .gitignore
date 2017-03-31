@@ -24,3 +24,5 @@ pip-selfcheck.json
 *.json
 /backup
 uploads/
+celerybeat-schedule
+celerybeat.pid

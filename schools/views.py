@@ -8,6 +8,7 @@ from django.contrib.auth.models   import User
 from django.utils                 import timezone
 from django.utils.decorators      import method_decorator
 from django.views.decorators.csrf import csrf_exempt
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from uuid      import uuid4
 from datetime  import datetime, date
@@ -43,6 +44,7 @@ from supportandexception.models import (
     SupportResource)
 
 import supportandexception.models as sae_models
+from schools.tasks import save_example_survey_answers
 
 
 def lesferill(request):
@@ -1702,25 +1704,32 @@ class ExampleSurveyListing(common_mixins.SchoolEmployeeMixin, ListView):
 
         samraemd = []
         for date in dates:
-            students_list = []
-            students = Student.objects.filter(
+            # Get all studentgroups for this school where a student in the studentgroup has results in ExampleSurveyAnswer
+            studentgroup_ids = Student.objects.filter(
                 pk__in = ExampleSurveyAnswer.objects.filter(
                     student__in = Student.objects.filter(school=school),
                     date = date,
                     groupsurvey__isnull = True,
                 ).values_list('student', flat=True).distinct()
-            ).all()
-            # import pdb; pdb.set_trace()
-            for student in students:
-                quiz_type_list = ExampleSurveyQuestion.objects.filter(
-                    pk__in = ExampleSurveyAnswer.objects.filter(
-                        student=student,
-                        date = date,
-                        groupsurvey__isnull = True,
-                    ).values_list('question_id')
-                ).values_list('quiz_type', flat=True).distinct()
-                students_list.append((student, quiz_type_list))
-            samraemd.append((date, students_list))
+            ).values_list('studentgroup', flat=True).distinct()
+            studentgroup_ids = list(set(studentgroup_ids))
+            studentgroups_list = []
+            for studentgroup_id in studentgroup_ids:
+                studentgroup = StudentGroup.objects.get(pk = studentgroup_id)
+                students_list = []
+                students = Student.objects.filter(studentgroup = studentgroup)
+
+                for student in students:
+                    quiz_type_list = ExampleSurveyQuestion.objects.filter(
+                        pk__in = ExampleSurveyAnswer.objects.filter(
+                            student=student,
+                            date = date,
+                            groupsurvey__isnull = True,
+                        ).values_list('question_id')
+                    ).values_list('quiz_type', flat=True).distinct()
+                    students_list.append((student, quiz_type_list))
+                studentgroups_list.append((studentgroup, students_list))
+            samraemd.append((date, studentgroups_list))
 
         print(samraemd)
         surveys = []
@@ -1815,15 +1824,13 @@ class ExampleSurveySamraemdDetail(common_mixins.SchoolManagerMixin, ListView):
             random.shuffle(answers)
             student_answers.append((student, answers))
         else:
-            students = Student.objects.filter(
-                pk__in = ExampleSurveyAnswer.objects.filter(
-                    student__in = Student.objects.filter(school=school),
-                    date__year = year,
-                    groupsurvey__isnull = True,
-                ).values_list('student', flat=True).distinct()
-            ).all()
+            studentgroup = StudentGroup.objects.get(pk = self.kwargs['studentgroup_id'])
+            students = Student.objects.filter(studentgroup = studentgroup).all()
+
             for student in students:
                 answers = self._get_student_answers_list(student, quiz_type, year)
+                if not answers:
+                    continue
                 random.shuffle(answers)
                 student_answers.append((student, answers))
         
@@ -1907,7 +1914,16 @@ class ExampleSurveyAnswerAdminListing(common_mixins.SuperUserMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super(ExampleSurveyAnswerAdminListing, self).get_context_data(**kwargs)
 
-        context['answers'] = ExampleSurveyAnswer.objects.all()
+        answers = ExampleSurveyAnswer.objects.all()
+        paginator = Paginator(answers, 25)
+        page = self.request.GET.get('page')
+        try:
+            answers = paginator.page(page)
+        except PageNotAnInteger:
+            answers = paginator.page(1)
+        except EmptyPage:
+            answers = paginator.page(paginator.num_pages)
+        context['answers'] = answers
         return context
 
 
@@ -1996,7 +2012,7 @@ class ExampleSurveyAnswerAdminImport(common_mixins.SuperUserMixin, CreateView):
                                 errors += rowerrors
                 self.request.session['newdata'] = data
                 return render(self.request, 'excel_verify_import.html', {
-                    'data': data,
+                    'data': [],
                     'errors': errors,
                     'cancel_url': reverse_lazy('schools:example_survey_answer_admin_listing')
                 })
@@ -2009,64 +2025,8 @@ class ExampleSurveyAnswerAdminImport(common_mixins.SuperUserMixin, CreateView):
         else:
             newdata = self.request.session['newdata']
             print("Importing...")
-            # Iterate through the data
-            student_cache = {}
-            quickcode_cache = {}
-            for newentry in newdata:
-                ssn = newentry['ssn']
-                quickcode = newentry['quickcode']
-                try:
-                    if not ssn in student_cache.keys():
-                        student_cache[ssn] = Student.objects.get(ssn=newentry['ssn'])  # student already exists
-                    student = student_cache[ssn]
-                    if not quickcode in quickcode_cache.keys():
-                        quickcode_cache[quickcode] = ExampleSurveyQuestion.objects.get(quickcode = newentry['quickcode'])
-                    question = quickcode_cache[quickcode]
-                except:
-                    continue
-
-                exam_code = None
-                groupsurvey = None
-                survey_cache = {}
-                survey_identifier = newentry['survey_identifier']
-
-                if survey_identifier:
-                    if not survey_identifier in survey_cache.keys():
-                        survey = Survey.objects.filter(identifier = survey_identifier).first()
-                        if survey:
-                            groupsurvey = GroupSurvey.objects.filter(survey = survey, studentgroup = studentgroup).first()
-                            survey_cache[survey_identifier] = groupsurvey
-                        else:
-                            survey_cache[survey_identifier] = False
-
-                    if not survey_cache[survey_identifier]:
-                        exam_code = newentry['survey_identifier']
-                    else:
-                        groupsurvey = survey_cache[survey_identifier]
-
-                answer = ExampleSurveyAnswer.objects.filter(
-                    student = student,
-                    question = question,
-                    date = newentry['exam_date'],
-                )
-
-                boolanswer = True if newentry['answer'] == '1' else False
-
-                if answer:
-                    answer.update(
-                        groupsurvey = groupsurvey,
-                        exam_code = exam_code,
-                        answer = boolanswer,
-                    )
-                else:
-                    answer = ExampleSurveyAnswer.objects.create(
-                        student = student,
-                        question = question,
-                        groupsurvey = groupsurvey,
-                        exam_code = exam_code,
-                        date = newentry['exam_date'],
-                        answer = boolanswer,
-                    )
+            # XXX: ADD THE TASK HERE
+            save_example_survey_answers.delay(newdata)
         return redirect(self.get_success_url())
 
     def get_success_url(self):

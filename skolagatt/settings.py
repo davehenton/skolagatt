@@ -136,3 +136,12 @@ ICEKEY_VERIFICATION = 'https://innskraning.mms.is/verify_login/'
 ICEKEY_LOGIN = 'https://innskraning.mms.is/island_innskraning'
 
 FROALA_UPLOAD_PATH = 'uploads/froala_editor/images/'
+
+# Celery settings
+
+CELERY_BROKER_URL = 'amqp://guest:guest@localhost//'
+
+#: Only add pickle to this list if your broker is secured
+#: from unwanted access (see userguide/security.html)
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
