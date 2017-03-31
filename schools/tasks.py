@@ -5,7 +5,10 @@ from common.models import (
 	Student,
 	ExampleSurveyAnswer,
 	ExampleSurveyQuestion,
+	GroupSurvey,
 )
+
+from survey.models import Survey
 
 logger = get_task_logger(__name__)
 
