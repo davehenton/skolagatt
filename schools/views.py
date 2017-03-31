@@ -8,6 +8,7 @@ from django.contrib.auth.models   import User
 from django.utils                 import timezone
 from django.utils.decorators      import method_decorator
 from django.views.decorators.csrf import csrf_exempt
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from uuid      import uuid4
 from datetime  import datetime, date
@@ -1908,7 +1909,16 @@ class ExampleSurveyAnswerAdminListing(common_mixins.SuperUserMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super(ExampleSurveyAnswerAdminListing, self).get_context_data(**kwargs)
 
-        context['answers'] = ExampleSurveyAnswer.objects.all()
+        answers = ExampleSurveyAnswer.objects.all()
+        paginator = Paginator(answers, 25)
+        page = request.GET.get('page')
+        try:
+            answers = paginator.page(page)
+        except PageNotAnInteger:
+            answers = paginator.page(1)
+        except EmptyPage:
+            answers = paginator.page(paginator.num_pages)
+        context['answers'] = answers
         return context
 
 
