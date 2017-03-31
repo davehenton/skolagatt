@@ -54,7 +54,7 @@
 	<div class="pagination">
     <span class="step-links">
         {% if answers.has_previous %}
-            <a href="?page={{ answers.previous_page_number }}">previous</a>
+            <a href="?page={{ answers.previous_page_number }}"><span class="glyphicon glyphicon-chevron-left"></span>&nbsp;previous</a>
         {% endif %}
 
         <span class="current">
@@ -62,7 +62,7 @@
         </span>
 
         {% if answers.has_next %}
-            <a href="?page={{ answers.next_page_number }}">next</a>
+            <a href="?page={{ answers.next_page_number }}">next&nbsp;<span class="glyphicon glyphicon-chevron-right"></span></a>
         {% endif %}
     </span>
 </div>
