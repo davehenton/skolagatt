@@ -1712,6 +1712,7 @@ class ExampleSurveyListing(common_mixins.SchoolEmployeeMixin, ListView):
                     groupsurvey__isnull = True,
                 ).values_list('student', flat=True).distinct()
             ).values_list('studentgroup', flat=True).distinct()
+            studentgroup_ids = list(set(studentgroup_ids))
             studentgroups_list = []
             for studentgroup_id in studentgroup_ids:
                 studentgroup = StudentGroup.objects.get(pk = studentgroup_id)
