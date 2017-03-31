@@ -56,26 +56,6 @@
 
 	</div>
 	{% endfor %}
-	{% for date, student_list in samraemd %}
-	<div>
-		<h4>{{ date.year }}</h4>
-		<table class="table">
-			<tbody>
-				<tr>
-					<td>Prenthæf hrágagnablöð</td>
-					{% for cat in samraemd_cats %}
-					<td><a href="{% url 'schools:example_survey_samraemd_multi_print' school.id date.year cat %}" class="btn btn-default">
-               			<span class="glyphicon glyphicon-print">
-               			</span>&nbsp;{% if cat == 'STÆ' %}Stærðfræði{% elif cat == 'ÍSL' %}Íslensku{% elif cat == 'ENS' %}Ensku{% else %}{{ cat }}{% endif %}hluti</a>
-               		</td>
-					{% endfor %}
-				</tr>
-			</tbody>
-		</table>
-
-
-	</div>
-	{% endfor %}
 {% endif %}
 
 {% if surveys %}
