@@ -1825,10 +1825,12 @@ class ExampleSurveySamraemdDetail(common_mixins.SchoolManagerMixin, ListView):
             student_answers.append((student, answers))
         else:
             studentgroup = StudentGroup.objects.get(pk = self.kwargs['studentgroup_id'])
-            students = studentgroup.students
+            students = Student.objects.filter(studentgroup = studentgroup).all()
 
             for student in students:
                 answers = self._get_student_answers_list(student, quiz_type, year)
+                if not answers:
+                    continue
                 random.shuffle(answers)
                 student_answers.append((student, answers))
         
