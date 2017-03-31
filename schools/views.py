@@ -1911,7 +1911,7 @@ class ExampleSurveyAnswerAdminListing(common_mixins.SuperUserMixin, ListView):
 
         answers = ExampleSurveyAnswer.objects.all()
         paginator = Paginator(answers, 25)
-        page = request.GET.get('page')
+        page = self.request.GET.get('page')
         try:
             answers = paginator.page(page)
         except PageNotAnInteger:
