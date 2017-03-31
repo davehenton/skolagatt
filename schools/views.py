@@ -1705,7 +1705,7 @@ class ExampleSurveyListing(common_mixins.SchoolEmployeeMixin, ListView):
         samraemd = []
         for date in dates:
             # Get all studentgroups for this school where a student in the studentgroup has results in ExampleSurveyAnswer
-            studentgroups = Student.objects.filter(
+            studentgroup_ids = Student.objects.filter(
                 pk__in = ExampleSurveyAnswer.objects.filter(
                     student__in = Student.objects.filter(school=school),
                     date = date,
@@ -1713,7 +1713,8 @@ class ExampleSurveyListing(common_mixins.SchoolEmployeeMixin, ListView):
                 ).values_list('student', flat=True).distinct()
             ).values_list('studentgroup', flat=True).distinct()
             studentgroups_list = []
-            for studentgroup in studentgroups:
+            for studentgroup_id in studentgroup_ids:
+                studentgroup = StudentGroup.objects.get(pk = studentgroup_id)
                 students_list = []
                 students = Student.objects.filter(studentgroup = studentgroup)
 
