@@ -1,3 +1,4 @@
+from celery import current_task
 from celery.decorators import task
 from celery.utils.log import get_task_logger
 
@@ -18,10 +19,13 @@ def save_samraemd_result(newdata):
 	logger.info("Importing a new set of Samraemd results ({} entries)".format(len(newdata)))
 	updated = 0
 	added = 0
+	newdata_len = len(newdata)
+	loop_counter = 0
 	for newentry in newdata:
 		logger.debug("looking up {}".format(newentry['ssn']))
 		student = Student.objects.filter(ssn = newentry['ssn'])
-
+		loop_counter += 1
+		current_task.update_state(state='PROGRESS', meta={'current': loop_counter, 'total': newdata_len})
 		if not student.exists():
 			logger.debug("Not found: {}".format(newentry['ssn']))
 			continue

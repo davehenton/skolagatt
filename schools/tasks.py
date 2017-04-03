@@ -1,3 +1,4 @@
+from celery import current_task
 from celery.decorators import task
 from celery.utils.log import get_task_logger
 
@@ -22,10 +23,13 @@ def save_example_survey_answers(newdata):
     logger.info("Importing a new set of ExampleSurveyAnswers ({} entries)".format(len(newdata)))
     updated = 0
     added = 0
-
+    newdata_len = len(newdata)
+    loop_counter = 0
     for newentry in newdata:
         ssn = newentry['ssn']
         quickcode = newentry['quickcode']
+        loop_counter += 1
+        current_task.update_state(state='PROGRESS', meta={'current': loop_counter, 'total': newdata_len})
         try:
             if not ssn in student_cache.keys():
                 student_cache[ssn] = Student.objects.get(ssn=newentry['ssn'])
@@ -81,5 +85,7 @@ def save_example_survey_answers(newdata):
                 date = newentry['exam_date'],
                 answer = boolanswer,
             )
+        current_task.update_state(state='PROGRESS',
+            meta={'current': i, 'total': 100})
     logger.info("Done. Added {} entries, updated {} entries".format(added, updated))
     return
