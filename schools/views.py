@@ -2024,8 +2024,7 @@ class ExampleSurveyAnswerAdminImport(common_mixins.SuperUserMixin, CreateView):
                 )
         else:
             newdata = self.request.session['newdata']
-            print("Importing...")
-            # XXX: ADD THE TASK HERE
+            print("Calling save_example_survey_answers for import")
             save_example_survey_answers.delay(newdata)
         return redirect(self.get_success_url())
 
