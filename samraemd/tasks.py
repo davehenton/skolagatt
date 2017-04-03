@@ -21,7 +21,7 @@ def save_samraemd_result(newdata):
 	for newentry in newdata:
 		logger.debug("looking up {}".format(newentry['ssn']))
 		student = Student.objects.filter(ssn = newentry['ssn'])
-		
+
 		if not student.exists():
 			logger.debug("Not found: {}".format(newentry['ssn']))
 			continue
@@ -62,4 +62,4 @@ def save_samraemd_result(newdata):
 			else:
 				results = SamraemdISLResult.objects.create(**newentry)
 				added += 1
-				logger.info("Done. Added {} entries, updated {} entries".format(added, updated))
+		logger.info("Done. Added {} entries, updated {} entries".format(added, updated))
