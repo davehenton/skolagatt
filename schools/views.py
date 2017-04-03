@@ -1983,19 +1983,19 @@ class ExampleSurveyAnswerAdminImport(common_mixins.SuperUserMixin, CreateView):
 
                             if not ssn_str in ssn_cache.keys():
                                 ssn_cache[ssn_str] = Student.objects.filter(ssn = ssn_str).exists()
-                            if not ssn_cache[ssn_str]:
-                                rowerrors.append({
-                                    'text': 'Nemandi {} er ekki til'.format(ssn_str),
-                                    'row': row,
-                                })
+                                if not ssn_cache[ssn_str]:
+                                    rowerrors.append({
+                                        'text': 'Nemandi {} er ekki til'.format(ssn_str),
+                                        'row': row,
+                                    })
 
                             if not quickcode_str in quickcode_cache.keys():
                                 quickcode_cache[quickcode_str] = ExampleSurveyQuestion.objects.filter(quickcode = quickcode_str).exists()
-                            if not quickcode_cache[quickcode_str]:
-                                rowerrors.append({
-                                    'text': 'Prófdæmi {} er ekki til'.format(quickcode_str),
-                                    'row': row,
-                                })
+                                if not quickcode_cache[quickcode_str]:
+                                    rowerrors.append({
+                                        'text': 'Prófdæmi {} er ekki til'.format(quickcode_str),
+                                        'row': row,
+                                    })
 
                             if answer_str not in ['1', '0']:
                                 rowerrors.append({
