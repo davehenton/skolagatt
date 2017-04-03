@@ -1924,6 +1924,9 @@ class ExampleSurveyAnswerAdminListing(common_mixins.SuperUserMixin, ListView):
         except EmptyPage:
             answers = paginator.page(paginator.num_pages)
         context['answers'] = answers
+
+        context['job'] = self.request.session.get('save_example_survey_answers_job_id')
+
         return context
 
 
@@ -2025,7 +2028,8 @@ class ExampleSurveyAnswerAdminImport(common_mixins.SuperUserMixin, CreateView):
         else:
             newdata = self.request.session['newdata']
             print("Calling save_example_survey_answers for import")
-            save_example_survey_answers.delay(newdata)
+            job = save_example_survey_answers.delay(newdata)
+            self.request.session['save_example_survey_answers_job_id'] = job.id
         return redirect(self.get_success_url())
 
     def get_success_url(self):

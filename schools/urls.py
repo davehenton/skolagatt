@@ -2,16 +2,19 @@
 from django.conf.urls import url
 
 import schools.views as views
-from .api import SchoolViewSet
+from .api import SchoolViewSet, TaskMonitor
 
 app_name = 'schools'
 urlpatterns = [
     url(r'^$',
         views.SchoolListing.as_view(),
         name='school_listing'),
-    url(r'^api$',
+    url(r'^api/$',
         SchoolViewSet.as_view({'get': 'list'}),
         name='api_school_listing'),
+    url(r'^api/taskmonitor/$',
+        TaskMonitor.as_view(),
+        name='api_task_monitor'),
     url(r'^(?P<pk>\d+)/$',
         views.SchoolDetail.as_view(),
         name='school_detail'),
