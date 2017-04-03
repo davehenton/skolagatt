@@ -17,6 +17,7 @@ import common.mixins   as cm_mixins
 import samraemd.models as s_models
 import samraemd.util   as s_util
 import samraemd.forms as forms
+from samraemd.tasks import save_samraemd_result
 
 
 def excel_result(request, school_id, year, group):
@@ -374,17 +375,25 @@ class SamraemdResultCreate(cm_mixins.SuperUserMixin, CreateView):
                                             'text': '{}: Einkunn utan raðeinkunnarsviðs'.format(col_type),
                                             'row': row,
                                         })
-                                elif col_type == 'he' and col_value not in ['A', 'B', 'C', 'D']:
-                                    rowerrors.append({
-                                        'text': '{}: Einkunn utan Hæfnieinkunnarsviðs'.format(col_type),
-                                        'row': row,
-                                    })
+                                elif col_type == 'he' or col_type.endswith('_he'):
+                                    if col_value not in ['A', 'B', 'B+', 'C', 'C+', 'D']:
+                                        rowerrors.append({
+                                            'text': '{}: Einkunn utan Hæfnieinkunnarsviðs'.format(col_type),
+                                            'row': row,
+                                        })
                                 elif col_type == 'se' or col_type.endswith('_se'):
                                     if int(col_value) > 10 or int(col_value) < 0:
                                         rowerrors.append({
                                             'text': '{}: Einkunn utan samræmdrareinkunnarsviðs'.format(col_type),
                                             'row': row,
                                         })
+                                elif col_type == 'sg' or col_type.endswith('_sg'):
+                                    if int(col_value) > 60 or int(col_value) < 0:
+                                        rowerrors.append({
+                                            'text': '{}: Einkunn utan grunnskólaeinnkunnarsviðs'.format(col_type),
+                                            'row': row,
+                                        })
+                                        
                                 results_dict[col_type] = col_value
 
                         results_dict['exam_code']    = exam_code
@@ -411,46 +420,8 @@ class SamraemdResultCreate(cm_mixins.SuperUserMixin, CreateView):
             })
         else:
             newdata = self.request.session['newdata']
-            # Iterate through the data
-            for newentry in newdata:
-                print("looking up {}".format(newentry['ssn']))
-                student = cm_models.Student.objects.filter(ssn = newentry['ssn'])
-                
-                if not student.exists():
-                    print ("Not found: {}".format(newentry['ssn']))
-                    continue
-
-                del(newentry['ssn'])
-                newentry['student'] = student.first()
-
-                exam_type = newentry['exam_type']
-                del(newentry['exam_type'])
-
-                if exam_type == 'STÆ':
-                    results = s_models.SamraemdMathResult.objects.filter(
-                        student=newentry['student'], exam_code=newentry['exam_code'])
-
-                    if results:
-                        results.update(**newentry)
-                    else:
-                        results = s_models.SamraemdMathResult.objects.create(**newentry)
-                elif exam_type == 'ENS':
-                    results = s_models.SamraemdENSResult.objects.filter(
-                        student=newentry['student'], exam_code=newentry['exam_code'])
-
-                    if results:
-                        results.update(**newentry)
-                    else:
-                        results = s_models.SamraemdENSResult.objects.create(**newentry)
-                elif exam_type == 'ÍSL':
-                    results = s_models.SamraemdISLResult.objects.filter(
-                        student=newentry['student'], exam_code=newentry['exam_code'])
-
-                    if results:
-                        results.update(**newentry)
-                    else:
-                        results = s_models.SamraemdISLResult.objects.create(**newentry)
-            # return HttpResponseRedirect(self.get_success_url())
+            print("Calling save_samraemd_result for import")
+            save_samraemd_result.delay(newdata)            
         redir = self.get_success_url()
         print("Redirecting to {}".format(redir))
         return HttpResponseRedirect(redir)
