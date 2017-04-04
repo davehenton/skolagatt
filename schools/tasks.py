@@ -85,7 +85,5 @@ def save_example_survey_answers(newdata):
                 date = newentry['exam_date'],
                 answer = boolanswer,
             )
-        current_task.update_state(state='PROGRESS',
-            meta={'current': i, 'total': 100})
     logger.info("Done. Added {} entries, updated {} entries".format(added, updated))
     return
