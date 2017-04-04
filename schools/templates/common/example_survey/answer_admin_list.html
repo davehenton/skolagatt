@@ -104,14 +104,14 @@ $(document).ready(function(){
 				$('#result_row').html("<p>Innlestur gagna mistókst!</p>");
 			} else {
 				$("#result-text").html("(" + data.current + " af " + data.total + ")");
-				pct = data.current / data.total;
+				pct = ((data.current / data.total) * 100).toFixed(1)
 				/* update the progress bar width */
 	      		$("#job-progress").css('width',pct+'%');
 	      		/* and display the numeric value */
 	      		$("#job-progress").html(pct+'%');
 
 	      		/* test to see if the job has completed */
-	      		if(pct > 99.999) {
+	      		if(pct > 99.9) {
 	        		clearInterval(progresspump);
 	        		$("#job-progress").removeClass("active");
 	        		$("#job-progress").html("Done");
