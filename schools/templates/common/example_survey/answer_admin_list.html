@@ -92,7 +92,6 @@ $(document).ready(function(){
 	var progresspump = setInterval(function(){
 		/* query the completion percentage from the server */
 		$.get("{% url 'schools:api_task_monitor' %}?job={{ job }}", function(data){
-			console.log(data)
 			if (data == 'SUCCESS') {
 				clearInterval(progresspump);
 				$("#result-text").html("");
