@@ -192,6 +192,7 @@ class SchoolCreateImport(common_mixins.SchoolManagerMixin, CreateView):
             })
         else:
             school_data = self.request.session['newdata']
+            del(self.request.session['newdata'])
             # iterate through students, add them if they don't exist then add to school
             for school in school_data:
                 try:
@@ -375,6 +376,7 @@ class ManagerCreateImport(common_mixins.SchoolManagerMixin, CreateView):
             })
         else:
             manager_data = self.request.session['newdata']
+            del(self.request.session['newdata'])
             # iterate through managers, add them if they don't exist then add to school
             for manager in manager_data:
                 try:
@@ -609,6 +611,7 @@ class TeacherCreateImport(common_mixins.SchoolManagerMixin, CreateView):
             )
         else:
             teacher_data = self.request.session['newdata']
+            del(self.request.session['newdata'])
             # iterate through teachers, add them if they don't exist then add to school
             for teacher in teacher_data:
                 try:
@@ -791,6 +794,7 @@ class StudentCreateImport(common_mixins.SchoolManagerMixin, CreateView):
             )
         else:
             student_data = self.request.session['newdata']
+            del(self.request.session['newdata'])
             school       = School.objects.get(pk=self.kwargs['school_id'])
             # iterate through students, add them if they don't exist then add to school
             for data in student_data:
@@ -1602,6 +1606,7 @@ class SurveyLoginCreate(common_mixins.SuperUserMixin, CreateView):
 
         else:
             student_data = self.request.session['newdata']
+            del(self.request.session['newdata'])
             # Iterate through the data
             # Add students if they don't exist then create a survey_login object
             for data in student_data:
@@ -2027,6 +2032,7 @@ class ExampleSurveyAnswerAdminImport(common_mixins.SuperUserMixin, CreateView):
                 )
         else:
             newdata = self.request.session['newdata']
+            del(self.request.session['newdata'])
             print("Calling save_example_survey_answers for import")
             job = save_example_survey_answers.delay(newdata)
             self.request.session['save_example_survey_answers_job_id'] = job.id

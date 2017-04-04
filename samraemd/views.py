@@ -422,6 +422,7 @@ class SamraemdResultCreate(cm_mixins.SuperUserMixin, CreateView):
             })
         else:
             newdata = self.request.session['newdata']
+            del(self.request.session['newdata'])
             print("Calling save_samraemd_result for import")
             job = save_samraemd_result.delay(newdata)
             self.request.session['save_samraemd_result_job_id'] = job.id          
