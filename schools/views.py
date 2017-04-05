@@ -1799,19 +1799,17 @@ class ExampleSurveySamraemdDetail(common_mixins.SchoolManagerMixin, DetailView):
         if 'print' in self.request.path:
             return ['common/example_survey/samraemd_detail_print.html']
         return ['common/example_survey/samraemd_detail.html']
+
     def _get_student_answers_list(self, student, quiz_type, year):
-        answers_list = ExampleSurveyAnswer.objects.filter(
+        answers_list = student.examplesurveyanswer_set.filter(
+            groupsurvey__isnull = True, date__year = year,
+        )
+        answers = ExampleSurveyAnswer.objects.filter(
                 student = student,
                 groupsurvey__isnull = True,
                 date__year = year,
-            )
-
-        answers = []
-
-        if quiz_type.lower() in ['stæ', 'ens', 'ísl']:
-            answers = [ x for x in answers_list if x.question.quiz_type == quiz_type ]
-        else:
-            answers = [ x for x in answers_list ]
+                question__quiz_type = quiz_type,
+        ).all()
 
         return answers
 
