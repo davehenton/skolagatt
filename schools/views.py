@@ -1764,7 +1764,7 @@ class ExampleSurveyListing(common_mixins.SchoolEmployeeMixin, ListView):
         return context
 
 
-class ExampleSurveyGSDetail(common_mixins.SchoolManagerMixin, DetailView):
+class ExampleSurveyGSDetail(common_mixins.SchoolManagerMixin, ListView):
     model = ExampleSurveyAnswer
     template_name = "common/example_survey/survey_detail.html"
 
@@ -1792,7 +1792,7 @@ class ExampleSurveyGSDetail(common_mixins.SchoolManagerMixin, DetailView):
         return context
 
 
-class ExampleSurveySamraemdDetail(common_mixins.SchoolManagerMixin, DetailView):
+class ExampleSurveySamraemdDetail(common_mixins.SchoolManagerMixin, ListView):
     model = ExampleSurveyAnswer
 
     def get_template_names(self, **kwargs):
