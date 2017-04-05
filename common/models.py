@@ -201,7 +201,7 @@ class ExampleSurveyQuestion(models.Model):
 
         if answers_total == 0:
             return "0%"
-        answers_correct = self.examplesurveyanswer_set.filter(answer = True)
+        answers_correct = self.examplesurveyanswer_set.filter(answer = True).count()
 
         return "{:.1f}%".format((answers_correct/answers_total) * 100)
 
