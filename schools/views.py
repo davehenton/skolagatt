@@ -1874,7 +1874,10 @@ class ExampleSurveyQuestionAdminDetail(common_mixins.SuperUserMixin, DetailView)
         answers_correct = ExampleSurveyAnswer.objects.filter(question = question, answer = True).count()
         context['question'] = question
         context['answers_total'] = answers_total
-        context['answers_correct_pct'] = "{:.1f}%".format((answers_correct/answers_total) * 100)
+        if answers total > 0:
+            context['answers_correct_pct'] = "{:.1f}%".format((answers_correct/answers_total) * 100)
+        else:
+            context['answers_correct_pct'] = "0%"
         return context
 
 
