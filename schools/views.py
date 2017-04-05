@@ -17,7 +17,6 @@ from ast       import literal_eval
 import json
 import xlrd
 import openpyxl
-import random
 from openpyxl.styles import PatternFill
 from openpyxl.chart import AreaChart, BarChart, LineChart,  Reference
 from openpyxl.chart.layout import Layout, ManualLayout
@@ -1776,12 +1775,10 @@ class ExampleSurveyGSDetail(common_mixins.SchoolManagerMixin, ListView):
         student = Student.objects.get(pk=self.kwargs['student_id'])
         groupsurvey = GroupSurvey.objects.get(pk=self.kwargs['groupsurvey_id'])
 
-        answers = list(ExampleSurveyAnswer.objects.filter(
+        answers = ExampleSurveyAnswer.objects.filter(
             student = student,
             groupsurvey = groupsurvey,
-        ).all())
-
-        random.shuffle(answers)
+        ).order_by('?').all()
 
         context['answers'] = answers
         context['school'] = school
@@ -1809,7 +1806,7 @@ class ExampleSurveySamraemdDetail(common_mixins.SchoolManagerMixin, ListView):
                 groupsurvey__isnull = True,
                 date__year = year,
                 question__quiz_type = quiz_type,
-        ).all()
+        ).order_by('?').all()
 
         return answers
 
@@ -1824,7 +1821,6 @@ class ExampleSurveySamraemdDetail(common_mixins.SchoolManagerMixin, ListView):
         if 'student_id' in self.kwargs:
             student = Student.objects.get(pk=self.kwargs['student_id'])
             answers = self._get_student_answers_list(student, quiz_type, year)
-            random.shuffle(answers)
             student_answers.append((student, answers))
         else:
             studentgroup = StudentGroup.objects.get(pk = self.kwargs['studentgroup_id'])
@@ -1834,7 +1830,6 @@ class ExampleSurveySamraemdDetail(common_mixins.SchoolManagerMixin, ListView):
                 answers = self._get_student_answers_list(student, quiz_type, year)
                 if not answers:
                     continue
-                random.shuffle(answers)
                 student_answers.append((student, answers))
         
         context['student_answers'] = student_answers
