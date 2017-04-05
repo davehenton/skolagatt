@@ -1869,7 +1869,7 @@ class ExampleSurveyQuestionAdminDetail(common_mixins.SuperUserMixin, DetailView)
 
     def get_context_data(self, **kwargs):
         context = super(ExampleSurveyQuestionAdminDetail, self).get_context_data(**kwargs)
-        question = ExampleSurveyQuestion.objects.get(pk = self.kwargs['pk'])+
+        question = ExampleSurveyQuestion.objects.get(pk = self.kwargs['pk'])
         answers_total = ExampleSurveyAnswer.objects.filter(question = question).count()
         answers_correct = ExampleSurveyAnswer.objects.filter(question = question, answer = True).count()
         context['question'] = question
