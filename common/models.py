@@ -193,6 +193,18 @@ class ExampleSurveyQuestion(models.Model):
     # dæmi
     example = FroalaField()
 
+    def answers_total(self):
+        return self.examplesurveyanswer_set.count()
+
+    def answers_correct_pct(self):
+        answers_total = self.answers_total()
+
+        if answers_total == 0:
+            return "0%"
+        answers_correct = self.examplesurveyanswer_set.filter(answer = True)
+
+        return "{:.1f}%".format((answers_correct/answers_total) * 100)
+
 
 # Prófadæmi, svör
 class ExampleSurveyAnswer(models.Model):
