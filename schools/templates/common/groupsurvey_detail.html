@@ -104,7 +104,7 @@
 		 					{% endif %}
 							<td>
 								{% if is_group_manager or is_school_manager %}
-									{% if groupsurvey.is_expired = False %}
+									{% if groupsurvey.is_expired == False %}
 									<a href="{% url 'schools:survey_result_create' school.id student.id groupsurvey.id %}" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span>&nbsp;Skrá</a>
 									{% endif %}
 								{% endif %}
