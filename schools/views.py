@@ -1764,7 +1764,7 @@ class ExampleSurveyListing(common_mixins.SchoolEmployeeMixin, ListView):
         return context
 
 
-class ExampleSurveyGSDetail(common_mixins.SchoolManagerMixin, ListView):
+class ExampleSurveyGSDetail(common_mixins.SchoolManagerMixin, DetailView):
     model = ExampleSurveyAnswer
     template_name = "common/example_survey/survey_detail.html"
 
@@ -1792,7 +1792,7 @@ class ExampleSurveyGSDetail(common_mixins.SchoolManagerMixin, ListView):
         return context
 
 
-class ExampleSurveySamraemdDetail(common_mixins.SchoolManagerMixin, ListView):
+class ExampleSurveySamraemdDetail(common_mixins.SchoolManagerMixin, DetailView):
     model = ExampleSurveyAnswer
 
     def get_template_names(self, **kwargs):
@@ -1863,14 +1863,18 @@ class ExampleSurveyQuestionAdminListing(common_mixins.SuperUserMixin, ListView):
         return context
 
 
-class ExampleSurveyQuestionAdminDetail(common_mixins.SuperUserMixin, ListView):
+class ExampleSurveyQuestionAdminDetail(common_mixins.SuperUserMixin, DetailView):
     model = ExampleSurveyQuestion
     template_name = "common/example_survey/question_admin_detail.html"
 
     def get_context_data(self, **kwargs):
         context = super(ExampleSurveyQuestionAdminDetail, self).get_context_data(**kwargs)
-
-        context['question'] = ExampleSurveyQuestion.objects.get(pk = self.kwargs['pk'])
+        question = ExampleSurveyQuestion.objects.get(pk = self.kwargs['pk'])+
+        answers_total = ExampleSurveyAnswer.objects.filter(question = question).count()
+        answers_correct = ExampleSurveyAnswer.objects.filter(question = question, answer = True).count()
+        context['question'] = question
+        context['answers_total'] = answers_total
+        context['answers_correct_pct'] = "{:.1f}%".format((answers_correct/answers_total) * 100)
         return context
 
 
@@ -1935,7 +1939,7 @@ class ExampleSurveyAnswerAdminListing(common_mixins.SuperUserMixin, ListView):
         return context
 
 
-class ExampleSurveyAnswerAdminDetail(common_mixins.SuperUserMixin, ListView):
+class ExampleSurveyAnswerAdminDetail(common_mixins.SuperUserMixin, DetailView):
     model = ExampleSurveyQuestion
     template_name = "common/example_survey/answer_admin_detail.html"
 
