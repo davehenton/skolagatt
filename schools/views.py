@@ -1869,15 +1869,10 @@ class ExampleSurveyQuestionAdminDetail(common_mixins.SuperUserMixin, DetailView)
 
     def get_context_data(self, **kwargs):
         context = super(ExampleSurveyQuestionAdminDetail, self).get_context_data(**kwargs)
-        question = ExampleSurveyQuestion.objects.get(pk = self.kwargs['pk'])
-        answers_total = ExampleSurveyAnswer.objects.filter(question = question).count()
-        answers_correct = ExampleSurveyAnswer.objects.filter(question = question, answer = True).count()
+
+        question = ExampleSurveyQuestion.objects.get(pk = self.kwargs['pk']) 
         context['question'] = question
-        context['answers_total'] = answers_total
-        if answers_total > 0:
-            context['answers_correct_pct'] = "{:.1f}%".format((answers_correct/answers_total) * 100)
-        else:
-            context['answers_correct_pct'] = "0%"
+
         return context
 
 
