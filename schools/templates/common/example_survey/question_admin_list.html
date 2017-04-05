@@ -14,6 +14,8 @@
 				<th>Flýtikóði</th>
 				<th>Próftegund</th>
 				<th>Spurningaflokkur</th>
+				<th>Fjöldi svara</th>
+				<th>Hlutfall réttra svara</th>
 				<th>Lýsing</th>
 				<th>Aðgerðir</th>
 			</tr>
@@ -24,6 +26,8 @@
 				<td>{{question.quickcode}}</td>
 				<td>{{question.quiz_type}}</td>
 				<td>{{question.category}}</td>
+				<td>{{question.answers_total}}</td>
+				<td>{{question.answers_correct_pct}}</td>
 				<td>{{question.description}}</td>
 				<td>
 					<a href="{% url 'schools:example_survey_question_admin_detail' question.id %}">
@@ -45,7 +49,8 @@
 {% block script %}
 <script type="text/javascript">
 	dataTable_settings["columnDefs"] = [
-       { "targets": [-1, -2], "orderable": false }
+       { "targets": [-1, -2], "orderable": false },
+       { "targets": [4], "type": "percent" }
     ];
 	$('#example_survey_question_list').DataTable(dataTable_settings);
 </script>
