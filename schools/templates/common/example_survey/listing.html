@@ -33,7 +33,7 @@
 					</tr>
 				</thead>
 				<tbody>
-					{% for student, quiz_types in student_list %}
+					{% for student, quiz_types, exceptions in student_list %}
 					<tr>
 						<td>{{ student.ssn }}</td>
 						<td>{{ student.name }}</td>
@@ -44,13 +44,23 @@
 									<span class="glyphicon glyphicon-eye-open"></span>&nbsp;
 								</a>
 							{% else %}
-								<span class="glyphicon glyphicon-remove" style="color:red"></span>&nbsp;
+								{% if cat in exceptions %}
+									<span class="glyphicon glyphicon-asterisk" style="color:green"></span>&nbsp;
+								{% else %}
+									<span class="glyphicon glyphicon-remove" style="color:red"></span>&nbsp;
+								{% endif %}
 							{% endif %}
 							</td>
 						{% endfor %}
 					</tr>
 					{% endfor %}
 				</tbody>
+				<tfoot>
+					<tr>
+						<td><span class="glyphicon glyphicon-asterisk" style="color:green"></span>&nbsp;Undanþága</td>
+						<td><span class="glyphicon glyphicon-remove" style="color:red"></span>&nbsp;Niðurstöðu vantar</td>
+					</tr>
+				</tfoot>
 			</table>
 		{% endfor %}
 
@@ -80,15 +90,6 @@
 					<a href="{% url 'schools:example_survey_groupsurvey_detail' school.id survey.id student.id %}">
 								<span class="glyphicon glyphicon-eye-open style="color:green"></span>&nbsp;
 							</a>
-					{% for cat in cats %}
-						{% if cat in quiz_types %}
-						<td>
-							
-						{% else %}
-							<span class="glyphicon glyphicon-remove" style="color:red"></span>&nbsp;
-						{% endif %}
-						</td>
-					{% endfor %}
 					</td>
 				</tr>
 				{% endfor %}

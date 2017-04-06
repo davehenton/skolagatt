@@ -1731,7 +1731,16 @@ class ExampleSurveyListing(common_mixins.SchoolEmployeeMixin, ListView):
                             groupsurvey__isnull = True,
                         ).values_list('question_id')
                     ).values_list('quiz_type', flat=True).distinct()
-                    students_list.append((student, quiz_type_list))
+                    exceptions = []
+                    if student.exceptions_set.exists():
+                        excs = literal_eval(student.exceptions_set.first().exam)
+                        if 1 in excs:
+                            exceptions.append('ÍSL')
+                        if 2 in excs:
+                            exceptions.append('ENS')
+                        if 3 in excs:
+                            exceptions.append('STÆ')
+                    students_list.append((student, quiz_type_list, exceptions))
                 studentgroups_list.append((studentgroup, students_list))
             samraemd.append((date, studentgroups_list))
 
