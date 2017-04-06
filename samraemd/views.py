@@ -2,6 +2,7 @@ from django.shortcuts           import render, redirect
 from django.views.generic       import ListView, CreateView, DetailView, DeleteView
 from django.core.urlresolvers   import reverse_lazy
 from django.http                import HttpResponse, HttpResponseRedirect
+from celery.task.control import inspect
 
 import xlrd
 import json
