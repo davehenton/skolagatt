@@ -148,7 +148,17 @@ class SamraemdResultAdminListing(cm_mixins.SuperUserMixin, ListView):
         context['math_exams'] = math_exams
         context['ens_exams'] = ens_exams
 
-        context['job'] = self.request.session.get('save_samraemd_result_job_id')
+        jobs = []
+
+        active_celery_tasks = inspect().active()
+
+        for k in active_celery_tasks.keys():
+            host_tasks = active_celery_tasks[k]
+            for host_task in host_tasks:
+                if host_task.get('name') == 'save_samraemd_result':
+                    jobs.append(host_task.get('id'))
+
+        context['jobs'] = jobs
 
         return context
 
@@ -425,7 +435,6 @@ class SamraemdResultCreate(cm_mixins.SuperUserMixin, CreateView):
             del(self.request.session['newdata'])
             print("Calling save_samraemd_result for import")
             job = save_samraemd_result.delay(newdata)
-            self.request.session['save_samraemd_result_job_id'] = job.id          
         redir = self.get_success_url()
         print("Redirecting to {}".format(redir))
         return HttpResponseRedirect(redir)
