@@ -177,16 +177,16 @@ class SamraemdResultListing(cm_mixins.SchoolEmployeeMixin, ListView):
         school  = cm_models.School.objects.get(pk=self.kwargs['school_id'])
 
         m_exams = s_models.SamraemdMathResult.objects.filter(
-            student__in = cm_models.Student.objects.filter(school=school)
+            student__in = school.students.all()
         ).values('exam_date', 'student_year', 'exam_code').distinct()
         i_exams = s_models.SamraemdISLResult.objects.filter(
-            student__in = cm_models.Student.objects.filter(school=school)
+            student__in = school.students.all()
         ).values('exam_date', 'student_year', 'exam_code').distinct()
         e_exams = s_models.SamraemdENSResult.objects.filter(
-            student__in = cm_models.Student.objects.filter(school=school)
+            student__in = school.students.all()
         ).values('exam_date', 'student_year', 'exam_code').distinct()
         exams   = s_models.SamraemdResult.objects.filter(
-            student__in = cm_models.Student.objects.filter(school=school)
+            student__in = school.students.all()
         ).values('exam_date', 'student_year', 'exam_code', 'exam_name').distinct()
 
         context['school'] = school
