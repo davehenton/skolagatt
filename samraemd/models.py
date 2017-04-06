@@ -43,11 +43,6 @@ class _SamraemdStudentYear(models.Model):
 class SamraemdMathResult(_SamraemdBaseModel, _SamraemdStudentYear):
     # data fields
     # Hæfnieinkunn (A, B+, B, C+, C, D)
-    hp_he = models.CharField(max_length = 2, default='', blank=True) # Hlutföll og prósentur, hæfnieinkunn
-    al_he = models.CharField(max_length = 2, default='', blank=True) # Algebra, hæfnieinkunn
-    ra_he = models.CharField(max_length = 2, default='', blank=True) # Reikningur og aðgerðir, hæfnieinkunn
-    rm_he = models.CharField(max_length = 2, default='', blank=True) # Rúmfræði, hæfnieinkunn
-    tt_he = models.CharField(max_length = 2, default='', blank=True) # Tölur og talnaskilningur, hæfnieinkunn
     he    = models.CharField(max_length = 2, default='', blank=True)
 
     # Samræmd einkunn (0-10)
@@ -80,9 +75,6 @@ class SamraemdMathResult(_SamraemdBaseModel, _SamraemdStudentYear):
 class _SamraemdLANGResult(_SamraemdBaseModel, _SamraemdStudentYear):
     # data fields
     # Hæfnieinkunn (A, B, C, D)
-    le_he = models.CharField(max_length = 2, default='', blank=True) # Lesskilningur, hæfnieinkunn
-    mn_he = models.CharField(max_length = 2, default='', blank=True) # Málnotkun, hæfnieinkunn
-    ri_he = models.CharField(max_length = 2, default='', blank=True) # Ritun, hæfnieinkunn
     he = models.CharField(max_length = 2, default='', blank=True)    # Hæfnieinkunn
     # Samræmd einkunn (0-10)
     le_se = models.CharField(max_length = 4, default='', blank=True) # Lesskilningur, samræmd einkunn
