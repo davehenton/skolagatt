@@ -1787,7 +1787,7 @@ class ExampleSurveyGSDetail(common_mixins.SchoolManagerMixin, ListView):
         answers = ExampleSurveyAnswer.objects.filter(
             student = student,
             groupsurvey = groupsurvey,
-        ).order_by('question__quickcode').all()
+        ).order_by('question__category', '?').all()
 
         context['answers'] = answers
         context['school'] = school
@@ -1815,7 +1815,7 @@ class ExampleSurveySamraemdDetail(common_mixins.SchoolManagerMixin, ListView):
                 groupsurvey__isnull = True,
                 date__year = year,
                 question__quiz_type = quiz_type,
-        ).order_by('question__quickcode').all()
+        ).order_by('question__category', '?').all()
 
         return answers
 
