@@ -9,6 +9,7 @@ from django.utils                 import timezone
 from django.utils.decorators      import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from celery.task.control import inspect
 
 from uuid      import uuid4
 from datetime  import datetime, date
@@ -1934,7 +1935,19 @@ class ExampleSurveyAnswerAdminListing(common_mixins.SuperUserMixin, ListView):
             answers = paginator.page(paginator.num_pages)
         context['answers'] = answers
 
-        context['job'] = self.request.session.get('save_example_survey_answers_job_id')
+        jobs = []
+
+        active_celery_tasks = inspect().active()
+
+        for k in active_celery_tasks.keys():
+            host_tasks = active_celery_tasks[k]
+            for host_task in host_tasks:
+                if host_task.get('name') == 'save_example_survey_answers':
+                    jobs.append(host_task.get('id'))
+
+
+
+        context['jobs'] = jobs
 
         return context
 
@@ -2039,7 +2052,6 @@ class ExampleSurveyAnswerAdminImport(common_mixins.SuperUserMixin, CreateView):
             del(self.request.session['newdata'])
             print("Calling save_example_survey_answers for import")
             job = save_example_survey_answers.delay(newdata)
-            self.request.session['save_example_survey_answers_job_id'] = job.id
         return redirect(self.get_success_url())
 
     def get_success_url(self):

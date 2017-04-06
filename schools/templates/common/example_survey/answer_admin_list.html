@@ -7,14 +7,14 @@
 		<span class="glyphicon glyphicon-plus"></span>&nbsp;Bæta við svörum
 	</a>
 </div>
-{% if job %}
-<div class="row" id="result_row" style="display: none;">
+{% for job in jobs %}
+<div class="row" id="result-row-{{ job }}" style="display: none;">
 	<div class="col-md-4">
-		<p>Innlestur gagna í gangi <span id="result-text"></span>:</p>
+		<p>Innlestur gagna í gangi <span id="result-text-{{ job }}"></span>:</p>
 	</div>
 	<div class="col-md-8">
-		<div id="job-progressouter" class="progress">
-			<div id="job-progress" class="progress-bar progress-bar-striped active" role="progressbar"
+		<div id="job-progressouter-{{ job }}" class="progress">
+			<div id="job-progress-{{ job }}" class="progress-bar progress-bar-striped active" role="progressbar"
 			aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%">
 			0%
 			</div>
@@ -86,40 +86,42 @@
 
 {% block script %}
 
-{% if job %}
 <script type="text/javascript">
 $(document).ready(function(){
-	var progresspump = setInterval(function(){
+	{% for job in jobs %}
+	var progresspump{{ forloop.counter }} = setInterval(function(){
 		/* query the completion percentage from the server */
 		$.get("{% url 'schools:api_task_monitor' %}?job={{ job }}", function(data){
 			if (data == 'SUCCESS') {
-				clearInterval(progresspump);
-				$("#result-text").html("");
-				$("#job-progress").removeClass("active");
-				$("#job-progress").html("Done");
-				$("#job-progress").css('width', '100%');
+				clearInterval(progresspump{{ forloop.counter }});
+				$("#result-text-{{ job }}").html("");
+				$("#job-progress-{{ job }}").removeClass("active");
+				$("#job-progress-{{ job }}").html("Done");
+				$("#job-progress-{{ job }}").css('width', '100%');
 			} else if (data == 'FAILURE') {
-				clearInterval(progresspump);
-				$('#result_row').html("<p>Innlestur gagna mistókst!</p>");
+				clearInterval(progresspump{{ forloop.counter }});
+				$("#result_row-{{ job }}").html("<p>Innlestur gagna mistókst!</p>");
 			} else {
-				$("#result-text").html("(" + data.current + " af " + data.total + ")");
+				$("#result-text-{{ job }}").html("(" + data.current + " af " + data.total + ")");
 				pct = ((data.current / data.total) * 100).toFixed(1)
 				/* update the progress bar width */
-	      		$("#job-progress").css('width',pct+'%');
+	      		$("#job-progress-{{ job }}").css('width',pct+'%');
 	      		/* and display the numeric value */
-	      		$("#job-progress").html(pct+'%');
+	      		$("#job-progress-{{ job }}").html(pct+'%');
 
 	      		/* test to see if the job has completed */
 	      		if(pct > 99.9) {
 	        		clearInterval(progresspump);
-	        		$("#job-progress").removeClass("active");
-	        		$("#job-progress").html("Done");
+	        		$("#result-text-{{ job }}").html("");
+	        		$("#job-progress-{{ job }}").removeClass("active");
+	        		$("#job-progress-{{ job }}").html("Done");
 	      		}
       		}
-      		$("#result_row").show();
+      		$("#result_row-{{ job }}").show();
     	})
 	}, 3000);
+	{% endfor %}
 });
 </script>
-{% endif %}
+
 {% endblock %}
