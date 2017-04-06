@@ -356,7 +356,7 @@ class SamraemdResultCreate(cm_mixins.SuperUserMixin, CreateView):
                             if not col_name == 'ssn':
                                 errors.append({
                                 'text': 'Dálkur {} er ekki til'.format(col_name),
-                                'col': col,
+                                'row': 0,
                             })                            
 
                     # Run through each line
@@ -382,30 +382,36 @@ class SamraemdResultCreate(cm_mixins.SuperUserMixin, CreateView):
                                             'text': 'Nemandi ekki til í skólagátt',
                                             'row': row,
                                         })
-                                if col_type == 're' or col_type.endswith('_re'):
-                                    if int(col_value) > 100 or int(col_value) < 0:
-                                        rowerrors.append({
-                                            'text': '{}: Einkunn utan raðeinkunnarsviðs'.format(col_type),
-                                            'row': row,
-                                        })
-                                elif col_type == 'he' or col_type.endswith('_he'):
-                                    if col_value not in ['A', 'B', 'B+', 'C', 'C+', 'D']:
-                                        rowerrors.append({
-                                            'text': '{}: Einkunn utan Hæfnieinkunnarsviðs'.format(col_type),
-                                            'row': row,
-                                        })
-                                elif col_type == 'se' or col_type.endswith('_se'):
-                                    if int(col_value) > 10 or int(col_value) < 0:
-                                        rowerrors.append({
-                                            'text': '{}: Einkunn utan samræmdrareinkunnarsviðs'.format(col_type),
-                                            'row': row,
-                                        })
-                                elif col_type == 'sg' or col_type.endswith('_sg'):
-                                    if int(col_value) > 60 or int(col_value) < 0:
-                                        rowerrors.append({
-                                            'text': '{}: Einkunn utan grunnskólaeinnkunnarsviðs'.format(col_type),
-                                            'row': row,
-                                        })
+                                try:
+                                    if col_type == 're' or col_type.endswith('_re'):
+                                        if int(col_value) > 100 or int(col_value) < 0:
+                                            rowerrors.append({
+                                                'text': '{}: Einkunn utan raðeinkunnarsviðs'.format(col_type),
+                                                'row': row,
+                                            })
+                                    elif col_type == 'he':
+                                        if col_value not in ['A', 'B', 'B+', 'C', 'C+', 'D']:
+                                            rowerrors.append({
+                                                'text': '{}: Einkunn utan Hæfnieinkunnarsviðs'.format(col_type),
+                                                'row': row,
+                                            })
+                                    elif col_type == 'se' or col_type.endswith('_se'):
+                                        if int(col_value) > 10 or int(col_value) < 0:
+                                            rowerrors.append({
+                                                'text': '{}: Einkunn utan samræmdrareinkunnarsviðs'.format(col_type),
+                                                'row': row,
+                                            })
+                                    elif col_type == 'sg' or col_type.endswith('_sg'):
+                                        if int(col_value) > 60 or int(col_value) < 0:
+                                            rowerrors.append({
+                                                'text': '{}: Einkunn utan grunnskólaeinnkunnarsviðs'.format(col_type),
+                                                'row': row,
+                                            })
+                                except:
+                                    rowerrors.append({
+                                        'text': "Villa í gildi {}: {}".format(col_type, col_value),
+                                        'row': row,
+                                    })
                                         
                                 results_dict[col_type] = col_value
 
