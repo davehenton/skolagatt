@@ -68,4 +68,4 @@ def save_samraemd_result(newdata):
 			else:
 				results = SamraemdISLResult.objects.create(**newentry)
 				added += 1
-		logger.info("Done. Added {} entries, updated {} entries".format(added, updated))
+	logger.info("Done. Added {} entries, updated {} entries".format(added, updated))
