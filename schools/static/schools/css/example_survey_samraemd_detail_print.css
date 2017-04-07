@@ -58,12 +58,12 @@ page[size='A4'] {
 }
 @page {
     margin: 0;
+    page-break-before: always;
 }
 .outer-border {
     height    : 96%;
     margin-top: 2%;
     padding: 2px;
-    page-break-before: right;
 }
 h1 {
     font-family: MinionPro;
