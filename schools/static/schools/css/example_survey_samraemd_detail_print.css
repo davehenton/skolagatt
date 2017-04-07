@@ -63,6 +63,7 @@ page[size='A4'] {
     height    : 96%;
     margin-top: 2%;
     padding: 2px;
+    page-break-before: right;
 }
 h1 {
     font-family: MinionPro;
