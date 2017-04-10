@@ -243,8 +243,6 @@ class SamraemdResultDetail(cm_mixins.SchoolManagerMixin, DetailView):
             if int(self.kwargs['year']) > 2016:
                 return ['samraemd/samraemd_detail_print_singles_2017.html']
             return ['samraemd/samraemd_detail_print_singles.html']
-        if int(self.kwargs['year']) > 2016:
-            return ['samraemd/samraemdresult_detail_2017.html']
         return ['samraemd/samraemdresult_detail.html']
 
     def get_object(self, **kwargs):
