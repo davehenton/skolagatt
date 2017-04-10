@@ -1689,7 +1689,7 @@ class AdminUpdate(common_mixins.SuperUserMixin, UpdateView):
 
 ### Prófadæmi
 
-class ExampleSurveyListing(common_mixins.SchoolEmployeeMixin, ListView):
+class ExampleSurveyListing(common_mixins.SchoolManagerMixin, ListView):
     model = ExampleSurveyAnswer
     template_name = "common/example_survey/listing.html"
 

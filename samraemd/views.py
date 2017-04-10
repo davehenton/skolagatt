@@ -20,14 +20,7 @@ import samraemd.util   as s_util
 import samraemd.forms as forms
 from samraemd.tasks import save_samraemd_result
 
-
-def excel_result(request, school_id, year, group):
-    school   = cm_models.School.objects.get(id=school_id)
-    response = HttpResponse(
-        content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-    response['Content-Disposition'] = 'attachment; filename={0}-{1}-{2}-bekkur.xlsx'.format(
-        school.name, year, group)
-    wb       = openpyxl.Workbook()
+def _excel_result_pre_2017(wb, school, group, year):
     ws       = wb.get_active_sheet()
     ws.title = "Íslenska"
 
@@ -119,7 +112,274 @@ def excel_result(request, school_id, year, group):
         ws.cell('P' + str(index)).value = result.fm_txt
         ws.cell('Q' + str(index)).value = result.ord_talna_txt
         index += 1
+    return wb
 
+
+def _excel_result_post_2017_yngri(wb, school, group, year):
+    ws       = wb.get_active_sheet()
+    ws.title = "Íslenska"
+
+    ws['A1'] = 'Nemandi'
+    ws['B1'] = 'Kennitala'
+    ws['C1'] = 'Hæfnieinkunn'
+    ws['D1'] = 'Raðeinkunn-Lestur'
+    ws['E1'] = 'Raðeinkunn-Málnotkun'
+    ws['F1'] = 'Raðeinkunn-Ritun'
+    ws['G1'] = 'Raðeinkunn-Heild'
+    ws['H1'] = 'Grunnskólaeinkunn-Lestur'
+    ws['I1'] = 'Grunnskólaeinkunn-Málnotkun'
+    ws['J1'] = 'Grunnskólaeinkunn-Ritun'
+    ws['K1'] = 'Grunnskólaeinkunn-Heild'
+    ws['L1'] = 'Framfaraflokkur'
+    ws['M1'] = 'Framfaratexti'
+
+    # prepare data
+    results = s_models.SamraemdISLResult.objects.filter(
+        student__in     = cm_models.Student.objects.filter(school=school),
+        student_year    = group,
+        exam_date__year = year
+    )
+
+    index = 2
+    for result in results:
+        ws.cell('A' + str(index)).value = result.student.name
+        ws.cell('B' + str(index)).value = result.student.ssn
+        ws.cell('C' + str(index)).value = result.he
+        ws.cell('D' + str(index)).value = result.le_re.replace('.', ',')
+        ws.cell('E' + str(index)).value = result.mn_re.replace('.', ',')
+        ws.cell('F' + str(index)).value = result.ri_re.replace('.', ',')
+        ws.cell('G' + str(index)).value = result.re.replace('.', ',')
+        ws.cell('H' + str(index)).value = result.le_sg.replace('.', ',')
+        ws.cell('I' + str(index)).value = result.mn_sg.replace('.', ',')
+        ws.cell('J' + str(index)).value = result.ri_sg
+        ws.cell('K' + str(index)).value = result.sg
+        ws.cell('L' + str(index)).value = result.fm_fl.replace('.0', '')
+        ws.cell('M' + str(index)).value = result.fm_txt
+
+        index += 1
+
+    ws = wb.create_sheet(title='Stærðfræði')
+
+    ws['A1'] = 'Nemandi'
+    ws['B1'] = 'Kennitala'
+    ws['C1'] = 'Hæfnieinkunn'
+    ws['D1'] = 'Raðeinkunn-Reikningur og aðgerðir'
+    ws['E1'] = 'Raðeinkunn-Rúmfræði og mælingar'
+    ws['F1'] = 'Raðeinkunn-Tölur og talnaskilningur'
+    ws['G1'] = 'Raðeinkunn-Heild'
+    ws['H1'] = 'Grunnskólaeinkunn-Reikningur og aðgerðir'
+    ws['I1'] = 'Grunnskólaeinkunn-Rúmfræði og mælingar'
+    ws['J1'] = 'Grunnskólaeinkunn-Tölur og talnaskilningur'
+    ws['K1'] = 'Grunnskólaeinkunn-Heild'
+    ws['L1'] = 'Framfaraflokkur'
+    ws['M1'] = 'Framfaratexti'
+    ws['N1'] = 'Orðadæmi og talnadæmi'
+
+    # prepare data
+    results = s_models.SamraemdMathResult.objects.filter(
+        student__in     = cm_models.Student.objects.filter(school=school),
+        student_year    = group,
+        exam_date__year = year
+    )
+
+    index = 2
+    for result in results:
+        ws.cell('A' + str(index)).value = result.student.name
+        ws.cell('B' + str(index)).value = result.student.ssn
+        ws.cell('C' + str(index)).value = result.he
+        ws.cell('D' + str(index)).value = result.ra_re
+        ws.cell('E' + str(index)).value = result.rm_re
+        ws.cell('F' + str(index)).value = result.tt_re
+        ws.cell('G' + str(index)).value = result.re
+        ws.cell('H' + str(index)).value = result.ra_sg
+        ws.cell('I' + str(index)).value = result.rm_sg
+        ws.cell('J' + str(index)).value = result.tt_sg
+        ws.cell('K' + str(index)).value = result.sg
+        ws.cell('L' + str(index)).value = result.fm_fl.replace('.0', '')
+        ws.cell('M' + str(index)).value = result.fm_txt
+        ws.cell('N' + str(index)).value = result.ord_talna_txt
+
+        index += 1
+
+    ws = wb.create_sheet(title='Enska')
+
+    ws['A1'] = 'Nemandi'
+    ws['B1'] = 'Kennitala'
+    ws['C1'] = 'Hæfnieinkunn'
+    ws['D1'] = 'Raðeinkunn-Lestur'
+    ws['E1'] = 'Raðeinkunn-Málnotkun'
+    ws['F1'] = 'Raðeinkunn-Ritun'
+    ws['G1'] = 'Raðeinkunn-Heild'
+    ws['H1'] = 'Grunnskólaeinkunn-Lestur'
+    ws['I1'] = 'Grunnskólaeinkunn-Málnotkun'
+    ws['J1'] = 'Grunnskólaeinkunn-Ritun'
+    ws['K1'] = 'Grunnskólaeinkunn-Heild'
+    ws['L1'] = 'Framfaraflokkur'
+    ws['M1'] = 'Framfaratexti'
+
+    # prepare data
+    results = s_models.SamraemdENSResult.objects.filter(
+        student__in     = cm_models.Student.objects.filter(school=school),
+        student_year    = group,
+        exam_date__year = year
+    )
+
+    index = 2
+    for result in results:
+        ws.cell('A' + str(index)).value = result.student.name
+        ws.cell('B' + str(index)).value = result.student.ssn
+        ws.cell('C' + str(index)).value = result.he
+        ws.cell('D' + str(index)).value = result.le_re.replace('.', ',')
+        ws.cell('E' + str(index)).value = result.mn_re.replace('.', ',')
+        ws.cell('F' + str(index)).value = result.ri_re.replace('.', ',')
+        ws.cell('G' + str(index)).value = result.re.replace('.', ',')
+        ws.cell('H' + str(index)).value = result.le_sg.replace('.', ',')
+        ws.cell('I' + str(index)).value = result.mn_sg.replace('.', ',')
+        ws.cell('J' + str(index)).value = result.ri_sg
+        ws.cell('K' + str(index)).value = result.sg
+        ws.cell('L' + str(index)).value = result.fm_fl.replace('.0', '')
+        ws.cell('M' + str(index)).value = result.fm_txt
+        
+        index += 1
+
+    return wb
+
+
+def _excel_result_post_2017_eldri(wb, school, group, year):
+    ws       = wb.get_active_sheet()
+    ws.title = "Íslenska"
+
+    ws['A1'] = 'Nemandi'
+    ws['B1'] = 'Kennitala'
+    ws['C1'] = 'Hæfnieinkunn'
+    ws['D1'] = 'Raðeinkunn-Lestur'
+    ws['E1'] = 'Raðeinkunn-Málnotkun'
+    ws['F1'] = 'Raðeinkunn-Heild'
+    ws['G1'] = 'Grunnskólaeinkunn-Lestur'
+    ws['H1'] = 'Grunnskólaeinkunn-Málnotkun'
+    ws['I1'] = 'Grunnskólaeinkunn-Heild'
+    ws['J1'] = 'Framfaraflokkur'
+    ws['K1'] = 'Framfaratexti'
+    # prepare data
+    results = s_models.SamraemdISLResult.objects.filter(
+        student__in     = cm_models.Student.objects.filter(school=school),
+        student_year    = group,
+        exam_date__year = year
+    )
+
+    index = 2
+    for result in results:
+        ws.cell('A' + str(index)).value = result.student.name
+        ws.cell('B' + str(index)).value = result.student.ssn
+        ws.cell('C' + str(index)).value = result.he
+        ws.cell('D' + str(index)).value = result.le_re.replace('.', ',')
+        ws.cell('E' + str(index)).value = result.mn_re.replace('.', ',')
+        ws.cell('F' + str(index)).value = result.re.replace('.', ',')
+        ws.cell('G' + str(index)).value = result.le_sg.replace('.', ',')
+        ws.cell('H' + str(index)).value = result.mn_sg.replace('.', ',')
+        ws.cell('I' + str(index)).value = result.sg
+        ws.cell('J' + str(index)).value = result.fm_fl.replace('.0', '')
+        ws.cell('K' + str(index)).value = result.fm_txt
+        index += 1
+
+    ws = wb.create_sheet(title='Stærðfræði')
+
+    ws['A1'] = 'Nemandi'
+    ws['B1'] = 'Kennitala'
+    ws['C1'] = 'Hæfnieinkunn'
+    ws['D1'] = 'Raðeinkunn-Reikningur og aðgerðir'
+    ws['E1'] = 'Raðeinkunn-Rúmfræði og mælingar'
+    ws['F1'] = 'Raðeinkunn-Algebra'
+    ws['G1'] = 'Raðeinkunn-Hlutföll og prósentur'
+    ws['H1'] = 'Raðeinkunn-Heild'
+    ws['I1'] = 'Grunnskólaeinkunn-Reikningur og aðgerðir'
+    ws['J1'] = 'Grunnskólaeinkunn-Rúmfræði og mælingar'
+    ws['K1'] = 'Grunnskólaeinkunn-Algebra'
+    ws['L1'] = 'Grunnskólaeinkunn-Hlutföll og prósentur'
+    ws['M1'] = 'Grunnskólaeinkunn-Heild'
+    ws['N1'] = 'Framfaraflokkur'
+    ws['O1'] = 'Framfaratexti'
+    ws['P1'] = 'Orðadæmi og talnadæmi'
+    # prepare data
+    results = s_models.SamraemdMathResult.objects.filter(
+        student__in     = cm_models.Student.objects.filter(school=school),
+        student_year    = group,
+        exam_date__year = year
+    )
+
+    index = 2
+    for result in results:
+        ws.cell('A' + str(index)).value = result.student.name
+        ws.cell('B' + str(index)).value = result.student.ssn
+        ws.cell('C' + str(index)).value = result.he
+        ws.cell('D' + str(index)).value = result.ra_re
+        ws.cell('E' + str(index)).value = result.rm_re
+        ws.cell('F' + str(index)).value = result.al_re
+        ws.cell('G' + str(index)).value = result.hp_re
+        ws.cell('H' + str(index)).value = result.re
+        ws.cell('I' + str(index)).value = result.ra_sg
+        ws.cell('J' + str(index)).value = result.rm_sg
+        ws.cell('K' + str(index)).value = result.al_sg
+        ws.cell('L' + str(index)).value = result.hp_sg
+        ws.cell('M' + str(index)).value = result.sg
+        ws.cell('N' + str(index)).value = result.fm_fl.replace('.0', '')
+        ws.cell('O' + str(index)).value = result.fm_txt
+        ws.cell('P' + str(index)).value = result.ord_talna_txt
+
+        index += 1
+
+    ws = wb.create_sheet(title='Enska')
+
+    ws['A1'] = 'Nemandi'
+    ws['B1'] = 'Kennitala'
+    ws['C1'] = 'Hæfnieinkunn'
+    ws['D1'] = 'Raðeinkunn-Lestur'
+    ws['E1'] = 'Raðeinkunn-Málnotkun'
+    ws['F1'] = 'Raðeinkunn-Heild'
+    ws['G1'] = 'Grunnskólaeinkunn-Lestur'
+    ws['H1'] = 'Grunnskólaeinkunn-Málnotkun'
+    ws['I1'] = 'Grunnskólaeinkunn-Heild'
+    ws['J1'] = 'Framfaraflokkur'
+    ws['K1'] = 'Framfaratexti'
+    # prepare data
+    results = s_models.SamraemdENSResult.objects.filter(
+        student__in     = cm_models.Student.objects.filter(school=school),
+        student_year    = group,
+        exam_date__year = year
+    )
+
+    index = 2
+    for result in results:
+        ws.cell('A' + str(index)).value = result.student.name
+        ws.cell('B' + str(index)).value = result.student.ssn
+        ws.cell('C' + str(index)).value = result.he
+        ws.cell('D' + str(index)).value = result.le_re.replace('.', ',')
+        ws.cell('E' + str(index)).value = result.mn_re.replace('.', ',')
+        ws.cell('F' + str(index)).value = result.re.replace('.', ',')
+        ws.cell('G' + str(index)).value = result.le_sg.replace('.', ',')
+        ws.cell('H' + str(index)).value = result.mn_sg.replace('.', ',')
+        ws.cell('I' + str(index)).value = result.sg
+        ws.cell('J' + str(index)).value = result.fm_fl.replace('.0', '')
+        ws.cell('K' + str(index)).value = result.fm_txt
+        index += 1
+
+    return wb
+
+
+def excel_result(request, school_id, year, group):
+    school   = cm_models.School.objects.get(id=school_id)
+    response = HttpResponse(
+        content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename={0}-{1}-{2}-bekkur.xlsx'.format(
+        school.name, year, group)
+    wb       = openpyxl.Workbook()
+    if int(year) < 2017:
+        wb = _excel_result_pre_2017(wb, school, group, year)
+    else: # year > 2016
+        if int(group) < 9:
+            wb = _excel_result_post_2017_yngri(wb, school, group, year)
+        else:
+            wb = _excel_result_post_2017_eldri(wb, school, group, year)
     wb.save(response)
 
     return response
@@ -178,7 +438,7 @@ class SamraemdMathResultListing(cm_mixins.SchoolEmployeeMixin, ListView):
         return context
 
 
-class SamraemdResultListing(cm_mixins.SchoolEmployeeMixin, ListView):
+class SamraemdResultListing(cm_mixins.SchoolManagerMixin, ListView):
     model = s_models.SamraemdMathResult
     template_name = 'samraemd/samraemdschoolresult_list.html'
 
