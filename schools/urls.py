@@ -2,7 +2,7 @@
 from django.conf.urls import url
 
 import schools.views as views
-from .api import SchoolViewSet, TaskMonitor
+from .api import SchoolViewSet, TaskMonitor, StudentSearch
 
 app_name = 'schools'
 urlpatterns = [
@@ -15,6 +15,9 @@ urlpatterns = [
     url(r'^api/taskmonitor/$',
         TaskMonitor.as_view(),
         name='api_task_monitor'),
+    url(r'^api/studentsearch/$',
+        StudentSearch.as_view(),
+        name='api_student_search'),
     url(r'^(?P<pk>\d+)/$',
         views.SchoolDetail.as_view(),
         name='school_detail'),
@@ -42,6 +45,9 @@ urlpatterns = [
         views.lesferill,
         name='lesferill'),
 
+    url(r'^nemandi/leit/$',
+        views.StudentAdminSearch.as_view(),
+        name='student_admin_search'),
     url(r'^(?P<school_id>\d+)/nemandi/$',
         views.StudentListing.as_view(),
         name='student_listing'),

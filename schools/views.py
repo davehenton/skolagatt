@@ -693,6 +693,11 @@ class TeacherDelete(common_mixins.SchoolManagerMixin, DeleteView):
             return reverse_lazy('schools:school_listing')
 
 
+class StudentAdminSearch(common_mixins.SuperUserMixin, ListView):
+    model = Student
+    template_name = "common/student_search.html"
+    
+
 class StudentListing(common_mixins.SchoolEmployeeMixin, ListView):
     model = Student
 

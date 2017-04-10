@@ -75,6 +75,7 @@
 	        			<ul class="dropdown-menu">
 	        				{% if user.is_superuser %}
 	        					<li><a href="{% url 'schools:admin_listing' %}">&nbsp;Skoða umsjónarmenn</a></li>
+	        					<li><a href="{% url 'schools:student_admin_search' %}">&nbsp;Leita að nemanda</a></li>
 	        				{% endif %}
 							<li>
 								<a>&nbsp;{{user.username}}</a>
