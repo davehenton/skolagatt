@@ -593,6 +593,14 @@
 			<hr />
 		{% endif %}
 	{% endfor %}
+	<div>
+		<h4>Hrágögn</h4>
+		{% for link in rawlinks %}
+			<div class="row">
+				<div class="col-md-4"><a href="{% url 'samraemd:result_detail_raw' school.id link.exam_date|date:'Y' link.student_year %}">Próf frá: {{link.exam_date|date:'Y'}} {{link.student_year}}. bekk - <i>hrágögn</i></a></div>
+			</div>
+		{% endfor %}
+	</div>
 {% endblock %}
 
 {% block script %}

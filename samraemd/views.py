@@ -230,8 +230,12 @@ class SamraemdResultListing(cm_mixins.SchoolEmployeeMixin, ListView):
                     student_results[result.student] = [result]
             results.append((year, group, student_results))
 
+        rawlinks = s_models.SamraemdResult.objects.filter(
+            student__in = school.students.all()
+        ).values('exam_date', 'student_year', 'exam_code', 'exam_name').distinct()
         context['school'] = school
         context['results'] = results
+        context['rawlinks'] = rawlinks
         return context
 
 
