@@ -1,20 +1,328 @@
 {% extends 'common/index.html'%}
 {% include staticfiles%}
 {% block content %}
-	<h3>Samræmd próf</h3>
+	<h2>Niðurstöður samræmdra prófa</h2>
+	{% for year, group, student_results in results %}
+	<div class="row not-on-einstaklingsblod">
+		<div class="col-md-12">
+			<h3>Próf {{group}}. árgangs {{year}}
+				<div class="btn-group pull-right" role="group" aria-label="...">
+				{% if school.id %}
+					<a href="{% url 'samraemd:result_print' school.id year group %}" class="btn btn-primary" target="_blank">Prentvæn einkunnablöð</a>
+					<a href="{% url 'samraemd:result_excel' school.id year group %}" class="btn btn-default" target="_blank">Excel</a>
+				{% else %}
+					<a href="{% url 'samraemd:admin_result_print' year group %}" class="btn btn-default" target="_blank">Prentvæn einkunnablöð</a>
+				{% endif %}
+				</div>
+			</h3>
+			<h4>{{exam_code}}</h4>
+		</div>
+	</div>
 	<div>
 		<div class="row">
-			<div class="col-md-4"><h4>Próf</h4></div>
+			<table class="table table-striped table-hover student_list">
+				<thead>
+					<tr>
+						<th>Nemandi</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for student, results in student_results.items %}
+						<tr>
+							<td>
+								{{student}}
+								<div class="btn-group pull-right" role="group">
+									<button type="button" class="btn btn-sm btn-default" data-toggle="modal" data-target="#nem-{{student.id}}">Niðurstöður</button>
+									{% if school %}
+										<a href="{% url 'samraemd:result_single_print' school.id year group student.id %}" class="btn btn-sm btn-info" target="_blank">Prentvænt einkunnablað</a>
+									{% else %}
+									{% endif %}
+								</div>
+							</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+			{% for student, results in student_results.items %}
+				<div class="modal fade bs-example-modal-lg" id="nem-{{student.id}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+				  <div class="modal-dialog modal-lg" role="document">
+				    <div class="modal-content">
+				      <div class="modal-header">
+				        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				        <h4 class="modal-title" id="nem-{{student.id}}Label">{{student}}</h4>
+				      </div>
+				      <div class="modal-body">
+				        {% for result in results %}
+							{% if result.result_type == 'ÍSL' %}
+							<h4>Íslenska</h4>
+							<div class="table-responsive">
+								<table class="table table-striped table-bordered table-hover table-responsive">
+									<thead class="thead-default">
+										<tr class="info">
+											<th colspan="4">Samræmd einkunn</th>
+											<th colspan="4">Raðeinkunn</th>
+											<th colspan="4">Grunnskólaeinkunn</th>
+											<th colspan="2">Framfaraeinkunn</th>
+										</tr>
+										<tr>
+											<th>Lestur</th>
+											<th>Málnotkun</th>
+											<th>Ritun</th>
+											<th>Heild</th>
+											<th>Lestur</th>
+											<th>Málnotkun</th>
+											<th>Ritun</th>
+											<th>Heild</th>
+											<th>Lestur</th>
+											<th>Málnotkun</th>
+											<th>Ritun</th>
+											<th>Heild</th>
+											<th>Framfaraflokkur</th>
+											<th>Framfaratexti</th
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<td>{{ result.le_se }}</td>
+											<td>{{ result.mn_se }}</td>
+											<td>{{ result.ri_se }}</td>
+											<td>{{ result.se }}</td>
+											<td>{{ result.le_re }}</td>
+											<td>{{ result.mn_re }}</td>
+											<td>{{ result.ri_re }}</td>
+											<td>{{ result.re }}</td>
+											<td>{{ result.le_sg }}</td>
+											<td>{{ result.mn_sg }}</td>
+											<td>{{ result.ri_sg }}</td>
+											<td>{{ result.sg }}</td>
+											<td>{{ result.fm_fl }}</td>
+											<td>{{ result.fm_txt }}</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+							{% elif result.result_type == 'ENS' %}
+							<h4>Enska</h4>
+							<div class="table-responsive">
+								<table class="table table-striped table-bordered table-hover table-responsive">
+									<thead class="thead-default">
+										<tr class="info">
+											<th colspan="4">Samræmd einkunn</th>
+											<th colspan="4">Raðeinkunn</th>
+											<th colspan="4">Grunnskólaeinkunn</th>
+											<th colspan="2">Framfaraeinkunn</th>
+										</tr>
+										<tr>
+											<th>Lestur</th>
+											<th>Málnotkun</th>
+											<th>Ritun</th>
+											<th>Heild</th>
+											<th>Lestur</th>
+											<th>Málnotkun</th>
+											<th>Ritun</th>
+											<th>Heild</th>
+											<th>Lestur</th>
+											<th>Málnotkun</th>
+											<th>Ritun</th>
+											<th>Heild</th>
+											<th>Framfaraflokkur</th>
+											<th>Framfaratexti</th
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<td>{{ result.le_se }}</td>
+											<td>{{ result.mn_se }}</td>
+											<td>{{ result.ri_se }}</td>
+											<td>{{ result.se }}</td>
+											<td>{{ result.le_re }}</td>
+											<td>{{ result.mn_re }}</td>
+											<td>{{ result.ri_re }}</td>
+											<td>{{ result.re }}</td>
+											<td>{{ result.le_sg }}</td>
+											<td>{{ result.mn_sg }}</td>
+											<td>{{ result.ri_sg }}</td>
+											<td>{{ result.sg }}</td>
+											<td>{{ result.fm_fl }}</td>
+											<td>{{ result.fm_txt }}</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+							{% elif result.result_type == 'STÆ' %}
+							<h4>Stærðfræði</h4>
+							<div class="table-responsive">
+								<table class="table table-striped table-bordered table-hover table-responsive">
+									<thead class="thead-default">
+										<tr class="info">
+											<th colspan="4">Samræmd einkunn</th>
+											<th colspan="4">Raðeinkunn</th>
+											<th colspan="4">Grunnskólaeinkunn</th>
+											<th colspan="2">Framfaraeinkunn</th>
+											<th></th>
+										</tr>
+										<tr>
+											<th>Reikningur og aðgerðir</th>
+											<th>Rúmfræði og mælingar</th>
+											<th>Tölur og talnaskilningur</th>
+											<th>Heild</th>
+											<th>Reikningur og aðgerðir</th>
+											<th>Rúmfræði og mælingar</th>
+											<th>Tölur og talnaskilningur</th>
+											<th>Heild</th>
+											<th>Reikningur og aðgerðir</th>
+											<th>Rúmfræði og mælingar</th>
+											<th>Tölur og talnaskilningur</th>
+											<th>Heild</th>
+											<th>Framfaraflokkur</th>
+											<th>Framfaratexti</th>
+											<th>Orðadæmi og talnadæmi</th>
+										</tr>
+									</thead>
+									<tbody>
+									<tr>
+										<td>{{ result.ra_se }}</td>
+										<td>{{ result.rm_se }}</td>
+										<td>{{ result.tt_se }}</td>
+										<td>{{ result.se }}</td>
+										<td>{{ result.ra_re }}</td>
+										<td>{{ result.rm_re }}</td>
+										<td>{{ result.tt_re }}</td>
+										<td>{{ result.re }}</td>
+										<td>{{ result.ra_sg }}</td>
+										<td>{{ result.rm_sg }}</td>
+										<td>{{ result.tt_sg }}</td>
+										<td>{{ result.sg }}</td>
+										<td>{{ result.fm_fl }}</td>
+										<td>{{ result.fm_txt }}</td>
+										<td>{{ result.ord_talna_txt }}</td>
+									</tr>
+									</tbody>
+								</table>
+							</div>
+							{% else %}
+								{% if result.le_se %}
+								<div class="table-responsive">
+									<table class="table table-striped table-bordered table-hover table-responsive">
+										<thead class="thead-default">
+											<tr class="info">
+												<th colspan="4">Samræmd einkunn</th>
+												<th colspan="4">Raðeinkunn</th>
+												<th colspan="4">Grunnskólaeinkunn</th>
+												<th colspan="2">Framfaraeinkunn</th>
+											</tr>
+											<tr>
+												<th>Lestur</th>
+												<th>Málnotkun</th>
+												<th>Ritun</th>
+												<th>Heild</th>
+												<th>Lestur</th>
+												<th>Málnotkun</th>
+												<th>Ritun</th>
+												<th>Heild</th>
+												<th>Lestur</th>
+												<th>Málnotkun</th>
+												<th>Ritun</th>
+												<th>Heild</th>
+												<th>Framfaraflokkur</th>
+												<th>Framfaratexti</th
+											</tr>				
+										</thead>
+										<tbody>
+											<tr>
+												<td>{{ result.le_se }}</td>
+												<td>{{ result.mn_se }}</td>
+												<td>{{ result.ri_se }}</td>
+												<td>{{ result.se }}</td>
+												<td>{{ result.le_re }}</td>
+												<td>{{ result.mn_re }}</td>
+												<td>{{ result.ri_re }}</td>
+												<td>{{ result.re }}</td>
+												<td>{{ result.le_sg }}</td>
+												<td>{{ result.mn_sg }}</td>
+												<td>{{ result.ri_sg }}</td>
+												<td>{{ result.sg }}</td>
+												<td>{{ result.fm_fl }}</td>
+												<td>{{ result.fm_txt }}</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+								{% else %}
+								<div class="table-responsive">
+									<table class="table table-striped table-bordered table-hover table-responsive">
+										<thead class="thead-default">
+											<tr class="info">
+												<th colspan="4">Samræmd einkunn</th>
+												<th colspan="4">Raðeinkunn</th>
+												<th colspan="4">Grunnskólaeinkunn</th>
+												<th colspan="2">Framfaraeinkunn</th>
+												<th></th>
+											</tr>
+											<tr>
+												<th>Reikningur og aðgerðir</th>
+												<th>Rúmfræði og mælingar</th>
+												<th>Tölur og talnaskilningur</th>
+												<th>Heild</th>
+												<th>Reikningur og aðgerðir</th>
+												<th>Rúmfræði og mælingar</th>
+												<th>Tölur og talnaskilningur</th>
+												<th>Heild</th>
+												<th>Reikningur og aðgerðir</th>
+												<th>Rúmfræði og mælingar</th>
+												<th>Tölur og talnaskilningur</th>
+												<th>Heild</th>
+												<th>Framfaraflokkur</th>
+												<th>Framfaratexti</th>
+												<th>Orðadæmi og talnadæmi</th>
+											</tr>				
+										</thead>
+										<tbody>
+										<tr>
+											<td>{{ result.ra_se }}</td>
+											<td>{{ result.rm_se }}</td>
+											<td>{{ result.tt_se }}</td>
+											<td>{{ result.se }}</td>
+											<td>{{ result.ra_re }}</td>
+											<td>{{ result.rm_re }}</td>
+											<td>{{ result.tt_re }}</td>
+											<td>{{ result.re }}</td>
+											<td>{{ result.ra_sg }}</td>
+											<td>{{ result.rm_sg }}</td>
+											<td>{{ result.tt_sg }}</td>
+											<td>{{ result.sg }}</td>
+											<td>{{ result.fm_fl }}</td>
+											<td>{{ result.fm_txt }}</td>
+											<td>{{ result.ord_talna_txt }}</td>
+										</tr>
+										</tbody>
+									</table>
+								</div>
+								{% endif %}
+							{% endif %}
+						{% endfor %}
+				      </div>
+				      <div class="modal-footer">
+				      	{% if school %}
+				      		<a href="{% url 'samraemd:result_single_print' school.id year group student.id %}" class="btn btn-sm btn-info" target="_blank">Prentvænt einkunnablað</a>
+				      	{% else %}
+						{% endif %}
+				        <button type="button" class="btn btn-default" data-dismiss="modal">Loka</button>
+				      </div>
+				    </div>
+				  </div>
+				</div>
+			{% endfor %}
 		</div>
-		{% for link in links %}
-		<div class="row">
-			<div class="col-md-4"><a href="{% url 'samraemd:result_detail' school_id link.exam_date|date:'Y' link.student_year %}">Próf frá: {{link.exam_date|date:'Y'}} {{link.student_year}}. bekk</a></div>
-		</div>
-		{% endfor %}
-		{% for link in rawlinks %}
-		<div class="row">
-			<div class="col-md-4"><a href="{% url 'samraemd:result_detail_raw' school_id link.exam_date|date:'Y' link.student_year %}">Próf frá: {{link.exam_date|date:'Y'}} {{link.student_year}}. bekk - <i>hrágögn</i></a></div>
-		</div>
-		{% endfor %}
 	</div>
+	{% endfor %}
+{% endblock %}
+
+{% block script %}
+<script type="text/javascript">
+	dataTable_settings["columnDefs"] = [
+       { "type": 'icelandic-html', "targets": [0] }
+    ];
+	$('.student_list').DataTable(dataTable_settings);
+</script>
 {% endblock %}

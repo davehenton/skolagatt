@@ -187,24 +187,51 @@ class SamraemdResultListing(cm_mixins.SchoolEmployeeMixin, ListView):
         context = super(SamraemdResultListing, self).get_context_data(**kwargs)
         school  = cm_models.School.objects.get(pk=self.kwargs['school_id'])
 
-        m_exams = s_models.SamraemdMathResult.objects.filter(
+        m_dates = s_models.SamraemdMathResult.objects.filter(
             student__in = school.students.all()
-        ).values('exam_date', 'student_year', 'exam_code').distinct()
-        i_exams = s_models.SamraemdISLResult.objects.filter(
+        ).values('exam_date', 'student_year').distinct()
+        m_yg = [ (x['exam_date'].year, x['student_year']) for x in m_dates ]
+        i_dates = s_models.SamraemdISLResult.objects.filter(
             student__in = school.students.all()
-        ).values('exam_date', 'student_year', 'exam_code').distinct()
-        e_exams = s_models.SamraemdENSResult.objects.filter(
+        ).values('exam_date', 'student_year').distinct()
+        i_yg = [ (x['exam_date'].year, x['student_year']) for x in i_dates ]
+        e_dates = s_models.SamraemdENSResult.objects.filter(
             student__in = school.students.all()
-        ).values('exam_date', 'student_year', 'exam_code').distinct()
-        exams   = s_models.SamraemdResult.objects.filter(
-            student__in = school.students.all()
-        ).values('exam_date', 'student_year', 'exam_code', 'exam_name').distinct()
+        ).values('exam_date', 'student_year').distinct()
+        e_yg = [ (x['exam_date'].year, x['student_year']) for x in e_dates ]
+        dates = list(set().union(m_yg, i_yg, e_yg))
+
+        s_dates = sorted(dates, key=lambda tup: (tup[0], tup[1]), reverse=True)
+
+        results = []
+
+        for year, group in s_dates:
+            student_results = {}
+            for result in list(chain(
+                s_models.SamraemdISLResult.objects.filter(
+                    student__in     = cm_models.Student.objects.filter(school=school),
+                    student_year    = group,
+                    exam_date__year = year,
+                ).annotate(result_type = Value('ÍSL', CharField())),
+                s_models.SamraemdMathResult.objects.filter(
+                    student__in     = cm_models.Student.objects.filter(school=school),
+                    student_year    = group,
+                    exam_date__year = year,
+                ).annotate(result_type = Value('STÆ', CharField())),
+                s_models.SamraemdENSResult.objects.filter(
+                    student__in     = cm_models.Student.objects.filter(school=school),
+                    student_year    = group,
+                    exam_date__year = year,
+                ).annotate(result_type = Value('ENS', CharField())),
+            )):
+                if result.student in student_results:
+                    student_results[result.student].append(result)
+                else:
+                    student_results[result.student] = [result]
+            results.append((year, group, student_results))
 
         context['school'] = school
-        context['exams']     = list(chain(m_exams, i_exams, e_exams))
-        context['links']     = m_exams
-        context['rawlinks']  = exams
-        context['school_id'] = school.id
+        context['results'] = results
         return context
 
 
