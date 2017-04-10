@@ -1,0 +1,44 @@
+{% extends 'common/index.html'%}
+
+{% block content %}
+<div>
+	<div class="row">
+		<div class="form-group">
+			<label for="search-box">Leitarskilyrði</label>
+			<input type="text" class="form-control" id="search-box">
+		</div>
+	</div>
+	<div class="row">
+		<table class="table table-striped table-hover">
+			<thead>
+				<tr>
+					<th><h4>Nafn</h4></th>
+					<th><h4>Kennitala</h4></th>
+					<td class="col-xs-1"><h4>Aðgerðir</h4></td>
+				</tr>
+			</thead>
+			<tbody id="search-results">
+			</tbody>
+		</table>
+	</div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+	$('#search-box').keyup(function(event){
+		if ($(this).val().length > 1) {
+			$.get( "{% url 'schools:api_student_search' %}?q=" + $(this).val(), function( results ) {
+				$('table tbody tr').remove();
+				results.forEach(function(result){
+					newhtml = '<tr><td>' + result['name'] + '</td><td>' + result['ssn'] + '</td><td><a href="/skoli/' + result['school__id'] + '/nemandi/' + result['id'] + '/update/"><span class="glyphicon glyphicon-pencil"></span></a></td></tr>';
+					$('table tbody').append(newhtml);
+				});
+			});
+		} else {
+			$('table tbody tr').remove();
+		}
+	});
+</script>
+
+{% endblock %}
