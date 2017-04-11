@@ -31,7 +31,7 @@
 			$.get( "{% url 'schools:api_student_search' %}?q=" + $(this).val(), function( results ) {
 				$('table tbody tr').remove();
 				results.forEach(function(result){
-					newhtml = '<tr><td>' + result['name'] + '</td><td>' + result['ssn'] + '</td><td><a href="/skoli/' + result['school__id'] + '/nemandi/' + result['id'] + '/update/"><span class="glyphicon glyphicon-pencil"></span></a></td></tr>';
+					newhtml = '<tr><td><a href="/skoli/' + result['school__id'] + '/nemandi/' + result['id'] + '">' + result['name'] + '</a></td><td>' + result['ssn'] + '</td><td><a href="/skoli/' + result['school__id'] + '/nemandi/' + result['id'] + '/update/"><span class="glyphicon glyphicon-pencil"></span></a>&nbsp;<a href="/skoli/' + result['school__id'] + '/nemandi/' + result['id'] + '/delete/"><span class="glyphicon glyphicon-trash"></span></a></td></tr>';
 					$('table tbody').append(newhtml);
 				});
 			});
