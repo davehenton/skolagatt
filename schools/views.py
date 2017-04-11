@@ -966,8 +966,13 @@ class StudentGroupDetail(common_mixins.SchoolEmployeeMixin, DetailView):
                 student_year    = self.object.student_year,
             ),
         ))
+
         if samraemd_results:
             context['samraemd'] = True
+
+        context['rawdata'] = ExampleSurveyAnswer.objects.filter(
+            student__in = self.object.students.all(),
+        ).exists()
 
 
         return context

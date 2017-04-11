@@ -109,6 +109,9 @@
 		<div class="row">
 			<h4>Samræmd próf</h4>
 			<a href="{% url 'samraemd:result_list_studentgroup' school.id studentgroup.id %}">Niðurstöður úr samræmdum prófum</a>
+			{% if rawdata %}
+				<a href="{% url 'schools:example_survey_listing_studentgroup' school.id studentgroup.id %}">Hrágögn</a>
+			{% endif %}
 		</div>
 		{% endif %}
 	</div>
