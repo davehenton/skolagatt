@@ -15,7 +15,7 @@
 				{% if school.id %}
 					{% if studentgroup %}
 						<a href="{% url 'samraemd:result_print_studentgroup' school.id year group studentgroup.id %}" class="btn btn-primary" target="_blank">Prentvæn einkunnablöð</a>
-						<a href="{% url 'samraemd:result_excel_studentgroup' school.id year group %}" class="btn btn-default" target="_blank">Excel</a>
+						<a href="{% url 'samraemd:result_excel_studentgroup' school.id year group studentgroup.id %}" class="btn btn-default" target="_blank">Excel</a>
 					{% else %}
 						<a href="{% url 'samraemd:result_print' school.id year group %}" class="btn btn-primary" target="_blank">Prentvæn einkunnablöð</a>
 						<a href="{% url 'samraemd:result_excel' school.id year group %}" class="btn btn-default" target="_blank">Excel</a>
