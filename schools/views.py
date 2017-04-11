@@ -11,6 +11,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from celery.task.control import inspect
 
+from itertools import chain
 from uuid      import uuid4
 from datetime  import datetime, date
 from ast       import literal_eval
@@ -34,6 +35,7 @@ from common.models import (
 )
 import common.util   as common_util
 import common.forms  as cm_forms
+import samraemd.models as s_models
 from survey.models import (
     Survey, SurveyGradingTemplate, SurveyInputField,
     SurveyInputGroup, SurveyResource, SurveyTransformation,
@@ -949,6 +951,25 @@ class StudentGroupDetail(common_mixins.SchoolEmployeeMixin, DetailView):
         )
         context['students']    = common_util.slug_sort(self.object.students.all(), 'name')
         context['teachers']    = common_util.slug_sort(self.object.group_managers.all(), 'name')
+        context['samraemd'] = False
+        samraemd_results = list(chain(
+            s_models.SamraemdISLResult.objects.filter(
+                student__in     = self.object.students.all(),
+                student_year    = self.object.student_year,
+            ),
+            s_models.SamraemdMathResult.objects.filter(
+                student__in     = self.object.students.all(),
+                student_year    = self.object.student_year,
+            ),
+            s_models.SamraemdENSResult.objects.filter(
+                student__in     = self.object.students.all(),
+                student_year    = self.object.student_year,
+            ),
+        ))
+        if samraemd_results:
+            context['samraemd'] = True
+
+
         return context
 
 
