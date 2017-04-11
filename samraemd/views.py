@@ -439,6 +439,7 @@ class SamraemdMathResultListing(cm_mixins.SchoolEmployeeMixin, ListView):
 
 
 class SamraemdStudentGroupResultListing(cm_mixins.SchoolTeacherMixin, ListView):
+    model = s_models.SamraemdMathResult
     template_name = 'samraemd/samraemdschoolresult_list.html'
 
     def get_context_data(self, **kwargs):
