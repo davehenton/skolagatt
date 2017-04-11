@@ -20,7 +20,7 @@ import samraemd.util   as s_util
 import samraemd.forms as forms
 from samraemd.tasks import save_samraemd_result
 
-def _excel_result_pre_2017(wb, school, group, year):
+def _excel_result_pre_2017(wb, school, group, year, studentgroup_id=None):
     ws       = wb.get_active_sheet()
     ws.title = "Íslenska"
 
@@ -41,11 +41,23 @@ def _excel_result_pre_2017(wb, school, group, year):
     ws['O1'] = 'Framfaraflokkur'
     ws['P1'] = 'Framfaratexti'
     # prepare data
-    results = s_models.SamraemdISLResult.objects.filter(
-        student__in     = cm_models.Student.objects.filter(school=school),
-        student_year    = group,
-        exam_date__year = year
-    )
+    studentgroup = None
+    if studentgroup_id:
+        studentgroup = cm_models.StudentGroup.objects.get(pk=studentgroup_id)
+
+    results = []
+    if studentgroup:
+        results = s_models.SamraemdISLResult.objects.filter(
+            student__in = studentgroup.students.all(),
+            student_year = group,
+            exam_date__year = year,
+        )
+    else:
+        results = s_models.SamraemdISLResult.objects.filter(
+            student__in     = cm_models.Student.objects.filter(school=school),
+            student_year    = group,
+            exam_date__year = year
+        )
 
     index = 2
     for result in results:
@@ -86,11 +98,18 @@ def _excel_result_pre_2017(wb, school, group, year):
     ws['P1'] = 'Framfaratexti'
     ws['Q1'] = 'Orðadæmi og talnadæmi'
     # prepare data
-    results = s_models.SamraemdMathResult.objects.filter(
-        student__in     = cm_models.Student.objects.filter(school=school),
-        student_year    = group,
-        exam_date__year = year
-    )
+    if studentgroup:
+        results = s_models.SamraemdMathResult.objects.filter(
+            student__in = studentgroup.students.all(),
+            student_year = group,
+            exam_date__year = year,
+        )
+    else:
+        results = s_models.SamraemdMathResult.objects.filter(
+            student__in     = cm_models.Student.objects.filter(school=school),
+            student_year    = group,
+            exam_date__year = year
+        )
 
     index = 2
     for result in results:
@@ -115,7 +134,7 @@ def _excel_result_pre_2017(wb, school, group, year):
     return wb
 
 
-def _excel_result_post_2017_yngri(wb, school, group, year):
+def _excel_result_post_2017_yngri(wb, school, group, year, studentgroup_id=None):
     ws       = wb.get_active_sheet()
     ws.title = "Íslenska"
 
@@ -134,11 +153,23 @@ def _excel_result_post_2017_yngri(wb, school, group, year):
     ws['M1'] = 'Framfaratexti'
 
     # prepare data
-    results = s_models.SamraemdISLResult.objects.filter(
-        student__in     = cm_models.Student.objects.filter(school=school),
-        student_year    = group,
-        exam_date__year = year
-    )
+    studentgroup = None
+    if studentgroup_id:
+        studentgroup = cm_models.StudentGroup.objects.get(pk=studentgroup_id)
+
+    results = []
+    if studentgroup:
+        results = s_models.SamraemdISLResult.objects.filter(
+            student__in = studentgroup.students.all(),
+            student_year = group,
+            exam_date__year = year,
+        )
+    else:
+        results = s_models.SamraemdISLResult.objects.filter(
+            student__in     = cm_models.Student.objects.filter(school=school),
+            student_year    = group,
+            exam_date__year = year
+        )
 
     index = 2
     for result in results:
@@ -176,11 +207,19 @@ def _excel_result_post_2017_yngri(wb, school, group, year):
     ws['N1'] = 'Orðadæmi og talnadæmi'
 
     # prepare data
-    results = s_models.SamraemdMathResult.objects.filter(
-        student__in     = cm_models.Student.objects.filter(school=school),
-        student_year    = group,
-        exam_date__year = year
-    )
+    results = []
+    if studentgroup:
+        results = s_models.SamraemdMathResult.objects.filter(
+            student__in = studentgroup.students.all(),
+            student_year = group,
+            exam_date__year = year,
+        )
+    else:
+        results = s_models.SamraemdMathResult.objects.filter(
+            student__in     = cm_models.Student.objects.filter(school=school),
+            student_year    = group,
+            exam_date__year = year
+        )
 
     index = 2
     for result in results:
@@ -201,51 +240,10 @@ def _excel_result_post_2017_yngri(wb, school, group, year):
 
         index += 1
 
-    ws = wb.create_sheet(title='Enska')
-
-    ws['A1'] = 'Nemandi'
-    ws['B1'] = 'Kennitala'
-    ws['C1'] = 'Hæfnieinkunn'
-    ws['D1'] = 'Raðeinkunn-Lestur'
-    ws['E1'] = 'Raðeinkunn-Málnotkun'
-    ws['F1'] = 'Raðeinkunn-Ritun'
-    ws['G1'] = 'Raðeinkunn-Heild'
-    ws['H1'] = 'Grunnskólaeinkunn-Lestur'
-    ws['I1'] = 'Grunnskólaeinkunn-Málnotkun'
-    ws['J1'] = 'Grunnskólaeinkunn-Ritun'
-    ws['K1'] = 'Grunnskólaeinkunn-Heild'
-    ws['L1'] = 'Framfaraflokkur'
-    ws['M1'] = 'Framfaratexti'
-
-    # prepare data
-    results = s_models.SamraemdENSResult.objects.filter(
-        student__in     = cm_models.Student.objects.filter(school=school),
-        student_year    = group,
-        exam_date__year = year
-    )
-
-    index = 2
-    for result in results:
-        ws.cell('A' + str(index)).value = result.student.name
-        ws.cell('B' + str(index)).value = result.student.ssn
-        ws.cell('C' + str(index)).value = result.he
-        ws.cell('D' + str(index)).value = result.le_re.replace('.', ',')
-        ws.cell('E' + str(index)).value = result.mn_re.replace('.', ',')
-        ws.cell('F' + str(index)).value = result.ri_re.replace('.', ',')
-        ws.cell('G' + str(index)).value = result.re.replace('.', ',')
-        ws.cell('H' + str(index)).value = result.le_sg.replace('.', ',')
-        ws.cell('I' + str(index)).value = result.mn_sg.replace('.', ',')
-        ws.cell('J' + str(index)).value = result.ri_sg
-        ws.cell('K' + str(index)).value = result.sg
-        ws.cell('L' + str(index)).value = result.fm_fl.replace('.0', '')
-        ws.cell('M' + str(index)).value = result.fm_txt
-        
-        index += 1
-
     return wb
 
 
-def _excel_result_post_2017_eldri(wb, school, group, year):
+def _excel_result_post_2017_eldri(wb, school, group, year, studentgroup_id=None):
     ws       = wb.get_active_sheet()
     ws.title = "Íslenska"
 
@@ -261,11 +259,23 @@ def _excel_result_post_2017_eldri(wb, school, group, year):
     ws['J1'] = 'Framfaraflokkur'
     ws['K1'] = 'Framfaratexti'
     # prepare data
-    results = s_models.SamraemdISLResult.objects.filter(
-        student__in     = cm_models.Student.objects.filter(school=school),
-        student_year    = group,
-        exam_date__year = year
-    )
+    studentgroup = None
+    if studentgroup_id:
+        studentgroup = cm_models.StudentGroup.objects.get(pk=studentgroup_id)
+
+    results = []
+    if studentgroup:
+        results = s_models.SamraemdISLResult.objects.filter(
+            student__in = studentgroup.students.all(),
+            student_year = group,
+            exam_date__year = year,
+        )
+    else:
+        results = s_models.SamraemdISLResult.objects.filter(
+            student__in     = cm_models.Student.objects.filter(school=school),
+            student_year    = group,
+            exam_date__year = year
+        )
 
     index = 2
     for result in results:
@@ -301,11 +311,19 @@ def _excel_result_post_2017_eldri(wb, school, group, year):
     ws['O1'] = 'Framfaratexti'
     ws['P1'] = 'Orðadæmi og talnadæmi'
     # prepare data
-    results = s_models.SamraemdMathResult.objects.filter(
-        student__in     = cm_models.Student.objects.filter(school=school),
-        student_year    = group,
-        exam_date__year = year
-    )
+    results = []
+    if studentgroup:
+        results = s_models.SamraemdMathResult.objects.filter(
+            student__in = studentgroup.students.all(),
+            student_year = group,
+            exam_date__year = year,
+        )
+    else:
+        results = s_models.SamraemdMathResult.objects.filter(
+            student__in     = cm_models.Student.objects.filter(school=school),
+            student_year    = group,
+            exam_date__year = year
+        )
 
     index = 2
     for result in results:
@@ -342,11 +360,19 @@ def _excel_result_post_2017_eldri(wb, school, group, year):
     ws['J1'] = 'Framfaraflokkur'
     ws['K1'] = 'Framfaratexti'
     # prepare data
-    results = s_models.SamraemdENSResult.objects.filter(
-        student__in     = cm_models.Student.objects.filter(school=school),
-        student_year    = group,
-        exam_date__year = year
-    )
+    results = []
+    if studentgroup:
+        results = s_models.SamraemdENSResult.objects.filter(
+            student__in = studentgroup.students.all(),
+            student_year = group,
+            exam_date__year = year,
+        )
+    else:
+        results = s_models.SamraemdENSResult.objects.filter(
+            student__in     = cm_models.Student.objects.filter(school=school),
+            student_year    = group,
+            exam_date__year = year
+        )
 
     index = 2
     for result in results:
@@ -366,7 +392,7 @@ def _excel_result_post_2017_eldri(wb, school, group, year):
     return wb
 
 
-def excel_result(request, school_id, year, group):
+def excel_result(request, school_id, year, group, studentgroup_id=None):
     school   = cm_models.School.objects.get(id=school_id)
     response = HttpResponse(
         content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
@@ -374,12 +400,12 @@ def excel_result(request, school_id, year, group):
         school.name, year, group)
     wb       = openpyxl.Workbook()
     if int(year) < 2017:
-        wb = _excel_result_pre_2017(wb, school, group, year)
+        wb = _excel_result_pre_2017(wb, school, group, year, studentgroup_id)
     else: # year > 2016
         if int(group) < 9:
-            wb = _excel_result_post_2017_yngri(wb, school, group, year)
+            wb = _excel_result_post_2017_yngri(wb, school, group, year, studentgroup_id)
         else:
-            wb = _excel_result_post_2017_eldri(wb, school, group, year)
+            wb = _excel_result_post_2017_eldri(wb, school, group, year, studentgroup_id)
     wb.save(response)
 
     return response
@@ -604,6 +630,29 @@ class SamraemdResultDetail(cm_mixins.SchoolManagerMixin, DetailView):
                     ).annotate(result_type = Value('STÆ', CharField())),
                     s_models.SamraemdENSResult.objects.filter(
                         student         = student,
+                        student_year    = group,
+                        exam_date__year = year,
+                    ).annotate(result_type = Value('ENS', CharField())),
+                )):
+                    if result.student in student_results:
+                        student_results[result.student].append(result)
+                    else:
+                        student_results[result.student] = [result]
+            elif 'studentgroup_id' in self.kwargs:
+                studentgroup = cm_models.StudentGroup.objects.get(pk=self.kwargs['studentgroup_id'])
+                for result in list(chain(
+                    s_models.SamraemdISLResult.objects.filter(
+                        student__in     = studentgroup.students.all(),
+                        student_year    = group,
+                        exam_date__year = year,
+                    ).annotate(result_type = Value('ÍSL', CharField())),
+                    s_models.SamraemdMathResult.objects.filter(
+                        student__in     = studentgroup.students.all(),
+                        student_year    = group,
+                        exam_date__year = year,
+                    ).annotate(result_type = Value('STÆ', CharField())),
+                    s_models.SamraemdENSResult.objects.filter(
+                        student__in     = studentgroup.students.all(),
                         student_year    = group,
                         exam_date__year = year,
                     ).annotate(result_type = Value('ENS', CharField())),
