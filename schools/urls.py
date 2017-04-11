@@ -197,7 +197,7 @@ urlpatterns = [
     url(r'^(?P<school_id>\d+)/hrágögn/$',
         views.ExampleSurveyListing.as_view(),
         name='example_survey_listing'),
-    url(r'^(?P<school_id>\d+)/bekkur/(?P<studentgroup_id>\d+/hrágögn/$',
+    url(r'^(?P<school_id>\d+)/bekkur/(?P<studentgroup_id>\d+)/hrágögn/$',
         views.ExampleSurveyListing.as_view(),
         name='example_survey_listing_studentgroup'),
     url(r'^(?P<school_id>\d+)/hrágögn/almennt/(?P<groupsurvey_id>\d+)/nemandi/(?P<student_id>\d+)/$',
