@@ -23,7 +23,6 @@ def save_example_survey_answers(newdata):
     quickcode_cache = {}
     # Iterate through the data
     logger.info("Importing a new set of ExampleSurveyAnswers ({} entries)".format(len(newdata)))
-    updated = 0
     added = 0
     newdata_len = len(newdata)
     loop_counter = 0
@@ -62,24 +61,9 @@ def save_example_survey_answers(newdata):
             else:
                 groupsurvey = survey_cache[survey_identifier]
 
-        answer = ExampleSurveyAnswer.objects.filter(
-            student = student,
-            question = question,
-            date = newentry['exam_date'],
-        )
-
+        added += 1
         boolanswer = True if newentry['answer'] == '1' else False
-
-        if answer:
-            updated += 1
-            answer.update(
-                groupsurvey = groupsurvey,
-                exam_code = exam_code,
-                answer = boolanswer,
-            )
-        else:
-            added += 1
-            answer = ExampleSurveyAnswer.objects.create(
+        answer = ExampleSurveyAnswer.objects.create(
                 student = student,
                 question = question,
                 groupsurvey = groupsurvey,
@@ -87,5 +71,6 @@ def save_example_survey_answers(newdata):
                 date = newentry['exam_date'],
                 answer = boolanswer,
             )
-    logger.info("Done. Added {} entries, updated {} entries".format(added, updated))
+
+    logger.info("Done. Added {} entries".format(added))
     return
