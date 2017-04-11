@@ -1731,7 +1731,7 @@ class ExampleSurveyListing(common_mixins.SchoolTeacherMixin, ListView):
         # xxx will be available in the template as the related objects
         context           = super(ExampleSurveyListing, self).get_context_data(**kwargs)
         school            = School.objects.get(pk=self.kwargs['school_id'])
-        context['school'] = school_id
+        context['school'] = school
 
         studentgroup = None
         if 'studentgroup_id' in self.kwargs:
