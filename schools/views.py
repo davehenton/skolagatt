@@ -906,6 +906,7 @@ class StudentDelete(common_mixins.SchoolManagerMixin, DeleteView):
             # remove student from all studentgroups in school
             for group in StudentGroup.objects.filter(school=self.kwargs.get('school_id')):
                 group.students.remove(self.object)
+        self.object.delete()
         return HttpResponseRedirect(self.get_success_url())
 
     def get_success_url(self):
