@@ -1756,7 +1756,7 @@ class ExampleSurveyListing(common_mixins.SchoolTeacherMixin, ListView):
             # Get all studentgroups for this school where a student in the studentgroup has results in ExampleSurveyAnswer
             studentgroup_ids = []
             if studentgroup:
-                studentgroup_ids = [studentgroup]
+                studentgroup_ids = [studentgroup.id]
             else:
                 studentgroup_ids = Student.objects.filter(
                     pk__in = ExampleSurveyAnswer.objects.filter(
