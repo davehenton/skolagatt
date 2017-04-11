@@ -70,6 +70,16 @@ urlpatterns = [
         views.StudentDelete.as_view(),
         name='student_delete'),
 
+    url(r'^nemandi/(?P<pk>\d+)/$',
+        views.StudentDetail.as_view(),
+        name='student_detail_noschool'),
+    url(r'^nemandi/(?P<pk>\d+)/update/$',
+        views.StudentUpdate.as_view(),
+        name='student_update_noschool'),
+    url(r'^nemandi/(?P<pk>\d+)/delete/$',
+        views.StudentDelete.as_view(),
+        name='student_delete_noschool'),
+
     url(r'^(?P<school_id>\d+)/bekkur/$',
         views.StudentGroupListing.as_view(),
         name='group_listing'),

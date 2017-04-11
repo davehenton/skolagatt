@@ -26,15 +26,53 @@
 
 {% block script %}
 <script>
+	function nameLink(id, name, school_id) {
+		result = '';
+		if (school_id != null) {
+			result += '<a href="/skoli/' + school_id + '/nemandi/' + id + '">'
+		} else {
+			result += '<a href="/skoli/nemandi/' + id + '">'
+		}
+		result += name;
+		result += '</a>'
+		return result;
+	}
+
+	function delLink(id, school_id) {
+		result = '';
+		if (school_id != null) {
+			result += '<a href="/skoli/' + school_id + '/nemandi/' + id + '/delete/">';
+		} else {
+			result += '<a href="/skoli/nemandi/' + id + '/delete/">';
+		}
+		result += '<span class="glyphicon glyphicon-trash"></span></a>';
+
+		return result;
+	}
+	
+	function updateLink(id, school_id) {
+		result = '';
+
+		if (school_id != null) {
+			result += '<a href="/skoli/' + school_id + '/nemandi/' + id + '/update/">';
+		} else {
+			result += '<a href="/skoli/nemandi/' + id + '/update/">';
+		}
+		result += '<span class="glyphicon glyphicon-pencil"></span></a>';
+
+		return result;
+	}
+
 	function performSearch(query) {
 		$.get( "{% url 'schools:api_student_search' %}?q=" + query, function( results ) {
 			$('table tbody tr').remove();
 			results.forEach(function(result){
-				newhtml = '<tr><td><a href="/skoli/' + result['school__id'] + '/nemandi/' + result['id'] + '">' + result['name'] + '</a></td><td>' + result['ssn'] + '</td><td><a href="/skoli/' + result['school__id'] + '/nemandi/' + result['id'] + '/update/"><span class="glyphicon glyphicon-pencil"></span></a>&nbsp;<a href="/skoli/' + result['school__id'] + '/nemandi/' + result['id'] + '/delete/"><span class="glyphicon glyphicon-trash"></span></a></td></tr>';
+				newhtml = '<tr><td>' + nameLink(result['id'], result['name'], result['school__id']) + '</td><td>' + result['ssn'] + '</td><td>' + updateLink(result['id'], result['school__id']) + '&nbsp;' + delLink(result['id'], result['school__id']) + '</td></tr>';
 				$('table tbody').append(newhtml);
 			});
 		});
 	}
+
 	$('#search-box').keyup(function(event){
 		if ($(this).val().length > 1) {
 			performSearch($(this).val());

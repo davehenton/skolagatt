@@ -7,7 +7,11 @@
 	{% include 'common/_generic_form.html' %}
 	<div class="btn-group">
 		<input type="submit" class="btn btn-success btn-lg" value="Vista" />
-		<a class="btn btn-default btn-lg" href="{% url 'schools:student_listing' school.id %}">Til baka</a>
+		{% if school %}
+			<a class="btn btn-default btn-lg" href="{% url 'schools:student_listing' school.id %}">Til baka</a>
+		{% else %}
+			<a class="btn btn-default btn-lg" href="{% url 'schools:school_listing' %}">Til baka</a>
+		{% endif %}
 	</div>
 </form>
 {% endblock %}

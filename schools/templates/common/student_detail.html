@@ -11,18 +11,27 @@
 				{{student.name}} <small>({{ student.ssn }})</small>
 				{% if is_school_manager %}
 				<div class="btn-group">
-					<a href="{% url 'schools:student_update' school.id student.id %}" class="btn btn-default btn-sm" data-action='save_notes'>
-						<span class="glyphicon glyphicon-pencil"></span>
-					</a>
-					<a href="{% url 'schools:student_delete' school.id student.id %}" class="btn btn-danger btn-sm" data-action='delete'>
-						<span class="glyphicon glyphicon-trash"></span>
-					</a>
+					{% if school %}
+						<a href="{% url 'schools:student_update' school.id student.id %}" class="btn btn-default btn-sm" data-action='save_notes'>
+							<span class="glyphicon glyphicon-pencil"></span>
+						</a>
+						<a href="{% url 'schools:student_delete' school.id student.id %}" class="btn btn-danger btn-sm" data-action='delete'>
+							<span class="glyphicon glyphicon-trash"></span>
+						</a>
+					{% else %}
+						<a href="{% url 'schools:student_update_noschool' student.id %}" class="btn btn-default btn-sm" data-action='save_notes'>
+							<span class="glyphicon glyphicon-pencil"></span>
+						</a>
+						<a href="{% url 'schools:student_delete_noschool' student.id %}" class="btn btn-danger btn-sm" data-action='delete'>
+							<span class="glyphicon glyphicon-trash"></span>
+						</a>
+					{% endif %}
 				</div>
 				{% endif %}
 			</h1>
 		</div>
 		<div class="col-xs-4">
-			{% if  is_school_manager %}
+			{% if  is_school_manager and school %}
 			<div class="pull-right">
 				<a href="{% url 'supportandexception:exception' school.id student.id %}" class="btn btn-success" data-action='save_notes'>
 					<span class="glyphicon glyphicon-bookmark"></span>&nbsp;Undanþágur
@@ -63,7 +72,7 @@
 								{% endif %}
 							</td>
 							<td>
-								{% if is_group_manager %}
+								{% if is_group_manager and school %}
 								<a href="{% url 'schools:survey_result_update' school.id student.id surveyresults.survey.id student_result.id %}" class="btn btn-default btn-xs">
 									<span class="glyphicon glyphicon-pencil"></span>
 								</a>
@@ -74,7 +83,7 @@
 							</td>
 							{% else %}
 							<td>
-								{% if is_group_manager %}
+								{% if is_group_manager and school %}
 								<a href="{% url 'schools:survey_result_create' school.id student.id surveyresults.survey.id %}" class="btn btn-default btn-xs">
 									<span class="glyphicon glyphicon-plus"></span>&nbsp;Skrá
 								</a>

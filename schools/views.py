@@ -721,7 +721,10 @@ class StudentDetail(common_mixins.SchoolEmployeeMixin, DetailView):
     def get_context_data(self, **kwargs):
         # xxx will be available in the template as the related objects
         context                     = super(StudentDetail, self).get_context_data(**kwargs)
-        context['school']           = School.objects.get(pk=self.kwargs['school_id'])
+
+        if 'school_id' in self.kwargs:
+            context['school'] = School.objects.get(pk=self.kwargs['school_id'])
+
         context['student_moreinfo'] = sae_models.StudentExceptionSupport.objects.filter(
             student=self.kwargs.get('pk')).get
         return context
@@ -872,7 +875,10 @@ class StudentUpdate(common_mixins.SchoolManagerMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context           = super(StudentUpdate, self).get_context_data(**kwargs)
-        context['school'] = School.objects.get(pk=self.kwargs['school_id'])
+
+        if 'school_id' in self.kwargs:
+            context['school'] = School.objects.get(pk=self.kwargs['school_id'])
+
         return context
 
     def get_success_url(self):
@@ -893,12 +899,13 @@ class StudentDelete(common_mixins.SchoolManagerMixin, DeleteView):
     def delete(self, request, *args, **kwargs):
         self.object = self.get_object()
         # delete student_school entry
-        School.objects.get(
-            pk=self.kwargs.get('school_id')
-        ).students.remove(self.object)
-        # remove student from all studentgroups in school
-        for group in StudentGroup.objects.filter(school=self.kwargs.get('school_id')):
-            group.students.remove(self.object)
+        if 'school_id' in self.kwargs:
+            School.objects.get(
+                pk=self.kwargs.get('school_id')
+            ).students.remove(self.object)
+            # remove student from all studentgroups in school
+            for group in StudentGroup.objects.filter(school=self.kwargs.get('school_id')):
+                group.students.remove(self.object)
         return HttpResponseRedirect(self.get_success_url())
 
     def get_success_url(self):
