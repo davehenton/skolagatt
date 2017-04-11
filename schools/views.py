@@ -1723,7 +1723,7 @@ class AdminUpdate(common_mixins.SuperUserMixin, UpdateView):
 
 ### Prófadæmi
 
-class ExampleSurveyListing(common_mixins.SchoolManagerMixin, ListView):
+class ExampleSurveyListing(common_mixins.SchoolTeacherMixin, ListView):
     model = ExampleSurveyAnswer
     template_name = "common/example_survey/listing.html"
 
