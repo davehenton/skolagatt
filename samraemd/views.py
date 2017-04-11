@@ -776,38 +776,39 @@ class SamraemdResultCreate(cm_mixins.SuperUserMixin, CreateView):
                                     kt = Kennitala(col_value)
                                     if not kt.validate() or not kt.is_personal(col_value):
                                         rowerrors.append({
-                                            'text': 'Kennitala ekki rétt slegin inn',
+                                            'text': 'Kennitala ekki rétt slegin inn: {}'.format(col_value),
                                             'row': row,
                                         })
 
                                     if not cm_models.Student.objects.filter(ssn = col_value).exists():
                                         rowerrors.append({
-                                            'text': 'Nemandi ekki til í skólagátt',
+                                            'text': 'Nemandi ekki til í skólagátt: {}'.format(col_value),
                                             'row': row,
                                         })
                                 try:
                                     if col_type == 're' or col_type.endswith('_re'):
                                         if int(col_value) > 100 or int(col_value) < 0:
                                             rowerrors.append({
-                                                'text': '{}: Einkunn utan raðeinkunnarsviðs'.format(col_type),
+                                                'text': '{}: Einkunn utan raðeinkunnarsviðs: {}'.format(col_type, col_value),
                                                 'row': row,
                                             })
                                     elif col_type == 'he':
                                         if col_value not in ['A', 'B', 'B+', 'C', 'C+', 'D']:
                                             rowerrors.append({
-                                                'text': '{}: Einkunn utan Hæfnieinkunnarsviðs'.format(col_type),
+                                                'text': '{}: Einkunn utan Hæfnieinkunnarsviðs: {}'.format(col_type, col_value),
                                                 'row': row,
                                             })
                                     elif col_type == 'se' or col_type.endswith('_se'):
                                         if int(col_value) > 10 or int(col_value) < 0:
                                             rowerrors.append({
-                                                'text': '{}: Einkunn utan samræmdrareinkunnarsviðs'.format(col_type),
+                                                'text': '{}: Einkunn utan samræmdrareinkunnarsviðs: {}'.format(col_type, col_value),
                                                 'row': row,
                                             })
                                     elif col_type == 'sg' or col_type.endswith('_sg'):
+                                        col
                                         if int(col_value) > 60 or int(col_value) < 0:
                                             rowerrors.append({
-                                                'text': '{}: Einkunn utan grunnskólaeinnkunnarsviðs'.format(col_type),
+                                                'text': '{}: Einkunn utan grunnskólaeinnkunnarsviðs: {}'.format(col_type, col_value),
                                                 'row': row,
                                             })
                                 except:
