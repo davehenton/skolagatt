@@ -1731,27 +1731,41 @@ class ExampleSurveyListing(common_mixins.SchoolManagerMixin, ListView):
         # xxx will be available in the template as the related objects
         context           = super(ExampleSurveyListing, self).get_context_data(**kwargs)
         school            = School.objects.get(pk=self.kwargs['school_id'])
-        context['school'] = school
+        context['school'] = school_id
+
+        studentgroup = None
+        if 'studentgroup_id' in self.kwargs:
+            studentgroup = StudentGroup.objects.get(pk=self.kwargs['studentgroup_id'])
 
         samraemd_cats = ExampleSurveyQuestion.objects.all().values_list('quiz_type', flat = True).distinct()
         #samraemd_cats = ['ÍSL', 'ENS', 'STÆ']
-
-        dates = ExampleSurveyAnswer.objects.filter(
-            student__in = Student.objects.filter(school=school),
-            groupsurvey__isnull = True
-        ).values_list('date', flat=True).distinct()
+        dates = []
+        if studentgroup:
+            dates = ExampleSurveyAnswer.objects.filter(
+                student__in = studentgroup.students.all(),
+                groupsurvey__isnull = True,
+            ).values_list('date', flat=True).distinct()
+        else:
+            dates = ExampleSurveyAnswer.objects.filter(
+                student__in = Student.objects.filter(school=school),
+                groupsurvey__isnull = True,
+            ).values_list('date', flat=True).distinct()
 
         samraemd = []
         for date in dates:
             # Get all studentgroups for this school where a student in the studentgroup has results in ExampleSurveyAnswer
-            studentgroup_ids = Student.objects.filter(
-                pk__in = ExampleSurveyAnswer.objects.filter(
-                    student__in = Student.objects.filter(school=school),
-                    date = date,
-                    groupsurvey__isnull = True,
-                ).values_list('student', flat=True).distinct()
-            ).values_list('studentgroup', flat=True).distinct()
-            studentgroup_ids = list(set(studentgroup_ids))
+            studentgroup_ids = []
+            if studentgroup:
+                studentgroup_ids = [studentgroup]
+            else:
+                studentgroup_ids = Student.objects.filter(
+                    pk__in = ExampleSurveyAnswer.objects.filter(
+                        student__in = Student.objects.filter(school=school),
+                        date = date,
+                        groupsurvey__isnull = True,
+                    ).values_list('student', flat=True).distinct()
+                ).values_list('studentgroup', flat=True).distinct()
+                studentgroup_ids = list(set(studentgroup_ids))
             studentgroups_list = []
             for studentgroup_id in studentgroup_ids:
                 studentgroup = StudentGroup.objects.get(pk = studentgroup_id)
