@@ -10,7 +10,7 @@ urlpatterns = [
     url(r'^niðurstöður/(?P<school_id>\d+)$',
         views.SamraemdResultListing.as_view(),
         name='result_list'),
-    url(r'^niðurstöður/(?P<school_id>\d+)/bekkur/(^P<studentgroup_id>\d+)/$',
+    url(r'^niðurstöður/(?P<school_id>\d+)/bekkur/(?P<studentgroup_id>\d+)/$',
         views.SamraemdStudentGroupResultListing.as_view(),
         name='result_list_studentgroup'),
     url(r'^niðurstöður/(?P<school_id>\d+)/(?P<year>\d+)/(?P<group>\d+)$',
