@@ -7,6 +7,7 @@ from celery.task.control import inspect
 import xlrd
 import json
 import openpyxl
+import collections
 from itertools        import chain
 from django.db.models import Count, Value, CharField
 
@@ -712,7 +713,7 @@ class SamraemdResultDetail(cm_mixins.SchoolManagerMixin, DetailView):
                             student_results[result.student].append(result)
                         else:
                             student_results[result.student] = [result]
-        context['student_results'] = student_results
+        context['student_results'] = collections.OrderedDict(sorted(student_results.items(), key = lambda x: (x[0].name)))
 
         return context
 
