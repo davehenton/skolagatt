@@ -19,7 +19,7 @@ urlpatterns = [
     url(r'^niðurstöður/(?P<school_id>\d+)/(?P<year>\d+)/(?P<group>\d+)/excel/$',
         views.excel_result,
         name='result_excel'),
-    url(r'^niðurstöður/(?P<school_id>\d+)/(?P<year>\d+)/(?P<group>\d+)/bekkur/(?P<studentgroup_id>\d+/excel/$',
+    url(r'^niðurstöður/(?P<school_id>\d+)/(?P<year>\d+)/(?P<group>\d+)/bekkur/(?P<studentgroup_id>)\d+/excel/$',
         views.excel_result,
         name='result_excel_studentgroup'),
     url(r'^niðurstöður/(?P<school_id>\d+)/(?P<year>\d+)/(?P<group>\d+)/einkunnablod/$',
