@@ -11,6 +11,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from celery.task.control import inspect
 
+from itertools import chain
 from uuid      import uuid4
 from datetime  import datetime, date
 from ast       import literal_eval
@@ -34,6 +35,7 @@ from common.models import (
 )
 import common.util   as common_util
 import common.forms  as cm_forms
+import samraemd.models as s_models
 from survey.models import (
     Survey, SurveyGradingTemplate, SurveyInputField,
     SurveyInputGroup, SurveyResource, SurveyTransformation,
@@ -949,6 +951,30 @@ class StudentGroupDetail(common_mixins.SchoolEmployeeMixin, DetailView):
         )
         context['students']    = common_util.slug_sort(self.object.students.all(), 'name')
         context['teachers']    = common_util.slug_sort(self.object.group_managers.all(), 'name')
+        context['samraemd'] = False
+        samraemd_results = list(chain(
+            s_models.SamraemdISLResult.objects.filter(
+                student__in     = self.object.students.all(),
+                student_year    = self.object.student_year,
+            ),
+            s_models.SamraemdMathResult.objects.filter(
+                student__in     = self.object.students.all(),
+                student_year    = self.object.student_year,
+            ),
+            s_models.SamraemdENSResult.objects.filter(
+                student__in     = self.object.students.all(),
+                student_year    = self.object.student_year,
+            ),
+        ))
+
+        if samraemd_results:
+            context['samraemd'] = True
+
+        context['rawdata'] = ExampleSurveyAnswer.objects.filter(
+            student__in = self.object.students.all(),
+        ).exists()
+
+
         return context
 
 
@@ -1702,7 +1728,7 @@ class AdminUpdate(common_mixins.SuperUserMixin, UpdateView):
 
 ### Prófadæmi
 
-class ExampleSurveyListing(common_mixins.SchoolManagerMixin, ListView):
+class ExampleSurveyListing(common_mixins.SchoolTeacherMixin, ListView):
     model = ExampleSurveyAnswer
     template_name = "common/example_survey/listing.html"
 
@@ -1712,25 +1738,39 @@ class ExampleSurveyListing(common_mixins.SchoolManagerMixin, ListView):
         school            = School.objects.get(pk=self.kwargs['school_id'])
         context['school'] = school
 
+        studentgroup = None
+        if 'studentgroup_id' in self.kwargs:
+            studentgroup = StudentGroup.objects.get(pk=self.kwargs['studentgroup_id'])
+
         samraemd_cats = ExampleSurveyQuestion.objects.all().values_list('quiz_type', flat = True).distinct()
         #samraemd_cats = ['ÍSL', 'ENS', 'STÆ']
-
-        dates = ExampleSurveyAnswer.objects.filter(
-            student__in = Student.objects.filter(school=school),
-            groupsurvey__isnull = True
-        ).values_list('date', flat=True).distinct()
+        dates = []
+        if studentgroup:
+            dates = ExampleSurveyAnswer.objects.filter(
+                student__in = studentgroup.students.all(),
+                groupsurvey__isnull = True,
+            ).values_list('date', flat=True).distinct()
+        else:
+            dates = ExampleSurveyAnswer.objects.filter(
+                student__in = Student.objects.filter(school=school),
+                groupsurvey__isnull = True,
+            ).values_list('date', flat=True).distinct()
 
         samraemd = []
         for date in dates:
             # Get all studentgroups for this school where a student in the studentgroup has results in ExampleSurveyAnswer
-            studentgroup_ids = Student.objects.filter(
-                pk__in = ExampleSurveyAnswer.objects.filter(
-                    student__in = Student.objects.filter(school=school),
-                    date = date,
-                    groupsurvey__isnull = True,
-                ).values_list('student', flat=True).distinct()
-            ).values_list('studentgroup', flat=True).distinct()
-            studentgroup_ids = list(set(studentgroup_ids))
+            studentgroup_ids = []
+            if studentgroup:
+                studentgroup_ids = [studentgroup.id]
+            else:
+                studentgroup_ids = Student.objects.filter(
+                    pk__in = ExampleSurveyAnswer.objects.filter(
+                        student__in = Student.objects.filter(school=school),
+                        date = date,
+                        groupsurvey__isnull = True,
+                    ).values_list('student', flat=True).distinct()
+                ).values_list('studentgroup', flat=True).distinct()
+                studentgroup_ids = list(set(studentgroup_ids))
             studentgroups_list = []
             for studentgroup_id in studentgroup_ids:
                 studentgroup = StudentGroup.objects.get(pk = studentgroup_id)

@@ -5,11 +5,21 @@
 	{% for year, group, student_results in results %}
 	<div class="row not-on-einstaklingsblod">
 		<div class="col-md-12">
-			<h3><a href="{% url 'samraemd:result_detail' school.id year group %}">Próf {{group}}. árgangs {{year}}</a>
+			<h3>
+				{% if studentgroup %}
+					{{studentgroup.name}}, {{year}}
+				{% else %}
+					<a href="{% url 'samraemd:result_detail' school.id year group %}">Próf {{group}}. árgangs {{year}}</a>
+				{% endif %}
 				<div class="btn-group pull-right" role="group" aria-label="...">
 				{% if school.id %}
-					<a href="{% url 'samraemd:result_print' school.id year group %}" class="btn btn-primary" target="_blank">Prentvæn einkunnablöð</a>
-					<a href="{% url 'samraemd:result_excel' school.id year group %}" class="btn btn-default" target="_blank">Excel</a>
+					{% if studentgroup %}
+						<a href="{% url 'samraemd:result_print_studentgroup' school.id year group studentgroup.id %}" class="btn btn-primary" target="_blank">Prentvæn einkunnablöð</a>
+						<a href="{% url 'samraemd:result_excel_studentgroup' school.id year group studentgroup.id %}" class="btn btn-default" target="_blank">Excel</a>
+					{% else %}
+						<a href="{% url 'samraemd:result_print' school.id year group %}" class="btn btn-primary" target="_blank">Prentvæn einkunnablöð</a>
+						<a href="{% url 'samraemd:result_excel' school.id year group %}" class="btn btn-default" target="_blank">Excel</a>
+					{% endif %}
 				{% else %}
 					<a href="{% url 'samraemd:admin_result_print' year group %}" class="btn btn-default" target="_blank">Prentvæn einkunnablöð</a>
 				{% endif %}
@@ -594,7 +604,9 @@
 		{% endif %}
 	{% endfor %}
 	<div>
+		{% if rawlinks %}
 		<h4>Hrágögn</h4>
+		{% endif %}
 		{% for link in rawlinks %}
 			<div class="row">
 				<div class="col-md-4"><a href="{% url 'samraemd:result_detail_raw' school.id link.exam_date|date:'Y' link.student_year %}">Próf frá: {{link.exam_date|date:'Y'}} {{link.student_year}}. bekk - <i>hrágögn</i></a></div>

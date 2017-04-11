@@ -50,7 +50,9 @@ def is_manager(request):
 
 
 def is_school_teacher(request, kwargs):
-    if not request.user.is_authenticated:
+    if request.user.is_superuser:
+        return True
+    elif not request.user.is_authenticated:
         return False
     try:
         school_id = get_current_school(kwargs)
