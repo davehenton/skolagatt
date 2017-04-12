@@ -940,7 +940,7 @@ class SamraemdENSResultDelete(cm_mixins.SchoolManagerMixin, DeleteView):
 def excel_for_principals(request, school_id):
     school = cm_models.School.objects.get(pk = school_id)
     response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-    response['Content-Disposition'] = 'attachment; filename=Lesfimi {}.xlsx'.format(school.name)
+    response['Content-Disposition'] = 'attachment; filename=Samræmd próf 9 og 10 bekk {} 2017.xlsx'.format(school.name)
 
     wb = openpyxl.Workbook()
     ws = wb.get_active_sheet()
