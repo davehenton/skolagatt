@@ -990,7 +990,7 @@ def excel_for_principals(request, school_id):
     ws['C3'] = results_isl.count()
     ws['D3'] = results_ens.count()
 
-    ws['A4'] = "Fjöldi nemenda með undanþágu í Stærðfræði"
+    ws['A4'] = "Fjöldi nemenda með undanþágu"
     ws['B4'] = "Stærðfræði"
     ws['C4'] = "Íslenska"
     ws['D4'] = "Enska"
