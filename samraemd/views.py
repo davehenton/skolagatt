@@ -590,7 +590,7 @@ class SamraemdResultListing(cm_mixins.SchoolManagerMixin, ListView):
         return context
 
 
-class SamraemdResultDetail(cm_mixins.SchoolManagerMixin, DetailView):
+class SamraemdResultDetail(cm_mixins.SchoolTeacherMixin, DetailView):
     model = s_models.SamraemdMathResult
 
     def get_template_names(self, **kwargs):
