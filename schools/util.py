@@ -30,7 +30,8 @@ def is_kennitala_valid(kennitala):
         elif not kennitala[0:2].isdigit() or not kennitala[2:4].isdigit() or not kennitala[4:6].isdigit():
             return False
         elif 1 > int(kennitala[0:2]) or 31 < int(kennitala[0:2]) or 1 > int(kennitala[2:4]) or 12 < int(kennitala[2:4]):
-            # could've imported dateutils.parser to check (but we're gonna use thjodskra to check)
+            # could've imported dateutils.parser to check (but we're gonna use
+            # thjodskra to check)
             return False
         else:
             return True

@@ -1,4 +1,4 @@
-from django.core.urlresolvers   import reverse_lazy
+from django.core.urlresolvers import reverse_lazy
 from django.contrib.auth.mixins import UserPassesTestMixin
 
 from common.util import is_school_manager, is_school_teacher

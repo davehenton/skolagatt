@@ -1,7 +1,6 @@
 from django.utils.text import slugify
 
 import common.models as cm_models
-#import survey.models as sv_models
 
 
 def get_messages():
@@ -29,8 +28,8 @@ def is_school_manager(request, kwargs):
     try:
         school_id = get_current_school(kwargs)
         if school_id and cm_models.School.objects.filter(
-            pk       = school_id,
-            managers = cm_models.Manager.objects.filter(user=request.user)
+            pk=school_id,
+            managers=cm_models.Manager.objects.filter(user=request.user)
         ):
             return True
     except Exception as e:
@@ -57,19 +56,19 @@ def is_school_teacher(request, kwargs):
     try:
         school_id = get_current_school(kwargs)
         if school_id and cm_models.School.objects.filter(
-            pk       = school_id,
-            managers = cm_models.Manager.objects.filter(user=request.user)
+            pk=school_id,
+            managers=cm_models.Manager.objects.filter(user=request.user)
         ):
             return True
         teacher = cm_models.Teacher.objects.filter(user=request.user)
         if school_id and cm_models.School.objects.filter(
-            pk       = school_id,
-            teachers = teacher,
+            pk=school_id,
+            teachers=teacher,
         ):
             if 'studentgroup_id' in kwargs:
                 if cm_models.StudentGroup.objects.filter(
-                    pk = kwargs['studentgroup_id'],
-                    group_managers = teacher,
+                    pk=kwargs['studentgroup_id'],
+                    group_managers=teacher,
                 ):
                     return True
             else:
@@ -96,8 +95,8 @@ def is_group_manager(request, kwargs):
     try:
         try:
             if cm_models.StudentGroup.objects.filter(
-                pk             = kwargs['student_group'],
-                group_managers = cm_models.Teacher.objects.filter(user=request.user)
+                pk=kwargs['student_group'],
+                group_managers=cm_models.Teacher.objects.filter(user=request.user)
             ):
                 return True
         except:
@@ -119,8 +118,8 @@ def is_group_manager(request, kwargs):
                     studentgroup=group
                 ).studentgroup.id
             if cm_models.StudentGroup.objects.filter(
-                pk             = survey_id,
-                group_managers = cm_models.Teacher.objects.filter(user=request.user)
+                pk=survey_id,
+                group_managers=cm_models.Teacher.objects.filter(user=request.user)
             ):
                 return True
     except:
@@ -136,7 +135,8 @@ def lesskilnings_results(input_values):
     '''
     Skilum niðurstöðum prófs í lesskilningi
     '''
-    # Cycle through input_values, sum up all values where the key starts with 'hljod_', 'mal_', 'bok_'. Checks for input errors.
+    # Cycle through input_values, sum up all values where the key starts with
+    # 'hljod_', 'mal_', 'bok_'. Checks for input errors.
     lesskilnings_sums = {'hljod_': 0, 'mal_': 0, 'bok_': 0}
     for key, value in input_values.items():
         for type_sum in lesskilnings_sums.keys():
@@ -185,13 +185,14 @@ def lesskilnings_results(input_values):
 
     return hopar
 
+
 def calc_survey_results(
         survey_identifier,
         click_values,
         input_values,
         student,
         survey_type,
-        transformation = None):
+        transformation=None):
     if survey_identifier:
         if survey_identifier.startswith('01b_LTL_'):
             try:
@@ -219,17 +220,18 @@ def calc_survey_results(
                 else:
                     time = time_read[0]
                 oam = str(int(oam / time * 60))
-                
+
                 if (transformation):
-                    data = transformation[0].data               
+                    data = transformation[0].data
                     oam_string = int(data[oam])
                     return [oam_string]
                 else:
                     return [oam]
             except:
                 return [""]
-          
+
     return click_values
+
 
 def add_field_classes(self, field_list):
     ''' To add form-control class to form fields '''

@@ -1,13 +1,13 @@
-from django.shortcuts               import render, redirect
-from django.conf                    import settings
-from django.contrib.auth            import authenticate, login as auth_login, logout as auth_logout
-from django.views.decorators.csrf   import csrf_exempt
-from django.contrib.auth.models     import User
-from django.http                    import JsonResponse
-from uuid                           import uuid4
+from django.shortcuts import render, redirect
+from django.conf import settings
+from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
+from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.models import User
+from django.http import JsonResponse
+from uuid import uuid4
 
 from common.models import Manager, Teacher
-from common        import util
+from common import util
 
 import requests
 import os
@@ -16,7 +16,7 @@ from common.models import ExampleSurveyQuestion
 
 
 def verify_token(token):
-    url     = settings.ICEKEY_VERIFICATION
+    url = settings.ICEKEY_VERIFICATION
     payload = {'token': token}
     try:
         r = requests.post(url, data=payload, headers=dict(Referer=url))
@@ -76,7 +76,7 @@ def login(request):
         else:
             context = {
                 'icekey_verification': settings.ICEKEY_VERIFICATION,
-                'icekey_login'       : settings.ICEKEY_LOGIN
+                'icekey_login': settings.ICEKEY_LOGIN
             }
             return render(request, 'login.html', context)
 
@@ -96,7 +96,7 @@ def images(request):
     for filename in os.listdir(image_dir):
         if not os.path.splitext(filename)[-1].lower() in ['.jpg', '.png', '.jpeg']:
             continue
-        tag = [ x[1] for x in ExampleSurveyQuestion.category_choices if x[0] == filename[:2] ][0]
+        tag = [x[1] for x in ExampleSurveyQuestion.category_choices if x[0] == filename[:2]][0]
         if not tag:
             tag = 'unknown'
 
@@ -104,5 +104,5 @@ def images(request):
             'url': os.path.join('/' + settings.FROALA_UPLOAD_PATH, filename),
             'thumb': os.path.join('/' + settings.FROALA_UPLOAD_PATH, filename),
             'tag': tag,
-            })
+        })
     return JsonResponse(context, safe=False)

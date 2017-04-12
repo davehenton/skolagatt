@@ -1,4 +1,4 @@
-from django                     import forms
+from django import forms
 from kennitala import Kennitala
 from django.contrib.auth.models import User
 from common.models import (
@@ -72,7 +72,7 @@ class TeacherForm(forms.ModelForm):
 
     class Meta:
         model = Teacher
-        fields =  ['ssn', 'name', 'position', 'user']
+        fields = ['ssn', 'name', 'position', 'user']
         widgets = {'user': forms.HiddenInput()}
         labels = {
             'ssn': 'Kennitala',
@@ -103,7 +103,7 @@ class StudentForm(forms.ModelForm):
 
     class Meta:
         model = Student
-        fields =  ['ssn', 'name']
+        fields = ['ssn', 'name']
         labels = {
             'ssn': 'Kennitala',
             'name': 'Nafn',
@@ -123,19 +123,19 @@ class SchoolForm(forms.ModelForm):
         self.fields['managers'].widget.attrs.update(
             {
                 'class': 'form-control input-lg col-md-6 col-xs-12',
-                'size' : '4'
+                'size': '4'
             }
         )
         self.fields['teachers'].widget.attrs.update(
             {
                 'class': 'form-control input-lg col-md-6 col-xs-12',
-                'size' : '6'
+                'size': '6'
             }
         )
         self.fields['students'].widget.attrs.update(
             {
                 'class': 'form-control input-lg col-md-6 col-xs-12',
-                'size' : '12'
+                'size': '12'
             }
         )
 
@@ -167,7 +167,7 @@ class StudentGroupForm(forms.ModelForm):
 
     class Meta:
         model = StudentGroup
-        fields =  ['name', 'student_year', 'group_managers', 'school', 'students']
+        fields = ['name', 'student_year', 'group_managers', 'school', 'students']
         widgets = {'school': forms.HiddenInput()}
         labels = {
             'name': 'Nafn',
@@ -185,7 +185,7 @@ class SurveyForm(forms.ModelForm):
 
     class Meta:
         model = GroupSurvey
-        fields =  ['studentgroup', 'survey']
+        fields = ['studentgroup', 'survey']
         widgets = {
             'studentgroup': forms.HiddenInput()
         }
@@ -254,11 +254,11 @@ class ExampleSurveyQuestionForm(forms.ModelForm):
             'example',
         ]
         labels = {
-            'quickcode':   'Flýtikóði',
-            'quiz_type':   'Próftegund',
-            'category':    'Spurningaflokkur',
+            'quickcode': 'Flýtikóði',
+            'quiz_type': 'Próftegund',
+            'category': 'Spurningaflokkur',
             'description': 'Lýsing',
-            'example':     'Dæmi',
+            'example': 'Dæmi',
         }
 
 
