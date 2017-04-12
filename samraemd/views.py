@@ -981,28 +981,32 @@ def excel_for_principals(request, school_id):
 
     ws['A1'] = "Fjöldi nemenda í 9. og 10. bekk"
     ws['B1'] = students.count()
-    ws['A2'] = "Fjöldi nemenda sem þreytti próf í Stærðfræði"
-    ws['B2'] = results_math.count()
-    ws['A3'] = "Fjöldi nemenda sem þreytti próf í Íslensku"
-    ws['B3'] = results_isl.count()
-    ws['A4'] = "Fjöldi nemenda sem þreytti próf í Ensku"
-    ws['B4'] = results_ens.count()
 
-    ws['A5'] = "Fjöldi nemenda með undanþágu í Stærðfræði"
+    ws['A2'] = "Fjöldi nemenda sem þreytti próf"
+    ws['B2'] = "Stærðfræði"
+    ws['C2'] = "Íslenska"
+    ws['D2'] = "Enska"
+    ws['B3'] = results_math.count()
+    ws['C3'] = results_isl.count()
+    ws['D3'] = results_ens.count()
+
+    ws['A4'] = "Fjöldi nemenda með undanþágu í Stærðfræði"
+    ws['B4'] = "Stærðfræði"
+    ws['C4'] = "Íslenska"
+    ws['D4'] = "Enska"
     ws['B5'] = num_math_exc
-    ws['A6'] = "Fjöldi nemenda með undanþágu í Íslensku"
-    ws['B6'] = num_isl_exc
-    ws['A7'] = "Fjöldi nemenda með undanþágu í Ensku"
-    ws['B7'] = num_ens_exc
+    ws['C5'] = num_isl_exc
+    ws['D5'] = num_ens_exc
 
-    ws['A8'] = "Fjöldi nemenda með stuðning í Stærðfræði"
-    ws['B8'] = num_math_supp
-    ws['A9'] = "Fjöldi nemenda með stuðning í Íslensku"
-    ws['B9'] = num_isl_supp
-    ws['A10'] = "Fjöldi nemenda með stuðning í Ensku"
-    ws['B10'] = num_ens_supp
+    ws['A6'] = "Fjöldi nemenda með stuðning"
+    ws['B6'] = "Stærðfræði"
+    ws['C6'] = "Íslenska"
+    ws['D6'] = "Enska"
+    ws['B7'] = num_math_supp
+    ws['C7'] = num_isl_supp
+    ws['D7'] = num_ens_supp
 
-    index = 11
+    index = 8
     for grade in ["A", "B+", "B", "C+", "C", "D"]:
         ws['A'+str(index)] = "Fjöldi nemenda með {}".format(grade)
         ws['B'+str(index)] = "Stærðfræði"
