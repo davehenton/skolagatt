@@ -350,7 +350,7 @@ class ManagerCreateImport(common_mixins.SchoolManagerMixin, CreateView):
                             })
 
                         school_ssn_kt = Kennitala(school_ssn_str)
-                        if not ssn_kt.validate():
+                        if not school_ssn_kt.validate():
                             rowerrors.append({
                                 'text': 'Kennitala skóla ekki rétt slegin inn',
                                 'row': row
