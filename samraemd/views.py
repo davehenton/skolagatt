@@ -1091,14 +1091,14 @@ def excel_for_principals(request, school_id):
     ws['D'+str(index)] = "Enska"
     index += 1
     ws['A'+str(index)] = "9. bekkur"
-    ws['B'+str(index)] = "{}".format(round(sum(sg_einkunnir_math_9) / len(sg_einkunnir_math_9)))
-    ws['C'+str(index)] = "{}".format(round(sum(sg_einkunnir_isl_9) / len(sg_einkunnir_isl_9)))
-    ws['D'+str(index)] = "{}".format(round(sum(sg_einkunnir_ens_9) / len(sg_einkunnir_ens_9)))
+    ws['B'+str(index)] = round(sum(sg_einkunnir_math_9) / len(sg_einkunnir_math_9))
+    ws['C'+str(index)] = round(sum(sg_einkunnir_isl_9) / len(sg_einkunnir_isl_9))
+    ws['D'+str(index)] = round(sum(sg_einkunnir_ens_9) / len(sg_einkunnir_ens_9))
     index += 1
     ws['A'+str(index)] = "10. bekkur"
-    ws['B'+str(index)] = "{}".format(round(sum(sg_einkunnir_math_10) / len(sg_einkunnir_math_10)))
-    ws['C'+str(index)] = "{}".format(round(sum(sg_einkunnir_isl_10) / len(sg_einkunnir_isl_10)))
-    ws['D'+str(index)] = "{}".format(round(sum(sg_einkunnir_ens_10) / len(sg_einkunnir_ens_10)))
+    ws['B'+str(index)] = round(sum(sg_einkunnir_math_10) / len(sg_einkunnir_math_10))
+    ws['C'+str(index)] = round(sum(sg_einkunnir_isl_10) / len(sg_einkunnir_isl_10))
+    ws['D'+str(index)] = round(sum(sg_einkunnir_ens_10) / len(sg_einkunnir_ens_10))
 
 
 
