@@ -1866,12 +1866,6 @@ class ExampleSurveySamraemdDetail(common_mixins.SchoolTeacherMixin, ListView):
             date__year=year,
             question__quiz_type=quiz_type,
         ).order_by('question__category', '?').all()
-        answers = ExampleSurveyAnswer.objects.filter(
-            student=student,
-            groupsurvey__isnull=True,
-            date__year=year,
-            question__quiz_type=quiz_type,
-        ).order_by('question__category', '?').all()
 
         return answers_list
 
