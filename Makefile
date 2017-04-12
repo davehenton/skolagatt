@@ -1,0 +1,3 @@
+
+check:
+	pep8
