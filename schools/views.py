@@ -1977,6 +1977,10 @@ class ExampleSurveyAnswerAdminListing(common_mixins.SuperUserMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super(ExampleSurveyAnswerAdminListing, self).get_context_data(**kwargs)
 
+        if 'cancel_import' in self.request.GET:
+            print("Cancel import, removing session data")
+            del(self.request.session['newdata']) 
+
         if 'exam_code' in self.kwargs:
             answers = ExampleSurveyAnswer.objects.filter(exam_code = self.kwargs['exam_code']).all()
             paginator = Paginator(answers, 25)
@@ -2096,7 +2100,7 @@ class ExampleSurveyAnswerAdminImport(common_mixins.SuperUserMixin, CreateView):
                 return render(self.request, 'excel_verify_import.html', {
                     'data': [],
                     'errors': errors,
-                    'cancel_url': reverse_lazy('schools:example_survey_answer_admin_listing')
+                    'cancel_url': reverse_lazy('schools:example_survey_answer_admin_listing') + "?cancel_import"
                 })
             except Exception as e:
                 return render(

@@ -421,6 +421,10 @@ class SamraemdResultAdminListing(cm_mixins.SuperUserMixin, ListView):
         # xxx will be available in the template as the related objects
         context = super(SamraemdResultAdminListing, self).get_context_data(**kwargs)
 
+        if 'cancel_import' in self.request.GET:
+            print("Samraemd: Cancel import, removing session data")
+            del(self.request.session['newdata']) 
+
         isl_exams = s_models.SamraemdISLResult.objects.all().values(
             'exam_date', 'student_year', 'exam_code'
         ).distinct()
@@ -840,7 +844,7 @@ class SamraemdResultCreate(cm_mixins.SuperUserMixin, CreateView):
             return render(self.request, 'excel_verify_import.html', {
                 'data': data,
                 'errors': errors,
-                'cancel_url': reverse_lazy('samraemd:result_admin_listing'),
+                'cancel_url': reverse_lazy('samraemd:result_admin_listing') + "?cancel_import",
             })
         else:
             newdata = self.request.session['newdata']
