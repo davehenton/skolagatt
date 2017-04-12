@@ -229,6 +229,9 @@ urlpatterns = [
         views.ExampleSurveyQuestionAdminDelete.as_view(),
         name='example_survey_question_admin_delete'),
 
+    url(r'^prófadæmi/svör/exam_code/(?P<exam_code>[\w ]+)/$',
+        views.ExampleSurveyAnswerAdminListing.as_view(),
+        name='example_survey_answer_admin_listing_by_code'),
     url(r'^prófadæmi/svör/$',
         views.ExampleSurveyAnswerAdminListing.as_view(),
         name='example_survey_answer_admin_listing'),
@@ -241,6 +244,9 @@ urlpatterns = [
     url(r'^prófadæmi/svör/(?P<pk>\d+)/delete/$',
         views.ExampleSurveyAnswerAdminDelete.as_view(),
         name='example_survey_answer_admin_delete'),
+    url(r'^prófadæmi/svör/(?P<exam_code>[\w ]+)/delete/$',
+        views.ExampleSurveyAnswerAdminDelete.as_view(),
+        name='example_survey_answer_admin_delete_by_code'),
 
     url(r'^umsjónarmenn/$',
         views.AdminListing.as_view(),

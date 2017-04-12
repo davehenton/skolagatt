@@ -1977,16 +1977,20 @@ class ExampleSurveyAnswerAdminListing(common_mixins.SuperUserMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super(ExampleSurveyAnswerAdminListing, self).get_context_data(**kwargs)
 
-        answers = ExampleSurveyAnswer.objects.all()
-        paginator = Paginator(answers, 25)
-        page = self.request.GET.get('page')
-        try:
-            answers = paginator.page(page)
-        except PageNotAnInteger:
-            answers = paginator.page(1)
-        except EmptyPage:
-            answers = paginator.page(paginator.num_pages)
-        context['answers'] = answers
+        if 'exam_code' in self.kwargs:
+            answers = ExampleSurveyAnswer.objects.filter(exam_code = self.kwargs['exam_code']).all()
+            paginator = Paginator(answers, 25)
+            page = self.request.GET.get('page')
+            try:
+                answers = paginator.page(page)
+            except PageNotAnInteger:
+                answers = paginator.page(1)
+            except EmptyPage:
+                answers = paginator.page(paginator.num_pages)
+            context['answers'] = answers
+        else:
+            exam_codes = ExampleSurveyAnswer.objects.values_list('exam_code', flat=True).distinct()
+            context['exam_codes'] = exam_codes
 
         jobs = []
 
@@ -2120,7 +2124,11 @@ class ExampleSurveyAnswerAdminDelete(common_mixins.SuperUserMixin, DeleteView):
         return reverse_lazy('schools:example_survey_answer_admin_listing')
 
     def get_object(self):
-        return ExampleSurveyAnswer.objects.get(pk=self.kwargs['pk'])
+        if 'pk' in self.kwargs:
+            return ExampleSurveyAnswer.objects.get(pk=self.kwargs['pk'])
+        return ExampleSurveyAnswer.objects.filter(
+            exam_code = self.kwargs['exam_code'],
+        )
 
 
 def group_admin_listing_excel(request, survey_title):

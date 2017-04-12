@@ -22,6 +22,25 @@
 	</div>
 </div>
 {% endfor %}
+{% if exam_codes %}
+<div>
+	<table class="table table-hover table-striped" id="example_survey_answer_exam_code_list">
+		<thead>
+			<th>Prófkóði</th>
+			<th>Aðgerðir</th>
+		</thead>
+		<tbody>
+			{% for exam_code in exam_codes %}
+				<tr>
+					<td><a href="{% url 'schools:example_survey_answer_admin_listing_by_code' exam_code %}">{{exam_code}}</a></td>
+					<td><a href="{% url 'schools:example_survey_answer_admin_delete_by_code' exam_code %}"><span class="glyphicon glyphicon-trash"></span></a></td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</div>
+{% endif %}
+{% if answers %}
 <div>
 	<table class="table table-hover table-striped" id="example_survey_answer_list">
 		<thead>
@@ -80,8 +99,9 @@
             <a href="?page={{ answers.next_page_number }}">next&nbsp;<span class="glyphicon glyphicon-chevron-right"></span></a>
         {% endif %}
     </span>
+	</div>
 </div>
-</div>
+{% endif %}
 {% endblock %}
 
 {% block script %}
