@@ -1900,8 +1900,6 @@ class ExampleSurveySamraemdDetail(common_mixins.SchoolTeacherMixin, ListView):
 
         return context
 
-# Example Survey Questions
-
 
 class ExampleSurveyQuestionAdminListing(common_mixins.SuperUserMixin, ListView):
     model = ExampleSurveyQuestion
@@ -1960,9 +1958,6 @@ class ExampleSurveyQuestionAdminDelete(common_mixins.SuperUserMixin, DeleteView)
 
     def get_object(self):
         return ExampleSurveyQuestion.objects.get(pk=self.kwargs['pk'])
-
-
-# Example Survey Answers
 
 
 class ExampleSurveyAnswerAdminListing(common_mixins.SuperUserMixin, ListView):
