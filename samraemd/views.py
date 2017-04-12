@@ -950,6 +950,10 @@ def excel_for_principals(request, school_id):
         school=school,
         studentgroup__student_year = '9',
     )
+    students_10 = cm_models.Student.objects.filter(
+        school=school,
+        studentgroup__student_year = '10',
+    )
 
     results_math_9 = s_models.SamraemdMathResult.objects.filter(
         student__in = students_9.all(),
