@@ -966,20 +966,20 @@ def excel_for_principals(request, school_id):
 
     results_isl_9 = s_models.SamraemdISLResult.objects.filter(
         student__in = students_9.all(),
-        exam_code = "9_bekkur_stærðfræði_2017",
+        exam_code = "9_bekkur_íslenska_2017",
     )
     results_isl_10 = s_models.SamraemdISLResult.objects.filter(
         student__in = students_10.all(),
-        exam_code = "10_bekkur_stærðfræði_2017",
+        exam_code = "10_bekkur_íslenska_2017",
     )
 
     results_ens_9 = s_models.SamraemdENSResult.objects.filter(
         student__in = students_9.all(),
-        exam_code = "9_bekkur_stærðfræði_2017",
+        exam_code = "9_bekkur_enska_2017",
     )
     results_ens_10 = s_models.SamraemdENSResult.objects.filter(
         student__in = students_10.all(),
-        exam_code = "10_bekkur_stærðfræði_2017",
+        exam_code = "10_bekkur_enska_2017",
     )
 
 
@@ -1077,6 +1077,28 @@ def excel_for_principals(request, school_id):
         ws['C'+str(index)] = results_isl_10.filter(he = grade).count()
         ws['D'+str(index)] = results_ens_10.filter(he = grade).count()
         index += 2
+
+    sg_einkunnir_math_9 = [ int(x) for x in results_math_9.values_list('sg', flat=True) ]
+    sg_einkunnir_math_10 = [ int(x) for x in results_math_10.values_list('sg', flat=True) ]
+    sg_einkunnir_isl_9 = [ int(x) for x in results_isl_9.values_list('sg', flat=True) ]
+    sg_einkunnir_isl_10 = [ int(x) for x in results_isl_10.values_list('sg', flat=True) ]
+    sg_einkunnir_ens_9 = [ int(x) for x in results_ens_9.values_list('sg', flat=True) ]
+    sg_einkunnir_ens_10 = [ int(x) for x in results_ens_10.values_list('sg', flat=True) ]
+
+    ws['A'+str(index)] = "Meðal grunnskólaeinkunn"
+    ws['B'+str(index)] = "Stærðfræði"
+    ws['C'+str(index)] = "Íslenska"
+    ws['D'+str(index)] = "Enska"
+    index += 1
+    ws['A'+str(index)] = "9. bekkur"
+    ws['B'+str(index)] = "{}".format(round(sum(sg_einkunnir_math_9) / len(sg_einkunnir_math_9)))
+    ws['C'+str(index)] = "{}".format(round(sum(sg_einkunnir_isl_9) / len(sg_einkunnir_isl_9)))
+    ws['D'+str(index)] = "{}".format(round(sum(sg_einkunnir_ens_9) / len(sg_einkunnir_ens_9)))
+    index += 1
+    ws['A'+str(index)] = "10. bekkur"
+    ws['B'+str(index)] = "{}".format(round(sum(sg_einkunnir_math_10) / len(sg_einkunnir_math_10)))
+    ws['C'+str(index)] = "{}".format(round(sum(sg_einkunnir_isl_10) / len(sg_einkunnir_isl_10)))
+    ws['D'+str(index)] = "{}".format(round(sum(sg_einkunnir_ens_10) / len(sg_einkunnir_ens_10)))
 
 
 
