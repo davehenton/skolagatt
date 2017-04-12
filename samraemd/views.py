@@ -759,7 +759,7 @@ class SamraemdResultCreate(cm_mixins.SuperUserMixin, CreateView):
                         elif exam_type == 'ENS':
                             fieldlist = [f.name for f in s_models.SamraemdENSResult._meta.get_fields()]
 
-                        if not col_name in fieldlist:
+                        if col_name not in fieldlist:
                             if not col_name == 'ssn':
                                 errors.append({
                                     'text': 'Dálkur {} er ekki til'.format(col_name),
@@ -793,26 +793,32 @@ class SamraemdResultCreate(cm_mixins.SuperUserMixin, CreateView):
                                     if col_type == 're' or col_type.endswith('_re'):
                                         if int(col_value) > 100 or int(col_value) < 0:
                                             rowerrors.append({
-                                                'text': '{}: Einkunn utan raðeinkunnarsviðs: {}'.format(col_type, col_value),
+                                                'text': '{}: Utan raðeinkunnarsviðs: {}'.format(col_type, col_value),
                                                 'row': row,
                                             })
                                     elif col_type == 'he':
                                         if col_value not in ['A', 'B', 'B+', 'C', 'C+', 'D']:
                                             rowerrors.append({
-                                                'text': '{}: Einkunn utan Hæfnieinkunnarsviðs: {}'.format(col_type, col_value),
+                                                'text': '{}: Utan Hæfnieinkunnarsviðs: {}'.format(col_type, col_value),
                                                 'row': row,
                                             })
                                     elif col_type == 'se' or col_type.endswith('_se'):
                                         if int(col_value) > 10 or int(col_value) < 0:
                                             rowerrors.append({
-                                                'text': '{}: Einkunn utan samræmdrareinkunnarsviðs: {}'.format(col_type, col_value),
+                                                'text': '{}: Utan samræmdrareinkunnarsviðs: {}'.format(
+                                                    col_type,
+                                                    col_value,
+                                                ),
                                                 'row': row,
                                             })
                                     elif col_type == 'sg' or col_type.endswith('_sg'):
                                         col
                                         if int(col_value) > 60 or int(col_value) < 0:
                                             rowerrors.append({
-                                                'text': '{}: Einkunn utan grunnskólaeinnkunnarsviðs: {}'.format(col_type, col_value),
+                                                'text': '{}: Utan grunnskólaeinnkunnarsviðs: {}'.format(
+                                                    col_type,
+                                                    col_value,
+                                                ),
                                                 'row': row,
                                             })
                                 except:
@@ -828,7 +834,7 @@ class SamraemdResultCreate(cm_mixins.SuperUserMixin, CreateView):
                         results_dict['student_year'] = student_year
                         results_dict['exam_type'] = exam_type
 
-                        if not 'ssn' in results_dict or not results_dict['ssn']:
+                        if 'ssn' not in results_dict or not results_dict['ssn']:
                             rowerrors.append({
                                 'text': 'Engin kennitala',
                                 'row': row
@@ -849,7 +855,7 @@ class SamraemdResultCreate(cm_mixins.SuperUserMixin, CreateView):
             newdata = self.request.session['newdata']
             del(self.request.session['newdata'])
             print("Calling save_samraemd_result for import")
-            job = save_samraemd_result.delay(newdata)
+            save_samraemd_result.delay(newdata)
         redir = self.get_success_url()
         print("Redirecting to {}".format(redir))
         return HttpResponseRedirect(redir)
@@ -992,19 +998,25 @@ def excel_for_principals(request, school_id):
     num_isl_exc_10 = sae_models.Exceptions.objects.filter(student__in=students_10.all(), exam__contains='1').count()
     num_ens_exc_10 = sae_models.Exceptions.objects.filter(student__in=students_10.all(), exam__contains='2').count()
 
-    num_math_supp_9 = sae_models.SupportResource.objects.filter(student__in=students_9.all()
-                                                                ).filter(Q(reading_assistance__contains='3') | Q(interpretation__contains='3') | Q(longer_time__contains='3')).count()
-    num_isl_supp_9 = sae_models.SupportResource.objects.filter(student__in=students_9.all()
-                                                               ).filter(Q(reading_assistance__contains='1') | Q(interpretation__contains='1') | Q(longer_time__contains='1')).count()
-    num_ens_supp_9 = sae_models.SupportResource.objects.filter(student__in=students_9.all()
-                                                               ).filter(Q(reading_assistance__contains='2') | Q(interpretation__contains='2') | Q(longer_time__contains='2')).count()
+    num_math_supp_9 = sae_models.SupportResource.objects.filter(student__in=students_9.all()).filter(
+        Q(reading_assistance__contains='3') | Q(interpretation__contains='3') | Q(longer_time__contains='3')
+    ).count()
+    num_isl_supp_9 = sae_models.SupportResource.objects.filter(student__in=students_9.all()).filter(
+        Q(reading_assistance__contains='1') | Q(interpretation__contains='1') | Q(longer_time__contains='1')
+    ).count()
+    num_ens_supp_9 = sae_models.SupportResource.objects.filter(student__in=students_9.all()).filter(
+        Q(reading_assistance__contains='2') | Q(interpretation__contains='2') | Q(longer_time__contains='2')
+    ).count()
 
-    num_math_supp_10 = sae_models.SupportResource.objects.filter(student__in=students_10.all()
-                                                                 ).filter(Q(reading_assistance__contains='3') | Q(interpretation__contains='3') | Q(longer_time__contains='3')).count()
-    num_isl_supp_10 = sae_models.SupportResource.objects.filter(student__in=students_10.all()
-                                                                ).filter(Q(reading_assistance__contains='1') | Q(interpretation__contains='1') | Q(longer_time__contains='1')).count()
-    num_ens_supp_10 = sae_models.SupportResource.objects.filter(student__in=students_10.all()
-                                                                ).filter(Q(reading_assistance__contains='2') | Q(interpretation__contains='2') | Q(longer_time__contains='2')).count()
+    num_math_supp_10 = sae_models.SupportResource.objects.filter(student__in=students_10.all()).filter(
+        Q(reading_assistance__contains='3') | Q(interpretation__contains='3') | Q(longer_time__contains='3')
+    ).count()
+    num_isl_supp_10 = sae_models.SupportResource.objects.filter(student__in=students_10.all()).filter(
+        Q(reading_assistance__contains='1') | Q(interpretation__contains='1') | Q(longer_time__contains='1')
+    ).count()
+    num_ens_supp_10 = sae_models.SupportResource.objects.filter(student__in=students_10.all()).filter(
+        Q(reading_assistance__contains='2') | Q(interpretation__contains='2') | Q(longer_time__contains='2')
+    ).count()
 
     index = 1
     ws['A' + str(index)] = "Fjöldi nemenda í 9. bekk"

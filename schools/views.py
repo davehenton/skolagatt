@@ -1742,7 +1742,7 @@ class ExampleSurveyListing(common_mixins.SchoolTeacherMixin, ListView):
             studentgroup = StudentGroup.objects.get(pk=self.kwargs['studentgroup_id'])
 
         samraemd_cats = ExampleSurveyQuestion.objects.all().values_list('quiz_type', flat=True).distinct()
-        #samraemd_cats = ['ÍSL', 'ENS', 'STÆ']
+
         dates = []
         if studentgroup:
             dates = ExampleSurveyAnswer.objects.filter(
@@ -1756,7 +1756,7 @@ class ExampleSurveyListing(common_mixins.SchoolTeacherMixin, ListView):
             ).values_list('date', flat=True).distinct()
 
         samraemd = []
-        for date in dates:
+        for dte in dates:
             # Get all studentgroups for this school where a student in the
             # studentgroup has results in ExampleSurveyAnswer
             studentgroup_ids = []
@@ -1766,7 +1766,7 @@ class ExampleSurveyListing(common_mixins.SchoolTeacherMixin, ListView):
                 studentgroup_ids = Student.objects.filter(
                     pk__in=ExampleSurveyAnswer.objects.filter(
                         student__in=Student.objects.filter(school=school),
-                        date=date,
+                        date=dte,
                         groupsurvey__isnull=True,
                     ).values_list('student', flat=True).distinct()
                 ).values_list('studentgroup', flat=True).distinct()
@@ -1781,7 +1781,7 @@ class ExampleSurveyListing(common_mixins.SchoolTeacherMixin, ListView):
                     quiz_type_list = ExampleSurveyQuestion.objects.filter(
                         pk__in=ExampleSurveyAnswer.objects.filter(
                             student=student,
-                            date=date,
+                            date=dte,
                             groupsurvey__isnull=True,
                         ).values_list('question_id')
                     ).values_list('quiz_type', flat=True).distinct()
@@ -1796,7 +1796,7 @@ class ExampleSurveyListing(common_mixins.SchoolTeacherMixin, ListView):
                             exceptions.append('STÆ')
                     students_list.append((student, quiz_type_list, exceptions))
                 studentgroups_list.append((studentgroup, students_list))
-            samraemd.append((date, studentgroups_list))
+            samraemd.append((dte, studentgroups_list))
 
         print(samraemd)
         surveys = []
@@ -1862,8 +1862,10 @@ class ExampleSurveySamraemdDetail(common_mixins.SchoolTeacherMixin, ListView):
 
     def _get_student_answers_list(self, student, quiz_type, year):
         answers_list = student.examplesurveyanswer_set.filter(
-            groupsurvey__isnull=True, date__year=year,
-        )
+            groupsurvey__isnull=True,
+            date__year=year,
+            question__quiz_type=quiz_type,
+        ).order_by('question__category', '?').all()
         answers = ExampleSurveyAnswer.objects.filter(
             student=student,
             groupsurvey__isnull=True,
@@ -1871,7 +1873,7 @@ class ExampleSurveySamraemdDetail(common_mixins.SchoolTeacherMixin, ListView):
             question__quiz_type=quiz_type,
         ).order_by('question__category', '?').all()
 
-        return answers
+        return answers_list
 
     def get_context_data(self, **kwargs):
         # xxx will be available in the template as the related objects
@@ -2062,7 +2064,7 @@ class ExampleSurveyAnswerAdminImport(common_mixins.SuperUserMixin, CreateView):
 
                             rowerrors = []
 
-                            if not ssn_str in ssn_cache.keys():
+                            if ssn_str not in ssn_cache.keys():
                                 ssn_cache[ssn_str] = Student.objects.filter(ssn=ssn_str).exists()
                                 if not ssn_cache[ssn_str]:
                                     rowerrors.append({
@@ -2070,7 +2072,7 @@ class ExampleSurveyAnswerAdminImport(common_mixins.SuperUserMixin, CreateView):
                                         'row': row,
                                     })
 
-                            if not quickcode_str in quickcode_cache.keys():
+                            if quickcode_str not in quickcode_cache.keys():
                                 quickcode_cache[quickcode_str] = ExampleSurveyQuestion.objects.filter(
                                     quickcode=quickcode_str).exists()
                                 if not quickcode_cache[quickcode_str]:
@@ -2111,7 +2113,7 @@ class ExampleSurveyAnswerAdminImport(common_mixins.SuperUserMixin, CreateView):
             newdata = self.request.session['newdata']
             del(self.request.session['newdata'])
             print("Calling save_example_survey_answers for import")
-            job = save_example_survey_answers.delay(newdata)
+            save_example_survey_answers.delay(newdata)
         return redirect(self.get_success_url())
 
     def get_success_url(self):
