@@ -1,9 +1,9 @@
 from django.contrib.auth.mixins import UserPassesTestMixin
-from django.core.urlresolvers   import reverse_lazy
+from django.core.urlresolvers import reverse_lazy
 
 
 class SurveySuperSuccessMixin(UserPassesTestMixin):
-    login_url  = reverse_lazy('denied')
+    login_url = reverse_lazy('denied')
 
     def test_func(self):
         return self.request.user.is_superuser

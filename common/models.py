@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.db                  import models
+from django.db import models
 
 from django.contrib.auth.models import User
-from django.utils               import timezone
+from django.utils import timezone
 
 import json
 
@@ -14,9 +14,9 @@ from survey.models import Survey
 
 
 class Notification(models.Model):
-    notification_type = models.CharField(max_length = 128)
-    notification_id   = models.IntegerField()
-    user              = models.ForeignKey(User)
+    notification_type = models.CharField(max_length=128)
+    notification_id = models.IntegerField()
+    user = models.ForeignKey(User)
 
     class Meta:
         unique_together = (("notification_type", "notification_id"),)
@@ -26,12 +26,12 @@ class Notification(models.Model):
 
 
 class Manager(models.Model):
-    ssn      = models.CharField(max_length = 10, unique=True)
-    name     = models.CharField(max_length = 128)
-    email    = models.CharField(max_length = 256, blank=True)
-    phone    = models.CharField(max_length = 7, blank=True)
-    position = models.CharField(max_length = 256, blank=True)
-    user     = models.ForeignKey(User)
+    ssn = models.CharField(max_length=10, unique=True)
+    name = models.CharField(max_length=128)
+    email = models.CharField(max_length=256, blank=True)
+    phone = models.CharField(max_length=7, blank=True)
+    position = models.CharField(max_length=256, blank=True)
+    user = models.ForeignKey(User)
 
     class Meta:
         ordering = ["name"]
@@ -41,10 +41,10 @@ class Manager(models.Model):
 
 
 class Teacher(models.Model):
-    ssn      = models.CharField(max_length = 10, unique=True)
-    name     = models.CharField(max_length = 128)
-    position = models.CharField(max_length = 256, blank=True)
-    user     = models.ForeignKey(User)
+    ssn = models.CharField(max_length=10, unique=True)
+    name = models.CharField(max_length=128)
+    position = models.CharField(max_length=256, blank=True)
+    user = models.ForeignKey(User)
 
     class Meta:
         ordering = ["name"]
@@ -56,8 +56,8 @@ class Teacher(models.Model):
 class Student(models.Model):
     # Although Icelandic kt are all just 10 characters, some schools have students that
     # don't seem to have icelandic kt's. Hence, the 32 char max_length for ssn
-    ssn  = models.CharField(max_length = 32, unique=True)
-    name = models.CharField(max_length = 128)
+    ssn = models.CharField(max_length=32, unique=True)
+    name = models.CharField(max_length=128)
 
     def get_distinct_surveys(self):
         groups = self.studentgroup_set.all().values_list('groupsurvey__pk', flat=True)
@@ -75,8 +75,8 @@ class Student(models.Model):
 
 
 class School(models.Model):
-    name     = models.CharField(max_length = 128)
-    ssn      = models.CharField(max_length = 10)
+    name = models.CharField(max_length=128)
+    ssn = models.CharField(max_length=10)
     managers = models.ManyToManyField(Manager, blank=True)
     teachers = models.ManyToManyField(Teacher, blank=True)
     students = models.ManyToManyField(Student, blank=True)
@@ -93,7 +93,7 @@ class School(models.Model):
 
 
 class StudentGroup(models.Model):
-    name  = models.CharField(max_length = 128)
+    name = models.CharField(max_length=128)
     YEARS = (
         ('0', 'Blandaður árgangur'),
         ('1', '1. bekkur'),
@@ -107,10 +107,10 @@ class StudentGroup(models.Model):
         ('9', '9. bekkur'),
         ('10', '10. bekkur'),
     )
-    student_year   = models.CharField(max_length = 2, choices=YEARS, null=True, blank=True)
+    student_year = models.CharField(max_length=2, choices=YEARS, null=True, blank=True)
     group_managers = models.ManyToManyField(Teacher, blank=True)
-    school         = models.ForeignKey('School')
-    students       = models.ManyToManyField(Student, blank=True)
+    school = models.ForeignKey('School')
+    students = models.ManyToManyField(Student, blank=True)
 
     def __str__(self):
         return self.name
@@ -120,14 +120,14 @@ class GroupSurvey(models.Model):
     studentgroup = models.ForeignKey(
         'StudentGroup', null=True, blank=True, on_delete=models.SET_NULL
     )
-    survey       = models.ForeignKey(Survey)
-    active_from  = models.DateField(default=timezone.now)
-    active_to    = models.DateField(default=timezone.now)
+    survey = models.ForeignKey(Survey)
+    active_from = models.DateField(default=timezone.now)
+    active_to = models.DateField(default=timezone.now)
 
     def save(self, *args, **kwargs):
         if self.survey:
             self.active_from = self.survey.active_from
-            self.active_to   = self.survey.active_to
+            self.active_to = self.survey.active_to
         super(GroupSurvey, self).save(*args, **kwargs)
 
     def is_expired(self):
@@ -143,16 +143,16 @@ class GroupSurvey(models.Model):
 
 
 class SurveyResult(models.Model):
-    student     = models.ForeignKey('Student')
-    created_at  = models.DateTimeField(default=timezone.now)
-    results     = models.TextField()
+    student = models.ForeignKey('Student')
+    created_at = models.DateTimeField(default=timezone.now)
+    results = models.TextField()
     reported_by = models.ForeignKey(
         'Teacher', null=True, blank=True, on_delete=models.SET_NULL
     )
-    survey      = models.ForeignKey(
+    survey = models.ForeignKey(
         'GroupSurvey', null=True, blank=True, on_delete=models.SET_NULL
     )
-    created_at  = models.DateField(default=timezone.now)
+    created_at = models.DateField(default=timezone.now)
 
     @classmethod
     def get_results(cls, id):
@@ -160,9 +160,9 @@ class SurveyResult(models.Model):
 
 
 class SurveyLogin(models.Model):
-    student     = models.ForeignKey(Student)
-    survey_id   = models.CharField(max_length = 256)  # external survey identity
-    survey_code = models.CharField(max_length = 16)
+    student = models.ForeignKey(Student)
+    survey_id = models.CharField(max_length=256)  # external survey identity
+    survey_code = models.CharField(max_length=16)
 
 
 # Prófadæmi, spurningar
@@ -183,11 +183,11 @@ class ExampleSurveyQuestion(models.Model):
     )
     created_by = models.ForeignKey(User, null=True)
     # flýtikóði
-    quickcode = models.CharField(max_length = 16, unique=True)
+    quickcode = models.CharField(max_length=16, unique=True)
     # próftegund
-    quiz_type = models.CharField(max_length = 3, choices=quiz_type_choices)
+    quiz_type = models.CharField(max_length=3, choices=quiz_type_choices)
     # flokkur
-    category = models.CharField(max_length = 2, choices=category_choices)
+    category = models.CharField(max_length=2, choices=category_choices)
     # ĺýsing
     description = models.TextField()
     # dæmi
@@ -201,9 +201,9 @@ class ExampleSurveyQuestion(models.Model):
 
         if answers_total == 0:
             return "0%"
-        answers_correct = self.examplesurveyanswer_set.filter(answer = True).count()
+        answers_correct = self.examplesurveyanswer_set.filter(answer=True).count()
 
-        return "{:.1f}%".format((answers_correct/answers_total) * 100)
+        return "{:.1f}%".format((answers_correct / answers_total) * 100)
 
 
 # Prófadæmi, svör
@@ -214,7 +214,7 @@ class ExampleSurveyAnswer(models.Model):
     question = models.ForeignKey(ExampleSurveyQuestion)
     # próf
     groupsurvey = models.ForeignKey(GroupSurvey, null=True)
-    exam_code = models.CharField(max_length = 128, null=True)
+    exam_code = models.CharField(max_length=128, null=True)
     # dags
     date = models.DateField(default=timezone.now)
     # Svar (rétt/rangt)

@@ -1,26 +1,26 @@
 # -*- coding: utf-8 -*-
-from django.http                  import HttpResponse, HttpResponseRedirect, JsonResponse
-from django.shortcuts             import render, get_object_or_404, redirect
-from django.views.generic         import ListView, CreateView, DetailView, UpdateView, DeleteView
-from django.core.urlresolvers     import reverse_lazy
-from django.contrib.auth.mixins   import UserPassesTestMixin
-from django.contrib.auth.models   import User
-from django.utils                 import timezone
-from django.utils.decorators      import method_decorator
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.shortcuts import render, get_object_or_404, redirect
+from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
+from django.core.urlresolvers import reverse_lazy
+from django.contrib.auth.mixins import UserPassesTestMixin
+from django.contrib.auth.models import User
+from django.utils import timezone
+from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from celery.task.control import inspect
 
 from itertools import chain
-from uuid      import uuid4
-from datetime  import datetime, date
-from ast       import literal_eval
+from uuid import uuid4
+from datetime import datetime, date
+from ast import literal_eval
 
 import json
 import xlrd
 import openpyxl
 from openpyxl.styles import PatternFill
-from openpyxl.chart import AreaChart, BarChart, LineChart,  Reference
+from openpyxl.chart import AreaChart, BarChart, LineChart, Reference
 from openpyxl.chart.layout import Layout, ManualLayout
 
 import csv
@@ -33,8 +33,8 @@ from common.models import (
     StudentGroup, GroupSurvey, SurveyResult, SurveyLogin,
     ExampleSurveyQuestion, ExampleSurveyAnswer,
 )
-import common.util   as common_util
-import common.forms  as cm_forms
+import common.util as common_util
+import common.forms as cm_forms
 import samraemd.models as s_models
 from survey.models import (
     Survey, SurveyGradingTemplate, SurveyInputField,
@@ -55,7 +55,7 @@ def lesferill(request):
 
 class NotificationCreate(UserPassesTestMixin, CreateView):
     model = Notification
-    form_class  = cm_forms.NotificationForm
+    form_class = cm_forms.NotificationForm
 
     @method_decorator(csrf_exempt)
     def dispatch(self, request, *args, **kwargs):
@@ -67,13 +67,13 @@ class NotificationCreate(UserPassesTestMixin, CreateView):
     def post(self, *args, **kwargs):
         try:
             notification_type = self.request.POST.get('notification_type', None)
-            notification_id   = self.request.POST.get('notification_id', None)
+            notification_id = self.request.POST.get('notification_id', None)
 
             if notification_type and notification_id:
                 Notification.objects.create(
-                    user              = self.request.user,
-                    notification_type = notification_type,
-                    notification_id   = notification_id)
+                    user=self.request.user,
+                    notification_type=notification_type,
+                    notification_id=notification_id)
 
             return JsonResponse({'result': 'success'})
         except Exception as e:
@@ -90,9 +90,9 @@ class SchoolListing(ListView):
                 context['school_list'] = common_util.slug_sort(
                     School.objects.all(), 'name')
             else:
-                manager_schools        = School.objects.filter(
+                manager_schools = School.objects.filter(
                     managers=Manager.objects.filter(user=self.request.user))
-                teacher_schools        = School.objects.filter(
+                teacher_schools = School.objects.filter(
                     teachers=Teacher.objects.filter(user=self.request.user))
                 context['school_list'] = list(
                     set(common_util.slug_sort(manager_schools | teacher_schools, 'name')))
@@ -105,24 +105,24 @@ class SchoolDetail(common_mixins.SchoolEmployeeMixin, DetailView):
     model = School
 
     def get_context_data(self, **kwargs):
-        context                      = super(SchoolDetail, self).get_context_data(**kwargs)
+        context = super(SchoolDetail, self).get_context_data(**kwargs)
         context['studentgroup_list'] = common_util.slug_sort(
             self.object.studentgroup_set.all(), 'name')
-        context['managers']          = common_util.slug_sort(
+        context['managers'] = common_util.slug_sort(
             self.object.managers.all(), 'name')
-        context['teachers']          = common_util.slug_sort(
+        context['teachers'] = common_util.slug_sort(
             self.object.teachers.all(), 'name')
-        context['surveys']           = common_util.slug_sort(
+        context['surveys'] = common_util.slug_sort(
             GroupSurvey.objects.filter(
                 studentgroup__in=self.object.studentgroup_set.all()), 'survey')
-        context['students']          = self.object.students.all()
+        context['students'] = self.object.students.all()
 
         all_messages = common_util.get_messages()
-        messages     = []
+        messages = []
         for message in all_messages:
             if message['file'] is not None:
-                file_name            = message['file'].split('/')[-1]
-                file_name            = file_name.encode('utf-8')
+                file_name = message['file'].split('/')[-1]
+                file_name = file_name.encode('utf-8')
                 message['file_name'] = file_name
             messages.append(message)
 
@@ -137,14 +137,14 @@ class SchoolDetail(common_mixins.SchoolEmployeeMixin, DetailView):
 
 
 class SchoolCreate(common_mixins.SuperUserMixin, CreateView):
-    model       = School
-    form_class  = cm_forms.SchoolForm
+    model = School
+    form_class = cm_forms.SchoolForm
     success_url = reverse_lazy('schools:school_listing')
 
 
 class SchoolCreateImport(common_mixins.SchoolManagerMixin, CreateView):
-    model         = School
-    form_class    = cm_forms.SchoolForm
+    model = School
+    form_class = cm_forms.SchoolForm
     template_name = "common/school_form_import.html"
 
     def get_context_data(self, **kwargs):
@@ -154,11 +154,11 @@ class SchoolCreateImport(common_mixins.SchoolManagerMixin, CreateView):
 
     def post(self, *args, **kwargs):
         if(self.request.FILES):
-            u_file    = self.request.FILES['file'].name
+            u_file = self.request.FILES['file'].name
             extension = u_file.split(".")[-1]
-            ssn       = self.request.POST.get('school_ssn')
-            name      = self.request.POST.get('school_name')
-            title     = self.request.POST.get('title')
+            ssn = self.request.POST.get('school_ssn')
+            name = self.request.POST.get('school_name')
+            title = self.request.POST.get('title')
             if title == 'yes':
                 first = 1
             else:
@@ -167,7 +167,7 @@ class SchoolCreateImport(common_mixins.SchoolManagerMixin, CreateView):
             errors = []
             if extension == 'xlsx':
                 input_excel = self.request.FILES['file']
-                book        = xlrd.open_workbook(file_contents=input_excel.read())
+                book = xlrd.open_workbook(file_contents=input_excel.read())
                 for sheetsnumber in range(book.nsheets):
                     sheet = book.sheet_by_index(sheetsnumber)
                     for row in range(first, sheet.nrows):
@@ -181,7 +181,7 @@ class SchoolCreateImport(common_mixins.SchoolManagerMixin, CreateView):
                             })
                         data.append({
                             'name': sheet.cell_value(row, int(name)),
-                            'ssn' : ssn_str,
+                            'ssn': ssn_str,
                             'error': True if rowerrors else False,
                         })
                         if rowerrors:
@@ -205,28 +205,28 @@ class SchoolCreateImport(common_mixins.SchoolManagerMixin, CreateView):
         return HttpResponseRedirect(self.get_success_url())
 
     def get_success_url(self):
-            return reverse_lazy('schools:school_listing')
+        return reverse_lazy('schools:school_listing')
 
 
 class SchoolUpdate(common_mixins.SuperUserMixin, UpdateView):
-    model       = School
-    form_class  = cm_forms.SchoolForm
+    model = School
+    form_class = cm_forms.SchoolForm
     success_url = reverse_lazy('schools:school_listing')
 
 
 class SchoolDelete(common_mixins.SuperUserMixin, DeleteView):
-    model         = School
+    model = School
     template_name = "schools/confirm_delete.html"
-    success_url   = reverse_lazy('schools:school_listing')
+    success_url = reverse_lazy('schools:school_listing')
 
 
 class ManagerListing(common_mixins.SchoolEmployeeMixin, ListView):
     model = Manager
 
     def get_context_data(self, **kwargs):
-        context             = super(ManagerListing, self).get_context_data(**kwargs)
-        school              = School.objects.get(pk=self.kwargs['school_id'])
-        context['school']   = school
+        context = super(ManagerListing, self).get_context_data(**kwargs)
+        school = School.objects.get(pk=self.kwargs['school_id'])
+        context['school'] = school
         context['managers'] = Manager.objects.filter(school=school)
         return context
 
@@ -235,7 +235,7 @@ class ManagerDetail(common_mixins.SchoolEmployeeMixin, DetailView):
     model = Manager
 
     def get_context_data(self, **kwargs):
-        context           = super(ManagerDetail, self).get_context_data(**kwargs)
+        context = super(ManagerDetail, self).get_context_data(**kwargs)
         context['school'] = School.objects.get(pk=self.kwargs['school_id'])
         return context
 
@@ -252,7 +252,7 @@ class ManagerOverview(UserPassesTestMixin, DetailView):
         return False
 
     def get_context_data(self, **kwargs):
-        context           = super(ManagerOverview, self).get_context_data(**kwargs)
+        context = super(ManagerOverview, self).get_context_data(**kwargs)
         context['school'] = School.objects.filter(
             managers=Manager.objects.filter(
                 pk=self.kwargs['pk'])).first()
@@ -260,11 +260,11 @@ class ManagerOverview(UserPassesTestMixin, DetailView):
 
 
 class ManagerCreate(common_mixins.SchoolManagerMixin, CreateView):
-    model      = Manager
+    model = Manager
     form_class = cm_forms.ManagerForm
 
     def get_context_data(self, **kwargs):
-        context           = super(ManagerCreate, self).get_context_data(**kwargs)
+        context = super(ManagerCreate, self).get_context_data(**kwargs)
         context['school'] = School.objects.get(pk=self.kwargs['school_id'])
         return context
 
@@ -273,17 +273,17 @@ class ManagerCreate(common_mixins.SchoolManagerMixin, CreateView):
             user__username=self.request.POST.get('ssn')).first()
         if self.object:
             return HttpResponseRedirect(self.get_success_url())
-        form      = self.get_form()
+        form = self.get_form()
         # make data mutable
         form.data = self.request.POST.copy()
         # set or create user
-        user      = User.objects.filter(username=self.request.POST.get('ssn'))
+        user = User.objects.filter(username=self.request.POST.get('ssn'))
         if user:
             form.data['user'] = user.first().id
         else:
             new_user = User.objects.create(
-                username = self.request.POST.get('ssn'),
-                password = str(uuid4()))
+                username=self.request.POST.get('ssn'),
+                password=str(uuid4()))
             form.data['user'] = new_user.id
         if form.is_valid():
             return self.form_valid(form)
@@ -309,8 +309,8 @@ class ManagerCreate(common_mixins.SchoolManagerMixin, CreateView):
 
 
 class ManagerCreateImport(common_mixins.SchoolManagerMixin, CreateView):
-    model         = School
-    form_class    = cm_forms.SchoolForm
+    model = School
+    form_class = cm_forms.SchoolForm
     template_name = "common/manager_form_import.html"
 
     def get_context_data(self, **kwargs):
@@ -320,12 +320,12 @@ class ManagerCreateImport(common_mixins.SchoolManagerMixin, CreateView):
 
     def post(self, *args, **kwargs):
         if(self.request.FILES):
-            u_file     = self.request.FILES['file'].name
-            extension  = u_file.split(".")[-1]
-            ssn        = self.request.POST.get('ssn')
-            name       = self.request.POST.get('name')
+            u_file = self.request.FILES['file'].name
+            extension = u_file.split(".")[-1]
+            ssn = self.request.POST.get('ssn')
+            name = self.request.POST.get('name')
             school_ssn = self.request.POST.get('school_ssn')
-            title      = self.request.POST.get('title')
+            title = self.request.POST.get('title')
             if title == 'yes':
                 first = 1
             else:
@@ -334,7 +334,7 @@ class ManagerCreateImport(common_mixins.SchoolManagerMixin, CreateView):
             errors = []
             if extension == 'xlsx':
                 input_excel = self.request.FILES['file']
-                book        = xlrd.open_workbook(file_contents=input_excel.read())
+                book = xlrd.open_workbook(file_contents=input_excel.read())
                 for sheetsnumber in range(book.nsheets):
                     sheet = book.sheet_by_index(sheetsnumber)
                     for row in range(first, sheet.nrows):
@@ -348,7 +348,7 @@ class ManagerCreateImport(common_mixins.SchoolManagerMixin, CreateView):
                                 'text': 'Kennitala ekki rétt slegin inn',
                                 'row': row,
                             })
-                        
+
                         school_ssn_kt = Kennitala(school_ssn_str)
                         if not ssn_kt.validate():
                             rowerrors.append({
@@ -363,10 +363,10 @@ class ManagerCreateImport(common_mixins.SchoolManagerMixin, CreateView):
                             })
 
                         data.append({
-                            'name'      : sheet.cell_value(row, int(name)),
-                            'ssn'       : ssn_str,
+                            'name': sheet.cell_value(row, int(name)),
+                            'ssn': ssn_str,
                             'school_ssn': school_ssn_str,
-                            'error'     : True if rowerrors else False
+                            'error': True if rowerrors else False
                         })
                         if rowerrors:
                             errors += rowerrors
@@ -391,15 +391,15 @@ class ManagerCreateImport(common_mixins.SchoolManagerMixin, CreateView):
         return HttpResponseRedirect(self.get_success_url())
 
     def get_success_url(self):
-            return reverse_lazy('schools:school_listing')
+        return reverse_lazy('schools:school_listing')
 
 
 class ManagerUpdate(common_mixins.SchoolManagerMixin, UpdateView):
-    model      = Manager
+    model = Manager
     form_class = cm_forms.ManagerForm
 
     def get_context_data(self, **kwargs):
-        context           = super(ManagerUpdate, self).get_context_data(**kwargs)
+        context = super(ManagerUpdate, self).get_context_data(**kwargs)
         context['school'] = School.objects.get(pk=self.kwargs['school_id'])
         return context
 
@@ -416,7 +416,7 @@ class ManagerUpdate(common_mixins.SchoolManagerMixin, UpdateView):
             # no changes
             pass
         else:
-            request.POST         = request.POST.copy()
+            request.POST = request.POST.copy()
             request.POST['user'] = user.id
 
         return super(ManagerUpdate, self).post(request, **kwargs)
@@ -433,7 +433,7 @@ class ManagerUpdate(common_mixins.SchoolManagerMixin, UpdateView):
 
 
 class ManagerDelete(common_mixins.SchoolManagerMixin, DeleteView):
-    model         = Manager
+    model = Manager
     template_name = "schools/confirm_delete.html"
 
     def delete(self, request, *args, **kwargs):
@@ -458,11 +458,11 @@ class TeacherListing(common_mixins.SchoolEmployeeMixin, ListView):
     model = Teacher
 
     def get_context_data(self, **kwargs):
-        context             = super(TeacherListing, self).get_context_data(**kwargs)
-        school              = School.objects.get(pk=self.kwargs['school_id'])
-        context['school']   = school
+        context = super(TeacherListing, self).get_context_data(**kwargs)
+        school = School.objects.get(pk=self.kwargs['school_id'])
+        context['school'] = school
         context['teachers'] = Teacher.objects.filter(school=school)
-        context['groups']   = common_util.slug_sort(
+        context['groups'] = common_util.slug_sort(
             StudentGroup.objects.filter(school=school), 'name')
         return context
 
@@ -471,12 +471,12 @@ class TeacherDetail(common_mixins.SchoolEmployeeMixin, DetailView):
     model = Teacher
 
     def get_context_data(self, **kwargs):
-        context           = super(TeacherDetail, self).get_context_data(**kwargs)
+        context = super(TeacherDetail, self).get_context_data(**kwargs)
         context['school'] = School.objects.get(pk=self.kwargs['school_id'])
         context['groups'] = common_util.slug_sort(
             StudentGroup.objects.filter(
-                group_managers = Teacher.objects.filter(
-                    user = self.request.user)
+                group_managers=Teacher.objects.filter(
+                    user=self.request.user)
             ), 'name'
         )
         return context
@@ -496,7 +496,7 @@ class TeacherOverview(UserPassesTestMixin, DetailView):
         return False
 
     def get_context_data(self, **kwargs):
-        context           = super(TeacherOverview, self).get_context_data(**kwargs)
+        context = super(TeacherOverview, self).get_context_data(**kwargs)
         context['school'] = School.objects.filter(
             teachers=Teacher.objects.filter(
                 pk=self.kwargs['pk']
@@ -506,11 +506,11 @@ class TeacherOverview(UserPassesTestMixin, DetailView):
 
 
 class TeacherCreate(common_mixins.SchoolManagerMixin, CreateView):
-    model      = Teacher
+    model = Teacher
     form_class = cm_forms.TeacherForm
 
     def get_context_data(self, **kwargs):
-        context           = super(TeacherCreate, self).get_context_data(**kwargs)
+        context = super(TeacherCreate, self).get_context_data(**kwargs)
         context['school'] = School.objects.get(pk=self.kwargs['school_id'])
         return context
 
@@ -520,18 +520,18 @@ class TeacherCreate(common_mixins.SchoolManagerMixin, CreateView):
         ).first()
         if self.object:
             return HttpResponseRedirect(self.get_success_url())
-        form      = self.get_form()
+        form = self.get_form()
         # make data mutable
         form.data = self.request.POST.copy()
         # set or create user
-        user      = User.objects.filter(username=self.request.POST.get('ssn'))
+        user = User.objects.filter(username=self.request.POST.get('ssn'))
 
         if user:
             form.data['user'] = user.first().id
         else:
             user = User.objects.create(
-                username = self.request.POST.get('ssn'),
-                password = str(uuid4()))
+                username=self.request.POST.get('ssn'),
+                password=str(uuid4()))
             form.data['user'] = user.id
 
         if form.is_valid():
@@ -552,23 +552,23 @@ class TeacherCreate(common_mixins.SchoolManagerMixin, CreateView):
 
 
 class TeacherCreateImport(common_mixins.SchoolManagerMixin, CreateView):
-    model         = Teacher
-    form_class    = cm_forms.TeacherForm
+    model = Teacher
+    form_class = cm_forms.TeacherForm
     template_name = "common/teacher_form_import.html"
 
     def get_context_data(self, **kwargs):
         # xxx will be available in the template as the related objects
-        context           = super(TeacherCreateImport, self).get_context_data(**kwargs)
+        context = super(TeacherCreateImport, self).get_context_data(**kwargs)
         context['school'] = School.objects.get(pk=self.kwargs['school_id'])
         return context
 
     def post(self, *args, **kwargs):
         if(self.request.FILES):
-            u_file    = self.request.FILES['file'].name
+            u_file = self.request.FILES['file'].name
             extension = u_file.split(".")[-1]
-            ssn       = self.request.POST.get('ssn')
-            name      = self.request.POST.get('name')
-            title     = self.request.POST.get('title')
+            ssn = self.request.POST.get('ssn')
+            name = self.request.POST.get('name')
+            title = self.request.POST.get('title')
             if title == 'yes':
                 first = 1
             else:
@@ -578,7 +578,7 @@ class TeacherCreateImport(common_mixins.SchoolManagerMixin, CreateView):
 
             if extension == 'xlsx':
                 input_excel = self.request.FILES['file']
-                book        = xlrd.open_workbook(file_contents=input_excel.read())
+                book = xlrd.open_workbook(file_contents=input_excel.read())
                 for sheetsnumber in range(book.nsheets):
                     sheet = book.sheet_by_index(sheetsnumber)
                     for row in range(first, sheet.nrows):
@@ -636,11 +636,11 @@ class TeacherCreateImport(common_mixins.SchoolManagerMixin, CreateView):
 
 
 class TeacherUpdate(common_mixins.SchoolManagerMixin, UpdateView):
-    model      = Teacher
+    model = Teacher
     form_class = cm_forms.TeacherForm
 
     def get_context_data(self, **kwargs):
-        context           = super(TeacherUpdate, self).get_context_data(**kwargs)
+        context = super(TeacherUpdate, self).get_context_data(**kwargs)
         context['school'] = School.objects.get(pk=self.kwargs['school_id'])
         return context
 
@@ -657,7 +657,7 @@ class TeacherUpdate(common_mixins.SchoolManagerMixin, UpdateView):
             # no changes
             pass
         else:
-            request.POST         = request.POST.copy()
+            request.POST = request.POST.copy()
             request.POST['user'] = user.id
 
         return super(TeacherUpdate, self).post(request, **kwargs)
@@ -674,7 +674,7 @@ class TeacherUpdate(common_mixins.SchoolManagerMixin, UpdateView):
 
 
 class TeacherDelete(common_mixins.SchoolManagerMixin, DeleteView):
-    model         = Teacher
+    model = Teacher
     template_name = "schools/confirm_delete.html"
 
     def delete(self, request, *args, **kwargs):
@@ -698,16 +698,16 @@ class TeacherDelete(common_mixins.SchoolManagerMixin, DeleteView):
 class StudentAdminSearch(common_mixins.SuperUserMixin, ListView):
     model = Student
     template_name = "common/student_search.html"
-    
+
 
 class StudentListing(common_mixins.SchoolEmployeeMixin, ListView):
     model = Student
 
     def get_context_data(self, **kwargs):
         context = super(StudentListing, self).get_context_data(**kwargs)
-        school  = School.objects.get(pk=self.kwargs['school_id'])
+        school = School.objects.get(pk=self.kwargs['school_id'])
 
-        context['school']   = school
+        context['school'] = school
         context['students'] = common_util.slug_sort(
             Student.objects.filter(school=school), 'name')
         context['students_outside_groups'] = common_util.slug_sort(
@@ -722,7 +722,7 @@ class StudentDetail(common_mixins.SchoolEmployeeMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         # xxx will be available in the template as the related objects
-        context                     = super(StudentDetail, self).get_context_data(**kwargs)
+        context = super(StudentDetail, self).get_context_data(**kwargs)
 
         if 'school_id' in self.kwargs:
             context['school'] = School.objects.get(pk=self.kwargs['school_id'])
@@ -736,35 +736,35 @@ def StudentNotes(request, school_id, pk):
     if request.method == 'POST':
         notes = request.POST.get('notes')
         if (sae_models.StudentExceptionSupport.objects.filter(
-            student = Student.objects.get(pk=int(pk))
+            student=Student.objects.get(pk=int(pk))
         ).exists()):
             sae_models.StudentExceptionSupport.objects.filter(
-                student = Student.objects.get(pk=int(pk))).update(notes=notes)
+                student=Student.objects.get(pk=int(pk))).update(notes=notes)
         else:
-            ses         = sae_models.StudentExceptionSupport(notes=notes)
+            ses = sae_models.StudentExceptionSupport(notes=notes)
             ses.student = Student.objects.get(pk=int(pk))
             ses.save()
         return JsonResponse({"message": "success"})
 
 
 class StudentCreateImport(common_mixins.SchoolManagerMixin, CreateView):
-    model         = Student
-    form_class    = cm_forms.StudentForm
+    model = Student
+    form_class = cm_forms.StudentForm
     template_name = "common/student_form_import.html"
 
     def get_context_data(self, **kwargs):
         # xxx will be available in the template as the related objects
-        context           = super(StudentCreateImport, self).get_context_data(**kwargs)
+        context = super(StudentCreateImport, self).get_context_data(**kwargs)
         context['school'] = School.objects.get(pk=self.kwargs['school_id'])
         return context
 
     def post(self, *args, **kwargs):
         if(self.request.FILES):
-            u_file    = self.request.FILES['file'].name
+            u_file = self.request.FILES['file'].name
             extension = u_file.split(".")[-1]
-            ssn       = self.request.POST.get('student_ssn')
-            name      = self.request.POST.get('student_name')
-            title     = self.request.POST.get('title')
+            ssn = self.request.POST.get('student_ssn')
+            name = self.request.POST.get('student_name')
+            title = self.request.POST.get('title')
             if title == 'yes':
                 first = 1
             else:
@@ -773,7 +773,7 @@ class StudentCreateImport(common_mixins.SchoolManagerMixin, CreateView):
             errors = []
             if extension == 'xlsx':
                 input_excel = self.request.FILES['file']
-                book        = xlrd.open_workbook(file_contents=input_excel.read())
+                book = xlrd.open_workbook(file_contents=input_excel.read())
                 for sheetsnumber in range(book.nsheets):
                     rowerrors = []
                     sheet = book.sheet_by_index(sheetsnumber)
@@ -786,9 +786,9 @@ class StudentCreateImport(common_mixins.SchoolManagerMixin, CreateView):
                                 row: row,
                             })
                         data.append({
-                            'name' : str(sheet.cell_value(row, int(name))).strip(),
-                            'ssn'  : ssn_str,
-                            'error': True if rowerrors else False, 
+                            'name': str(sheet.cell_value(row, int(name))).strip(),
+                            'ssn': ssn_str,
+                            'error': True if rowerrors else False,
                         })
                         if rowerrors:
                             errors += rowerrors
@@ -805,7 +805,7 @@ class StudentCreateImport(common_mixins.SchoolManagerMixin, CreateView):
         else:
             student_data = self.request.session['newdata']
             del(self.request.session['newdata'])
-            school       = School.objects.get(pk=self.kwargs['school_id'])
+            school = School.objects.get(pk=self.kwargs['school_id'])
             # iterate through students, add them if they don't exist then add to school
             for data in student_data:
                 student = None
@@ -830,7 +830,7 @@ class StudentCreateImport(common_mixins.SchoolManagerMixin, CreateView):
 
 
 class StudentCreate(common_mixins.SchoolManagerMixin, CreateView):
-    model      = Student
+    model = Student
     form_class = cm_forms.StudentForm
 
     def post(self, *args, **kwargs):
@@ -855,7 +855,7 @@ class StudentCreate(common_mixins.SchoolManagerMixin, CreateView):
             return self.form_invalid(form)
 
     def get_context_data(self, **kwargs):
-        context           = super(StudentCreate, self).get_context_data(**kwargs)
+        context = super(StudentCreate, self).get_context_data(**kwargs)
         context['school'] = School.objects.get(pk=self.kwargs['school_id'])
         return context
 
@@ -872,11 +872,11 @@ class StudentCreate(common_mixins.SchoolManagerMixin, CreateView):
 
 
 class StudentUpdate(common_mixins.SchoolManagerMixin, UpdateView):
-    model      = Student
+    model = Student
     form_class = cm_forms.StudentForm
 
     def get_context_data(self, **kwargs):
-        context           = super(StudentUpdate, self).get_context_data(**kwargs)
+        context = super(StudentUpdate, self).get_context_data(**kwargs)
 
         if 'school_id' in self.kwargs:
             context['school'] = School.objects.get(pk=self.kwargs['school_id'])
@@ -895,7 +895,7 @@ class StudentUpdate(common_mixins.SchoolManagerMixin, UpdateView):
 
 
 class StudentDelete(common_mixins.SchoolManagerMixin, DeleteView):
-    model         = Student
+    model = Student
     template_name = "schools/confirm_delete.html"
 
     def delete(self, request, *args, **kwargs):
@@ -926,9 +926,9 @@ class StudentGroupListing(common_mixins.SchoolEmployeeMixin, ListView):
     model = StudentGroup
 
     def get_context_data(self, **kwargs):
-        context                  = super(StudentGroupListing, self).get_context_data(**kwargs)
-        school                   = School.objects.get(pk=self.kwargs['school_id'])
-        context['school']        = school
+        context = super(StudentGroupListing, self).get_context_data(**kwargs)
+        school = School.objects.get(pk=self.kwargs['school_id'])
+        context['school'] = school
         context['studentgroups'] = common_util.slug_sort(
             StudentGroup.objects.filter(school=school), 'name')
         return context
@@ -939,31 +939,31 @@ class StudentGroupDetail(common_mixins.SchoolEmployeeMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         # xxx will be available in the template as the related objects
-        context                = super(StudentGroupDetail, self).get_context_data(**kwargs)
-        context['school']      = School.objects.get(pk=self.kwargs['school_id'])
-        context['exceptions']  = sae_models.Exceptions.objects.all()
-        context['supports']    = sae_models.SupportResource.objects.all()
-        context['surveys']     = self.object.groupsurvey_set.filter(
+        context = super(StudentGroupDetail, self).get_context_data(**kwargs)
+        context['school'] = School.objects.get(pk=self.kwargs['school_id'])
+        context['exceptions'] = sae_models.Exceptions.objects.all()
+        context['supports'] = sae_models.SupportResource.objects.all()
+        context['surveys'] = self.object.groupsurvey_set.filter(
             active_to__gte=datetime.now()
         )
         context['old_surveys'] = self.object.groupsurvey_set.filter(
             active_to__lt=datetime.now()
         )
-        context['students']    = common_util.slug_sort(self.object.students.all(), 'name')
-        context['teachers']    = common_util.slug_sort(self.object.group_managers.all(), 'name')
+        context['students'] = common_util.slug_sort(self.object.students.all(), 'name')
+        context['teachers'] = common_util.slug_sort(self.object.group_managers.all(), 'name')
         context['samraemd'] = False
         samraemd_results = list(chain(
             s_models.SamraemdISLResult.objects.filter(
-                student__in     = self.object.students.all(),
-                student_year    = self.object.student_year,
+                student__in=self.object.students.all(),
+                student_year=self.object.student_year,
             ),
             s_models.SamraemdMathResult.objects.filter(
-                student__in     = self.object.students.all(),
-                student_year    = self.object.student_year,
+                student__in=self.object.students.all(),
+                student_year=self.object.student_year,
             ),
             s_models.SamraemdENSResult.objects.filter(
-                student__in     = self.object.students.all(),
-                student_year    = self.object.student_year,
+                student__in=self.object.students.all(),
+                student_year=self.object.student_year,
             ),
         ))
 
@@ -971,100 +971,99 @@ class StudentGroupDetail(common_mixins.SchoolEmployeeMixin, DetailView):
             context['samraemd'] = True
 
         context['rawdata'] = ExampleSurveyAnswer.objects.filter(
-            student__in = self.object.students.all(),
+            student__in=self.object.students.all(),
         ).exists()
-
 
         return context
 
 
 def group_admin_listing_csv(request, survey_title):
-        from ast import literal_eval
-        # Create the HttpResponse object with the appropriate CSV header.
-        response                        = HttpResponse(content_type='text/csv')
-        response['Content-Disposition'] = 'attachment; filename="' + survey_title + '.csv"'
-        fieldnames = [
-            'FIRST', 'LAST', 'RESULTS EMAIL', 'EXTERNAL ID',
-            'CODE EMAIL', 'TEST NAME', 'GROUP PATH', 'EXTRA TIME'
-        ]
-        writer = csv.writer(response)
-        writer.writerow(fieldnames)
+    from ast import literal_eval
+    # Create the HttpResponse object with the appropriate CSV header.
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="' + survey_title + '.csv"'
+    fieldnames = [
+        'FIRST', 'LAST', 'RESULTS EMAIL', 'EXTERNAL ID',
+        'CODE EMAIL', 'TEST NAME', 'GROUP PATH', 'EXTRA TIME'
+    ]
+    writer = csv.writer(response)
+    writer.writerow(fieldnames)
 
-        KEY = {
-            1: 'íslenska',
-            2: 'enska',
-            3: 'stærðfræði'
-        }
+    KEY = {
+        1: 'íslenska',
+        2: 'enska',
+        3: 'stærðfræði'
+    }
 
-        surveys = GroupSurvey.objects.filter(title=survey_title)
-        for survey in surveys:
-            for student in survey.studentgroup.students.all():
+    surveys = GroupSurvey.objects.filter(title=survey_title)
+    for survey in surveys:
+        for student in survey.studentgroup.students.all():
                 # find last name by finding last space
-                student_names       = student.name.strip().split(" ")
-                student_first_names = ' '.join(student_names[:-1])
-                student_lastname    = student_names[-1]
+            student_names = student.name.strip().split(" ")
+            student_first_names = ' '.join(student_names[:-1])
+            student_lastname = student_names[-1]
 
-                student_processed = False
-                if student.supportresource_set.exists():
-                    longer_time        = literal_eval(
-                        student.supportresource_set.first().longer_time)
-                    reading_assistance = literal_eval(
-                        student.supportresource_set.first().reading_assistance)
-                    """Fyrir öll stuðningsúrræði, ath hvort stuðningsúrræðið sé fyrir þetta próf"""
-                    for i in longer_time + reading_assistance:
-                        if KEY.get(i, '') in survey.identifier and not student_processed:
-                            """
-                                Próftaki með lengdan tíma og engan stuðning á að fá venjulegt
-                                próf með lengdum tíma
-                            """
-                            if i in longer_time and i not in reading_assistance:
-                                writer.writerow([
-                                    student_first_names,
-                                    student_lastname,
-                                    '',
-                                    student.ssn,
-                                    '',
-                                    survey.identifier,
-                                    '',
-                                    'Y'
-                                ])
-                            else:
-                                """Annars lengdur tími og stuðningur"""
-                                writer.writerow([
-                                    student_first_names,
-                                    student_lastname,
-                                    '',
-                                    student.ssn,
-                                    '',
-                                    survey.identifier + '_stuðningur',
-                                    '',
-                                    'Y'
-                                ])
-                            student_processed = True
+            student_processed = False
+            if student.supportresource_set.exists():
+                longer_time = literal_eval(
+                    student.supportresource_set.first().longer_time)
+                reading_assistance = literal_eval(
+                    student.supportresource_set.first().reading_assistance)
+                """Fyrir öll stuðningsúrræði, ath hvort stuðningsúrræðið sé fyrir þetta próf"""
+                for i in longer_time + reading_assistance:
+                    if KEY.get(i, '') in survey.identifier and not student_processed:
+                        """
+                            Próftaki með lengdan tíma og engan stuðning á að fá venjulegt
+                            próf með lengdum tíma
+                        """
+                        if i in longer_time and i not in reading_assistance:
+                            writer.writerow([
+                                student_first_names,
+                                student_lastname,
+                                '',
+                                student.ssn,
+                                '',
+                                survey.identifier,
+                                '',
+                                'Y'
+                            ])
+                        else:
+                            """Annars lengdur tími og stuðningur"""
+                            writer.writerow([
+                                student_first_names,
+                                student_lastname,
+                                '',
+                                student.ssn,
+                                '',
+                                survey.identifier + '_stuðningur',
+                                '',
+                                'Y'
+                            ])
+                        student_processed = True
 
-                if not student_processed:
-                    """Próftaki fær venjulegt próf"""
-                    writer.writerow([
-                        student_first_names,
-                        student_lastname,
-                        '',
-                        student.ssn,
-                        '',
-                        survey.identifier,
-                        '',
-                        ''
-                    ])
+            if not student_processed:
+                """Próftaki fær venjulegt próf"""
+                writer.writerow([
+                    student_first_names,
+                    student_lastname,
+                    '',
+                    student.ssn,
+                    '',
+                    survey.identifier,
+                    '',
+                    ''
+                ])
 
-        return response
+    return response
 
 
 class StudentGroupAdminListing(common_mixins.SuperUserMixin, ListView):
-    model         = StudentGroup
+    model = StudentGroup
     template_name = "common/studentgroup_admin_list.html"
 
     def get_context_data(self, **kwargs):
         try:
-            context            = super(StudentGroupAdminListing, self).get_context_data(**kwargs)
+            context = super(StudentGroupAdminListing, self).get_context_data(**kwargs)
             context['schools'] = common_util.slug_sort(School.objects.all(), 'name')
             context['surveys'] = GroupSurvey.objects.filter(
                 survey__title=self.kwargs['survey_title']
@@ -1080,8 +1079,8 @@ class StudentGroupCreate(common_mixins.SchoolEmployeeMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         # xxx will be available in the template as the related objects
-        context             = super(StudentGroupCreate, self).get_context_data(**kwargs)
-        context['school']   = School.objects.get(pk=self.kwargs['school_id'])
+        context = super(StudentGroupCreate, self).get_context_data(**kwargs)
+        context['school'] = School.objects.get(pk=self.kwargs['school_id'])
         context['students'] = common_util.slug_sort(
             Student.objects.filter(school=self.kwargs['school_id']), 'name')
         context['teachers'] = common_util.slug_sort(
@@ -1090,10 +1089,10 @@ class StudentGroupCreate(common_mixins.SchoolEmployeeMixin, CreateView):
         return context
 
     def post(self, request, *args, **kwargs):
-        self.object         = None
-        form                = self.get_form()
+        self.object = None
+        form = self.get_form()
         # make data mutable
-        form.data           = self.request.POST.copy()
+        form.data = self.request.POST.copy()
         form.data['school'] = School.objects.get(pk=self.kwargs['school_id']).pk
         if form.is_valid():
             return self.form_valid(form)
@@ -1112,29 +1111,29 @@ class StudentGroupCreate(common_mixins.SchoolEmployeeMixin, CreateView):
 
 
 class StudentGroupUpdate(common_mixins.SchoolEmployeeMixin, UpdateView):
-    model      = StudentGroup
+    model = StudentGroup
     form_class = cm_forms.StudentGroupForm
 
     def get_context_data(self, **kwargs):
         # xxx will be available in the template as the related objects
-        context                   = super(StudentGroupUpdate, self).get_context_data(**kwargs)
-        context['school']         = School.objects.get(pk=self.kwargs['school_id'])
-        context['students']       = common_util.slug_sort(
+        context = super(StudentGroupUpdate, self).get_context_data(**kwargs)
+        context['school'] = School.objects.get(pk=self.kwargs['school_id'])
+        context['students'] = common_util.slug_sort(
             Student.objects.filter(school=self.kwargs['school_id']), 'name')
-        context['teachers']       = common_util.slug_sort(
+        context['teachers'] = common_util.slug_sort(
             Teacher.objects.filter(school=self.kwargs['school_id']), 'name')
         context['group_managers'] = Teacher.objects.filter(studentgroup=self.kwargs['pk'])
         return context
 
     def post(self, request, *args, **kwargs):
-        self.object         = None
-        form                = self.get_form()
+        self.object = None
+        form = self.get_form()
         # make data mutable
-        form.data           = self.request.POST.copy()
+        form.data = self.request.POST.copy()
         form.data['school'] = School.objects.get(pk=self.kwargs['school_id']).pk
-        form                = cm_forms.StudentGroupForm(
+        form = cm_forms.StudentGroupForm(
             form.data or None,
-            instance = StudentGroup.objects.get(id=self.kwargs['pk'])
+            instance=StudentGroup.objects.get(id=self.kwargs['pk'])
         )
         if form.is_valid():
             form.save()
@@ -1154,7 +1153,7 @@ class StudentGroupUpdate(common_mixins.SchoolEmployeeMixin, UpdateView):
 
 
 class StudentGroupDelete(common_mixins.SchoolEmployeeMixin, DeleteView):
-    model         = StudentGroup
+    model = StudentGroup
     template_name = "schools/confirm_delete.html"
 
     def get_success_url(self):
@@ -1173,22 +1172,22 @@ class SurveyListing(common_mixins.SchoolEmployeeMixin, ListView):
 
     def get_context_data(self, **kwargs):
         # xxx will be available in the template as the related objects
-        context                 = super(SurveyListing, self).get_context_data(**kwargs)
-        context['school']       = School.objects.get(pk=self.kwargs['school_id'])
-        group                   = StudentGroup.objects.get(pk=self.kwargs['student_group'])
+        context = super(SurveyListing, self).get_context_data(**kwargs)
+        context['school'] = School.objects.get(pk=self.kwargs['school_id'])
+        group = StudentGroup.objects.get(pk=self.kwargs['student_group'])
         context['studentgroup'] = group
-        context['surveys']      = GroupSurvey.objects.filter(studentgroup = group)
+        context['surveys'] = GroupSurvey.objects.filter(studentgroup=group)
         return context
 
 
 class SurveyAdminListing(common_mixins.SuperUserMixin, ListView):
-    model         = GroupSurvey
+    model = GroupSurvey
     template_name = "common/survey_admin_list.html"
 
     def get_context_data(self, **kwargs):
         # xxx will be available in the template as the related objects
         try:
-            context            = super(SurveyAdminListing, self).get_context_data(**kwargs)
+            context = super(SurveyAdminListing, self).get_context_data(**kwargs)
             context['surveys'] = Survey.objects.all()
         except Exception as e:
             context['error'] = str(e)
@@ -1205,61 +1204,61 @@ class SurveyDetail(common_mixins.SchoolEmployeeMixin, DetailView):
         survey_type = SurveyType.objects.filter(survey=self.object.survey.id).values('id')
         dic = survey_type[0]
         survey_type = dic['id']
-        context['survey_details']   = survey
+        context['survey_details'] = survey
         context['survey_resources'] = SurveyResource.objects.filter(survey=survey)
-        context['school']           = School.objects.get(pk=self.kwargs['school_id'])
-        context['studentgroup']     = StudentGroup.objects.get(pk=self.kwargs['student_group'])
+        context['school'] = School.objects.get(pk=self.kwargs['school_id'])
+        context['studentgroup'] = StudentGroup.objects.get(pk=self.kwargs['student_group'])
         transformation = SurveyTransformation.objects.filter(survey=survey)
         if transformation == []:
             transformation = -1
 
         try:
             context['students'] = self.object.studentgroup.students.all()
-            context['expired']  = True if self.object.survey.active_to < date.today() else False
+            context['expired'] = True if self.object.survey.active_to < date.today() else False
         except:
             context['students'] = []
-            context['expired']  = False
-        student_results     = {}
+            context['expired'] = False
+        student_results = {}
         for student in context['students']:
             sr = SurveyResult.objects.filter(student=student, survey=self.object)
             if sr:
                 r = literal_eval(sr.first().results)  # get student results
                 try:
                     student_results[student] = common_util.calc_survey_results(
-                        survey_identifier = self.object.survey.identifier,
-                        click_values = literal_eval(r['click_values']),
-                        input_values = r['input_values'],
-                        student = student,
-                        survey_type = survey_type,
-                        transformation = transformation,
+                        survey_identifier=self.object.survey.identifier,
+                        click_values=literal_eval(r['click_values']),
+                        input_values=r['input_values'],
+                        student=student,
+                        survey_type=survey_type,
+                        transformation=transformation,
                     )
                 except Exception as e:
                     student_results[student] = common_util.calc_survey_results(
-                        survey_identifier = self.object.survey.identifier,
-                        click_values = [],
-                        input_values = r['input_values'],
-                        student = student,
-                        survey_type = survey_type,
-                        transformation = transformation)
+                        survey_identifier=self.object.survey.identifier,
+                        click_values=[],
+                        input_values=r['input_values'],
+                        student=student,
+                        survey_type=survey_type,
+                        transformation=transformation)
 
             else:
                 student_results[student] = common_util.calc_survey_results(
-                    survey_identifier = self.object.survey.identifier,
-                    click_values = [],
-                    input_values = {},
-                    student = student,
-                    survey_type = survey_type)
+                    survey_identifier=self.object.survey.identifier,
+                    click_values=[],
+                    input_values={},
+                    student=student,
+                    survey_type=survey_type)
         context['student_results'] = student_results
-        context['field_types']     = ['text', 'number', 'text-list', 'number-list']
+        context['field_types'] = ['text', 'number', 'text-list', 'number-list']
         return context
 
 
 class SurveyCreate(common_mixins.SchoolEmployeeMixin, CreateView):
-    model      = GroupSurvey
+    model = GroupSurvey
     form_class = cm_forms.SurveyForm
 
     def get_form(self):
-        form       = super(SurveyCreate, self).get_form(self.form_class)
+        form = super(SurveyCreate, self).get_form(self.form_class)
         group_year = StudentGroup.objects.get(
             pk=self.kwargs['student_group']).student_year
         survey_set = Survey.objects.filter(student_year=group_year, active_to__gte=timezone.now().date())
@@ -1267,10 +1266,10 @@ class SurveyCreate(common_mixins.SchoolEmployeeMixin, CreateView):
         return form
 
     def post(self, *args, **kwargs):
-        self.object               = None
-        form                      = self.get_form()
+        self.object = None
+        form = self.get_form()
         # make data mutable
-        form.data                 = self.request.POST.copy()
+        form.data = self.request.POST.copy()
         form.data['studentgroup'] = StudentGroup.objects.filter(
             pk=self.kwargs['student_group'])
         if form.is_valid():
@@ -1280,7 +1279,7 @@ class SurveyCreate(common_mixins.SchoolEmployeeMixin, CreateView):
 
     def get_success_url(self):
         try:
-            school_id     = self.kwargs['school_id']
+            school_id = self.kwargs['school_id']
             student_group = self.kwargs['student_group']
             return reverse_lazy(
                 'schools:group_detail',
@@ -1291,26 +1290,26 @@ class SurveyCreate(common_mixins.SchoolEmployeeMixin, CreateView):
 
 
 class SurveyUpdate(common_mixins.SchoolEmployeeMixin, UpdateView):
-    model      = GroupSurvey
+    model = GroupSurvey
     form_class = cm_forms.SurveyForm
 
     def get_form(self):
-        form           = super(SurveyUpdate, self).get_form(self.form_class)
+        form = super(SurveyUpdate, self).get_form(self.form_class)
         group_year = StudentGroup.objects.get(
             pk=self.kwargs['student_group']).student_year
 
-        survey_set                     = Survey.objects.filter(student_year=group_year)
+        survey_set = Survey.objects.filter(student_year=group_year)
         form.fields['survey'].queryset = survey_set
         return form
 
     def get_context_data(self, **kwargs):
             # xxx will be available in the template as the related objects
-            context                = super(SurveyUpdate, self).get_context_data(**kwargs)
-            try:
-                context['survey_description'] = self.object.survey.description
-            except:
-                context['survey_description'] = "Veldu próf..."
-            return context
+        context = super(SurveyUpdate, self).get_context_data(**kwargs)
+        try:
+            context['survey_description'] = self.object.survey.description
+        except:
+            context['survey_description'] = "Veldu próf..."
+        return context
 
     def get_success_url(self):
         try:
@@ -1324,7 +1323,7 @@ class SurveyUpdate(common_mixins.SchoolEmployeeMixin, UpdateView):
 
 
 class SurveyDelete(common_mixins.SchoolEmployeeMixin, DeleteView):
-    model         = GroupSurvey
+    model = GroupSurvey
     template_name = "schools/confirm_delete.html"
 
     def delete(self, request, *args, **kwargs):
@@ -1347,34 +1346,34 @@ class SurveyDelete(common_mixins.SchoolEmployeeMixin, DeleteView):
 
 
 class SurveyResultCreate(common_mixins.SchoolEmployeeMixin, CreateView):
-    model      = SurveyResult
+    model = SurveyResult
     form_class = cm_forms.SurveyResultForm
 
     def get_context_data(self, **kwargs):
         # xxx will be available in the template as the related objects
-        context                = super(SurveyResultCreate, self).get_context_data(**kwargs)
+        context = super(SurveyResultCreate, self).get_context_data(**kwargs)
         context['data_result'] = "''"
-        context['student']     = Student.objects.filter(pk=self.kwargs['student_id'])
-        groupsurvey            = GroupSurvey.objects.get(pk=self.kwargs['survey_id'])
-        context['survey']      = groupsurvey
+        context['student'] = Student.objects.filter(pk=self.kwargs['student_id'])
+        groupsurvey = GroupSurvey.objects.get(pk=self.kwargs['survey_id'])
+        context['survey'] = groupsurvey
         try:
             survey = groupsurvey.survey
             if groupsurvey.is_expired():
                 # survey is expired
                 context['grading_template'] = ""
-                context['info']             = ""
-                context['input_fields']     = ""
+                context['info'] = ""
+                context['input_fields'] = ""
             else:
                 try:
                     grading_templates = SurveyGradingTemplate.objects.get(survey=survey)
                 except:
                     grading_templates = []
                 context['grading_template'] = grading_templates
-                input_groups                = SurveyInputGroup.objects.filter(survey=survey)
+                input_groups = SurveyInputGroup.objects.filter(survey=survey)
                 i_gr = []
                 for ig in input_groups:
                     i_gr.append({
-                        'group':  ig,
+                        'group': ig,
                         'inputs': SurveyInputField.objects.filter(input_group=ig)
                     })
                 context['input_groups'] = i_gr
@@ -1383,23 +1382,23 @@ class SurveyResultCreate(common_mixins.SchoolEmployeeMixin, CreateView):
         return context
 
     def post(self, *args, **kwargs):
-        self.object          = None
-        form                 = self.get_form()
+        self.object = None
+        form = self.get_form()
         # make data mutable
-        form.data            = self.request.POST.copy()
+        form.data = self.request.POST.copy()
         form.data['student'] = Student.objects.get(pk=self.kwargs['student_id']).pk
-        form.data['survey']  = GroupSurvey.objects.get(pk=self.kwargs['survey_id']).pk
+        form.data['survey'] = GroupSurvey.objects.get(pk=self.kwargs['survey_id']).pk
         if form.is_valid():
             return self.form_valid(form)
         else:
             return self.form_invalid(form)
 
     def form_valid(self, form):
-        survey_results             = form.save(commit=False)
+        survey_results = form.save(commit=False)
         survey_results.reported_by = Teacher.objects.filter(user_id=self.request.user.pk).first()
-        survey_results.student     = Student.objects.get(pk=self.kwargs['student_id'])
-        survey_results.survey      = GroupSurvey.objects.get(pk=self.kwargs['survey_id'])
-        survey_results.created_at  = timezone.now()
+        survey_results.student = Student.objects.get(pk=self.kwargs['student_id'])
+        survey_results.survey = GroupSurvey.objects.get(pk=self.kwargs['survey_id'])
+        survey_results.created_at = timezone.now()
         # extract data
         survey_results_data = {'click_values': [], 'input_values': {}}
         for k in self.request.POST:
@@ -1419,8 +1418,8 @@ class SurveyResultCreate(common_mixins.SchoolEmployeeMixin, CreateView):
             return reverse_lazy(
                 'schools:survey_detail',
                 kwargs={
-                    'pk'           : self.kwargs['survey_id'],
-                    'school_id'    : self.kwargs['school_id'],
+                    'pk': self.kwargs['survey_id'],
+                    'school_id': self.kwargs['school_id'],
                     'student_group': survey.studentgroup.id
                 }
             )
@@ -1429,14 +1428,14 @@ class SurveyResultCreate(common_mixins.SchoolEmployeeMixin, CreateView):
 
 
 class SurveyResultUpdate(common_mixins.SchoolEmployeeMixin, UpdateView):
-    model      = SurveyResult
+    model = SurveyResult
     form_class = cm_forms.SurveyResultForm
 
     def form_valid(self, form):
-        survey_results            = form.save(commit=False)
+        survey_results = form.save(commit=False)
         survey_results.created_at = timezone.now()
         # extract data
-        survey_results_data       = {'click_values': [], 'input_values': {}}
+        survey_results_data = {'click_values': [], 'input_values': {}}
         for k in self.request.POST:
             if k != 'csrfmiddlewaretoken':
                 if k == 'data_results[]':
@@ -1450,11 +1449,11 @@ class SurveyResultUpdate(common_mixins.SchoolEmployeeMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         # xxx will be available in the template as the related objects
-        context                     = super(SurveyResultUpdate, self).get_context_data(**kwargs)
-        context['student']          = Student.objects.filter(pk=self.kwargs['student_id'])
-        groupsurvey                 = GroupSurvey.objects.get(pk=self.kwargs['survey_id'])
-        context['survey']           = GroupSurvey.objects.filter(pk=self.kwargs['survey_id'])
-        context['data_result']      = json.loads(
+        context = super(SurveyResultUpdate, self).get_context_data(**kwargs)
+        context['student'] = Student.objects.filter(pk=self.kwargs['student_id'])
+        groupsurvey = GroupSurvey.objects.get(pk=self.kwargs['survey_id'])
+        context['survey'] = GroupSurvey.objects.filter(pk=self.kwargs['survey_id'])
+        context['data_result'] = json.loads(
             SurveyResult.objects.get(pk=self.kwargs['pk']).results
         ) or "''"
         survey = groupsurvey.survey
@@ -1463,11 +1462,11 @@ class SurveyResultUpdate(common_mixins.SchoolEmployeeMixin, UpdateView):
         except:
             grading_templates = []
         context['grading_template'] = grading_templates
-        input_groups                = SurveyInputGroup.objects.filter(survey=survey)
+        input_groups = SurveyInputGroup.objects.filter(survey=survey)
         i_gr = []
         for ig in input_groups:
             i_gr.append({
-                'group':  ig,
+                'group': ig,
                 'inputs': SurveyInputField.objects.filter(input_group=ig)
             })
         context['input_groups'] = i_gr
@@ -1480,8 +1479,8 @@ class SurveyResultUpdate(common_mixins.SchoolEmployeeMixin, UpdateView):
             return reverse_lazy(
                 'schools:survey_detail',
                 kwargs={
-                    'pk'           : self.kwargs['survey_id'],
-                    'school_id'    : self.kwargs['school_id'],
+                    'pk': self.kwargs['survey_id'],
+                    'school_id': self.kwargs['school_id'],
                     'student_group': survey.studentgroup.id
                 }
             )
@@ -1490,7 +1489,7 @@ class SurveyResultUpdate(common_mixins.SchoolEmployeeMixin, UpdateView):
 
 
 class SurveyResultDelete(common_mixins.SchoolEmployeeMixin, DeleteView):
-    model         = SurveyResult
+    model = SurveyResult
     template_name = "schools/confirm_delete.html"
 
     def get_success_url(self):
@@ -1509,14 +1508,14 @@ class SurveyLoginListing(common_mixins.SchoolEmployeeMixin, ListView):
 
     def get_context_data(self, **kwargs):
         # xxx will be available in the template as the related objects
-        context                      = super(SurveyLoginListing, self).get_context_data(**kwargs)
-        school                       = School.objects.get(pk=self.kwargs['school_id'])
-        context['school_id']         = school.id
+        context = super(SurveyLoginListing, self).get_context_data(**kwargs)
+        school = School.objects.get(pk=self.kwargs['school_id'])
+        context['school_id'] = school.id
         survey_list = SurveyLogin.objects.filter(
-            student__in = Student.objects.filter(school=school)
+            student__in=Student.objects.filter(school=school)
         ).values('survey_id').distinct()
-        survey_list = list(set([ x['survey_id'].replace('_stuðningur', '') for x in survey_list ]))
-        context['survey_list'] = Survey.objects.filter(identifier__in = survey_list)
+        survey_list = list(set([x['survey_id'].replace('_stuðningur', '') for x in survey_list]))
+        context['survey_list'] = Survey.objects.filter(identifier__in=survey_list)
         print(context['survey_list'])
         return context
 
@@ -1551,20 +1550,20 @@ class SurveyLoginDetail(common_mixins.SchoolManagerMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         # xxx will be available in the template as the related objects
-        context              = super(SurveyLoginDetail, self).get_context_data(**kwargs)
+        context = super(SurveyLoginDetail, self).get_context_data(**kwargs)
         context['survey_id'] = self.kwargs['survey_id']
         identifier = self.kwargs['survey_id']
         if 'stuðningur' in identifier:
-            survey_name = Survey.objects.filter(identifier = identifier[:len(identifier)-11]).values('title')
+            survey_name = Survey.objects.filter(identifier=identifier[:len(identifier) - 11]).values('title')
         else:
-            survey_name = Survey.objects.filter(identifier = identifier[:len(identifier)]).values('title')
+            survey_name = Survey.objects.filter(identifier=identifier[:len(identifier)]).values('title')
         context['survey_name'] = survey_name[0]
         if 'school_id' in self.kwargs:
             school = School.objects.get(pk=self.kwargs['school_id'])
 
             context['survey_login_students'] = SurveyLogin.objects.filter(
-                student__in = Student.objects.filter(school=school),
-                survey_id   = self.kwargs['survey_id']
+                student__in=Student.objects.filter(school=school),
+                survey_id=self.kwargs['survey_id']
             )
         else:
             context['survey_login_students'] = SurveyLogin.objects.filter(
@@ -1580,18 +1579,18 @@ class SurveyLoginDetail(common_mixins.SchoolManagerMixin, DetailView):
 
 
 class SurveyLoginCreate(common_mixins.SuperUserMixin, CreateView):
-    model         = SurveyLogin
-    form_class    = cm_forms.SurveyLoginForm
+    model = SurveyLogin
+    form_class = cm_forms.SurveyLoginForm
     template_name = "common/password_form_import.html"
 
     def post(self, *args, **kwargs):
         if(self.request.FILES):
-            u_file    = self.request.FILES['file'].name
+            u_file = self.request.FILES['file'].name
             extension = u_file.split(".")[-1]
-            ssn       = self.request.POST.get('student_ssn')
+            ssn = self.request.POST.get('student_ssn')
             survey_id = self.request.POST.get('survey_id')
-            password  = self.request.POST.get('password')
-            title     = self.request.POST.get('title')
+            password = self.request.POST.get('password')
+            title = self.request.POST.get('title')
 
             if title == 'yes':
                 first = 1
@@ -1603,7 +1602,7 @@ class SurveyLoginCreate(common_mixins.SuperUserMixin, CreateView):
             try:
                 if extension == 'xlsx':
                     input_excel = self.request.FILES['file']
-                    book        = xlrd.open_workbook(file_contents=input_excel.read())
+                    book = xlrd.open_workbook(file_contents=input_excel.read())
                     for sheetsnumber in range(book.nsheets):
                         sheet = book.sheet_by_index(sheetsnumber)
                         for row in range(first, sheet.nrows):
@@ -1623,9 +1622,9 @@ class SurveyLoginCreate(common_mixins.SuperUserMixin, CreateView):
                                 })
                             rowdata = {
                                 'survey_id': str(sheet.cell_value(row, int(survey_id))),
-                                'ssn'      : ssn_str,
-                                'password' : str(sheet.cell_value(row, int(password))),
-                                'error'    : True if rowerrors else False
+                                'ssn': ssn_str,
+                                'password': str(sheet.cell_value(row, int(password))),
+                                'error': True if rowerrors else False
                             }
                             data.append(rowdata)
                             if rowerrors:
@@ -1653,16 +1652,16 @@ class SurveyLoginCreate(common_mixins.SuperUserMixin, CreateView):
 
                 # check if survey_login for student exists, create if not, otherwise update
                 survey_login = SurveyLogin.objects.filter(
-                    student   = student,
-                    survey_id = data['survey_id']
+                    student=student,
+                    survey_id=data['survey_id']
                 )
                 if survey_login:
                     survey_login.update(survey_code=data['password'])
                 else:
                     survey_login = SurveyLogin.objects.create(
-                        student     = student,
-                        survey_id   = data['survey_id'],
-                        survey_code = data['password']
+                        student=student,
+                        survey_id=data['survey_id'],
+                        survey_code=data['password']
                     )
         return redirect(self.get_success_url())
 
@@ -1671,7 +1670,7 @@ class SurveyLoginCreate(common_mixins.SuperUserMixin, CreateView):
 
 
 class SurveyLoginDelete(common_mixins.SuperUserMixin, DeleteView):
-    model         = SurveyLogin
+    model = SurveyLogin
     template_name = "schools/confirm_delete.html"
 
     def get_success_url(self):
@@ -1682,7 +1681,7 @@ class SurveyLoginDelete(common_mixins.SuperUserMixin, DeleteView):
 
 
 class AdminListing(common_mixins.SuperUserMixin, ListView):
-    model         = User
+    model = User
     template_name = "common/admin_list.html"
 
     def get_success_url(self):
@@ -1690,18 +1689,18 @@ class AdminListing(common_mixins.SuperUserMixin, ListView):
 
     def get_context_data(self, **kwargs):
         # xxx will be available in the template as the related objects
-        context              = super(AdminListing, self).get_context_data(**kwargs)
+        context = super(AdminListing, self).get_context_data(**kwargs)
         context['user_list'] = User.objects.filter(is_superuser=True)
         return context
 
 
 class AdminCreate(common_mixins.SuperUserMixin, CreateView):
-    model         = User
-    form_class    = cm_forms.SuperUserForm
+    model = User
+    form_class = cm_forms.SuperUserForm
     template_name = "common/admin_form.html"
 
     def post(self, *args, **kwargs):
-        username     = self.request.POST.get('username')
+        username = self.request.POST.get('username')
         is_superuser = self.request.POST.get('is_superuser', False)
         if User.objects.filter(username=username).exists():
             if is_superuser:
@@ -1718,15 +1717,15 @@ class AdminCreate(common_mixins.SuperUserMixin, CreateView):
 
 
 class AdminUpdate(common_mixins.SuperUserMixin, UpdateView):
-    model         = User
-    form_class    = cm_forms.SuperUserForm
+    model = User
+    form_class = cm_forms.SuperUserForm
     template_name = "common/admin_form.html"
 
     def get_success_url(self):
         return reverse_lazy('schools:admin_listing')
 
 
-### Prófadæmi
+# Prófadæmi
 
 class ExampleSurveyListing(common_mixins.SchoolTeacherMixin, ListView):
     model = ExampleSurveyAnswer
@@ -1734,55 +1733,56 @@ class ExampleSurveyListing(common_mixins.SchoolTeacherMixin, ListView):
 
     def get_context_data(self, **kwargs):
         # xxx will be available in the template as the related objects
-        context           = super(ExampleSurveyListing, self).get_context_data(**kwargs)
-        school            = School.objects.get(pk=self.kwargs['school_id'])
+        context = super(ExampleSurveyListing, self).get_context_data(**kwargs)
+        school = School.objects.get(pk=self.kwargs['school_id'])
         context['school'] = school
 
         studentgroup = None
         if 'studentgroup_id' in self.kwargs:
             studentgroup = StudentGroup.objects.get(pk=self.kwargs['studentgroup_id'])
 
-        samraemd_cats = ExampleSurveyQuestion.objects.all().values_list('quiz_type', flat = True).distinct()
+        samraemd_cats = ExampleSurveyQuestion.objects.all().values_list('quiz_type', flat=True).distinct()
         #samraemd_cats = ['ÍSL', 'ENS', 'STÆ']
         dates = []
         if studentgroup:
             dates = ExampleSurveyAnswer.objects.filter(
-                student__in = studentgroup.students.all(),
-                groupsurvey__isnull = True,
+                student__in=studentgroup.students.all(),
+                groupsurvey__isnull=True,
             ).values_list('date', flat=True).distinct()
         else:
             dates = ExampleSurveyAnswer.objects.filter(
-                student__in = Student.objects.filter(school=school),
-                groupsurvey__isnull = True,
+                student__in=Student.objects.filter(school=school),
+                groupsurvey__isnull=True,
             ).values_list('date', flat=True).distinct()
 
         samraemd = []
         for date in dates:
-            # Get all studentgroups for this school where a student in the studentgroup has results in ExampleSurveyAnswer
+            # Get all studentgroups for this school where a student in the
+            # studentgroup has results in ExampleSurveyAnswer
             studentgroup_ids = []
             if studentgroup:
                 studentgroup_ids = [studentgroup.id]
             else:
                 studentgroup_ids = Student.objects.filter(
-                    pk__in = ExampleSurveyAnswer.objects.filter(
-                        student__in = Student.objects.filter(school=school),
-                        date = date,
-                        groupsurvey__isnull = True,
+                    pk__in=ExampleSurveyAnswer.objects.filter(
+                        student__in=Student.objects.filter(school=school),
+                        date=date,
+                        groupsurvey__isnull=True,
                     ).values_list('student', flat=True).distinct()
                 ).values_list('studentgroup', flat=True).distinct()
                 studentgroup_ids = list(set(studentgroup_ids))
             studentgroups_list = []
             for studentgroup_id in studentgroup_ids:
-                studentgroup = StudentGroup.objects.get(pk = studentgroup_id)
+                studentgroup = StudentGroup.objects.get(pk=studentgroup_id)
                 students_list = []
-                students = Student.objects.filter(studentgroup = studentgroup)
+                students = Student.objects.filter(studentgroup=studentgroup)
 
                 for student in students:
                     quiz_type_list = ExampleSurveyQuestion.objects.filter(
-                        pk__in = ExampleSurveyAnswer.objects.filter(
+                        pk__in=ExampleSurveyAnswer.objects.filter(
                             student=student,
-                            date = date,
-                            groupsurvey__isnull = True,
+                            date=date,
+                            groupsurvey__isnull=True,
                         ).values_list('question_id')
                     ).values_list('quiz_type', flat=True).distinct()
                     exceptions = []
@@ -1801,8 +1801,8 @@ class ExampleSurveyListing(common_mixins.SchoolTeacherMixin, ListView):
         print(samraemd)
         surveys = []
         groupsurveys = GroupSurvey.objects.filter(
-            pk__in = ExampleSurveyAnswer.objects.filter(
-                student__in = Student.objects.filter(school=school)
+            pk__in=ExampleSurveyAnswer.objects.filter(
+                student__in=Student.objects.filter(school=school)
             ).values_list('groupsurvey', flat=True).distinct().order_by('-id')
         ).order_by('-active_to').all()
 
@@ -1812,9 +1812,9 @@ class ExampleSurveyListing(common_mixins.SchoolTeacherMixin, ListView):
             students_list = []
             for student in students:
                 quiz_type_list = ExampleSurveyQuestion.objects.filter(
-                    pk__in = ExampleSurveyAnswer.objects.filter(
+                    pk__in=ExampleSurveyAnswer.objects.filter(
                         student=student,
-                        groupsurvey = groupsurvey,
+                        groupsurvey=groupsurvey,
                     ).values_list('question_id')
                 ).values_list('quiz_type', flat=True).distinct()
                 students_list.append((student, quiz_type_list))
@@ -1839,8 +1839,8 @@ class ExampleSurveyGSDetail(common_mixins.SchoolManagerMixin, ListView):
         groupsurvey = GroupSurvey.objects.get(pk=self.kwargs['groupsurvey_id'])
 
         answers = ExampleSurveyAnswer.objects.filter(
-            student = student,
-            groupsurvey = groupsurvey,
+            student=student,
+            groupsurvey=groupsurvey,
         ).order_by('question__category', '?').all()
 
         context['answers'] = answers
@@ -1862,13 +1862,13 @@ class ExampleSurveySamraemdDetail(common_mixins.SchoolTeacherMixin, ListView):
 
     def _get_student_answers_list(self, student, quiz_type, year):
         answers_list = student.examplesurveyanswer_set.filter(
-            groupsurvey__isnull = True, date__year = year,
+            groupsurvey__isnull=True, date__year=year,
         )
         answers = ExampleSurveyAnswer.objects.filter(
-                student = student,
-                groupsurvey__isnull = True,
-                date__year = year,
-                question__quiz_type = quiz_type,
+            student=student,
+            groupsurvey__isnull=True,
+            date__year=year,
+            question__quiz_type=quiz_type,
         ).order_by('question__category', '?').all()
 
         return answers
@@ -1886,15 +1886,15 @@ class ExampleSurveySamraemdDetail(common_mixins.SchoolTeacherMixin, ListView):
             answers = self._get_student_answers_list(student, quiz_type, year)
             student_answers.append((student, answers))
         else:
-            studentgroup = StudentGroup.objects.get(pk = self.kwargs['studentgroup_id'])
-            students = Student.objects.filter(studentgroup = studentgroup).all()
+            studentgroup = StudentGroup.objects.get(pk=self.kwargs['studentgroup_id'])
+            students = Student.objects.filter(studentgroup=studentgroup).all()
 
             for student in students:
                 answers = self._get_student_answers_list(student, quiz_type, year)
                 if not answers:
                     continue
                 student_answers.append((student, answers))
-        
+
         context['student_answers'] = student_answers
         context['school'] = school
         context['year'] = year
@@ -1904,7 +1904,7 @@ class ExampleSurveySamraemdDetail(common_mixins.SchoolTeacherMixin, ListView):
 
         return context
 
-### Example Survey Questions
+# Example Survey Questions
 
 
 class ExampleSurveyQuestionAdminListing(common_mixins.SuperUserMixin, ListView):
@@ -1926,7 +1926,7 @@ class ExampleSurveyQuestionAdminDetail(common_mixins.SuperUserMixin, DetailView)
     def get_context_data(self, **kwargs):
         context = super(ExampleSurveyQuestionAdminDetail, self).get_context_data(**kwargs)
 
-        question = ExampleSurveyQuestion.objects.get(pk = self.kwargs['pk']) 
+        question = ExampleSurveyQuestion.objects.get(pk=self.kwargs['pk'])
         context['question'] = question
 
         return context
@@ -1938,7 +1938,7 @@ class ExampleSurveyQuestionAdminCreate(common_mixins.SuperUserMixin, CreateView)
     template_name = "common/example_survey/question_admin_create.html"
 
     def form_valid(self, form):
-        survey            = form.save(commit=False)
+        survey = form.save(commit=False)
         survey.created_by = self.request.user
         return super(ExampleSurveyQuestionAdminCreate, self).form_valid(form)
 
@@ -1956,7 +1956,7 @@ class ExampleSurveyQuestionAdminUpdate(common_mixins.SuperUserMixin, UpdateView)
 
 
 class ExampleSurveyQuestionAdminDelete(common_mixins.SuperUserMixin, DeleteView):
-    model         = ExampleSurveyQuestion
+    model = ExampleSurveyQuestion
     template_name = "schools/confirm_delete.html"
 
     def get_success_url(self):
@@ -1966,7 +1966,7 @@ class ExampleSurveyQuestionAdminDelete(common_mixins.SuperUserMixin, DeleteView)
         return ExampleSurveyQuestion.objects.get(pk=self.kwargs['pk'])
 
 
-### Example Survey Answers
+# Example Survey Answers
 
 
 class ExampleSurveyAnswerAdminListing(common_mixins.SuperUserMixin, ListView):
@@ -1979,10 +1979,10 @@ class ExampleSurveyAnswerAdminListing(common_mixins.SuperUserMixin, ListView):
 
         if 'cancel_import' in self.request.GET:
             print("Cancel import, removing session data")
-            del(self.request.session['newdata']) 
+            del(self.request.session['newdata'])
 
         if 'exam_code' in self.kwargs:
-            answers = ExampleSurveyAnswer.objects.filter(exam_code = self.kwargs['exam_code']).all()
+            answers = ExampleSurveyAnswer.objects.filter(exam_code=self.kwargs['exam_code']).all()
             paginator = Paginator(answers, 25)
             page = self.request.GET.get('page')
             try:
@@ -2006,8 +2006,6 @@ class ExampleSurveyAnswerAdminListing(common_mixins.SuperUserMixin, ListView):
                 if host_task.get('name') == 'save_example_survey_answers':
                     jobs.append(host_task.get('id'))
 
-
-
         context['jobs'] = jobs
 
         return context
@@ -2020,18 +2018,18 @@ class ExampleSurveyAnswerAdminDetail(common_mixins.SuperUserMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super(ExampleSurveyAnswerAdminDetail, self).get_context_data(**kwargs)
 
-        context['answer'] = ExampleSurveyAnswer.objects.get(pk = self.kwargs['pk'])
+        context['answer'] = ExampleSurveyAnswer.objects.get(pk=self.kwargs['pk'])
         return context
 
 
 class ExampleSurveyAnswerAdminImport(common_mixins.SuperUserMixin, CreateView):
-    model         = ExampleSurveyQuestion
-    form_class    = cm_forms.ExampleSurveyAnswerForm
+    model = ExampleSurveyQuestion
+    form_class = cm_forms.ExampleSurveyAnswerForm
     template_name = "common/example_survey/answer_form_import.html"
 
     def post(self, *args, **kwargs):
         if(self.request.FILES):
-            u_file    = self.request.FILES['file'].name
+            u_file = self.request.FILES['file'].name
             extension = u_file.split(".")[-1]
 
             ssn = int(self.request.POST.get('ssn'))
@@ -2039,7 +2037,7 @@ class ExampleSurveyAnswerAdminImport(common_mixins.SuperUserMixin, CreateView):
             answer = int(self.request.POST.get('answer'))
             title = self.request.POST.get('title')
 
-            exam_date    = self.request.POST.get('exam_date').strip()
+            exam_date = self.request.POST.get('exam_date').strip()
             survey_identifier = self.request.POST.get('survey_identifier')
 
             if title == 'yes':
@@ -2052,7 +2050,7 @@ class ExampleSurveyAnswerAdminImport(common_mixins.SuperUserMixin, CreateView):
             try:
                 if extension == 'xlsx':
                     input_excel = self.request.FILES['file']
-                    book        = xlrd.open_workbook(file_contents=input_excel.read())
+                    book = xlrd.open_workbook(file_contents=input_excel.read())
                     ssn_cache = {}
                     quickcode_cache = {}
                     for sheetsnumber in range(book.nsheets):
@@ -2065,7 +2063,7 @@ class ExampleSurveyAnswerAdminImport(common_mixins.SuperUserMixin, CreateView):
                             rowerrors = []
 
                             if not ssn_str in ssn_cache.keys():
-                                ssn_cache[ssn_str] = Student.objects.filter(ssn = ssn_str).exists()
+                                ssn_cache[ssn_str] = Student.objects.filter(ssn=ssn_str).exists()
                                 if not ssn_cache[ssn_str]:
                                     rowerrors.append({
                                         'text': 'Nemandi {} er ekki til'.format(ssn_str),
@@ -2073,7 +2071,8 @@ class ExampleSurveyAnswerAdminImport(common_mixins.SuperUserMixin, CreateView):
                                     })
 
                             if not quickcode_str in quickcode_cache.keys():
-                                quickcode_cache[quickcode_str] = ExampleSurveyQuestion.objects.filter(quickcode = quickcode_str).exists()
+                                quickcode_cache[quickcode_str] = ExampleSurveyQuestion.objects.filter(
+                                    quickcode=quickcode_str).exists()
                                 if not quickcode_cache[quickcode_str]:
                                     rowerrors.append({
                                         'text': 'Prófdæmi {} er ekki til'.format(quickcode_str),
@@ -2087,12 +2086,12 @@ class ExampleSurveyAnswerAdminImport(common_mixins.SuperUserMixin, CreateView):
                                 })
 
                             data.append({
-                                'ssn':               ssn_str,
-                                'quickcode':         quickcode_str,
+                                'ssn': ssn_str,
+                                'quickcode': quickcode_str,
                                 'survey_identifier': survey_identifier,
-                                'exam_date':         exam_date,
-                                'answer':            answer_str,
-                                'error':             True if rowerrors else False,
+                                'exam_date': exam_date,
+                                'answer': answer_str,
+                                'error': True if rowerrors else False,
                             })
                             if rowerrors:
                                 errors += rowerrors
@@ -2119,9 +2118,8 @@ class ExampleSurveyAnswerAdminImport(common_mixins.SuperUserMixin, CreateView):
         return reverse_lazy('schools:example_survey_answer_admin_listing')
 
 
-
 class ExampleSurveyAnswerAdminDelete(common_mixins.SuperUserMixin, DeleteView):
-    model         = ExampleSurveyAnswer
+    model = ExampleSurveyAnswer
     template_name = "schools/confirm_delete.html"
 
     def get_success_url(self):
@@ -2131,18 +2129,18 @@ class ExampleSurveyAnswerAdminDelete(common_mixins.SuperUserMixin, DeleteView):
         if 'pk' in self.kwargs:
             return ExampleSurveyAnswer.objects.get(pk=self.kwargs['pk'])
         return ExampleSurveyAnswer.objects.filter(
-            exam_code = self.kwargs['exam_code'],
+            exam_code=self.kwargs['exam_code'],
         )
 
 
 def group_admin_listing_excel(request, survey_title):
     surveys = GroupSurvey.objects.filter(survey__title=survey_title)
-    response                        = HttpResponse(
+    response = HttpResponse(
         content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
     response['Content-Disposition'] = 'attachment; filename=samræmdupróf.xlsx'
-    wb                              = openpyxl.Workbook()
+    wb = openpyxl.Workbook()
 
-    ws       = wb.get_active_sheet()
+    ws = wb.get_active_sheet()
     ws.title = 'samræmdupróf'
     ws['A1'] = 'FIRST'
     ws['B1'] = 'LAST'
@@ -2169,11 +2167,11 @@ def group_admin_listing_excel(request, survey_title):
                 for support in supports:
                     if 'fyrri' in survey_title:
                         if '1' in support.longer_time or '2' in support.longer_time or \
-                            '1' in support.reading_assistance or '2' in support.reading_assistance:
+                                '1' in support.reading_assistance or '2' in support.reading_assistance:
                             ws.cell('H' + str(index)).value = 'Y'
                     elif 'seinni' in survey_title:
                         if '2' in support.longer_time or '3' in support.longer_time or \
-                            '2' in support.reading_assistance or '3' in support.reading_assistance:
+                                '2' in support.reading_assistance or '3' in support.reading_assistance:
                             ws.cell('H' + str(index)).value = 'Y'
 
                 ws.cell('J' + str(index)).value = str(StudentGroup.objects.filter(students=student.id)[:1].get())
@@ -2186,13 +2184,13 @@ def group_admin_listing_excel(request, survey_title):
 
 def group_admin_attendance_excel(request, survey_title):
 
-    surveys  = GroupSurvey.objects.filter(survey__title=survey_title)
+    surveys = GroupSurvey.objects.filter(survey__title=survey_title)
     response = HttpResponse(
         content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
     response['Content-Disposition'] = 'attachment; filename=samræmdupróf.xlsx'
 
-    wb       = openpyxl.Workbook()
-    ws       = wb.get_active_sheet()
+    wb = openpyxl.Workbook()
+    ws = wb.get_active_sheet()
     ws.title = 'samræmdupróf'
 
     ws['A1'] = 'Skóli'
@@ -2217,7 +2215,7 @@ def group_admin_attendance_excel(request, survey_title):
                 ws.cell('D' + str(index)).value = student.ssn
                 ws.cell('E' + str(index)).value = survey.studentgroup.name
 
-                sr              = SurveyResult.objects.filter(student=student, survey=survey)
+                sr = SurveyResult.objects.filter(student=student, survey=survey)
                 student_results = ""
                 if sr:
                     r = literal_eval(sr.first().results)  # get student results
@@ -2251,241 +2249,242 @@ def group_admin_attendance_excel(request, survey_title):
 
 
 def survey_detail_excel(request, school_id, student_group, pk):
-        school = School.objects.get(pk=school_id)
-        studentgroup = StudentGroup.objects.get(pk=student_group)
-        survey = GroupSurvey.objects.filter(pk=pk).first()
+    school = School.objects.get(pk=school_id)
+    studentgroup = StudentGroup.objects.get(pk=student_group)
+    survey = GroupSurvey.objects.filter(pk=pk).first()
 
-        response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-        response['Content-Disposition'] = 'attachment; filename=Niðurstöður - {}.xlsx'.format(survey.survey.title)
-        wb = openpyxl.Workbook()
-        ws = wb.get_active_sheet()
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename=Niðurstöður - {}.xlsx'.format(survey.survey.title)
+    wb = openpyxl.Workbook()
+    ws = wb.get_active_sheet()
 
-        identifier = survey.survey.identifier
+    identifier = survey.survey.identifier
 
-        if identifier.startswith('01b_LTL_'):
-            ws.title = 'Lesskimun fyrir fyrsta bekk'
+    if identifier.startswith('01b_LTL_'):
+        ws.title = 'Lesskimun fyrir fyrsta bekk'
 
-            ws['A1'] = 'Kennitala'
-            ws['B1'] = 'Nafn'
-            ws['C1'] = 'Hljóð'
-            ws['D1'] = 'Mál'
-            ws['E1'] = 'Stafir'
+        ws['A1'] = 'Kennitala'
+        ws['B1'] = 'Nafn'
+        ws['C1'] = 'Hljóð'
+        ws['D1'] = 'Mál'
+        ws['E1'] = 'Stafir'
 
-            index = 2
-            if studentgroup:
-                for student in studentgroup.students.all():
-                    ws.cell('A' + str(index)).value = student.ssn
-                    ws.cell('B' + str(index)).value = student.name
-                    sr = SurveyResult.objects.filter(student=student, survey=survey)
-                    if sr:
-                        r = literal_eval(sr.first().results)  # get student results
-                        survey_student_result = common_util.calc_survey_results(
-                            identifier,
-                            [],
-                            r['input_values'],
-                            student
-                        )
-                        ws.cell('C' + str(index)).value = survey_student_result[0]
-                        ws.cell('D' + str(index)).value = survey_student_result[1]
-                        ws.cell('E' + str(index)).value = survey_student_result[2]
-                    else:
-                        ws.cell('C' + str(index)).value = 'Vantar gögn'
-                        ws.cell('D' + str(index)).value = 'Vantar gögn'
-                        ws.cell('E' + str(index)).value = 'Vantar gögn'
-                    index += 1
-        elif identifier.endswith('_LF_jan17'):
-            ws.title = 'Niðurstöður'
-            ws['A1'] = 'Kennitala'
-            ws['B1'] = 'Nafn'
-            ws['C1'] = 'September'
-            ws['D1'] = 'Janúar'
-            ws['E1'] = 'Mismunur'
+        index = 2
+        if studentgroup:
+            for student in studentgroup.students.all():
+                ws.cell('A' + str(index)).value = student.ssn
+                ws.cell('B' + str(index)).value = student.name
+                sr = SurveyResult.objects.filter(student=student, survey=survey)
+                if sr:
+                    r = literal_eval(sr.first().results)  # get student results
+                    survey_student_result = common_util.calc_survey_results(
+                        identifier,
+                        [],
+                        r['input_values'],
+                        student
+                    )
+                    ws.cell('C' + str(index)).value = survey_student_result[0]
+                    ws.cell('D' + str(index)).value = survey_student_result[1]
+                    ws.cell('E' + str(index)).value = survey_student_result[2]
+                else:
+                    ws.cell('C' + str(index)).value = 'Vantar gögn'
+                    ws.cell('D' + str(index)).value = 'Vantar gögn'
+                    ws.cell('E' + str(index)).value = 'Vantar gögn'
+                index += 1
+    elif identifier.endswith('_LF_jan17'):
+        ws.title = 'Niðurstöður'
+        ws['A1'] = 'Kennitala'
+        ws['B1'] = 'Nafn'
+        ws['C1'] = 'September'
+        ws['D1'] = 'Janúar'
+        ws['E1'] = 'Mismunur'
 
-            ref_values = {
-                '1':  (20, 55, 75),
-                '2':  (40, 85, 100),
-                '3':  (55, 100, 120),
-                '4':  (80, 120, 145),
-                '5':  (90, 140, 160),
-                '6':  (105, 155, 175),
-                '7':  (120, 165, 190),
-                '8':  (130, 180, 210),
-                '9':  (140, 180, 210),
-                '10': (145, 180, 210),
-            }
+        ref_values = {
+            '1': (20, 55, 75),
+            '2': (40, 85, 100),
+            '3': (55, 100, 120),
+            '4': (80, 120, 145),
+            '5': (90, 140, 160),
+            '6': (105, 155, 175),
+            '7': (120, 165, 190),
+            '8': (130, 180, 210),
+            '9': (140, 180, 210),
+            '10': (145, 180, 210),
+        }
 
-            index = 2
-            survey_type = SurveyType.objects.filter(survey=survey.survey.id).values('id')
-            dic = survey_type[0]
-            survey_type = dic['id']
-            jan_transformation = SurveyTransformation.objects.filter(survey=survey.survey)
+        index = 2
+        survey_type = SurveyType.objects.filter(survey=survey.survey.id).values('id')
+        dic = survey_type[0]
+        survey_type = dic['id']
+        jan_transformation = SurveyTransformation.objects.filter(survey=survey.survey)
 
-            datapoints = []
-            datapoints.append(('Nafn', 'September', 'Janúar', '90% viðmið', '50% viðmið', '25% viðmið'))
+        datapoints = []
+        datapoints.append(('Nafn', 'September', 'Janúar', '90% viðmið', '50% viðmið', '25% viðmið'))
 
-            if studentgroup:
-                sept_identifier = "{}b_LF_sept".format(studentgroup.student_year)
-                sept_survey = Survey.objects.filter(identifier = sept_identifier).first()
-                sept_transformation = SurveyTransformation.objects.filter(survey=sept_survey)
-                sept_gs = GroupSurvey.objects.filter(survey = sept_survey, studentgroup = survey.studentgroup).first()
+        if studentgroup:
+            sept_identifier = "{}b_LF_sept".format(studentgroup.student_year)
+            sept_survey = Survey.objects.filter(identifier=sept_identifier).first()
+            sept_transformation = SurveyTransformation.objects.filter(survey=sept_survey)
+            sept_gs = GroupSurvey.objects.filter(survey=sept_survey, studentgroup=survey.studentgroup).first()
 
-                for student in studentgroup.students.all():
-                    value_jan = 'Vantar gögn'
-                    value_sept = 'Vantar gögn'
-                    ws.cell('A' + str(index)).value = student.ssn
-                    ws.cell('B' + str(index)).value = student.name
-                    sy = studentgroup.student_year
-                    sr = SurveyResult.objects.filter(student=student, survey=survey)
-                    if sr:
-                        r = literal_eval(sr.first().results)  # get student results
-                        try:
-                            click_values = literal_eval(r['click_values'])
-                        except:
-                            click_values = []
-                        survey_student_result = common_util.calc_survey_results(
-                            survey_identifier = identifier,
-                            click_values = click_values,
-                            input_values = r['input_values'],
-                            student = student,
-                            survey_type = survey_type,
-                            transformation = jan_transformation,
-                        )
-                        value_jan = survey_student_result[0]
+            for student in studentgroup.students.all():
+                value_jan = 'Vantar gögn'
+                value_sept = 'Vantar gögn'
+                ws.cell('A' + str(index)).value = student.ssn
+                ws.cell('B' + str(index)).value = student.name
+                sy = studentgroup.student_year
+                sr = SurveyResult.objects.filter(student=student, survey=survey)
+                if sr:
+                    r = literal_eval(sr.first().results)  # get student results
+                    try:
+                        click_values = literal_eval(r['click_values'])
+                    except:
+                        click_values = []
+                    survey_student_result = common_util.calc_survey_results(
+                        survey_identifier=identifier,
+                        click_values=click_values,
+                        input_values=r['input_values'],
+                        student=student,
+                        survey_type=survey_type,
+                        transformation=jan_transformation,
+                    )
+                    value_jan = survey_student_result[0]
 
-                    sr = SurveyResult.objects.filter(student=student, survey=sept_gs)
-                    if sr:
-                        r = literal_eval(sr.first().results)  # get student results
-                        try:
-                            click_values = literal_eval(r['click_values'])
-                        except:
-                            click_values = []
-                        survey_student_result = common_util.calc_survey_results(
-                            survey_identifier = sept_identifier,
-                            click_values = click_values,
-                            input_values = r['input_values'],
-                            student = student,
-                            survey_type = survey_type,
-                            transformation = sept_transformation,
-                        )
-                        value_sept = survey_student_result[0]
+                sr = SurveyResult.objects.filter(student=student, survey=sept_gs)
+                if sr:
+                    r = literal_eval(sr.first().results)  # get student results
+                    try:
+                        click_values = literal_eval(r['click_values'])
+                    except:
+                        click_values = []
+                    survey_student_result = common_util.calc_survey_results(
+                        survey_identifier=sept_identifier,
+                        click_values=click_values,
+                        input_values=r['input_values'],
+                        student=student,
+                        survey_type=survey_type,
+                        transformation=sept_transformation,
+                    )
+                    value_sept = survey_student_result[0]
 
-                    ws.cell('C' + str(index)).value = value_sept
-                    ws.cell('D' + str(index)).value = value_jan
-                    if isinstance(value_sept, int) and isinstance(value_jan, int):
-                        cur_cell = ws.cell('E' + str(index))
-                        diff = value_jan - value_sept
+                ws.cell('C' + str(index)).value = value_sept
+                ws.cell('D' + str(index)).value = value_jan
+                if isinstance(value_sept, int) and isinstance(value_jan, int):
+                    cur_cell = ws.cell('E' + str(index))
+                    diff = value_jan - value_sept
 
-                        # Student year
-                        if int(sy) <= 3:
-                            if diff <= 7:
-                                cur_cell.fill = PatternFill(start_color='ff0000', end_color='ff0000', fill_type="solid")
+                    # Student year
+                    if int(sy) <= 3:
+                        if diff <= 7:
+                            cur_cell.fill = PatternFill(start_color='ff0000', end_color='ff0000', fill_type="solid")
 
-                            elif diff <= 20:
-                                cur_cell.fill = PatternFill(start_color= 'ffff00', end_color= 'ffff00', fill_type="solid")
-                            else:
-                                cur_cell.fill = PatternFill(start_color= '00ff00', end_color= '00ff00', fill_type="solid")
+                        elif diff <= 20:
+                            cur_cell.fill = PatternFill(start_color='ffff00', end_color='ffff00', fill_type="solid")
                         else:
-                            if diff < 0:
-                                cur_cell.fill = PatternFill(start_color='ff0000', end_color='ff0000', fill_type="solid")
+                            cur_cell.fill = PatternFill(start_color='00ff00', end_color='00ff00', fill_type="solid")
+                    else:
+                        if diff < 0:
+                            cur_cell.fill = PatternFill(start_color='ff0000', end_color='ff0000', fill_type="solid")
 
-                            elif diff <= 10:
-                                cur_cell.fill = PatternFill(start_color= 'ffff00', end_color= 'ffff00', fill_type="solid")
-                            else:
-                                cur_cell.fill = PatternFill(start_color= '00ff00', end_color= '00ff00', fill_type="solid")
+                        elif diff <= 10:
+                            cur_cell.fill = PatternFill(start_color='ffff00', end_color='ffff00', fill_type="solid")
+                        else:
+                            cur_cell.fill = PatternFill(start_color='00ff00', end_color='00ff00', fill_type="solid")
 
-                        cur_cell.value = diff
+                    cur_cell.value = diff
 
-                    if not isinstance(value_sept, int):
-                        value_sept = 0
-                    if not isinstance(value_jan, int):
-                        value_jan = 0
+                if not isinstance(value_sept, int):
+                    value_sept = 0
+                if not isinstance(value_jan, int):
+                    value_jan = 0
 
-                    datapoints.append((student.name.split()[0], value_sept, value_jan, ref_values[sy][0], ref_values[sy][1], ref_values[sy][2]))
+                datapoints.append((student.name.split()[0], value_sept, value_jan, ref_values[
+                                  sy][0], ref_values[sy][1], ref_values[sy][2]))
 
-                    index += 1
+                index += 1
 
-            # Fix column widths
-            dims = {}
-            for row in ws.rows:
-                for cell in row:
-                    if cell.value:
-                        dims[cell.column] = max((dims.get(cell.column, 0), len(str(cell.value))))
-            for col, value in dims.items():
-                ws.column_dimensions[col].width = int(value) + 2
+        # Fix column widths
+        dims = {}
+        for row in ws.rows:
+            for cell in row:
+                if cell.value:
+                    dims[cell.column] = max((dims.get(cell.column, 0), len(str(cell.value))))
+        for col, value in dims.items():
+            ws.column_dimensions[col].width = int(value) + 2
 
-            # Add legend
-            index += 2
-            ws.cell('A' + str(index)).fill = PatternFill(start_color='ff0000', end_color='ff0000', fill_type='solid')
-            ws.cell('B' + str(index)).value = 'Lítil framvinda miðað við aldur'
-            ws.merge_cells('B' + str(index) + ':E' + str(index))
-            index += 1
-            ws.cell('A' + str(index)).fill = PatternFill(start_color='ffff00', end_color='ffff00', fill_type='solid')
-            ws.cell('B' + str(index)).value = 'Fremur lítil framvinda'
-            ws.merge_cells('B' + str(index) + ':E' + str(index))
-            index += 1
-            ws.cell('A' + str(index)).fill = PatternFill(start_color='00ff00', end_color='00ff00', fill_type='solid')
-            ws.cell('B' + str(index)).value = 'Góð framvinda'
-            ws.merge_cells('B' + str(index) + ':E' + str(index))
+        # Add legend
+        index += 2
+        ws.cell('A' + str(index)).fill = PatternFill(start_color='ff0000', end_color='ff0000', fill_type='solid')
+        ws.cell('B' + str(index)).value = 'Lítil framvinda miðað við aldur'
+        ws.merge_cells('B' + str(index) + ':E' + str(index))
+        index += 1
+        ws.cell('A' + str(index)).fill = PatternFill(start_color='ffff00', end_color='ffff00', fill_type='solid')
+        ws.cell('B' + str(index)).value = 'Fremur lítil framvinda'
+        ws.merge_cells('B' + str(index) + ':E' + str(index))
+        index += 1
+        ws.cell('A' + str(index)).fill = PatternFill(start_color='00ff00', end_color='00ff00', fill_type='solid')
+        ws.cell('B' + str(index)).value = 'Góð framvinda'
+        ws.merge_cells('B' + str(index) + ':E' + str(index))
 
-            # Add bar chart
-            ws_bar = wb.create_sheet(title="Súlurit")
-            for datapoint in datapoints:
-                ws_bar.append(datapoint)
-            chart = BarChart()
-            chart.type = "col"
-            chart.style = 10
-            chart.title = "Niðurstöður úr Lesfimi, sept 2016 - jan 2017"
-            chart.y_axis.title = "Orð á mínútu"
-            chart.x_axis.title = "Nemandi"
-            data = Reference(ws_bar, min_col=2, min_row=1, max_row=len(datapoints), max_col=3)
-            cats = Reference(ws_bar, min_col=1, min_row=2, max_row=len(datapoints))
-            chart.add_data(data, titles_from_data=True)
-            chart.set_categories(cats)
-            chart.shape = 4
-            chart.width = 40
-            chart.height = 20
+        # Add bar chart
+        ws_bar = wb.create_sheet(title="Súlurit")
+        for datapoint in datapoints:
+            ws_bar.append(datapoint)
+        chart = BarChart()
+        chart.type = "col"
+        chart.style = 10
+        chart.title = "Niðurstöður úr Lesfimi, sept 2016 - jan 2017"
+        chart.y_axis.title = "Orð á mínútu"
+        chart.x_axis.title = "Nemandi"
+        data = Reference(ws_bar, min_col=2, min_row=1, max_row=len(datapoints), max_col=3)
+        cats = Reference(ws_bar, min_col=1, min_row=2, max_row=len(datapoints))
+        chart.add_data(data, titles_from_data=True)
+        chart.set_categories(cats)
+        chart.shape = 4
+        chart.width = 40
+        chart.height = 20
 
-            # Add reference lines
-            lchart = LineChart()
-            ldata = Reference(ws_bar, min_col=4, max_col=6, min_row=1, max_row=len(datapoints) + 1)
-            lchart.width = 40
-            lchart.height = 20
+        # Add reference lines
+        lchart = LineChart()
+        ldata = Reference(ws_bar, min_col=4, max_col=6, min_row=1, max_row=len(datapoints) + 1)
+        lchart.width = 40
+        lchart.height = 20
 
-            lchart.layout = Layout(
-                ManualLayout(
-                    xMode="edge",
-                    yMode="edge",
-                )
+        lchart.layout = Layout(
+            ManualLayout(
+                xMode="edge",
+                yMode="edge",
             )
-            lchart.add_data(ldata, titles_from_data=True)
-            chart += lchart
+        )
+        lchart.add_data(ldata, titles_from_data=True)
+        chart += lchart
 
-            for idx in range(1, len(datapoints) + 1):
-                ws_bar.row_dimensions[idx].hidden = True
+        for idx in range(1, len(datapoints) + 1):
+            ws_bar.row_dimensions[idx].hidden = True
 
-            ws_bar.add_chart(chart, "A" + str(len(datapoints) + 1))
+        ws_bar.add_chart(chart, "A" + str(len(datapoints) + 1))
 
-        wb.save(response)
+    wb.save(response)
 
-        return response
+    return response
 
 
 def lesfimi_excel_for_principals(request, pk):
     ref_values = {
-        1:  (20, 55, 75),
-        2:  (40, 85, 100),
-        3:  (55, 100, 120),
-        4:  (80, 120, 145),
-        5:  (90, 140, 160),
-        6:  (105, 155, 175),
-        7:  (120, 165, 190),
-        8:  (130, 180, 210),
-        9:  (140, 180, 210),
+        1: (20, 55, 75),
+        2: (40, 85, 100),
+        3: (55, 100, 120),
+        4: (80, 120, 145),
+        5: (90, 140, 160),
+        6: (105, 155, 175),
+        7: (120, 165, 190),
+        8: (130, 180, 210),
+        9: (140, 180, 210),
         10: (145, 180, 210),
     }
 
     # Get the school object
-    school = School.objects.get(pk = pk)
+    school = School.objects.get(pk=pk)
 
     response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
     response['Content-Disposition'] = 'attachment; filename=Lesfimi {}.xlsx'.format(school.name)
@@ -2501,7 +2500,7 @@ def lesfimi_excel_for_principals(request, pk):
     for test in tests:
         identifier = test[0]
         title = test[1]
-        ws = wb.create_sheet(title = title)
+        ws = wb.create_sheet(title=title)
         ws['A1'] = 'Árgangur'
         ws['B1'] = 'Fjöldi nemenda'
         ws['C1'] = 'Fjöldi sem þreytti próf'
@@ -2513,12 +2512,12 @@ def lesfimi_excel_for_principals(request, pk):
         errors = []
         for year in range(1, 11):
             ws['A' + str(index)] = year
-            survey = Survey.objects.filter(identifier = identifier.format(year)).first()
+            survey = Survey.objects.filter(identifier=identifier.format(year)).first()
             survey_type = SurveyType.objects.filter(survey=survey.id).values('id')
             dic = survey_type[0]
             survey_type = dic['id']
             transformation = SurveyTransformation.objects.filter(survey=survey)
-            studentgroups = StudentGroup.objects.filter(school = school, student_year = year).all()
+            studentgroups = StudentGroup.objects.filter(school=school, student_year=year).all()
             this_year_result = {
                 'students': 0,
                 'students_who_took_test': 0,
@@ -2528,12 +2527,13 @@ def lesfimi_excel_for_principals(request, pk):
             }
             for studentgroup in studentgroups:
                 this_year_result['students'] += studentgroup.students.all().count()
-                groupsurveys = GroupSurvey.objects.filter(studentgroup = studentgroup, survey = survey)
+                groupsurveys = GroupSurvey.objects.filter(studentgroup=studentgroup, survey=survey)
                 if groupsurveys.all().count() > 1:
-                    errors.append('sama próf skráð {} sinnum fyrir {}'.format(groupsurveys.all().count(), studentgroup.name))
+                    errors.append('sama próf skráð {} sinnum fyrir {}'.format(
+                        groupsurveys.all().count(), studentgroup.name))
                 for groupsurvey in groupsurveys.all():
                     for student in studentgroup.students.all():
-                        surveyresults = SurveyResult.objects.filter(survey = groupsurvey, student = student)
+                        surveyresults = SurveyResult.objects.filter(survey=groupsurvey, student=student)
                         if surveyresults.all().count() > 1:
                             errors.append('{} niðurstöður í sama prófi skráðar fyrir nemanda {} í bekk {}'.format(
                                 surveyresults.all().count(),
@@ -2544,12 +2544,12 @@ def lesfimi_excel_for_principals(request, pk):
                             r = literal_eval(surveyresult.results)  # get student results
                             try:
                                 survey_student_result = common_util.calc_survey_results(
-                                    survey_identifier = identifier,
-                                    click_values = literal_eval(r['click_values']),
-                                    input_values = r['input_values'],
-                                    student = student,
-                                    survey_type = survey_type,
-                                    transformation = transformation,
+                                    survey_identifier=identifier,
+                                    click_values=literal_eval(r['click_values']),
+                                    input_values=r['input_values'],
+                                    student=student,
+                                    survey_type=survey_type,
+                                    transformation=transformation,
                                 )
                                 # import pdb; pdb.set_trace()
                                 if not survey_student_result[0] == '':
@@ -2567,13 +2567,16 @@ def lesfimi_excel_for_principals(request, pk):
             ws['C' + str(index)] = this_year_result['students_who_took_test']
             if this_year_result['students'] > 0 and this_year_result['students_who_took_test'] > 0:
                 ws['D' + str(index)] = (this_year_result['students_who_took_test'] / this_year_result['students']) * 100
-                pct_over_90pct = (this_year_result['students_over_90pct'] / this_year_result['students_who_took_test']) * 100
+                pct_over_90pct = (this_year_result['students_over_90pct'] /
+                                  this_year_result['students_who_took_test']) * 100
                 ws['E' + str(index)] = pct_over_90pct
 
-                pct_over_50pct = (this_year_result['students_over_50pct'] / this_year_result['students_who_took_test']) * 100
+                pct_over_50pct = (this_year_result['students_over_50pct'] /
+                                  this_year_result['students_who_took_test']) * 100
                 ws['F' + str(index)] = pct_over_50pct
 
-                pct_over_25pct = (this_year_result['students_over_25pct'] / this_year_result['students_who_took_test']) * 100
+                pct_over_25pct = (this_year_result['students_over_25pct'] /
+                                  this_year_result['students_who_took_test']) * 100
                 ws['G' + str(index)] = pct_over_25pct
 
             else:
@@ -2653,15 +2656,15 @@ def lesfimi_excel_for_principals(request, pk):
 
 def lesfimi_excel_entire_country_stats():
     ref_values = {
-        1:  (20, 55, 75),
-        2:  (40, 85, 100),
-        3:  (55, 100, 120),
-        4:  (80, 120, 145),
-        5:  (90, 140, 160),
-        6:  (105, 155, 175),
-        7:  (120, 165, 190),
-        8:  (130, 180, 210),
-        9:  (140, 180, 210),
+        1: (20, 55, 75),
+        2: (40, 85, 100),
+        3: (55, 100, 120),
+        4: (80, 120, 145),
+        5: (90, 140, 160),
+        6: (105, 155, 175),
+        7: (120, 165, 190),
+        8: (130, 180, 210),
+        9: (140, 180, 210),
         10: (145, 180, 210),
     }
 
@@ -2679,7 +2682,7 @@ def lesfimi_excel_entire_country_stats():
     for test in tests:
         identifier = test[0]
         title = test[1]
-        ws = wb.create_sheet(title = title)
+        ws = wb.create_sheet(title=title)
         ws['A1'] = 'Árgangur'
         ws['B1'] = 'Fjöldi nemenda'
         ws['C1'] = 'Fjöldi sem þreytti próf'
@@ -2691,12 +2694,12 @@ def lesfimi_excel_entire_country_stats():
         errors = []
         for year in range(1, 11):
             ws['A' + str(index)] = year
-            survey = Survey.objects.filter(identifier = identifier.format(year)).first()
+            survey = Survey.objects.filter(identifier=identifier.format(year)).first()
             survey_type = SurveyType.objects.filter(survey=survey.id).values('id')
             dic = survey_type[0]
             survey_type = dic['id']
             transformation = SurveyTransformation.objects.filter(survey=survey)
-            studentgroups = StudentGroup.objects.filter(student_year = year).all()
+            studentgroups = StudentGroup.objects.filter(student_year=year).all()
             this_year_result = {
                 'students': 0,
                 'students_who_took_test': 0,
@@ -2706,12 +2709,13 @@ def lesfimi_excel_entire_country_stats():
             }
             for studentgroup in studentgroups:
                 this_year_result['students'] += studentgroup.students.all().count()
-                groupsurveys = GroupSurvey.objects.filter(studentgroup = studentgroup, survey = survey)
+                groupsurveys = GroupSurvey.objects.filter(studentgroup=studentgroup, survey=survey)
                 if groupsurveys.all().count() > 1:
-                    errors.append('sama próf skráð {} sinnum fyrir {} í {}'.format(groupsurveys.all().count(), studentgroup.name, studentgroup.school.name))
+                    errors.append('sama próf skráð {} sinnum fyrir {} í {}'.format(
+                        groupsurveys.all().count(), studentgroup.name, studentgroup.school.name))
                 for groupsurvey in groupsurveys.all():
                     for student in studentgroup.students.all():
-                        surveyresults = SurveyResult.objects.filter(survey = groupsurvey, student = student)
+                        surveyresults = SurveyResult.objects.filter(survey=groupsurvey, student=student)
                         if surveyresults.all().count() > 1:
                             errors.append('{} niðurstöður í sama prófi skráðar fyrir nemanda {} í bekk {} í {}'.format(
                                 surveyresults.all().count(),
@@ -2723,12 +2727,12 @@ def lesfimi_excel_entire_country_stats():
                             r = literal_eval(surveyresult.results)  # get student results
                             try:
                                 survey_student_result = common_util.calc_survey_results(
-                                    survey_identifier = identifier,
-                                    click_values = literal_eval(r['click_values']),
-                                    input_values = r['input_values'],
-                                    student = student,
-                                    survey_type = survey_type,
-                                    transformation = transformation,
+                                    survey_identifier=identifier,
+                                    click_values=literal_eval(r['click_values']),
+                                    input_values=r['input_values'],
+                                    student=student,
+                                    survey_type=survey_type,
+                                    transformation=transformation,
                                 )
                                 # import pdb; pdb.set_trace()
                                 if not survey_student_result[0] == '':
@@ -2746,13 +2750,16 @@ def lesfimi_excel_entire_country_stats():
             ws['C' + str(index)] = this_year_result['students_who_took_test']
             if this_year_result['students'] > 0 and this_year_result['students_who_took_test'] > 0:
                 ws['D' + str(index)] = (this_year_result['students_who_took_test'] / this_year_result['students']) * 100
-                pct_over_90pct = (this_year_result['students_over_90pct'] / this_year_result['students_who_took_test']) * 100
+                pct_over_90pct = (this_year_result['students_over_90pct'] /
+                                  this_year_result['students_who_took_test']) * 100
                 ws['E' + str(index)] = pct_over_90pct
 
-                pct_over_50pct = (this_year_result['students_over_50pct'] / this_year_result['students_who_took_test']) * 100
+                pct_over_50pct = (this_year_result['students_over_50pct'] /
+                                  this_year_result['students_who_took_test']) * 100
                 ws['F' + str(index)] = pct_over_50pct
 
-                pct_over_25pct = (this_year_result['students_over_25pct'] / this_year_result['students_who_took_test']) * 100
+                pct_over_25pct = (this_year_result['students_over_25pct'] /
+                                  this_year_result['students_who_took_test']) * 100
                 ws['G' + str(index)] = pct_over_25pct
 
             else:
@@ -2818,7 +2825,7 @@ def lesfimi_excel_entire_country_stats():
             ws.add_chart(chart, "A22")
 
         if errors:
-            ws = wb.create_sheet(title = 'Villur')
+            ws = wb.create_sheet(title='Villur')
             index = 1
             for error in errors:
                 ws['A' + str(index)] = "ATH: " + error
@@ -2844,7 +2851,7 @@ def _lesfimi_excel_result_duplicates():
     for test in tests:
         identifier = test[0]
         title = test[1]
-        ws = wb.create_sheet(title = title)
+        ws = wb.create_sheet(title=title)
         ws['A1'] = 'Kennitala'
         ws['B1'] = 'Groupsurvey id'
         ws['C1'] = 'Surveyresult id'
@@ -2853,19 +2860,20 @@ def _lesfimi_excel_result_duplicates():
         errors = []
         for year in range(1, 11):
             ws['A' + str(index)] = year
-            survey = Survey.objects.filter(identifier = identifier.format(year)).first()
+            survey = Survey.objects.filter(identifier=identifier.format(year)).first()
             survey_type = SurveyType.objects.filter(survey=survey.id).values('id')
             dic = survey_type[0]
             survey_type = dic['id']
             transformation = SurveyTransformation.objects.filter(survey=survey)
-            studentgroups = StudentGroup.objects.filter(student_year = year).all()
+            studentgroups = StudentGroup.objects.filter(student_year=year).all()
             for studentgroup in studentgroups:
-                groupsurveys = GroupSurvey.objects.filter(studentgroup = studentgroup, survey = survey)
+                groupsurveys = GroupSurvey.objects.filter(studentgroup=studentgroup, survey=survey)
                 if groupsurveys.all().count() > 1:
-                    errors.append('sama próf skráð {} sinnum fyrir {} í {}'.format(groupsurveys.all().count(), studentgroup.name, studentgroup.school.name))
+                    errors.append('sama próf skráð {} sinnum fyrir {} í {}'.format(
+                        groupsurveys.all().count(), studentgroup.name, studentgroup.school.name))
                 for groupsurvey in groupsurveys.all():
                     for student in studentgroup.students.all():
-                        surveyresults = SurveyResult.objects.filter(survey = groupsurvey, student = student)
+                        surveyresults = SurveyResult.objects.filter(survey=groupsurvey, student=student)
                         if surveyresults.all().count() > 1:
                             for surveyresult in surveyresults.all():
                                 ws['A' + str(index)] = student.ssn
@@ -2873,5 +2881,5 @@ def _lesfimi_excel_result_duplicates():
                                 ws['C' + str(index)] = surveyresult.id
                                 ws['D' + str(index)] = surveyresult.results
                                 index += 1
-    
+
     wb.save(filename='/tmp/duplicates.xlsx')

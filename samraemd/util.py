@@ -14,14 +14,14 @@ def get_results_from_sheet(sheet, row, result_length):
         # Loop through entire row
         for numb in range(0, int(result_length)):
             # n is the current iterator converted to a string and with 0 prepended if < 10
-            n              = str(numb) if numb >= 10 else "0" + str(numb)
+            n = str(numb) if numb >= 10 else "0" + str(numb)
             result_data[n] = {
-                'id'         : str(sheet.cell_value(0, numb + 1)).strip(),  # Question id
-                'category'   : str(sheet.cell_value(1, numb + 1)).strip(),  # Question category
-                'context'    : str(sheet.cell_value(2, numb + 1)).strip(),  # Context of question
+                'id': str(sheet.cell_value(0, numb + 1)).strip(),  # Question id
+                'category': str(sheet.cell_value(1, numb + 1)).strip(),  # Question category
+                'context': str(sheet.cell_value(2, numb + 1)).strip(),  # Context of question
                 'description': str(sheet.cell_value(3, numb + 1)).strip(),  # Question description
-                'img'        : str(sheet.cell_value(4, numb + 1)).strip(),
-                'value'      : int(sheet.cell_value(row, numb + 1))  # Student's answer to question
+                'img': str(sheet.cell_value(4, numb + 1)).strip(),
+                'value': int(sheet.cell_value(row, numb + 1))  # Student's answer to question
             }
     except Exception as e:
         print(e)

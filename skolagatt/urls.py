@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
-from django.conf.urls        import url, include
-from django.contrib          import admin
-from .                       import views
-import froala_editor
-
+from django.conf.urls import url, include
+from django.contrib import admin
+from . import views
 
 urlpatterns = [
     url(r'^$',

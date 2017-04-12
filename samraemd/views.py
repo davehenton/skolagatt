@@ -1,29 +1,29 @@
-from django.shortcuts           import render, redirect
-from django.views.generic       import ListView, CreateView, DetailView, DeleteView
-from django.core.urlresolvers   import reverse_lazy
-from django.http                import HttpResponse, HttpResponseRedirect
+from django.shortcuts import render, redirect
+from django.views.generic import ListView, CreateView, DetailView, DeleteView
+from django.core.urlresolvers import reverse_lazy
+from django.http import HttpResponse, HttpResponseRedirect
 from celery.task.control import inspect
 
 import xlrd
-import json
 import openpyxl
 import collections
-from itertools        import chain
+from itertools import chain
 from django.db.models import Count, Value, CharField, Q
 
 from kennitala import Kennitala
 
-import common.models   as cm_models
-import common.mixins   as cm_mixins
+import common.models as cm_models
+import common.mixins as cm_mixins
 
 import supportandexception.models as sae_models
 import samraemd.models as s_models
-import samraemd.util   as s_util
+import samraemd.util as s_util
 import samraemd.forms as forms
 from samraemd.tasks import save_samraemd_result
 
+
 def _excel_result_pre_2017(wb, school, group, year, studentgroup_id=None):
-    ws       = wb.get_active_sheet()
+    ws = wb.get_active_sheet()
     ws.title = "Íslenska"
 
     ws['A1'] = 'Nemandi'
@@ -50,15 +50,15 @@ def _excel_result_pre_2017(wb, school, group, year, studentgroup_id=None):
     results = []
     if studentgroup:
         results = s_models.SamraemdISLResult.objects.filter(
-            student__in = studentgroup.students.all(),
-            student_year = group,
-            exam_date__year = year,
+            student__in=studentgroup.students.all(),
+            student_year=group,
+            exam_date__year=year,
         )
     else:
         results = s_models.SamraemdISLResult.objects.filter(
-            student__in     = cm_models.Student.objects.filter(school=school),
-            student_year    = group,
-            exam_date__year = year
+            student__in=cm_models.Student.objects.filter(school=school),
+            student_year=group,
+            exam_date__year=year
         )
 
     index = 2
@@ -102,15 +102,15 @@ def _excel_result_pre_2017(wb, school, group, year, studentgroup_id=None):
     # prepare data
     if studentgroup:
         results = s_models.SamraemdMathResult.objects.filter(
-            student__in = studentgroup.students.all(),
-            student_year = group,
-            exam_date__year = year,
+            student__in=studentgroup.students.all(),
+            student_year=group,
+            exam_date__year=year,
         )
     else:
         results = s_models.SamraemdMathResult.objects.filter(
-            student__in     = cm_models.Student.objects.filter(school=school),
-            student_year    = group,
-            exam_date__year = year
+            student__in=cm_models.Student.objects.filter(school=school),
+            student_year=group,
+            exam_date__year=year
         )
 
     index = 2
@@ -137,7 +137,7 @@ def _excel_result_pre_2017(wb, school, group, year, studentgroup_id=None):
 
 
 def _excel_result_post_2017_yngri(wb, school, group, year, studentgroup_id=None):
-    ws       = wb.get_active_sheet()
+    ws = wb.get_active_sheet()
     ws.title = "Íslenska"
 
     ws['A1'] = 'Nemandi'
@@ -162,15 +162,15 @@ def _excel_result_post_2017_yngri(wb, school, group, year, studentgroup_id=None)
     results = []
     if studentgroup:
         results = s_models.SamraemdISLResult.objects.filter(
-            student__in = studentgroup.students.all(),
-            student_year = group,
-            exam_date__year = year,
+            student__in=studentgroup.students.all(),
+            student_year=group,
+            exam_date__year=year,
         )
     else:
         results = s_models.SamraemdISLResult.objects.filter(
-            student__in     = cm_models.Student.objects.filter(school=school),
-            student_year    = group,
-            exam_date__year = year
+            student__in=cm_models.Student.objects.filter(school=school),
+            student_year=group,
+            exam_date__year=year
         )
 
     index = 2
@@ -212,15 +212,15 @@ def _excel_result_post_2017_yngri(wb, school, group, year, studentgroup_id=None)
     results = []
     if studentgroup:
         results = s_models.SamraemdMathResult.objects.filter(
-            student__in = studentgroup.students.all(),
-            student_year = group,
-            exam_date__year = year,
+            student__in=studentgroup.students.all(),
+            student_year=group,
+            exam_date__year=year,
         )
     else:
         results = s_models.SamraemdMathResult.objects.filter(
-            student__in     = cm_models.Student.objects.filter(school=school),
-            student_year    = group,
-            exam_date__year = year
+            student__in=cm_models.Student.objects.filter(school=school),
+            student_year=group,
+            exam_date__year=year
         )
 
     index = 2
@@ -246,7 +246,7 @@ def _excel_result_post_2017_yngri(wb, school, group, year, studentgroup_id=None)
 
 
 def _excel_result_post_2017_eldri(wb, school, group, year, studentgroup_id=None):
-    ws       = wb.get_active_sheet()
+    ws = wb.get_active_sheet()
     ws.title = "Íslenska"
 
     ws['A1'] = 'Nemandi'
@@ -268,15 +268,15 @@ def _excel_result_post_2017_eldri(wb, school, group, year, studentgroup_id=None)
     results = []
     if studentgroup:
         results = s_models.SamraemdISLResult.objects.filter(
-            student__in = studentgroup.students.all(),
-            student_year = group,
-            exam_date__year = year,
+            student__in=studentgroup.students.all(),
+            student_year=group,
+            exam_date__year=year,
         )
     else:
         results = s_models.SamraemdISLResult.objects.filter(
-            student__in     = cm_models.Student.objects.filter(school=school),
-            student_year    = group,
-            exam_date__year = year
+            student__in=cm_models.Student.objects.filter(school=school),
+            student_year=group,
+            exam_date__year=year
         )
 
     index = 2
@@ -316,15 +316,15 @@ def _excel_result_post_2017_eldri(wb, school, group, year, studentgroup_id=None)
     results = []
     if studentgroup:
         results = s_models.SamraemdMathResult.objects.filter(
-            student__in = studentgroup.students.all(),
-            student_year = group,
-            exam_date__year = year,
+            student__in=studentgroup.students.all(),
+            student_year=group,
+            exam_date__year=year,
         )
     else:
         results = s_models.SamraemdMathResult.objects.filter(
-            student__in     = cm_models.Student.objects.filter(school=school),
-            student_year    = group,
-            exam_date__year = year
+            student__in=cm_models.Student.objects.filter(school=school),
+            student_year=group,
+            exam_date__year=year
         )
 
     index = 2
@@ -365,15 +365,15 @@ def _excel_result_post_2017_eldri(wb, school, group, year, studentgroup_id=None)
     results = []
     if studentgroup:
         results = s_models.SamraemdENSResult.objects.filter(
-            student__in = studentgroup.students.all(),
-            student_year = group,
-            exam_date__year = year,
+            student__in=studentgroup.students.all(),
+            student_year=group,
+            exam_date__year=year,
         )
     else:
         results = s_models.SamraemdENSResult.objects.filter(
-            student__in     = cm_models.Student.objects.filter(school=school),
-            student_year    = group,
-            exam_date__year = year
+            student__in=cm_models.Student.objects.filter(school=school),
+            student_year=group,
+            exam_date__year=year
         )
 
     index = 2
@@ -395,15 +395,15 @@ def _excel_result_post_2017_eldri(wb, school, group, year, studentgroup_id=None)
 
 
 def excel_result(request, school_id, year, group, studentgroup_id=None):
-    school   = cm_models.School.objects.get(id=school_id)
+    school = cm_models.School.objects.get(id=school_id)
     response = HttpResponse(
         content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
     response['Content-Disposition'] = 'attachment; filename={0}-{1}-{2}-bekkur.xlsx'.format(
         school.name, year, group)
-    wb       = openpyxl.Workbook()
+    wb = openpyxl.Workbook()
     if int(year) < 2017:
         wb = _excel_result_pre_2017(wb, school, group, year, studentgroup_id)
-    else: # year > 2016
+    else:  # year > 2016
         if int(group) < 9:
             wb = _excel_result_post_2017_yngri(wb, school, group, year, studentgroup_id)
         else:
@@ -414,7 +414,7 @@ def excel_result(request, school_id, year, group, studentgroup_id=None):
 
 
 class SamraemdResultAdminListing(cm_mixins.SuperUserMixin, ListView):
-    model         = s_models.SamraemdMathResult
+    model = s_models.SamraemdMathResult
     template_name = 'samraemd/samraemdresult_admin_list.html'
 
     def get_context_data(self, **kwargs):
@@ -423,7 +423,7 @@ class SamraemdResultAdminListing(cm_mixins.SuperUserMixin, ListView):
 
         if 'cancel_import' in self.request.GET:
             print("Samraemd: Cancel import, removing session data")
-            del(self.request.session['newdata']) 
+            del(self.request.session['newdata'])
 
         isl_exams = s_models.SamraemdISLResult.objects.all().values(
             'exam_date', 'student_year', 'exam_code'
@@ -461,10 +461,10 @@ class SamraemdMathResultListing(cm_mixins.SchoolEmployeeMixin, ListView):
 
     def get_context_data(self, **kwargs):
         # xxx will be available in the template as the related objects
-        context              = super(SamraemdMathResultListing, self).get_context_data(**kwargs)
-        school               = cm_models.School.objects.get(pk=self.kwargs['school_id'])
-        context['exams']     = s_models.SamraemdMathResult.objects.filter(
-            student__in = cm_models.Student.objects.filter(school=school)
+        context = super(SamraemdMathResultListing, self).get_context_data(**kwargs)
+        school = cm_models.School.objects.get(pk=self.kwargs['school_id'])
+        context['exams'] = s_models.SamraemdMathResult.objects.filter(
+            student__in=cm_models.Student.objects.filter(school=school)
         ).values('exam_code').distinct()
         context['school_id'] = school.id
         return context
@@ -477,22 +477,21 @@ class SamraemdStudentGroupResultListing(cm_mixins.SchoolTeacherMixin, ListView):
     def get_context_data(self, **kwargs):
         # xxx will be available in the template as the related objects
         context = super(SamraemdStudentGroupResultListing, self).get_context_data(**kwargs)
-        school  = cm_models.School.objects.get(pk=self.kwargs['school_id'])
+        school = cm_models.School.objects.get(pk=self.kwargs['school_id'])
         studentgroup = cm_models.StudentGroup.objects.get(pk=self.kwargs['studentgroup_id'])
 
-
         m_dates = s_models.SamraemdMathResult.objects.filter(
-            student__in = studentgroup.students.all()
+            student__in=studentgroup.students.all()
         ).values('exam_date', 'student_year').distinct()
-        m_yg = [ (x['exam_date'].year, x['student_year']) for x in m_dates ]
+        m_yg = [(x['exam_date'].year, x['student_year']) for x in m_dates]
         i_dates = s_models.SamraemdISLResult.objects.filter(
-            student__in = studentgroup.students.all()
+            student__in=studentgroup.students.all()
         ).values('exam_date', 'student_year').distinct()
-        i_yg = [ (x['exam_date'].year, x['student_year']) for x in i_dates ]
+        i_yg = [(x['exam_date'].year, x['student_year']) for x in i_dates]
         e_dates = s_models.SamraemdENSResult.objects.filter(
-            student__in = studentgroup.students.all()
+            student__in=studentgroup.students.all()
         ).values('exam_date', 'student_year').distinct()
-        e_yg = [ (x['exam_date'].year, x['student_year']) for x in e_dates ]
+        e_yg = [(x['exam_date'].year, x['student_year']) for x in e_dates]
         dates = list(set().union(m_yg, i_yg, e_yg))
 
         s_dates = sorted(dates, key=lambda tup: (tup[0], tup[1]), reverse=True)
@@ -503,20 +502,20 @@ class SamraemdStudentGroupResultListing(cm_mixins.SchoolTeacherMixin, ListView):
             student_results = {}
             for result in list(chain(
                 s_models.SamraemdISLResult.objects.filter(
-                    student__in     = cm_models.Student.objects.filter(school=school, studentgroup=studentgroup),
-                    student_year    = group,
-                    exam_date__year = year,
-                ).annotate(result_type = Value('ÍSL', CharField())),
+                    student__in=cm_models.Student.objects.filter(school=school, studentgroup=studentgroup),
+                    student_year=group,
+                    exam_date__year=year,
+                ).annotate(result_type=Value('ÍSL', CharField())),
                 s_models.SamraemdMathResult.objects.filter(
-                    student__in     = cm_models.Student.objects.filter(school=school, studentgroup=studentgroup),
-                    student_year    = group,
-                    exam_date__year = year,
-                ).annotate(result_type = Value('STÆ', CharField())),
+                    student__in=cm_models.Student.objects.filter(school=school, studentgroup=studentgroup),
+                    student_year=group,
+                    exam_date__year=year,
+                ).annotate(result_type=Value('STÆ', CharField())),
                 s_models.SamraemdENSResult.objects.filter(
-                    student__in     = cm_models.Student.objects.filter(school=school, studentgroup=studentgroup),
-                    student_year    = group,
-                    exam_date__year = year,
-                ).annotate(result_type = Value('ENS', CharField())),
+                    student__in=cm_models.Student.objects.filter(school=school, studentgroup=studentgroup),
+                    student_year=group,
+                    exam_date__year=year,
+                ).annotate(result_type=Value('ENS', CharField())),
             )):
                 if result.student in student_results:
                     student_results[result.student].append(result)
@@ -525,7 +524,7 @@ class SamraemdStudentGroupResultListing(cm_mixins.SchoolTeacherMixin, ListView):
             results.append((year, group, student_results))
 
         rawlinks = s_models.SamraemdResult.objects.filter(
-            student__in = studentgroup.students.all()
+            student__in=studentgroup.students.all()
         ).values('exam_date', 'student_year', 'exam_code', 'exam_name').distinct()
         context['school'] = school
         context['studentgroup'] = studentgroup
@@ -541,20 +540,20 @@ class SamraemdResultListing(cm_mixins.SchoolManagerMixin, ListView):
     def get_context_data(self, **kwargs):
         # xxx will be available in the template as the related objects
         context = super(SamraemdResultListing, self).get_context_data(**kwargs)
-        school  = cm_models.School.objects.get(pk=self.kwargs['school_id'])
+        school = cm_models.School.objects.get(pk=self.kwargs['school_id'])
 
         m_dates = s_models.SamraemdMathResult.objects.filter(
-            student__in = school.students.all()
+            student__in=school.students.all()
         ).values('exam_date', 'student_year').distinct()
-        m_yg = [ (x['exam_date'].year, x['student_year']) for x in m_dates ]
+        m_yg = [(x['exam_date'].year, x['student_year']) for x in m_dates]
         i_dates = s_models.SamraemdISLResult.objects.filter(
-            student__in = school.students.all()
+            student__in=school.students.all()
         ).values('exam_date', 'student_year').distinct()
-        i_yg = [ (x['exam_date'].year, x['student_year']) for x in i_dates ]
+        i_yg = [(x['exam_date'].year, x['student_year']) for x in i_dates]
         e_dates = s_models.SamraemdENSResult.objects.filter(
-            student__in = school.students.all()
+            student__in=school.students.all()
         ).values('exam_date', 'student_year').distinct()
-        e_yg = [ (x['exam_date'].year, x['student_year']) for x in e_dates ]
+        e_yg = [(x['exam_date'].year, x['student_year']) for x in e_dates]
         dates = list(set().union(m_yg, i_yg, e_yg))
 
         s_dates = sorted(dates, key=lambda tup: (tup[0], tup[1]), reverse=True)
@@ -565,20 +564,20 @@ class SamraemdResultListing(cm_mixins.SchoolManagerMixin, ListView):
             student_results = {}
             for result in list(chain(
                 s_models.SamraemdISLResult.objects.filter(
-                    student__in     = cm_models.Student.objects.filter(school=school),
-                    student_year    = group,
-                    exam_date__year = year,
-                ).annotate(result_type = Value('ÍSL', CharField())),
+                    student__in=cm_models.Student.objects.filter(school=school),
+                    student_year=group,
+                    exam_date__year=year,
+                ).annotate(result_type=Value('ÍSL', CharField())),
                 s_models.SamraemdMathResult.objects.filter(
-                    student__in     = cm_models.Student.objects.filter(school=school),
-                    student_year    = group,
-                    exam_date__year = year,
-                ).annotate(result_type = Value('STÆ', CharField())),
+                    student__in=cm_models.Student.objects.filter(school=school),
+                    student_year=group,
+                    exam_date__year=year,
+                ).annotate(result_type=Value('STÆ', CharField())),
                 s_models.SamraemdENSResult.objects.filter(
-                    student__in     = cm_models.Student.objects.filter(school=school),
-                    student_year    = group,
-                    exam_date__year = year,
-                ).annotate(result_type = Value('ENS', CharField())),
+                    student__in=cm_models.Student.objects.filter(school=school),
+                    student_year=group,
+                    exam_date__year=year,
+                ).annotate(result_type=Value('ENS', CharField())),
             )):
                 if result.student in student_results:
                     student_results[result.student].append(result)
@@ -587,7 +586,7 @@ class SamraemdResultListing(cm_mixins.SchoolManagerMixin, ListView):
             results.append((year, group, student_results))
 
         rawlinks = s_models.SamraemdResult.objects.filter(
-            student__in = school.students.all()
+            student__in=school.students.all()
         ).values('exam_date', 'student_year', 'exam_code', 'exam_name').distinct()
         context['school'] = school
         context['results'] = results
@@ -610,35 +609,35 @@ class SamraemdResultDetail(cm_mixins.SchoolTeacherMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         # xxx will be available in the template as the related objects
-        context          = super(SamraemdResultDetail, self).get_context_data(**kwargs)
-        year             = self.kwargs['year']
-        context['year']  = year
-        group            = self.kwargs['group']
+        context = super(SamraemdResultDetail, self).get_context_data(**kwargs)
+        year = self.kwargs['year']
+        context['year'] = year
+        group = self.kwargs['group']
         context['group'] = group
-        student_results  = {}
+        student_results = {}
         if 'school_id' in self.kwargs:
-            school                 = cm_models.School.objects.get(pk=self.kwargs['school_id'])
-            context['school']      = school
-            context['school_id']   = self.kwargs['school_id']
+            school = cm_models.School.objects.get(pk=self.kwargs['school_id'])
+            context['school'] = school
+            context['school_id'] = self.kwargs['school_id']
             context['school_name'] = school.name
             if 'student_id' in self.kwargs:
                 student = cm_models.Student.objects.get(pk=self.kwargs['student_id'])
                 for result in list(chain(
                     s_models.SamraemdISLResult.objects.filter(
-                        student         = student,
-                        student_year    = group,
-                        exam_date__year = year,
-                    ).annotate(result_type = Value('ÍSL', CharField())),
+                        student=student,
+                        student_year=group,
+                        exam_date__year=year,
+                    ).annotate(result_type=Value('ÍSL', CharField())),
                     s_models.SamraemdMathResult.objects.filter(
-                        student         = student,
-                        student_year    = group,
-                        exam_date__year = year,
-                    ).annotate(result_type = Value('STÆ', CharField())),
+                        student=student,
+                        student_year=group,
+                        exam_date__year=year,
+                    ).annotate(result_type=Value('STÆ', CharField())),
                     s_models.SamraemdENSResult.objects.filter(
-                        student         = student,
-                        student_year    = group,
-                        exam_date__year = year,
-                    ).annotate(result_type = Value('ENS', CharField())),
+                        student=student,
+                        student_year=group,
+                        exam_date__year=year,
+                    ).annotate(result_type=Value('ENS', CharField())),
                 )):
                     if result.student in student_results:
                         student_results[result.student].append(result)
@@ -648,20 +647,20 @@ class SamraemdResultDetail(cm_mixins.SchoolTeacherMixin, DetailView):
                 studentgroup = cm_models.StudentGroup.objects.get(pk=self.kwargs['studentgroup_id'])
                 for result in list(chain(
                     s_models.SamraemdISLResult.objects.filter(
-                        student__in     = studentgroup.students.all(),
-                        student_year    = group,
-                        exam_date__year = year,
-                    ).annotate(result_type = Value('ÍSL', CharField())),
+                        student__in=studentgroup.students.all(),
+                        student_year=group,
+                        exam_date__year=year,
+                    ).annotate(result_type=Value('ÍSL', CharField())),
                     s_models.SamraemdMathResult.objects.filter(
-                        student__in     = studentgroup.students.all(),
-                        student_year    = group,
-                        exam_date__year = year,
-                    ).annotate(result_type = Value('STÆ', CharField())),
+                        student__in=studentgroup.students.all(),
+                        student_year=group,
+                        exam_date__year=year,
+                    ).annotate(result_type=Value('STÆ', CharField())),
                     s_models.SamraemdENSResult.objects.filter(
-                        student__in     = studentgroup.students.all(),
-                        student_year    = group,
-                        exam_date__year = year,
-                    ).annotate(result_type = Value('ENS', CharField())),
+                        student__in=studentgroup.students.all(),
+                        student_year=group,
+                        exam_date__year=year,
+                    ).annotate(result_type=Value('ENS', CharField())),
                 )):
                     if result.student in student_results:
                         student_results[result.student].append(result)
@@ -670,20 +669,20 @@ class SamraemdResultDetail(cm_mixins.SchoolTeacherMixin, DetailView):
             else:
                 for result in list(chain(
                     s_models.SamraemdISLResult.objects.filter(
-                        student__in     = cm_models.Student.objects.filter(school=school),
-                        student_year    = group,
-                        exam_date__year = year,
-                    ).annotate(result_type = Value('ÍSL', CharField())),
+                        student__in=cm_models.Student.objects.filter(school=school),
+                        student_year=group,
+                        exam_date__year=year,
+                    ).annotate(result_type=Value('ÍSL', CharField())),
                     s_models.SamraemdMathResult.objects.filter(
-                        student__in     = cm_models.Student.objects.filter(school=school),
-                        student_year    = group,
-                        exam_date__year = year,
-                    ).annotate(result_type = Value('STÆ', CharField())),
+                        student__in=cm_models.Student.objects.filter(school=school),
+                        student_year=group,
+                        exam_date__year=year,
+                    ).annotate(result_type=Value('STÆ', CharField())),
                     s_models.SamraemdENSResult.objects.filter(
-                        student__in     = cm_models.Student.objects.filter(school=school),
-                        student_year    = group,
-                        exam_date__year = year,
-                    ).annotate(result_type = Value('ENS', CharField())),
+                        student__in=cm_models.Student.objects.filter(school=school),
+                        student_year=group,
+                        exam_date__year=year,
+                    ).annotate(result_type=Value('ENS', CharField())),
                 )):
                     if result.student in student_results:
                         student_results[result.student].append(result)
@@ -693,8 +692,8 @@ class SamraemdResultDetail(cm_mixins.SchoolTeacherMixin, DetailView):
             if self.request.user.is_superuser:
                 if 'stæ' in self.request.path:
                     for result in s_models.SamraemdMathResult.objects.filter(
-                        student_year    = group,
-                        exam_date__year = year
+                        student_year=group,
+                        exam_date__year=year
                     ):
                         if result.student in student_results:
                             student_results[result.student].append(result)
@@ -702,8 +701,8 @@ class SamraemdResultDetail(cm_mixins.SchoolTeacherMixin, DetailView):
                             student_results[result.student] = [result]
                 elif 'isl' in self.request.path:
                     for result in s_models.SamraemdISLResult.objects.filter(
-                        student_year    = group,
-                        exam_date__year = year
+                        student_year=group,
+                        exam_date__year=year
                     ):
                         if result.student in student_results:
                             student_results[result.student].append(result)
@@ -711,37 +710,37 @@ class SamraemdResultDetail(cm_mixins.SchoolTeacherMixin, DetailView):
                             student_results[result.student] = [result]
                 elif 'ens' in self.request.path:
                     for result in s_models.SamraemdENSResult.objects.filter(
-                        student_year    = group,
-                        exam_date__year = year
+                        student_year=group,
+                        exam_date__year=year
                     ):
                         if result.student in student_results:
                             student_results[result.student].append(result)
                         else:
                             student_results[result.student] = [result]
-        context['student_results'] = collections.OrderedDict(sorted(student_results.items(), key = lambda x: (x[0].name)))
+        context['student_results'] = collections.OrderedDict(sorted(student_results.items(), key=lambda x: (x[0].name)))
 
         return context
 
 
 class SamraemdResultCreate(cm_mixins.SuperUserMixin, CreateView):
-    model         = s_models.SamraemdMathResult
-    form_class    = forms.SamraemdMathResultForm
+    model = s_models.SamraemdMathResult
+    form_class = forms.SamraemdMathResultForm
     template_name = "samraemd/form_import.html"
 
     def post(self, *args, **kwargs):
         if (self.request.FILES):
-            u_file       = self.request.FILES['file'].name
-            extension    = u_file.split(".")[-1]
-            exam_code    = self.request.POST.get('exam_code').strip()
-            exam_date    = self.request.POST.get('exam_date').strip()
+            u_file = self.request.FILES['file'].name
+            extension = u_file.split(".")[-1]
+            exam_code = self.request.POST.get('exam_code').strip()
+            exam_date = self.request.POST.get('exam_date').strip()
             student_year = self.request.POST.get('student_year').strip()
-            exam_type    = self.request.POST.get('exam_type').strip()
-            
+            exam_type = self.request.POST.get('exam_type').strip()
+
             data = []
             errors = []
             if extension == 'xlsx':
                 input_excel = self.request.FILES['file']
-                book = xlrd.open_workbook(file_contents = input_excel.read())
+                book = xlrd.open_workbook(file_contents=input_excel.read())
 
                 for sheetsnumber in range(book.nsheets):
                     sheet = book.sheet_by_index(sheetsnumber)
@@ -754,18 +753,18 @@ class SamraemdResultCreate(cm_mixins.SuperUserMixin, CreateView):
 
                         fieldlist = []
                         if exam_type == 'STÆ':
-                            fieldlist = [ f.name for f in s_models.SamraemdMathResult._meta.get_fields() ]
+                            fieldlist = [f.name for f in s_models.SamraemdMathResult._meta.get_fields()]
                         elif exam_type == 'ÍSL':
-                            fieldlist = [ f.name for f in s_models.SamraemdISLResult._meta.get_fields() ]
+                            fieldlist = [f.name for f in s_models.SamraemdISLResult._meta.get_fields()]
                         elif exam_type == 'ENS':
-                            fieldlist = [ f.name for f in s_models.SamraemdENSResult._meta.get_fields() ]
+                            fieldlist = [f.name for f in s_models.SamraemdENSResult._meta.get_fields()]
 
                         if not col_name in fieldlist:
                             if not col_name == 'ssn':
                                 errors.append({
-                                'text': 'Dálkur {} er ekki til'.format(col_name),
-                                'row': 0,
-                            })                            
+                                    'text': 'Dálkur {} er ekki til'.format(col_name),
+                                    'row': 0,
+                                })
 
                     # Run through each line
                     for row in range(1, sheet.nrows):
@@ -774,7 +773,7 @@ class SamraemdResultCreate(cm_mixins.SuperUserMixin, CreateView):
                         # Run through each column of the line
                         for col in range(0, len(cols)):
                             col_type = cols[col]
-                            col_value = str(sheet.cell_value(row,col)).strip()
+                            col_value = str(sheet.cell_value(row, col)).strip()
 
                             if col_value:
                                 if col_type == 'ssn':
@@ -785,7 +784,7 @@ class SamraemdResultCreate(cm_mixins.SuperUserMixin, CreateView):
                                             'row': row,
                                         })
 
-                                    if not cm_models.Student.objects.filter(ssn = col_value).exists():
+                                    if not cm_models.Student.objects.filter(ssn=col_value).exists():
                                         rowerrors.append({
                                             'text': 'Nemandi ekki til í skólagátt: {}'.format(col_value),
                                             'row': row,
@@ -821,13 +820,13 @@ class SamraemdResultCreate(cm_mixins.SuperUserMixin, CreateView):
                                         'text': "Villa í gildi {}: {}".format(col_type, col_value),
                                         'row': row,
                                     })
-                                        
+
                                 results_dict[col_type] = col_value
 
-                        results_dict['exam_code']    = exam_code
-                        results_dict['exam_date']    = exam_date
+                        results_dict['exam_code'] = exam_code
+                        results_dict['exam_date'] = exam_date
                         results_dict['student_year'] = student_year
-                        results_dict['exam_type']    = exam_type
+                        results_dict['exam_type'] = exam_type
 
                         if not 'ssn' in results_dict or not results_dict['ssn']:
                             rowerrors.append({
@@ -860,7 +859,7 @@ class SamraemdResultCreate(cm_mixins.SuperUserMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         # xxx will be available in the template as the related objects
-        context         = super(SamraemdResultCreate, self).get_context_data(**kwargs)
+        context = super(SamraemdResultCreate, self).get_context_data(**kwargs)
         context['type'] = 'STÆ'
         return context
 
@@ -874,13 +873,13 @@ class SamraemdResultDelete(cm_mixins.SchoolManagerMixin, DeleteView):
 
     def get_object(self):
         return s_models.SamraemdResult.objects.filter(
-            exam_code       = self.kwargs['exam_code'],
-            student_year    = self.kwargs['group'],
-            exam_date__year = self.kwargs['year'])
+            exam_code=self.kwargs['exam_code'],
+            student_year=self.kwargs['group'],
+            exam_date__year=self.kwargs['year'])
 
 
 class SamraemdMathResultDelete(cm_mixins.SchoolManagerMixin, DeleteView):
-    model         = s_models.SamraemdMathResult
+    model = s_models.SamraemdMathResult
     template_name = "schools/confirm_delete.html"
 
     def get_success_url(self):
@@ -895,17 +894,17 @@ class SamraemdISLResultListing(cm_mixins.SchoolEmployeeMixin, ListView):
 
     def get_context_data(self, **kwargs):
         # xxx will be available in the template as the related objects
-        context              = super(SamraemdISLResultListing, self).get_context_data(**kwargs)
-        school               = cm_models.School.objects.get(pk=self.kwargs['school_id'])
-        context['exams']     = s_models.SamraemdISLResult.objects.filter(
-            student__in = cm_models.Student.objects.filter(school=school)
+        context = super(SamraemdISLResultListing, self).get_context_data(**kwargs)
+        school = cm_models.School.objects.get(pk=self.kwargs['school_id'])
+        context['exams'] = s_models.SamraemdISLResult.objects.filter(
+            student__in=cm_models.Student.objects.filter(school=school)
         ).values('exam_code').distinct()
         context['school_id'] = school.id
         return context
 
 
 class SamraemdISLResultDelete(cm_mixins.SchoolManagerMixin, DeleteView):
-    model         = s_models.SamraemdISLResult
+    model = s_models.SamraemdISLResult
     template_name = "schools/confirm_delete.html"
 
     def get_success_url(self):
@@ -920,18 +919,17 @@ class SamraemdENSResultListing(cm_mixins.SchoolEmployeeMixin, ListView):
 
     def get_context_data(self, **kwargs):
         # xxx will be available in the template as the related objects
-        context              = super(SamraemdENSResultListing, self).get_context_data(**kwargs)
-        school               = cm_models.School.objects.get(pk=self.kwargs['school_id'])
-        context['exams']     = s_models.SamraemdENSResult.objects.filter(
-            student__in = cm_models.Student.objects.filter(school=school)
+        context = super(SamraemdENSResultListing, self).get_context_data(**kwargs)
+        school = cm_models.School.objects.get(pk=self.kwargs['school_id'])
+        context['exams'] = s_models.SamraemdENSResult.objects.filter(
+            student__in=cm_models.Student.objects.filter(school=school)
         ).values('exam_code').distinct()
         context['school_id'] = school.id
         return context
 
 
-
 class SamraemdENSResultDelete(cm_mixins.SchoolManagerMixin, DeleteView):
-    model         = s_models.SamraemdENSResult
+    model = s_models.SamraemdENSResult
     template_name = "schools/confirm_delete.html"
 
     def get_success_url(self):
@@ -942,7 +940,7 @@ class SamraemdENSResultDelete(cm_mixins.SchoolManagerMixin, DeleteView):
 
 
 def excel_for_principals(request, school_id):
-    school = cm_models.School.objects.get(pk = school_id)
+    school = cm_models.School.objects.get(pk=school_id)
     response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
     response['Content-Disposition'] = 'attachment; filename=Samræmd próf 9 og 10 bekk {} 2017.xlsx'.format(school.name)
 
@@ -952,159 +950,156 @@ def excel_for_principals(request, school_id):
 
     students_9 = cm_models.Student.objects.filter(
         school=school,
-        studentgroup__student_year = '9',
+        studentgroup__student_year='9',
     )
     students_10 = cm_models.Student.objects.filter(
         school=school,
-        studentgroup__student_year = '10',
+        studentgroup__student_year='10',
     )
 
     results_math_9 = s_models.SamraemdMathResult.objects.filter(
-        student__in = students_9.all(),
-        exam_code = "9_bekkur_stærðfræði_2017",
+        student__in=students_9.all(),
+        exam_code="9_bekkur_stærðfræði_2017",
     )
     results_math_10 = s_models.SamraemdMathResult.objects.filter(
-        student__in = students_10.all(),
-        exam_code = "10_bekkur_stærðfræði_2017",
+        student__in=students_10.all(),
+        exam_code="10_bekkur_stærðfræði_2017",
     )
 
     results_isl_9 = s_models.SamraemdISLResult.objects.filter(
-        student__in = students_9.all(),
-        exam_code = "9_bekkur_íslenska_2017",
+        student__in=students_9.all(),
+        exam_code="9_bekkur_íslenska_2017",
     )
     results_isl_10 = s_models.SamraemdISLResult.objects.filter(
-        student__in = students_10.all(),
-        exam_code = "10_bekkur_íslenska_2017",
+        student__in=students_10.all(),
+        exam_code="10_bekkur_íslenska_2017",
     )
 
     results_ens_9 = s_models.SamraemdENSResult.objects.filter(
-        student__in = students_9.all(),
-        exam_code = "9_bekkur_enska_2017",
+        student__in=students_9.all(),
+        exam_code="9_bekkur_enska_2017",
     )
     results_ens_10 = s_models.SamraemdENSResult.objects.filter(
-        student__in = students_10.all(),
-        exam_code = "10_bekkur_enska_2017",
+        student__in=students_10.all(),
+        exam_code="10_bekkur_enska_2017",
     )
 
+    num_math_exc_9 = sae_models.Exceptions.objects.filter(student__in=students_9.all(), exam__contains='3').count()
+    num_isl_exc_9 = sae_models.Exceptions.objects.filter(student__in=students_9.all(), exam__contains='1').count()
+    num_ens_exc_9 = sae_models.Exceptions.objects.filter(student__in=students_9.all(), exam__contains='2').count()
 
-    num_math_exc_9 = sae_models.Exceptions.objects.filter(student__in = students_9.all(), exam__contains = '3').count()
-    num_isl_exc_9 = sae_models.Exceptions.objects.filter(student__in = students_9.all(), exam__contains = '1').count()
-    num_ens_exc_9 = sae_models.Exceptions.objects.filter(student__in = students_9.all(), exam__contains = '2').count()
+    num_math_exc_10 = sae_models.Exceptions.objects.filter(student__in=students_10.all(), exam__contains='3').count()
+    num_isl_exc_10 = sae_models.Exceptions.objects.filter(student__in=students_10.all(), exam__contains='1').count()
+    num_ens_exc_10 = sae_models.Exceptions.objects.filter(student__in=students_10.all(), exam__contains='2').count()
 
-    num_math_exc_10 = sae_models.Exceptions.objects.filter(student__in = students_10.all(), exam__contains = '3').count()
-    num_isl_exc_10 = sae_models.Exceptions.objects.filter(student__in = students_10.all(), exam__contains = '1').count()
-    num_ens_exc_10 = sae_models.Exceptions.objects.filter(student__in = students_10.all(), exam__contains = '2').count()
+    num_math_supp_9 = sae_models.SupportResource.objects.filter(student__in=students_9.all()
+                                                                ).filter(Q(reading_assistance__contains='3') | Q(interpretation__contains='3') | Q(longer_time__contains='3')).count()
+    num_isl_supp_9 = sae_models.SupportResource.objects.filter(student__in=students_9.all()
+                                                               ).filter(Q(reading_assistance__contains='1') | Q(interpretation__contains='1') | Q(longer_time__contains='1')).count()
+    num_ens_supp_9 = sae_models.SupportResource.objects.filter(student__in=students_9.all()
+                                                               ).filter(Q(reading_assistance__contains='2') | Q(interpretation__contains='2') | Q(longer_time__contains='2')).count()
 
-    num_math_supp_9 = sae_models.SupportResource.objects.filter(student__in = students_9.all()
-        ).filter(Q(reading_assistance__contains = '3') | Q(interpretation__contains = '3') | Q(longer_time__contains = '3')).count()
-    num_isl_supp_9 = sae_models.SupportResource.objects.filter(student__in = students_9.all()
-        ).filter(Q(reading_assistance__contains = '1') | Q(interpretation__contains = '1') | Q(longer_time__contains = '1')).count()
-    num_ens_supp_9 = sae_models.SupportResource.objects.filter(student__in = students_9.all()
-        ).filter(Q(reading_assistance__contains = '2') | Q(interpretation__contains = '2') | Q(longer_time__contains = '2')).count()
-
-    num_math_supp_10 = sae_models.SupportResource.objects.filter(student__in = students_10.all()
-        ).filter(Q(reading_assistance__contains = '3') | Q(interpretation__contains = '3') | Q(longer_time__contains = '3')).count()
-    num_isl_supp_10 = sae_models.SupportResource.objects.filter(student__in = students_10.all()
-        ).filter(Q(reading_assistance__contains = '1') | Q(interpretation__contains = '1') | Q(longer_time__contains = '1')).count()
-    num_ens_supp_10 = sae_models.SupportResource.objects.filter(student__in = students_10.all()
-        ).filter(Q(reading_assistance__contains = '2') | Q(interpretation__contains = '2') | Q(longer_time__contains = '2')).count()
+    num_math_supp_10 = sae_models.SupportResource.objects.filter(student__in=students_10.all()
+                                                                 ).filter(Q(reading_assistance__contains='3') | Q(interpretation__contains='3') | Q(longer_time__contains='3')).count()
+    num_isl_supp_10 = sae_models.SupportResource.objects.filter(student__in=students_10.all()
+                                                                ).filter(Q(reading_assistance__contains='1') | Q(interpretation__contains='1') | Q(longer_time__contains='1')).count()
+    num_ens_supp_10 = sae_models.SupportResource.objects.filter(student__in=students_10.all()
+                                                                ).filter(Q(reading_assistance__contains='2') | Q(interpretation__contains='2') | Q(longer_time__contains='2')).count()
 
     index = 1
-    ws['A'+str(index)] = "Fjöldi nemenda í 9. bekk"
-    ws['B'+str(index)] = students_9.count()
+    ws['A' + str(index)] = "Fjöldi nemenda í 9. bekk"
+    ws['B' + str(index)] = students_9.count()
     index += 1
-    ws['A'+str(index)] = "Fjöldi nemenda í 10. bekk"
-    ws['B'+str(index)] = students_10.count()
-    index += 2
-    
-    ws['A'+str(index)] = "Fjöldi nemenda sem þreytti próf"
-    ws['B'+str(index)] = "Stærðfræði"
-    ws['C'+str(index)] = "Íslenska"
-    ws['D'+str(index)] = "Enska"
-    index += 1
-    ws['A'+str(index)] = "9. bekkur"
-    ws['B'+str(index)] = results_math_9.count()
-    ws['C'+str(index)] = results_isl_9.count()
-    ws['D'+str(index)] = results_ens_9.count()
-    index += 1
-    ws['A'+str(index)] = "10. bekkur"
-    ws['B'+str(index)] = results_math_10.count()
-    ws['C'+str(index)] = results_isl_10.count()
-    ws['D'+str(index)] = results_ens_10.count()
+    ws['A' + str(index)] = "Fjöldi nemenda í 10. bekk"
+    ws['B' + str(index)] = students_10.count()
     index += 2
 
-    ws['A'+str(index)] = "Fjöldi nemenda með undanþágu"
-    ws['B'+str(index)] = "Stærðfræði"
-    ws['C'+str(index)] = "Íslenska"
-    ws['D'+str(index)] = "Enska"
+    ws['A' + str(index)] = "Fjöldi nemenda sem þreytti próf"
+    ws['B' + str(index)] = "Stærðfræði"
+    ws['C' + str(index)] = "Íslenska"
+    ws['D' + str(index)] = "Enska"
     index += 1
-    ws['A'+str(index)] = "9. bekkur"
-    ws['B'+str(index)] = num_math_exc_9
-    ws['C'+str(index)] = num_isl_exc_9
-    ws['D'+str(index)] = num_ens_exc_9
+    ws['A' + str(index)] = "9. bekkur"
+    ws['B' + str(index)] = results_math_9.count()
+    ws['C' + str(index)] = results_isl_9.count()
+    ws['D' + str(index)] = results_ens_9.count()
     index += 1
-    ws['A'+str(index)] = "10. bekkur"
-    ws['B'+str(index)] = num_math_exc_10
-    ws['C'+str(index)] = num_isl_exc_10
-    ws['D'+str(index)] = num_ens_exc_10
+    ws['A' + str(index)] = "10. bekkur"
+    ws['B' + str(index)] = results_math_10.count()
+    ws['C' + str(index)] = results_isl_10.count()
+    ws['D' + str(index)] = results_ens_10.count()
     index += 2
-    
-    ws['A'+str(index)] = "Fjöldi nemenda með stuðning"
-    ws['B'+str(index)] = "Stærðfræði"
-    ws['C'+str(index)] = "Íslenska"
-    ws['D'+str(index)] = "Enska"
+
+    ws['A' + str(index)] = "Fjöldi nemenda með undanþágu"
+    ws['B' + str(index)] = "Stærðfræði"
+    ws['C' + str(index)] = "Íslenska"
+    ws['D' + str(index)] = "Enska"
     index += 1
-    ws['A'+str(index)] = "9. bekkur"
-    ws['B'+str(index)] = num_math_supp_9
-    ws['C'+str(index)] = num_isl_supp_9
-    ws['D'+str(index)] = num_ens_supp_9
+    ws['A' + str(index)] = "9. bekkur"
+    ws['B' + str(index)] = num_math_exc_9
+    ws['C' + str(index)] = num_isl_exc_9
+    ws['D' + str(index)] = num_ens_exc_9
     index += 1
-    ws['A'+str(index)] = "10. bekkur"
-    ws['B'+str(index)] = num_math_supp_10
-    ws['C'+str(index)] = num_isl_supp_10
-    ws['D'+str(index)] = num_ens_supp_10
+    ws['A' + str(index)] = "10. bekkur"
+    ws['B' + str(index)] = num_math_exc_10
+    ws['C' + str(index)] = num_isl_exc_10
+    ws['D' + str(index)] = num_ens_exc_10
+    index += 2
+
+    ws['A' + str(index)] = "Fjöldi nemenda með stuðning"
+    ws['B' + str(index)] = "Stærðfræði"
+    ws['C' + str(index)] = "Íslenska"
+    ws['D' + str(index)] = "Enska"
+    index += 1
+    ws['A' + str(index)] = "9. bekkur"
+    ws['B' + str(index)] = num_math_supp_9
+    ws['C' + str(index)] = num_isl_supp_9
+    ws['D' + str(index)] = num_ens_supp_9
+    index += 1
+    ws['A' + str(index)] = "10. bekkur"
+    ws['B' + str(index)] = num_math_supp_10
+    ws['C' + str(index)] = num_isl_supp_10
+    ws['D' + str(index)] = num_ens_supp_10
     index += 2
 
     for grade in ["A", "B+", "B", "C+", "C", "D"]:
-        ws['A'+str(index)] = "Fjöldi nemenda með {}".format(grade)
-        ws['B'+str(index)] = "Stærðfræði"
-        ws['C'+str(index)] = "Íslenska"
-        ws['D'+str(index)] = "Enska"
+        ws['A' + str(index)] = "Fjöldi nemenda með {}".format(grade)
+        ws['B' + str(index)] = "Stærðfræði"
+        ws['C' + str(index)] = "Íslenska"
+        ws['D' + str(index)] = "Enska"
         index += 1
-        ws['A'+str(index)] = "9. bekkur"
-        ws['B'+str(index)] = results_math_9.filter(he = grade).count()
-        ws['C'+str(index)] = results_isl_9.filter(he = grade).count()
-        ws['D'+str(index)] = results_ens_9.filter(he = grade).count()
+        ws['A' + str(index)] = "9. bekkur"
+        ws['B' + str(index)] = results_math_9.filter(he=grade).count()
+        ws['C' + str(index)] = results_isl_9.filter(he=grade).count()
+        ws['D' + str(index)] = results_ens_9.filter(he=grade).count()
         index += 1
-        ws['A'+str(index)] = "10. bekkur"
-        ws['B'+str(index)] = results_math_10.filter(he = grade).count()
-        ws['C'+str(index)] = results_isl_10.filter(he = grade).count()
-        ws['D'+str(index)] = results_ens_10.filter(he = grade).count()
+        ws['A' + str(index)] = "10. bekkur"
+        ws['B' + str(index)] = results_math_10.filter(he=grade).count()
+        ws['C' + str(index)] = results_isl_10.filter(he=grade).count()
+        ws['D' + str(index)] = results_ens_10.filter(he=grade).count()
         index += 2
 
-    sg_einkunnir_math_9 = [ int(x) for x in results_math_9.values_list('sg', flat=True) ]
-    sg_einkunnir_math_10 = [ int(x) for x in results_math_10.values_list('sg', flat=True) ]
-    sg_einkunnir_isl_9 = [ int(x) for x in results_isl_9.values_list('sg', flat=True) ]
-    sg_einkunnir_isl_10 = [ int(x) for x in results_isl_10.values_list('sg', flat=True) ]
-    sg_einkunnir_ens_9 = [ int(x) for x in results_ens_9.values_list('sg', flat=True) ]
-    sg_einkunnir_ens_10 = [ int(x) for x in results_ens_10.values_list('sg', flat=True) ]
+    sg_einkunnir_math_9 = [int(x) for x in results_math_9.values_list('sg', flat=True)]
+    sg_einkunnir_math_10 = [int(x) for x in results_math_10.values_list('sg', flat=True)]
+    sg_einkunnir_isl_9 = [int(x) for x in results_isl_9.values_list('sg', flat=True)]
+    sg_einkunnir_isl_10 = [int(x) for x in results_isl_10.values_list('sg', flat=True)]
+    sg_einkunnir_ens_9 = [int(x) for x in results_ens_9.values_list('sg', flat=True)]
+    sg_einkunnir_ens_10 = [int(x) for x in results_ens_10.values_list('sg', flat=True)]
 
-    ws['A'+str(index)] = "Meðal grunnskólaeinkunn"
-    ws['B'+str(index)] = "Stærðfræði"
-    ws['C'+str(index)] = "Íslenska"
-    ws['D'+str(index)] = "Enska"
+    ws['A' + str(index)] = "Meðal grunnskólaeinkunn"
+    ws['B' + str(index)] = "Stærðfræði"
+    ws['C' + str(index)] = "Íslenska"
+    ws['D' + str(index)] = "Enska"
     index += 1
-    ws['A'+str(index)] = "9. bekkur"
-    ws['B'+str(index)] = round(sum(sg_einkunnir_math_9) / len(sg_einkunnir_math_9))
-    ws['C'+str(index)] = round(sum(sg_einkunnir_isl_9) / len(sg_einkunnir_isl_9))
-    ws['D'+str(index)] = round(sum(sg_einkunnir_ens_9) / len(sg_einkunnir_ens_9))
+    ws['A' + str(index)] = "9. bekkur"
+    ws['B' + str(index)] = round(sum(sg_einkunnir_math_9) / len(sg_einkunnir_math_9))
+    ws['C' + str(index)] = round(sum(sg_einkunnir_isl_9) / len(sg_einkunnir_isl_9))
+    ws['D' + str(index)] = round(sum(sg_einkunnir_ens_9) / len(sg_einkunnir_ens_9))
     index += 1
-    ws['A'+str(index)] = "10. bekkur"
-    ws['B'+str(index)] = round(sum(sg_einkunnir_math_10) / len(sg_einkunnir_math_10))
-    ws['C'+str(index)] = round(sum(sg_einkunnir_isl_10) / len(sg_einkunnir_isl_10))
-    ws['D'+str(index)] = round(sum(sg_einkunnir_ens_10) / len(sg_einkunnir_ens_10))
-
-
+    ws['A' + str(index)] = "10. bekkur"
+    ws['B' + str(index)] = round(sum(sg_einkunnir_math_10) / len(sg_einkunnir_math_10))
+    ws['C' + str(index)] = round(sum(sg_einkunnir_isl_10) / len(sg_einkunnir_isl_10))
+    ws['D' + str(index)] = round(sum(sg_einkunnir_ens_10) / len(sg_einkunnir_ens_10))
 
     # B. SG Einkunn /"Normaldreifð" Meðaltal skólans og landsmeðaltal
 
@@ -1116,28 +1111,28 @@ def excel_for_principals(request, school_id):
                 dims[cell.column] = max((dims.get(cell.column, 0), len(str(cell.value))))
     for col, value in dims.items():
         ws.column_dimensions[col].width = int(value) + 2
-    
+
     wb.save(response)
     return response
 
 
 class RawDataCreate(cm_mixins.SuperUserMixin, CreateView):
-    model         = s_models.SamraemdResult
-    form_class    = forms.SamraemdISLResultForm
+    model = s_models.SamraemdResult
+    form_class = forms.SamraemdISLResultForm
     template_name = "samraemd/form_import_raw.html"
 
     def post(self, *args, **kwargs):
         row_offset = 5
         if(self.request.FILES):
-            exam_code     = self.request.POST.get('exam_code').strip()
-            exam_name     = self.request.POST.get('exam_name').strip()
-            exam_date     = self.request.POST.get('exam_date').strip()
-            student_year  = self.request.POST.get('student_year').strip()
+            exam_code = self.request.POST.get('exam_code').strip()
+            exam_name = self.request.POST.get('exam_name').strip()
+            exam_date = self.request.POST.get('exam_date').strip()
+            student_year = self.request.POST.get('student_year').strip()
             result_length = self.request.POST.get('result_length').strip()
 
             try:
                 input_excel = self.request.FILES['file']
-                book        = xlrd.open_workbook(file_contents=input_excel.read())
+                book = xlrd.open_workbook(file_contents=input_excel.read())
                 for sheetsnumber in range(book.nsheets):
                     sheet = book.sheet_by_index(sheetsnumber)
                     for row in range(row_offset, sheet.nrows):
@@ -1146,16 +1141,16 @@ class RawDataCreate(cm_mixins.SuperUserMixin, CreateView):
                         if student:
                             # check if results for student exists, create if not, otherwise update
                             result_data = s_util.get_results_from_sheet(sheet, row, result_length)
-                            results     = s_models.SamraemdResult.objects.filter(
+                            results = s_models.SamraemdResult.objects.filter(
                                 student=student, exam_code=exam_code)
                             results_dict = {
-                                'student'       : student.first(),
-                                'exam_code'     : exam_code,
-                                'exam_name'     : exam_name,
-                                'exam_date'     : exam_date,
-                                'student_year'  : student_year,
-                                'result_length' : result_length,
-                                'result_data'   : result_data
+                                'student': student.first(),
+                                'exam_code': exam_code,
+                                'exam_name': exam_name,
+                                'exam_date': exam_date,
+                                'student_year': student_year,
+                                'result_length': result_length,
+                                'result_data': result_data
                             }
                             if results:
                                 results.update(**results_dict)
@@ -1204,51 +1199,51 @@ class SamraemdRawResultDetail(cm_mixins.SchoolManagerMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         # xxx will be available in the template as the related objects
-        context          = super(SamraemdRawResultDetail, self).get_context_data(**kwargs)
-        year             = self.kwargs['year']
-        context['year']  = year
-        group            = self.kwargs['group']
+        context = super(SamraemdRawResultDetail, self).get_context_data(**kwargs)
+        year = self.kwargs['year']
+        context['year'] = year
+        group = self.kwargs['group']
         context['group'] = group
-        student_results  = {}
-        student_group    = {}
-        col_names        = {}
+        student_results = {}
+        student_group = {}
+        col_names = {}
         if 'school_id' in self.kwargs:
-            school                 = cm_models.School.objects.get(pk=self.kwargs['school_id'])
-            context['school']      = school
-            context['school_id']   = self.kwargs['school_id']
+            school = cm_models.School.objects.get(pk=self.kwargs['school_id'])
+            context['school'] = school
+            context['school_id'] = self.kwargs['school_id']
             context['school_name'] = school.name
             if 'student_id' in self.kwargs:
                 student = cm_models.Student.objects.get(pk=self.kwargs['student_id'])
                 results = s_models.SamraemdResult.objects.filter(
-                    student         = student).filter(
-                    exam_code       = self.kwargs['exam_code']).filter(
-                    student_year    = group).filter(
-                    exam_date__year = year)
+                    student=student).filter(
+                    exam_code=self.kwargs['exam_code']).filter(
+                    student_year=group).filter(
+                    exam_date__year=year)
                 number_of_loops = results.annotate(total=Count('exam_code'))
             else:
-                number_of_loops        = s_models.SamraemdResult.objects.all().values(
+                number_of_loops = s_models.SamraemdResult.objects.all().values(
                     'result_length', 'exam_code', 'exam_name').filter(
                     exam_date__year=year, student_year=group).annotate(total=Count('exam_code'))
                 results = s_models.SamraemdResult.objects.filter(
-                    student__in = cm_models.Student.objects.filter(school=school)).filter(
+                    student__in=cm_models.Student.objects.filter(school=school)).filter(
                     student_year=group).filter(exam_date__year=year)
             s_util.display_raw_results(results, student_results, student_group, col_names)
 
         else:
             if self.request.user.is_superuser:
-                exam_code            = self.kwargs['exam_code']
+                exam_code = self.kwargs['exam_code']
                 context['exam_code'] = exam_code
-                number_of_loops      = s_models.SamraemdResult.objects.values(
+                number_of_loops = s_models.SamraemdResult.objects.values(
                     'result_length', 'exam_code', 'exam_name').filter(
                     exam_code=exam_code, exam_date__year=year).annotate(total=Count('exam_code'))
-                results              = s_models.SamraemdResult.objects.filter(
+                results = s_models.SamraemdResult.objects.filter(
                     exam_code=exam_code).filter(student_year=group).filter(exam_date__year=year)
                 s_util.display_raw_results(results, student_results, student_group, col_names)
 
         context['student_results'] = student_results
-        context['student_group']   = student_group
-        context['loop_times']      = number_of_loops
-        context['columns']         = col_names
+        context['student_group'] = student_group
+        context['loop_times'] = number_of_loops
+        context['columns'] = col_names
         return context
 
 
@@ -1260,8 +1255,8 @@ def admin_result_raw_excel(request, exam_code, year, group):
         exam_code=exam_code,
         student_year=group,
         exam_date__year=year)[:1].values('result_length', 'exam_name').get()
-    wb       = openpyxl.Workbook()
-    ws       = wb.get_active_sheet()
+    wb = openpyxl.Workbook()
+    ws = wb.get_active_sheet()
     ws.title = number_of_loops['exam_name']
 
     ws['A1'] = 'Skóli'
@@ -1270,18 +1265,18 @@ def admin_result_raw_excel(request, exam_code, year, group):
     ws['D1'] = 'Bekkur'
     # We need the first result just to get the keys for the columns
     first_result = s_models.SamraemdResult.objects.filter(
-        exam_code       = exam_code,
-        student_year    = group,
-        exam_date__year = year
+        exam_code=exam_code,
+        student_year=group,
+        exam_date__year=year
     ).first().result_data.items()
     for key, result in first_result:
         ws.cell(row=1, column=int(key) + 5).value = str(result['id'])
 
     index = 2
     for result in s_models.SamraemdResult.objects.filter(
-        exam_code       = exam_code,
-        student_year    = group,
-        exam_date__year = year
+        exam_code=exam_code,
+        student_year=group,
+        exam_date__year=year
     ):
         ws.cell(row=index, column=1).value = str(
             cm_models.School.objects.get(students=result.student).name)
@@ -1306,7 +1301,7 @@ def excel_result_raw(request, school_id, year, group):
     wb = openpyxl.Workbook()
     number_of_loops = s_models.SamraemdResult.objects.all().values(
         'result_length', 'exam_code', 'exam_name').filter(
-        exam_date__year = year, student_year = group).annotate(total = Count('exam_code'))
+        exam_date__year=year, student_year=group).annotate(total=Count('exam_code'))
     for loops in number_of_loops:
         ws = wb.create_sheet()
         if int(loops['exam_code']) == 1:
@@ -1322,19 +1317,19 @@ def excel_result_raw(request, school_id, year, group):
         ws['D1'] = 'bekkur'
         # We need the first result just to get the keys for the columns
         for result in s_models.SamraemdResult.objects.filter(
-            student__in     = cm_models.Student.objects.filter(school=school_id),
-            exam_code       = loops['exam_code'],
-            student_year    = group,
-            exam_date__year = year
+            student__in=cm_models.Student.objects.filter(school=school_id),
+            exam_code=loops['exam_code'],
+            student_year=group,
+            exam_date__year=year
         ):
             for key, values in result.result_data.items():
                 ws.cell(row=1, column=int(key) + 5).value = values['id']
         index = 2
         for result in s_models.SamraemdResult.objects.filter(
-            student__in     = cm_models.Student.objects.filter(school=school_id),
-            exam_code       = loops['exam_code'],
-            student_year    = group,
-            exam_date__year = year
+            student__in=cm_models.Student.objects.filter(school=school_id),
+            exam_code=loops['exam_code'],
+            student_year=group,
+            exam_date__year=year
         ):
             ws.cell(row=index, column=1).value = str(
                 cm_models.School.objects.get(students=result.student).name)

@@ -5,10 +5,10 @@ from celery.decorators import task
 from celery.utils.log import get_task_logger
 
 from common.models import (
-	Student,
-	ExampleSurveyAnswer,
-	ExampleSurveyQuestion,
-	GroupSurvey,
+    Student,
+    ExampleSurveyAnswer,
+    ExampleSurveyQuestion,
+    GroupSurvey,
 )
 
 from survey.models import Survey
@@ -32,11 +32,11 @@ def save_example_survey_answers(newdata):
         loop_counter += 1
         current_task.update_state(state='PROGRESS', meta={'current': loop_counter, 'total': newdata_len})
         try:
-            if not ssn in student_cache.keys():
+            if ssn not in student_cache.keys():
                 student_cache[ssn] = Student.objects.get(ssn=newentry['ssn'])
             student = student_cache[ssn]
-            if not quickcode in quickcode_cache.keys():
-                quickcode_cache[quickcode] = ExampleSurveyQuestion.objects.get(quickcode = newentry['quickcode'])
+            if quickcode not in quickcode_cache.keys():
+                quickcode_cache[quickcode] = ExampleSurveyQuestion.objects.get(quickcode=newentry['quickcode'])
             question = quickcode_cache[quickcode]
         except:
             logger.debug("Unable to add entry for ssn: {}, quickcode: {}".format(ssn, quickcode))
@@ -48,10 +48,10 @@ def save_example_survey_answers(newdata):
         survey_identifier = newentry['survey_identifier']
 
         if survey_identifier:
-            if not survey_identifier in survey_cache.keys():
-                survey = Survey.objects.filter(identifier = survey_identifier).first()
+            if survey_identifier not in survey_cache.keys():
+                survey = Survey.objects.filter(identifier=survey_identifier).first()
                 if survey:
-                    groupsurvey = GroupSurvey.objects.filter(survey = survey, studentgroup = studentgroup).first()
+                    groupsurvey = GroupSurvey.objects.filter(survey=survey, studentgroup=student.studentgroup).first()
                     survey_cache[survey_identifier] = groupsurvey
                 else:
                     survey_cache[survey_identifier] = False
@@ -63,14 +63,14 @@ def save_example_survey_answers(newdata):
 
         added += 1
         boolanswer = True if newentry['answer'] == '1' else False
-        answer = ExampleSurveyAnswer.objects.create(
-                student = student,
-                question = question,
-                groupsurvey = groupsurvey,
-                exam_code = exam_code,
-                date = newentry['exam_date'],
-                answer = boolanswer,
-            )
+        ExampleSurveyAnswer.objects.create(
+            student=student,
+            question=question,
+            groupsurvey=groupsurvey,
+            exam_code=exam_code,
+            date=newentry['exam_date'],
+            answer=boolanswer,
+        )
 
     logger.info("Done. Added {} entries".format(added))
     return
