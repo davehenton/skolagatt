@@ -1076,7 +1076,7 @@ def excel_for_principals(request, school_id):
         ws['B'+str(index)] = results_math_10.filter(he = grade).count()
         ws['C'+str(index)] = results_isl_10.filter(he = grade).count()
         ws['D'+str(index)] = results_ens_10.filter(he = grade).count()
-        index += 1
+        index += 2
 
 
 
