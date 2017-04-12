@@ -9,13 +9,14 @@ import json
 import openpyxl
 import collections
 from itertools        import chain
-from django.db.models import Count, Value, CharField
+from django.db.models import Count, Value, CharField, Q
 
 from kennitala import Kennitala
 
 import common.models   as cm_models
 import common.mixins   as cm_mixins
 
+import supportandexception.models as sae_models
 import samraemd.models as s_models
 import samraemd.util   as s_util
 import samraemd.forms as forms
@@ -934,6 +935,98 @@ class SamraemdENSResultDelete(cm_mixins.SchoolManagerMixin, DeleteView):
 
     def get_object(self):
         return s_models.SamraemdENSResult.objects.filter(exam_code=self.kwargs['exam_code'])
+
+
+def excel_for_principals(request, pk):
+    school = cm_models.School.objects.get(pk = pk)
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename=Lesfimi {}.xlsx'.format(school.name)
+
+    wb = openpyxl.Workbook()
+    ws = wb.get_active_sheet()
+    ws.title = "Samræmt próf 2017"
+
+    students = cm_models.models.Student.objects.filter(
+        school=school,
+        studentgroup__student_year__in = ['9','10'],
+    )
+
+    results_math = s_models.SamraemdMathResult.objects.filter(
+        student__in = students.all(),
+        exam_code__in = ["9_bekkur_stærðfræði_2017", "10_bekkur_stærðfræði_2017"],
+    )
+    results_isl = s_models.SamraemdISLResult.objects.filter(
+        student__in = students.all(),
+        exam_code__in = ["9_bekkur_stærðfræði_2017", "10_bekkur_stærðfræði_2017"],
+    )
+    results_ens = s_models.SamraemdENSResult.objects.filter(
+        student__in = students.all(),
+        exam_code__in = ["9_bekkur_stærðfræði_2017", "10_bekkur_stærðfræði_2017"],
+    )
+
+    count_math = results_math.count()
+    count_isl = results_isl.count()
+    count_ens = results_ens.count()
+
+    num_math_exc = sae_models.Exceptions.objects.filter(student__in = students.all(), exam__contains = '3').count()
+    num_isl_exc = sae_models.Exceptions.objects.filter(student__in = students.all(), exam__contains = '1').count()
+    num_ens_exc = sae_models.Exceptions.objects.filter(student__in = students.all(), exam__contains = '2').count()
+
+    num_math_supp = sae_models.SupportResource.objects.filter(student__in = students.all()
+        ).filter(Q(reading_assistance__contains = '3') | Q(interpretation__contains = '3') | Q(longer_time__contains = '3')).count()
+    num_isl_supp = sae_models.SupportResource.objects.filter(student__in = students.all()
+        ).filter(Q(reading_assistance__contains = '1') | Q(interpretation__contains = '1') | Q(longer_time__contains = '1')).count()
+    num_ens_supp = sae_models.SupportResource.objects.filter(student__in = students.all()
+        ).filter(Q(reading_assistance__contains = '2') | Q(interpretation__contains = '2') | Q(longer_time__contains = '2')).count()
+
+    ws['A1'] = "Fjöldi nemenda í 9. og 10. bekk"
+    ws['B1'] = students.count()
+    ws['A2'] = "Fjöldi nemenda sem þreytti próf í Stærðfræði"
+    ws['B2'] = results_math.count()
+    ws['A3'] = "Fjöldi nemenda sem þreytti próf í Íslensku"
+    ws['B3'] = results_isl.count()
+    ws['A4'] = "Fjöldi nemenda sem þreytti próf í Ensku"
+    ws['B4'] = results_ens.count()
+
+    ws['A5'] = "Fjöldi nemenda með undanþágu í Stærðfræði"
+    ws['B5'] = num_math_exc
+    ws['A6'] = "Fjöldi nemenda með undanþágu í Íslensku"
+    ws['B6'] = num_isl_exc
+    ws['A7'] = "Fjöldi nemenda með undanþágu í Ensku"
+    ws['B7'] = num_ens_exc
+
+    ws['A8'] = "Fjöldi nemenda með stuðning í Stærðfræði"
+    ws['B8'] = num_math_supp
+    ws['A9'] = "Fjöldi nemenda með stuðning í Íslensku"
+    ws['B9'] = num_isl_supp
+    ws['A10'] = "Fjöldi nemenda með stuðning í Ensku"
+    ws['B10'] = num_ens_supp
+
+    index = 11
+    for grade in ["A", "B+", "B", "C+", "C", "D"]:
+        ws['A'+str(index)] = "Fjöldi nemenda með {}".format(grade)
+        ws['B'+str(index)] = "Stærðfræði"
+        ws['C'+str(index)] = "Íslenska"
+        ws['D'+str(index)] = "Enska"
+        index += 1
+        ws['B'+str(index)] = results_math.filter(he = grade).count()
+        ws['C'+str(index)] = results_isl.filter(he = grade).count()
+        ws['D'+str(index)] = results_ens.filter(he = grade).count()
+        index += 1
+
+    # B. SG Einkunn /"Normaldreifð" Meðaltal skólans og landsmeðaltal
+
+    # Fix column widths
+    dims = {}
+    for row in ws.rows:
+        for cell in row:
+            if cell.value:
+                dims[cell.column] = max((dims.get(cell.column, 0), len(str(cell.value))))
+    for col, value in dims.items():
+        ws.column_dimensions[col].width = int(value) + 2
+    
+    wb.save(response)
+    return response
 
 
 class RawDataCreate(cm_mixins.SuperUserMixin, CreateView):

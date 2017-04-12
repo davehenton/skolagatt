@@ -1,6 +1,15 @@
 {% extends 'common/index.html'%}
 {% include staticfiles%}
 {% block content %}
+	{% if is_school_manager or request.user.is_superuser %}
+	<div class="row">
+		<div class="col-md-4">
+			<a href="{% url 'samraemd:excel_for_principals' school.id %}" class="btn btn-lg btn-primary pull-right">Sækja upplýsingar til skólastjórnenda</a>
+		</div>
+	</div>
+	<hr/>
+	{% endif %}
+
 	<h2>Niðurstöður samræmdra prófa</h2>
 	{% for year, group, student_results in results %}
 	<div class="row not-on-einstaklingsblod">
