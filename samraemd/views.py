@@ -879,7 +879,7 @@ class SamraemdMathResultDelete(cm_mixins.SchoolManagerMixin, DeleteView):
     template_name = "schools/confirm_delete.html"
 
     def get_success_url(self):
-        return reverse_lazy('schools:school_listing')
+        return reverse_lazy('schools:result_admin_listing')
 
     def get_object(self):
         return s_models.SamraemdMathResult.objects.filter(exam_code=self.kwargs['exam_code'])
@@ -904,7 +904,7 @@ class SamraemdISLResultDelete(cm_mixins.SchoolManagerMixin, DeleteView):
     template_name = "schools/confirm_delete.html"
 
     def get_success_url(self):
-        return reverse_lazy('schools:school_listing')
+        return reverse_lazy('schools:result_admin_listing')
 
     def get_object(self):
         return s_models.SamraemdISLResult.objects.filter(exam_code=self.kwargs['exam_code'])
@@ -930,7 +930,7 @@ class SamraemdENSResultDelete(cm_mixins.SchoolManagerMixin, DeleteView):
     template_name = "schools/confirm_delete.html"
 
     def get_success_url(self):
-        return reverse_lazy('schools:school_listing')
+        return reverse_lazy('schools:result_admin_listing')
 
     def get_object(self):
         return s_models.SamraemdENSResult.objects.filter(exam_code=self.kwargs['exam_code'])
