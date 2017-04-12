@@ -2245,7 +2245,6 @@ def group_admin_attendance_excel(request, survey_title):
 
 
 def survey_detail_excel(request, school_id, student_group, pk):
-    school = School.objects.get(pk=school_id)
     studentgroup = StudentGroup.objects.get(pk=student_group)
     survey = GroupSurvey.objects.filter(pk=pk).first()
 

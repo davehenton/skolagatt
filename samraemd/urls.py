@@ -40,7 +40,7 @@ urlpatterns = [
     url(r'^niðurstöður/(?P<school_id>\d+)/(?P<year>\d+)/(?P<group>\d+)/hrágögn/einkunnablod/$',
         views.SamraemdRawResultDetail.as_view(),
         name='result_raw_print'),
-    url(r'^niðurstöður/(?P<school_id>\d+)/(?P<year>\d+)/(?P<group>\d+)/(?P<student_id>\d+)/(?P<exam_code>[\w ]+)/hrágögn/einkunnablod/$',
+    url(r'^niðurstöður/(?P<school_id>\d+)/(?P<year>\d+)/(?P<group>\d+)/(?P<student_id>\d+)/(?P<exam_code>[\w ]+)/hrágögn/einkunnablod/$',  # nopep8
         views.SamraemdRawResultDetail.as_view(),
         name='result_raw_single_print'),
     url(r'^niðurstöður/rawdata/$',
