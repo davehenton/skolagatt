@@ -1852,7 +1852,7 @@ class ExampleSurveyGSDetail(common_mixins.SchoolManagerMixin, ListView):
         return context
 
 
-class ExampleSurveySamraemdDetail(common_mixins.SchoolManagerMixin, ListView):
+class ExampleSurveySamraemdDetail(common_mixins.SchoolTeacherMixin, ListView):
     model = ExampleSurveyAnswer
 
     def get_template_names(self, **kwargs):
