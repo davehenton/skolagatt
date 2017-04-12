@@ -946,77 +946,135 @@ def excel_for_principals(request, school_id):
     ws = wb.get_active_sheet()
     ws.title = "Samræmt próf 2017"
 
-    students = cm_models.Student.objects.filter(
+    students_9 = cm_models.Student.objects.filter(
         school=school,
-        studentgroup__student_year__in = ['9','10'],
+        studentgroup__student_year = '9',
     )
 
-    results_math = s_models.SamraemdMathResult.objects.filter(
-        student__in = students.all(),
-        exam_code__in = ["9_bekkur_stærðfræði_2017", "10_bekkur_stærðfræði_2017"],
+    results_math_9 = s_models.SamraemdMathResult.objects.filter(
+        student__in = students_9.all(),
+        exam_code = "9_bekkur_stærðfræði_2017",
     )
-    results_isl = s_models.SamraemdISLResult.objects.filter(
-        student__in = students.all(),
-        exam_code__in = ["9_bekkur_stærðfræði_2017", "10_bekkur_stærðfræði_2017"],
-    )
-    results_ens = s_models.SamraemdENSResult.objects.filter(
-        student__in = students.all(),
-        exam_code__in = ["9_bekkur_stærðfræði_2017", "10_bekkur_stærðfræði_2017"],
+    results_math_10 = s_models.SamraemdMathResult.objects.filter(
+        student__in = students_10.all(),
+        exam_code = "10_bekkur_stærðfræði_2017",
     )
 
-    count_math = results_math.count()
-    count_isl = results_isl.count()
-    count_ens = results_ens.count()
+    results_isl_9 = s_models.SamraemdISLResult.objects.filter(
+        student__in = students_9.all(),
+        exam_code = "9_bekkur_stærðfræði_2017",
+    )
+    results_isl_10 = s_models.SamraemdISLResult.objects.filter(
+        student__in = students_10.all(),
+        exam_code = "10_bekkur_stærðfræði_2017",
+    )
 
-    num_math_exc = sae_models.Exceptions.objects.filter(student__in = students.all(), exam__contains = '3').count()
-    num_isl_exc = sae_models.Exceptions.objects.filter(student__in = students.all(), exam__contains = '1').count()
-    num_ens_exc = sae_models.Exceptions.objects.filter(student__in = students.all(), exam__contains = '2').count()
+    results_ens_9 = s_models.SamraemdENSResult.objects.filter(
+        student__in = students_9.all(),
+        exam_code = "9_bekkur_stærðfræði_2017",
+    )
+    results_ens_10 = s_models.SamraemdENSResult.objects.filter(
+        student__in = students_10.all(),
+        exam_code = "10_bekkur_stærðfræði_2017",
+    )
 
-    num_math_supp = sae_models.SupportResource.objects.filter(student__in = students.all()
+
+    num_math_exc_9 = sae_models.Exceptions.objects.filter(student__in = students_9.all(), exam__contains = '3').count()
+    num_isl_exc_9 = sae_models.Exceptions.objects.filter(student__in = students_9.all(), exam__contains = '1').count()
+    num_ens_exc_9 = sae_models.Exceptions.objects.filter(student__in = students_9.all(), exam__contains = '2').count()
+
+    num_math_exc_10 = sae_models.Exceptions.objects.filter(student__in = students_10.all(), exam__contains = '3').count()
+    num_isl_exc_10 = sae_models.Exceptions.objects.filter(student__in = students_10.all(), exam__contains = '1').count()
+    num_ens_exc_10 = sae_models.Exceptions.objects.filter(student__in = students_10.all(), exam__contains = '2').count()
+
+    num_math_supp_9 = sae_models.SupportResource.objects.filter(student__in = students_9.all()
         ).filter(Q(reading_assistance__contains = '3') | Q(interpretation__contains = '3') | Q(longer_time__contains = '3')).count()
-    num_isl_supp = sae_models.SupportResource.objects.filter(student__in = students.all()
+    num_isl_supp_9 = sae_models.SupportResource.objects.filter(student__in = students_9.all()
         ).filter(Q(reading_assistance__contains = '1') | Q(interpretation__contains = '1') | Q(longer_time__contains = '1')).count()
-    num_ens_supp = sae_models.SupportResource.objects.filter(student__in = students.all()
+    num_ens_supp_9 = sae_models.SupportResource.objects.filter(student__in = students_9.all()
         ).filter(Q(reading_assistance__contains = '2') | Q(interpretation__contains = '2') | Q(longer_time__contains = '2')).count()
 
-    ws['A1'] = "Fjöldi nemenda í 9. og 10. bekk"
-    ws['B1'] = students.count()
+    num_math_supp_10 = sae_models.SupportResource.objects.filter(student__in = students_10.all()
+        ).filter(Q(reading_assistance__contains = '3') | Q(interpretation__contains = '3') | Q(longer_time__contains = '3')).count()
+    num_isl_supp_10 = sae_models.SupportResource.objects.filter(student__in = students_10.all()
+        ).filter(Q(reading_assistance__contains = '1') | Q(interpretation__contains = '1') | Q(longer_time__contains = '1')).count()
+    num_ens_supp_10 = sae_models.SupportResource.objects.filter(student__in = students_10.all()
+        ).filter(Q(reading_assistance__contains = '2') | Q(interpretation__contains = '2') | Q(longer_time__contains = '2')).count()
 
-    ws['A2'] = "Fjöldi nemenda sem þreytti próf"
-    ws['B2'] = "Stærðfræði"
-    ws['C2'] = "Íslenska"
-    ws['D2'] = "Enska"
-    ws['B3'] = results_math.count()
-    ws['C3'] = results_isl.count()
-    ws['D3'] = results_ens.count()
+    index = 1
+    ws['A'+str(index)] = "Fjöldi nemenda í 9. bekk"
+    ws['B'+str(index)] = students_9.count()
+    index += 1
+    ws['A'+str(index)] = "Fjöldi nemenda í 10. bekk"
+    ws['B'+str(index)] = students_10.count()
+    index += 2
+    
+    ws['A'+str(index)] = "Fjöldi nemenda sem þreytti próf"
+    ws['B'+str(index)] = "Stærðfræði"
+    ws['C'+str(index)] = "Íslenska"
+    ws['D'+str(index)] = "Enska"
+    index += 1
+    ws['A'+str(index)] = "9. bekkur"
+    ws['B'+str(index)] = results_math_9.count()
+    ws['C'+str(index)] = results_isl_9.count()
+    ws['D'+str(index)] = results_ens_9.count()
+    index += 1
+    ws['A'+str(index)] = "10. bekkur"
+    ws['B'+str(index)] = results_math_10.count()
+    ws['C'+str(index)] = results_isl_10.count()
+    ws['D'+str(index)] = results_ens_10.count()
+    index += 2
 
-    ws['A4'] = "Fjöldi nemenda með undanþágu"
-    ws['B4'] = "Stærðfræði"
-    ws['C4'] = "Íslenska"
-    ws['D4'] = "Enska"
-    ws['B5'] = num_math_exc
-    ws['C5'] = num_isl_exc
-    ws['D5'] = num_ens_exc
+    ws['A'+str(index)] = "Fjöldi nemenda með undanþágu"
+    ws['B'+str(index)] = "Stærðfræði"
+    ws['C'+str(index)] = "Íslenska"
+    ws['D'+str(index)] = "Enska"
+    index += 1
+    ws['A'+str(index)] = "9. bekkur"
+    ws['B'+str(index)] = num_math_exc_9
+    ws['C'+str(index)] = num_isl_exc_9
+    ws['D'+str(index)] = num_ens_exc_9
+    index += 1
+    ws['A'+str(index)] = "10. bekkur"
+    ws['B'+str(index)] = num_math_exc_10
+    ws['C'+str(index)] = num_isl_exc_10
+    ws['D'+str(index)] = num_ens_exc_10
+    index += 2
+    
+    ws['A'+str(index)] = "Fjöldi nemenda með stuðning"
+    ws['B'+str(index)] = "Stærðfræði"
+    ws['C'+str(index)] = "Íslenska"
+    ws['D'+str(index)] = "Enska"
+    index += 1
+    ws['A'+str(index)] = "9. bekkur"
+    ws['B'+str(index)] = num_math_supp_9
+    ws['C'+str(index)] = num_isl_supp_9
+    ws['D'+str(index)] = num_ens_supp_9
+    index += 1
+    ws['A'+str(index)] = "10. bekkur"
+    ws['B'+str(index)] = num_math_supp_10
+    ws['C'+str(index)] = num_isl_supp_10
+    ws['D'+str(index)] = num_ens_supp_10
+    index += 2
 
-    ws['A6'] = "Fjöldi nemenda með stuðning"
-    ws['B6'] = "Stærðfræði"
-    ws['C6'] = "Íslenska"
-    ws['D6'] = "Enska"
-    ws['B7'] = num_math_supp
-    ws['C7'] = num_isl_supp
-    ws['D7'] = num_ens_supp
-
-    index = 8
     for grade in ["A", "B+", "B", "C+", "C", "D"]:
         ws['A'+str(index)] = "Fjöldi nemenda með {}".format(grade)
         ws['B'+str(index)] = "Stærðfræði"
         ws['C'+str(index)] = "Íslenska"
         ws['D'+str(index)] = "Enska"
         index += 1
-        ws['B'+str(index)] = results_math.filter(he = grade).count()
-        ws['C'+str(index)] = results_isl.filter(he = grade).count()
-        ws['D'+str(index)] = results_ens.filter(he = grade).count()
+        ws['A'+str(index)] = "9. bekkur"
+        ws['B'+str(index)] = results_math_9.filter(he = grade).count()
+        ws['C'+str(index)] = results_isl_9.filter(he = grade).count()
+        ws['D'+str(index)] = results_ens_9.filter(he = grade).count()
         index += 1
+        ws['A'+str(index)] = "10. bekkur"
+        ws['B'+str(index)] = results_math_10.filter(he = grade).count()
+        ws['C'+str(index)] = results_isl_10.filter(he = grade).count()
+        ws['D'+str(index)] = results_ens_10.filter(he = grade).count()
+        index += 1
+
+
 
     # B. SG Einkunn /"Normaldreifð" Meðaltal skólans og landsmeðaltal
 
