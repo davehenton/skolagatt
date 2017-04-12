@@ -946,7 +946,7 @@ def excel_for_principals(request, school_id):
     ws = wb.get_active_sheet()
     ws.title = "Samræmt próf 2017"
 
-    students = cm_models.models.Student.objects.filter(
+    students = cm_models.Student.objects.filter(
         school=school,
         studentgroup__student_year__in = ['9','10'],
     )
