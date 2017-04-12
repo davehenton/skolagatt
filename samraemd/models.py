@@ -46,17 +46,17 @@ class SamraemdMathResult(_SamraemdBaseModel, _SamraemdStudentYear):
     he    = models.CharField(max_length = 2, default='', blank=True)
 
     # Samræmd einkunn (0-10)
-    ra_se = models.CharField(max_length = 4) # Reikningur og aðgerðir, samræmd einkunn
-    rm_se = models.CharField(max_length = 4) # Rúmfræði, samræmd einkunn
-    tt_se = models.CharField(max_length = 4) # Tölur og talnaskilningur, samræmd einkunn
-    se    = models.CharField(max_length = 4) # Samræmd einkunn
+    ra_se = models.CharField(max_length = 4, default='') # Reikningur og aðgerðir, samræmd einkunn
+    rm_se = models.CharField(max_length = 4, default='') # Rúmfræði, samræmd einkunn
+    tt_se = models.CharField(max_length = 4, default='') # Tölur og talnaskilningur, samræmd einkunn
+    se    = models.CharField(max_length = 4, default='') # Samræmd einkunn
     # Raðeinkunn (1-100)
-    hp_re = models.CharField(max_length = 4) # Hlutföll og prósentur
-    al_re = models.CharField(max_length = 4) # Algebra, raðeinkunn
-    ra_re = models.CharField(max_length = 4) # Reikningur og aðgerðir, raðeinkunn
-    rm_re = models.CharField(max_length = 4) # Rúmfræði, raðeinkunn
-    tt_re = models.CharField(max_length = 4) # Tölur og talnaskilningur, raðeinkunn
-    re    = models.CharField(max_length = 4) # Raðeinkunn
+    hp_re = models.CharField(max_length = 4, default='') # Hlutföll og prósentur
+    al_re = models.CharField(max_length = 4, default='') # Algebra, raðeinkunn
+    ra_re = models.CharField(max_length = 4, default='') # Reikningur og aðgerðir, raðeinkunn
+    rm_re = models.CharField(max_length = 4, default='') # Rúmfræði, raðeinkunn
+    tt_re = models.CharField(max_length = 4, default='') # Tölur og talnaskilningur, raðeinkunn
+    re    = models.CharField(max_length = 4, default='') # Raðeinkunn
     # Grunnskólaeinkunn
     hp_sg         = models.CharField(max_length = 4, default='', blank=True) # Hlutföll og prósentur, grunnskólaeinkunn
     al_sg         = models.CharField(max_length = 4, default='', blank=True) # Algebra, grunnskólaeinkunn
