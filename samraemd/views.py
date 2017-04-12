@@ -937,8 +937,8 @@ class SamraemdENSResultDelete(cm_mixins.SchoolManagerMixin, DeleteView):
         return s_models.SamraemdENSResult.objects.filter(exam_code=self.kwargs['exam_code'])
 
 
-def excel_for_principals(request, pk):
-    school = cm_models.School.objects.get(pk = pk)
+def excel_for_principals(request, school_id):
+    school = cm_models.School.objects.get(pk = school_id)
     response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
     response['Content-Disposition'] = 'attachment; filename=Lesfimi {}.xlsx'.format(school.name)
 
