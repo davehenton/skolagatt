@@ -58,9 +58,22 @@ def is_school_teacher(request, kwargs):
         school_id = get_current_school(kwargs)
         if school_id and cm_models.School.objects.filter(
             pk       = school_id,
-            teachers = cm_models.Teacher.objects.filter(user=request.user)
+            managers = cm_models.Manager.objects.filter(user=request.user)
         ):
             return True
+        teacher = cm_models.Teacher.objects.filter(user=request.user)
+        if school_id and cm_models.School.objects.filter(
+            pk       = school_id,
+            teachers = teacher,
+        ):
+            if 'studentgroup_id' in kwargs:
+                if cm_models.StudentGroup.objects.filter(
+                    pk = kwargs['studentgroup_id'],
+                    group_managers = teacher,
+                ):
+                    return True
+            else:
+                return True
     except:
         pass
     return False
