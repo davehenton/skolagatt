@@ -1007,11 +1007,9 @@ def excel_for_principals(request, school_id):
 
     index = 1
     ws['A'+str(index)] = "Fjöldi nemenda í 9. bekk"
-    ws['A'+str].font = openpyxl.styles.Font(bold=True)
     ws['B'+str(index)] = students_9.count()
     index += 1
     ws['A'+str(index)] = "Fjöldi nemenda í 10. bekk"
-    ws['A'+str].font = openpyxl.styles.Font(bold=True)
     ws['B'+str(index)] = students_10.count()
     index += 2
     
