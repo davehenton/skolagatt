@@ -1775,7 +1775,7 @@ class ExampleSurveyListing(common_mixins.SchoolTeacherMixin, ListView):
             for studentgroup_id in studentgroup_ids:
                 studentgroup = StudentGroup.objects.get(pk=studentgroup_id)
                 students_list = []
-                students = Student.objects.filter(studentgroup=studentgroup)
+                students = Student.objects.filter(studentgroup=studentgroup, school=school)
 
                 for student in students:
                     quiz_type_list = ExampleSurveyQuestion.objects.filter(
@@ -1883,7 +1883,7 @@ class ExampleSurveySamraemdDetail(common_mixins.SchoolTeacherMixin, ListView):
             student_answers.append((student, answers))
         else:
             studentgroup = StudentGroup.objects.get(pk=self.kwargs['studentgroup_id'])
-            students = Student.objects.filter(studentgroup=studentgroup).all()
+            students = Student.objects.filter(studentgroup=studentgroup, school=school).all()
 
             for student in students:
                 answers = self._get_student_answers_list(student, quiz_type, year)
