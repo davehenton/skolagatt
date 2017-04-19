@@ -23,8 +23,6 @@ from openpyxl.styles import PatternFill
 from openpyxl.chart import AreaChart, BarChart, LineChart, Reference
 from openpyxl.chart.layout import Layout, ManualLayout
 
-import csv
-
 from kennitala import Kennitala
 
 import common.mixins as common_mixins
@@ -975,86 +973,6 @@ class StudentGroupDetail(common_mixins.SchoolEmployeeMixin, DetailView):
         ).exists()
 
         return context
-
-
-def group_admin_listing_csv(request, survey_title):
-    from ast import literal_eval
-    # Create the HttpResponse object with the appropriate CSV header.
-    response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = 'attachment; filename="' + survey_title + '.csv"'
-    fieldnames = [
-        'FIRST', 'LAST', 'RESULTS EMAIL', 'EXTERNAL ID',
-        'CODE EMAIL', 'TEST NAME', 'GROUP PATH', 'EXTRA TIME'
-    ]
-    writer = csv.writer(response)
-    writer.writerow(fieldnames)
-
-    KEY = {
-        1: 'íslenska',
-        2: 'enska',
-        3: 'stærðfræði'
-    }
-
-    surveys = GroupSurvey.objects.filter(title=survey_title)
-    for survey in surveys:
-        for student in survey.studentgroup.students.all():
-                # find last name by finding last space
-            student_names = student.name.strip().split(" ")
-            student_first_names = ' '.join(student_names[:-1])
-            student_lastname = student_names[-1]
-
-            student_processed = False
-            if student.supportresource_set.exists():
-                longer_time = literal_eval(
-                    student.supportresource_set.first().longer_time)
-                reading_assistance = literal_eval(
-                    student.supportresource_set.first().reading_assistance)
-                """Fyrir öll stuðningsúrræði, ath hvort stuðningsúrræðið sé fyrir þetta próf"""
-                for i in longer_time + reading_assistance:
-                    if KEY.get(i, '') in survey.identifier and not student_processed:
-                        """
-                            Próftaki með lengdan tíma og engan stuðning á að fá venjulegt
-                            próf með lengdum tíma
-                        """
-                        if i in longer_time and i not in reading_assistance:
-                            writer.writerow([
-                                student_first_names,
-                                student_lastname,
-                                '',
-                                student.ssn,
-                                '',
-                                survey.identifier,
-                                '',
-                                'Y'
-                            ])
-                        else:
-                            """Annars lengdur tími og stuðningur"""
-                            writer.writerow([
-                                student_first_names,
-                                student_lastname,
-                                '',
-                                student.ssn,
-                                '',
-                                survey.identifier + '_stuðningur',
-                                '',
-                                'Y'
-                            ])
-                        student_processed = True
-
-            if not student_processed:
-                """Próftaki fær venjulegt próf"""
-                writer.writerow([
-                    student_first_names,
-                    student_lastname,
-                    '',
-                    student.ssn,
-                    '',
-                    survey.identifier,
-                    '',
-                    ''
-                ])
-
-    return response
 
 
 class StudentGroupAdminListing(common_mixins.SuperUserMixin, ListView):
