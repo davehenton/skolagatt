@@ -248,7 +248,7 @@ def store_import_data(request, slug, data):
     """Store data in cache, and store the cache id in current session"""
 
     cache_id = str(uuid4())
-    cache.set(cache_id, data, 15*60) # Store for max 15 minutes
+    cache.set(cache_id, data, 15 * 60)  # Store for max 15 minutes
     request.session[slug] = cache_id
 
     return cache_id
