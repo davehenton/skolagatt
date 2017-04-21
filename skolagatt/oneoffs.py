@@ -101,7 +101,6 @@ def lesfimi_excel_entire_country_stats():
                                     survey_type=survey_type,
                                     transformation=transformation,
                                 )
-                                # import pdb; pdb.set_trace()
                                 if not survey_student_result[0] == '':
                                     this_year_result['students_who_took_test'] += 1
                                     if int(survey_student_result[0]) >= ref_values[year][2]:
@@ -323,7 +322,6 @@ def _generate_excel_audun():
                         transformation_jan = SurveyTransformation.objects.filter(survey=jan_survey)
                         jan_gs = GroupSurvey.objects.filter(
                             survey=jan_survey, studentgroup=groupsurvey.studentgroup).first()
-                        # import pdb; pdb.set_trace()
 
                         if SurveyResult.objects.filter(student=result_sept.student, survey=jan_gs).exists():
                             result_jan = SurveyResult.objects.filter(student=result_sept.student, survey=jan_gs).first()
