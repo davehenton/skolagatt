@@ -41,7 +41,7 @@ class TaskMonitor(APIView):
                 else:
                     job_data['state'] = job.state
                 resp.append(job_data)
-
+            return Response(resp)
         else:
             return Response('')
 
