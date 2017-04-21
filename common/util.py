@@ -1,4 +1,9 @@
 from django.utils.text import slugify
+from django.core.cache import cache
+
+from celery.task.control import inspect
+
+from uuid import uuid4
 
 import common.models as cm_models
 
@@ -237,3 +242,41 @@ def add_field_classes(self, field_list):
     ''' To add form-control class to form fields '''
     for item in field_list:
         self.fields[item].widget.attrs.update({'class': 'form-control'})
+
+
+def store_import_data(request, slug, data):
+    """Store data in cache, and store the cache id in current session"""
+
+    cache_id = str(uuid4())
+    cache.set(cache_id, data, 15 * 60)  # Store for max 15 minutes
+    request.session[slug] = cache_id
+
+    return cache_id
+
+
+def get_import_data(request, slug):
+    """Get data from cache using id from session store"""
+    cache_id = request.session[slug]
+    del(request.session[slug])
+    data = cache.get(cache_id)
+    cache.delete(cache_id)
+    return data
+
+
+def cancel_import_data(request, slug):
+    """Delete data from cache using id from session store, delete id from session store"""
+    cache_id = request.session[slug]
+    del(request.session[slug])
+    cache.delete(cache_id)
+
+
+def get_celery_jobs(job_name):
+    jobs = []
+    active_celery_tasks = inspect().active()
+    if active_celery_tasks:
+        for k in active_celery_tasks.keys():
+            host_tasks = active_celery_tasks[k]
+            for host_task in host_tasks:
+                if host_task.get('name') == 'save_example_survey_answers':
+                    jobs.append(host_task.get('id'))
+    return jobs

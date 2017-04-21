@@ -355,7 +355,6 @@ class SurveyTransformationCreate(SurveySuperSuccessMixin, CreateView):
                 survey = self.kwargs['survey_id']
                 result_data = {}
                 for sheet in book.worksheets:
-                    # import pdb; pdb.set_trace()
                     for index, row in enumerate(
                             sheet.iter_rows('A{}:B{}'.format(sheet.min_row + 1, sheet.max_row))):
                         # result_data[row] = float(sheet.cell(row, 1))

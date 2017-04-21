@@ -2,7 +2,6 @@ from django.shortcuts import render, redirect
 from django.views.generic import ListView, CreateView, DetailView, DeleteView
 from django.core.urlresolvers import reverse_lazy
 from django.http import HttpResponse, HttpResponseRedirect
-from celery.task.control import inspect
 
 import xlrd
 import openpyxl
@@ -14,6 +13,7 @@ from kennitala import Kennitala
 
 import common.models as cm_models
 import common.mixins as cm_mixins
+import common.util as cm_util
 
 import supportandexception.models as sae_models
 import samraemd.models as s_models
@@ -422,8 +422,7 @@ class SamraemdResultAdminListing(cm_mixins.SuperUserMixin, ListView):
         context = super(SamraemdResultAdminListing, self).get_context_data(**kwargs)
 
         if 'cancel_import' in self.request.GET:
-            print("Samraemd: Cancel import, removing session data")
-            del(self.request.session['newdata'])
+            cm_util.cancel_import_data(self.request, 'samraemd_result_create')
 
         isl_exams = s_models.SamraemdISLResult.objects.all().values(
             'exam_date', 'student_year', 'exam_code'
@@ -441,17 +440,7 @@ class SamraemdResultAdminListing(cm_mixins.SuperUserMixin, ListView):
         context['math_exams'] = math_exams
         context['ens_exams'] = ens_exams
 
-        jobs = []
-
-        active_celery_tasks = inspect().active()
-
-        for k in active_celery_tasks.keys():
-            host_tasks = active_celery_tasks[k]
-            for host_task in host_tasks:
-                if host_task.get('name') == 'save_samraemd_result':
-                    jobs.append(host_task.get('id'))
-
-        context['jobs'] = jobs
+        context['jobs'] = cm_util.get_celery_jobs('save_samraemd_result')
 
         return context
 
@@ -845,17 +834,19 @@ class SamraemdResultCreate(cm_mixins.SuperUserMixin, CreateView):
 
                         data.append(results_dict)
 
-            self.request.session['newdata'] = data
+            cm_util.store_import_data(self.request, 'samraemd_result_create', data)
             return render(self.request, 'excel_verify_import.html', {
                 'data': data,
                 'errors': errors,
                 'cancel_url': reverse_lazy('samraemd:result_admin_listing') + "?cancel_import",
             })
         else:
-            newdata = self.request.session['newdata']
-            del(self.request.session['newdata'])
-            print("Calling save_samraemd_result for import")
-            save_samraemd_result.delay(newdata)
+            newdata = cm_util.get_import_data(self.request, 'samraemd_result_create')
+            if newdata:
+                print("Calling save_samraemd_result for import")
+                save_samraemd_result.delay(newdata)
+            else:
+                print("Import likely timed out")
         redir = self.get_success_url()
         print("Redirecting to {}".format(redir))
         return HttpResponseRedirect(redir)
