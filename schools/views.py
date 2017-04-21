@@ -3,6 +3,7 @@ from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
 from django.core.urlresolvers import reverse_lazy
+from django.core.cache import cache
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.contrib.auth.models import User
 from django.utils import timezone
@@ -184,21 +185,23 @@ class SchoolCreateImport(common_mixins.SchoolManagerMixin, CreateView):
                         })
                         if rowerrors:
                             errors += rowerrors
-            self.request.session['newdata'] = data
+            common_util.store_import_data(self.request, 'school_create_import', data)
+            
             return render(self.request, 'excel_verify_import.html', {
                 'data': data,
                 'errors': errors,
                 'cancel_url': reverse_lazy('schools:school_listing'),
             })
         else:
-            school_data = self.request.session['newdata']
-            del(self.request.session['newdata'])
-            # iterate through students, add them if they don't exist then add to school
-            for school in school_data:
-                try:
-                    School.objects.create(**school)
-                except:
-                    pass  # student already exists
+            school_data = common_util.get_import_data(self.request, 'school_create_import')
+
+            if school_data:
+                # iterate through students, add them if they don't exist then add to school
+                for school in school_data:
+                    try:
+                        School.objects.create(**school)
+                    except:
+                        pass  # student already exists
 
         return HttpResponseRedirect(self.get_success_url())
 
@@ -368,15 +371,14 @@ class ManagerCreateImport(common_mixins.SchoolManagerMixin, CreateView):
                         })
                         if rowerrors:
                             errors += rowerrors
-            self.request.session['newdata'] = data
+            common_util.store_import_data(self.request, 'manager_create_import', data)
             return render(self.request, 'excel_verify_import.html', {
                 'data': data,
                 'errors': errors,
                 'cancel_url': reverse_lazy('schools:school_listing')
             })
         else:
-            manager_data = self.request.session['newdata']
-            del(self.request.session['newdata'])
+            manager_data = common_util.get_import_data(self.request, 'manager_create_import')
             # iterate through managers, add them if they don't exist then add to school
             for manager in manager_data:
                 try:
@@ -599,7 +601,7 @@ class TeacherCreateImport(common_mixins.SchoolManagerMixin, CreateView):
                         if rowerrors:
                             errors += rowerrors
 
-            self.request.session['newdata'] = data
+            common_util.store_import_data(self.request, 'teacher_create_import', data)
             return render(
                 self.request,
                 'excel_verify_import.html',
@@ -610,8 +612,7 @@ class TeacherCreateImport(common_mixins.SchoolManagerMixin, CreateView):
                 }
             )
         else:
-            teacher_data = self.request.session['newdata']
-            del(self.request.session['newdata'])
+            teacher_data = common_util.get_import_data(self.request, 'teacher_create_import')
             # iterate through teachers, add them if they don't exist then add to school
             for teacher in teacher_data:
                 try:
@@ -790,7 +791,7 @@ class StudentCreateImport(common_mixins.SchoolManagerMixin, CreateView):
                         })
                         if rowerrors:
                             errors += rowerrors
-            self.request.session['newdata'] = data
+            common_util.store_import_data(self.request, 'student_create_import', data)
             return render(
                 self.request,
                 'excel_verify_import.html',
@@ -801,8 +802,7 @@ class StudentCreateImport(common_mixins.SchoolManagerMixin, CreateView):
                 }
             )
         else:
-            student_data = self.request.session['newdata']
-            del(self.request.session['newdata'])
+            student_data = common_util.get_import_data(self.request, 'student_create_import')
             school = School.objects.get(pk=self.kwargs['school_id'])
             # iterate through students, add them if they don't exist then add to school
             for data in student_data:
@@ -1547,7 +1547,7 @@ class SurveyLoginCreate(common_mixins.SuperUserMixin, CreateView):
                             data.append(rowdata)
                             if rowerrors:
                                 errors += rowerrors
-                self.request.session['newdata'] = data
+                common_util.store_import_data(self.request, 'survey_login_create', data)
                 return render(self.request, 'excel_verify_import.html', {
                     'data': data,
                     'errors': errors,
@@ -1561,8 +1561,7 @@ class SurveyLoginCreate(common_mixins.SuperUserMixin, CreateView):
                 )
 
         else:
-            student_data = self.request.session['newdata']
-            del(self.request.session['newdata'])
+            student_data = common_util.get_import_data(self.request, 'survey_login_create')
             # Iterate through the data
             # Add students if they don't exist then create a survey_login object
             for data in student_data:
@@ -1888,7 +1887,7 @@ class ExampleSurveyAnswerAdminListing(common_mixins.SuperUserMixin, ListView):
 
         if 'cancel_import' in self.request.GET:
             print("Cancel import, removing session data")
-            del(self.request.session['newdata'])
+            common_util.cancel_import_data(self.request, 'example_survey_answer_admin_import')
 
         if 'exam_code' in self.kwargs:
             answers = ExampleSurveyAnswer.objects.filter(exam_code=self.kwargs['exam_code']).all()
@@ -1914,7 +1913,7 @@ class ExampleSurveyAnswerAdminListing(common_mixins.SuperUserMixin, ListView):
             for host_task in host_tasks:
                 if host_task.get('name') == 'save_example_survey_answers':
                     jobs.append(host_task.get('id'))
-
+        import pdb; pdb.set_trace()
         context['jobs'] = jobs
 
         return context
@@ -2004,7 +2003,7 @@ class ExampleSurveyAnswerAdminImport(common_mixins.SuperUserMixin, CreateView):
                             })
                             if rowerrors:
                                 errors += rowerrors
-                self.request.session['newdata'] = data
+                            common_util.store_import_data(self.request, 'example_survey_answer_admin_import', data)
                 return render(self.request, 'excel_verify_import.html', {
                     'data': [],
                     'errors': errors,
@@ -2017,10 +2016,12 @@ class ExampleSurveyAnswerAdminImport(common_mixins.SuperUserMixin, CreateView):
                     {'error': 'Villa í skjali: "' + str(e) + ', lína: ' + str(row + 1)}
                 )
         else:
-            newdata = self.request.session['newdata']
-            del(self.request.session['newdata'])
-            print("Calling save_example_survey_answers for import")
-            save_example_survey_answers.delay(newdata)
+            newdata = common_util.get_import_data(self.request, 'example_survey_answer_admin_import')
+            if newdata:
+                print("Calling save_example_survey_answers for import")
+                save_example_survey_answers.delay(newdata)
+            else:
+                print("Import likely timed out")
         return redirect(self.get_success_url())
 
     def get_success_url(self):
