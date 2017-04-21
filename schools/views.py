@@ -184,7 +184,7 @@ class SchoolCreateImport(common_mixins.SchoolManagerMixin, CreateView):
                         if rowerrors:
                             errors += rowerrors
             common_util.store_import_data(self.request, 'school_create_import', data)
-            
+
             return render(self.request, 'excel_verify_import.html', {
                 'data': data,
                 'errors': errors,
