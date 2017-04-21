@@ -1992,7 +1992,7 @@ class ExampleSurveyAnswerAdminImport(common_mixins.SuperUserMixin, CreateView):
                             })
                             if rowerrors:
                                 errors += rowerrors
-                            common_util.store_import_data(self.request, 'example_survey_answer_admin_import', data)
+                    common_util.store_import_data(self.request, 'example_survey_answer_admin_import', data)
                 return render(self.request, 'excel_verify_import.html', {
                     'data': [],
                     'errors': errors,
