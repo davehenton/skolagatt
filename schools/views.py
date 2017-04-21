@@ -1783,7 +1783,7 @@ class ExampleSurveySamraemdDetail(common_mixins.SchoolTeacherMixin, ListView):
             groupsurvey__isnull=True,
             date__year=year,
             question__quiz_type=quiz_type,
-        ).order_by('question__category', '?').all()
+        ).order_by('question__category').all()
 
         return answers_list
 
