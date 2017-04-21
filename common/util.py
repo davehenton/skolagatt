@@ -1,5 +1,6 @@
 from django.utils.text import slugify
 from django.core.cache import cache
+from django.core.exceptions import ObjectDoesNotExist
 
 from celery.task.control import inspect
 
@@ -15,13 +16,11 @@ def get_messages():
 
 
 def get_current_school(path_variables):
-    try:
-        try:
-            return path_variables['school_id']
-        except:
-            return path_variables['pk']
-    except:
-        return None
+    if 'school_id' in path_variables:
+        return path_variables['school_id']
+    elif 'pk' in path_variables:
+        return path_variables['pk']
+    return None
 
 
 def is_school_manager(request, kwargs):
@@ -43,13 +42,8 @@ def is_school_manager(request, kwargs):
 
 
 def is_manager(request):
-    if not request.user.is_authenticated:
-        return False
-    try:
-        if cm_models.Manager.objects.filter(user=request.user):
-            return True
-    except:
-        pass
+    if request.user.is_authenticated and cm_models.Manager.objects.filter(user=request.user):
+        return True
     return False
 
 
@@ -58,77 +52,68 @@ def is_school_teacher(request, kwargs):
         return True
     elif not request.user.is_authenticated:
         return False
-    try:
-        school_id = get_current_school(kwargs)
-        if school_id and cm_models.School.objects.filter(
-            pk=school_id,
-            managers=cm_models.Manager.objects.filter(user=request.user)
-        ):
-            return True
-        teacher = cm_models.Teacher.objects.filter(user=request.user)
-        if school_id and cm_models.School.objects.filter(
-            pk=school_id,
-            teachers=teacher,
-        ):
-            if 'studentgroup_id' in kwargs:
-                if cm_models.StudentGroup.objects.filter(
-                    pk=kwargs['studentgroup_id'],
-                    group_managers=teacher,
-                ):
-                    return True
-            else:
+
+    school_id = get_current_school(kwargs)
+    if school_id and cm_models.School.objects.filter(
+        pk=school_id,
+        managers=cm_models.Manager.objects.filter(user=request.user)
+    ):
+        return True
+    teacher = cm_models.Teacher.objects.filter(user=request.user)
+    if school_id and cm_models.School.objects.filter(
+        pk=school_id,
+        teachers=teacher,
+    ):
+        if 'studentgroup_id' in kwargs:
+            if cm_models.StudentGroup.objects.filter(
+                pk=kwargs['studentgroup_id'],
+                group_managers=teacher,
+            ):
                 return True
-    except:
-        pass
+        else:
+            return True
+
     return False
 
 
 def is_teacher(request):
-    if not request.user.is_authenticated:
-        return False
-    try:
-        if cm_models.Teacher.objects.filter(user=request.user):
-            return True
-    except:
-        pass
+    if request.user.is_authenticated and cm_models.Teacher.objects.filter(user=request.user):
+        return True
+
     return False
 
 
 def is_group_manager(request, kwargs):
     if not request.user.is_authenticated:
         return False
+
+    studentgroup_id = None
+
     try:
-        try:
-            if cm_models.StudentGroup.objects.filter(
-                pk=kwargs['student_group'],
-                group_managers=cm_models.Teacher.objects.filter(user=request.user)
-            ):
-                return True
-        except:
-            if 'survey_id' in kwargs:
-                survey_id = cm_models.GroupSurvey.objects.get(
-                    pk=kwargs['survey_id']
-                ).studentgroup.id
-            elif 'próf' in request.path:
-                survey_id = cm_models.GroupSurvey.objects.get(
-                    pk=kwargs['pk']
-                ).studentgroup.id
-            elif 'bekkur' in request.path:
-                survey_id = cm_models.GroupSurvey.objects.get(
-                    studentgroup=kwargs['pk']
-                ).studentgroup.id
-            elif 'nemandi' in request.path:
-                group = cm_models.StudentGroup.objects.filter(students=kwargs['pk'])
-                survey_id = cm_models.GroupSurvey.objects.get(
-                    studentgroup=group
-                ).studentgroup.id
-            if cm_models.StudentGroup.objects.filter(
-                pk=survey_id,
-                group_managers=cm_models.Teacher.objects.filter(user=request.user)
-            ):
-                return True
-    except:
-        pass
+        if 'student_group' in kwargs:
+            studentgroup_id = kwargs['student_group']
+        elif 'studentgroup_id' in kwargs:
+            studentgroup_id = kwargs['studentgroup_id']
+        elif 'survey_id' in kwargs:
+            studentgroup_id = cm_models.GroupSurvey.objects.get(
+                pk=kwargs['survey_id']
+            ).studentgroup.id
+        elif 'próf' in request.path and 'pk' in kwargs:
+            studentgroup_id = cm_models.GroupSurvey.objects.get(
+                pk=kwargs['pk']
+            ).studentgroup.id
+        elif 'bekkur' in request.path and 'pk' in kwargs:
+            studentgroup_id = kwargs['pk']
+        elif 'nemandi' in request.path and 'pk' in kwargs:
+            studentgroup_id = cm_models.StudentGroup.objects.filter(students=kwargs['pk']).id
+    except ObjectDoesNotExist:
+        return False
+    else:
+        if studentgroup_id and cm_models.StudentGroup.objects.filter(
+            pk=studentgroup_id,
+            group_managers=cm_models.Teacher.objects.filter(user=request.user)
+        ):
+            return True
     return False
 
 

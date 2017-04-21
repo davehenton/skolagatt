@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from django.core.exceptions import ObjectDoesNotExist
 
 from celery import current_task
 from celery.decorators import task
@@ -30,7 +31,11 @@ def save_example_survey_answers(newdata):
         ssn = newentry['ssn']
         quickcode = newentry['quickcode']
         loop_counter += 1
-        current_task.update_state(state='PROGRESS', meta={'current': loop_counter, 'total': newdata_len})
+        current_task.update_state(state='PROGRESS', meta={
+            'current': loop_counter,
+            'total': newdata_len,
+            'quickcode': quickcode,
+        })
         try:
             if ssn not in student_cache.keys():
                 student_cache[ssn] = Student.objects.get(ssn=newentry['ssn'])
@@ -38,8 +43,8 @@ def save_example_survey_answers(newdata):
             if quickcode not in quickcode_cache.keys():
                 quickcode_cache[quickcode] = ExampleSurveyQuestion.objects.get(quickcode=newentry['quickcode'])
             question = quickcode_cache[quickcode]
-        except:
-            logger.debug("Unable to add entry for ssn: {}, quickcode: {}".format(ssn, quickcode))
+        except ObjectDoesNotExist as e:
+            logger.debug("Unable to add entry for ssn: {}, quickcode: {}: ".format(ssn, quickcode, e.__str__()))
             continue
 
         exam_code = None
