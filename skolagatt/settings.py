@@ -117,6 +117,7 @@ USE_TZ = True
 
 SESSION_COOKIE_AGE = 60 * 30  # Session will expiry after 30 minutes idle.
 SESSION_SAVE_EVERY_REQUEST = True
+SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
