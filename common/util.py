@@ -1,6 +1,8 @@
 from django.utils.text import slugify
 from django.core.cache import cache
 
+from celery.task.control import inspect
+
 from uuid import uuid4
 
 import common.models as cm_models
@@ -266,3 +268,15 @@ def cancel_import_data(request, slug):
     cache_id = request.session[slug]
     del(request.session[slug])
     cache.delete(cache_id)
+
+
+def get_celery_jobs(job_name):
+    jobs = []
+    active_celery_tasks = inspect().active()
+    if active_celery_tasks:
+        for k in active_celery_tasks.keys():
+            host_tasks = active_celery_tasks[k]
+            for host_task in host_tasks:
+                if host_task.get('name') == 'save_example_survey_answers':
+                    jobs.append(host_task.get('id'))
+    return jobs

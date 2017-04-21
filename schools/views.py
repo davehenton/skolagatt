@@ -10,7 +10,6 @@ from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from celery.task.control import inspect
 
 from itertools import chain
 from uuid import uuid4
@@ -1904,17 +1903,7 @@ class ExampleSurveyAnswerAdminListing(common_mixins.SuperUserMixin, ListView):
             exam_codes = ExampleSurveyAnswer.objects.values_list('exam_code', flat=True).distinct()
             context['exam_codes'] = exam_codes
 
-        jobs = []
-
-        active_celery_tasks = inspect().active()
-
-        for k in active_celery_tasks.keys():
-            host_tasks = active_celery_tasks[k]
-            for host_task in host_tasks:
-                if host_task.get('name') == 'save_example_survey_answers':
-                    jobs.append(host_task.get('id'))
-        import pdb; pdb.set_trace()
-        context['jobs'] = jobs
+        context['jobs'] = common_util.get_celery_jobs('save_example_survey_answers')
 
         return context
 
@@ -2460,7 +2449,6 @@ def lesfimi_excel_for_principals(request, pk):
                                     survey_type=survey_type,
                                     transformation=transformation,
                                 )
-                                # import pdb; pdb.set_trace()
                                 if not survey_student_result[0] == '':
                                     this_year_result['students_who_took_test'] += 1
                                     if int(survey_student_result[0]) >= ref_values[year][2]:

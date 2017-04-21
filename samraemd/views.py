@@ -2,7 +2,6 @@ from django.shortcuts import render, redirect
 from django.views.generic import ListView, CreateView, DetailView, DeleteView
 from django.core.urlresolvers import reverse_lazy
 from django.http import HttpResponse, HttpResponseRedirect
-from celery.task.control import inspect
 
 import xlrd
 import openpyxl
@@ -441,17 +440,7 @@ class SamraemdResultAdminListing(cm_mixins.SuperUserMixin, ListView):
         context['math_exams'] = math_exams
         context['ens_exams'] = ens_exams
 
-        jobs = []
-
-        active_celery_tasks = inspect().active()
-
-        for k in active_celery_tasks.keys():
-            host_tasks = active_celery_tasks[k]
-            for host_task in host_tasks:
-                if host_task.get('name') == 'save_samraemd_result':
-                    jobs.append(host_task.get('id'))
-
-        context['jobs'] = jobs
+        context['jobs'] = cm_util.get_celery_jobs('save_samraemd_result')
 
         return context
 
