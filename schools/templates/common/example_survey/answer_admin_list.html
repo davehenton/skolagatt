@@ -105,6 +105,7 @@ function abort_task(job_id) {
 $(document).ready(function(){
 	var jobpump = setInterval(function checkjobs() {
 		$.get("{% url 'schools:api_task_monitor' %}?job_name=save_example_survey_answers", function(data){
+			console.log(data);
 			if (typeof(data) == "object") {
 				for (i = 0; i < data.length; i++) {
 					job_data = data[i];
