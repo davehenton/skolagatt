@@ -115,7 +115,6 @@ $(document).ready(function(){
 							if ($("#" + rowselector).length == 0) {
 								$("#progressbars").append('<div class="row" id="' + rowselector + '"></div>');
 								$("#" + rowselector).css("display", "none");
-								$("#" + rowselector).append('<div class="col-md-2" id="' + identifierselector + '"></div>');
 								$("#" + rowselector).append('<div class="col-md-4" id="' + resulttextouterselector + '">Innlestur í gangi <span id="' + resulttextselector + '"></span></div>');
 								$("#" + rowselector).append('<div class="col-md-6"><div class="progress"><div id="' + jobprogressselector + '"></div></div></div>');
 								$("#" + jobprogressselector).addClass("progress-bar progress-bar-striped active");
@@ -123,12 +122,13 @@ $(document).ready(function(){
 								$("#" + jobprogressselector).attr("aria-valuemin", "0");
 								$("#" + jobprogressselector).attr("aria-valuemax", "100");
 								$("#" + jobprogressselector).css("width", "0%");
+								$("#" + rowselector).append('<div class="col-md-2" id="' + identifierselector + '"></div>');
 							}
 
 							if ("state" in job_data) {
 								state = job_data["state"];
 								if (typeof(state) == "object") {
-									$("#" + identifierselector).html("<b>" + state["exam_code"] + "</b>")
+									$("#" + identifierselector).html("Prófkóði: <b>" + state["exam_code"] + "</b>")
 									$("#" + resulttextselector).html("(" + state["current"] + " af " + state["total"] + ")");
 									pct = ((state["current"] / state["total"]) * 100).toFixed(1);
 									$("#" + jobprogressselector).css("width", pct + "%");
