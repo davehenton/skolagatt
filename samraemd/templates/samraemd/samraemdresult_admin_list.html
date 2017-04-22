@@ -7,21 +7,10 @@
 			<span class="glyphicon glyphicon-plus"></span>&nbsp;Bæta við niðurstöðum
 		</a>
 	</div>
-{% for job in jobs %}
-	<div class="row" id="result-row-{{ job }}" style="display: none;">
-		<div class="col-md-4">
-			<p>Innlestur gagna í gangi <span id="result-text-{{ job }}"></span>:</p>
-		</div>
-		<div class="col-md-8">
-			<div id="job-progressouter-{{ job }}" class="progress">
-				<div id="job-progress-{{ job }}" class="progress-bar progress-bar-striped active" role="progressbar"
-				aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%">
-				0%
-				</div>
-			</div>
-		</div>
+
+	<div class="row" id="progressbars">
 	</div>
-{% endfor %}
+
 	<div class="row">
 		<h2>Samræmd próf í stærðfræði</h2>
 		<table class="table table-hover table-striped">
@@ -127,42 +116,15 @@
 {% endblock %}
 
 {% block script %}
+{% include 'celery_tasks_javascript.html' %}
 
 <script type="text/javascript">
-$(document).ready(function(){
-	{% for job in jobs %}
-	var progresspump{{ forloop.counter }} = setInterval(function(){
-		/* query the completion percentage from the server */
-		$.get("{% url 'schools:api_task_monitor' %}?job={{ job }}", function(data){
-			if (data == 'SUCCESS') {
-				clearInterval(progresspump{{ forloop.counter }});
-				$("#result-text-{{ job }}").html("");
-				$("#job-progress-{{ job }}").removeClass("active");
-				$("#job-progress-{{ job }}").html("Done");
-				$("#job-progress-{{ job }}").css('width', '100%');
-			} else if (data == 'FAILURE') {
-				clearInterval(progresspump{{ forloop.counter }});
-				$("#result_row-{{ job }}").html("<p>Innlestur gagna mistókst!</p>");
-			} else {
-				$("#result-text-{{ job }}").html("(" + data.current + " af " + data.total + ")");
-				pct = ((data.current / data.total) * 100).toFixed(1)
-				/* update the progress bar width */
-	      		$("#job-progress-{{ job }}").css('width',pct+'%');
-	      		/* and display the numeric value */
-	      		$("#job-progress-{{ job }}").html(pct+'%');
 
-	      		/* test to see if the job has completed */
-	      		if(pct > 99.9) {
-	        		clearInterval(progresspump);
-	        		$("#result-text-{{ job }}").html("");
-	        		$("#job-progress-{{ job }}").removeClass("active");
-	        		$("#job-progress-{{ job }}").html("Done");
-	      		}
-      		}
-      		$("#result-row-{{ job }}").show();
-    	})
+$(document).ready(function(){
+	checkjobs('save_samraemd_result');
+	var jobpump = setInterval(function(){
+		checkjobs('save_samraemd_result');
 	}, 3000);
-	{% endfor %}
 });
 </script>
 

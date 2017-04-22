@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import
+from django.core.exceptions import ObjectDoesNotExist
 
 from celery import current_task
 from celery.decorators import task
 from celery.utils.log import get_task_logger
+from celery.contrib.abortable import AbortableTask
 
 from common.models import (
     Student,
@@ -16,8 +19,8 @@ from survey.models import Survey
 logger = get_task_logger(__name__)
 
 
-@task(name="save_example_survey_answers")
-def save_example_survey_answers(newdata):
+@task(bind=True, name="save_example_survey_answers", base=AbortableTask)
+def save_example_survey_answers(self, newdata):
     """Add new entries to ExampleSurveyAnswer model asynchronously"""
     student_cache = {}
     quickcode_cache = {}
@@ -27,10 +30,12 @@ def save_example_survey_answers(newdata):
     newdata_len = len(newdata)
     loop_counter = 0
     for newentry in newdata:
+        if self.is_aborted():
+            logger.info("Aborted. Added {} entries before that".format(added))
+            return False
         ssn = newentry['ssn']
         quickcode = newentry['quickcode']
         loop_counter += 1
-        current_task.update_state(state='PROGRESS', meta={'current': loop_counter, 'total': newdata_len})
         try:
             if ssn not in student_cache.keys():
                 student_cache[ssn] = Student.objects.get(ssn=newentry['ssn'])
@@ -38,8 +43,8 @@ def save_example_survey_answers(newdata):
             if quickcode not in quickcode_cache.keys():
                 quickcode_cache[quickcode] = ExampleSurveyQuestion.objects.get(quickcode=newentry['quickcode'])
             question = quickcode_cache[quickcode]
-        except:
-            logger.debug("Unable to add entry for ssn: {}, quickcode: {}".format(ssn, quickcode))
+        except ObjectDoesNotExist as e:
+            logger.debug("Unable to add entry for ssn: {}, quickcode: {}: ".format(ssn, quickcode, e.__str__()))
             continue
 
         exam_code = None
@@ -60,7 +65,11 @@ def save_example_survey_answers(newdata):
                 exam_code = newentry['survey_identifier']
             else:
                 groupsurvey = survey_cache[survey_identifier]
-
+        current_task.update_state(state='PROGRESS', meta={
+            'current': loop_counter,
+            'total': newdata_len,
+            'exam_code': exam_code,
+        })
         added += 1
         boolanswer = True if newentry['answer'] == '1' else False
         ExampleSurveyAnswer.objects.create(
