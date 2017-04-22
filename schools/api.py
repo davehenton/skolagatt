@@ -47,7 +47,7 @@ class TaskMonitor(APIView):
 
     def post(self, request):
         if 'abort' in self.request.POST:
-            if 'job_id' in self.request.POST and 'job_name' in self.request.POST:
+            if 'job_id' in self.request.POST:
                 job_id = self.request.POST.get('job_id')
                 abort_celery_job(job_id)
                 return Response('aborted')
