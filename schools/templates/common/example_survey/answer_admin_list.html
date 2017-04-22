@@ -97,7 +97,7 @@
 <script type="text/javascript">
 function abort_task(job_id) {
 	if (confirm("Ertu viss?")) {
-		$.post("{% url 'schools:api_task_monitor' %}", {abort: true, job_id: job_id})
+		$.post("{% url 'schools:api_task_monitor' %}", {'abort': true, 'job_id': job_id, 'csrfmiddlewaretoken': '{{ csrf_token }}'})
 	}
 }
 
