@@ -114,7 +114,8 @@ $(document).ready(function(){
 		$.get("{% url 'schools:api_task_monitor' %}?job_name=save_example_survey_answers", function(data){
 			console.log(data);
 			if (typeof(data) == "object") {
-				for (job_data in data) {
+				for (i = 0; i < data.length; i++) {
+					job_data = data[i];
 					if (typeof(job_data) == "object") {
 						if ("id" in job_data ) {
 							job_id = job_data["id"];
