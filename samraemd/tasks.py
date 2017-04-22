@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import
 
 from celery import current_task
 from celery.decorators import task
 from celery.utils.log import get_task_logger
+from celery.contrib.abortable import AbortableTask
 
 from common.models import Student
 from samraemd.models import (
@@ -14,8 +16,8 @@ from samraemd.models import (
 logger = get_task_logger(__name__)
 
 
-@task(name="save_samraemd_result")
-def save_samraemd_result(newdata):
+@task(name="save_samraemd_result", base=AbortableTask)
+def save_samraemd_result(self, newdata):
     # Iterate through the data
     logger.info("Importing a new set of Samraemd results ({} entries)".format(len(newdata)))
     updated = 0
@@ -23,6 +25,9 @@ def save_samraemd_result(newdata):
     newdata_len = len(newdata)
     loop_counter = 0
     for newentry in newdata:
+        if self.is_aborted():
+            logger.info("Aborted. Added {} entries, updated {} before that".format(added, updated))
+            return False
         logger.debug("looking up {}".format(newentry['ssn']))
         student = Student.objects.filter(ssn=newentry['ssn'])
         loop_counter += 1

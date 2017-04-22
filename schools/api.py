@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from celery.result import AsyncResult
 from common.models import School, Student
-from common.util import get_celery_jobs
+from common.util import get_celery_jobs, abort_celery_job
 from .serializers import SchoolSerializer
 from django.db.models import Q
 
@@ -44,6 +44,14 @@ class TaskMonitor(APIView):
             return Response(resp)
         else:
             return Response('')
+
+    def post(self, request):
+        if 'delete' in self.request.POST:
+            if 'job_id' in self.request.POST and 'job_name' in self.request.POST:
+                job_name = self.request.POST.get('job_name')
+                job_id = self.request.POST.get('job_id')
+                abort_celery_job(job_name, job_id)
+
 
 
 class StudentSearch(APIView):

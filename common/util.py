@@ -4,6 +4,10 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from celery.task.control import inspect
 
+from schools.tasks import save_example_survey_answers
+from samraemd.tasks import save_samraemd_result
+
+
 from uuid import uuid4
 
 import common.models as cm_models
@@ -262,6 +266,17 @@ def get_celery_jobs(job_name):
         for k in active_celery_tasks.keys():
             host_tasks = active_celery_tasks[k]
             for host_task in host_tasks:
-                if host_task.get('name') == 'save_example_survey_answers':
+                if host_task.get('name') == job_name:
                     jobs.append(host_task.get('id'))
     return jobs
+
+
+def abort_celery_job(job_name, job_id):
+    if job_name == 'save_example_survey_answers':
+        job = save_example_survey_answers.AsyncResult(job_id)
+        if job:
+            job.abort()
+    elif job_name == 'save_samraemd_result':
+        job = save_samraemd_result.AsyncResult(job_id)
+        if job:
+            job.abort()

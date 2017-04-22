@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import
 from django.core.exceptions import ObjectDoesNotExist
 
 from celery import current_task
 from celery.decorators import task
 from celery.utils.log import get_task_logger
+from celery.contrib.abortable import AbortableTask
 
 from common.models import (
     Student,
@@ -17,8 +19,8 @@ from survey.models import Survey
 logger = get_task_logger(__name__)
 
 
-@task(name="save_example_survey_answers")
-def save_example_survey_answers(newdata):
+@task(name="save_example_survey_answers", base=AbortableTask)
+def save_example_survey_answers(self, newdata):
     """Add new entries to ExampleSurveyAnswer model asynchronously"""
     student_cache = {}
     quickcode_cache = {}
@@ -28,6 +30,9 @@ def save_example_survey_answers(newdata):
     newdata_len = len(newdata)
     loop_counter = 0
     for newentry in newdata:
+        if self.is_aborted():
+            logger.info("Aborted. Added {} entries before that".format(added))
+            return False
         ssn = newentry['ssn']
         quickcode = newentry['quickcode']
         loop_counter += 1
