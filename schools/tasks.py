@@ -20,7 +20,7 @@ logger = get_task_logger(__name__)
 
 
 @task(name="save_example_survey_answers", base=AbortableTask)
-def save_example_survey_answers(self, newdata):
+def save_example_survey_answers(newdata):
     """Add new entries to ExampleSurveyAnswer model asynchronously"""
     student_cache = {}
     quickcode_cache = {}
