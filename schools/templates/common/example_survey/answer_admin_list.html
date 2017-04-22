@@ -7,6 +7,8 @@
 		<span class="glyphicon glyphicon-plus"></span>&nbsp;Bæta við svörum
 	</a>
 </div>
+<div class="row" id="progressbars">
+</div>
 {% for job in jobs %}
 <div class="row" id="result-row-{{ job }}" style="display: none;">
 	<div class="col-md-4">
@@ -108,39 +110,61 @@
 
 <script type="text/javascript">
 $(document).ready(function(){
-	{% for job in jobs %}
-	var progresspump{{ forloop.counter }} = setInterval(function(){
-		/* query the completion percentage from the server */
-		$.get("{% url 'schools:api_task_monitor' %}?job={{ job }}", function(data){
-			if (data == 'SUCCESS') {
-				clearInterval(progresspump{{ forloop.counter }});
-				$("#result-text-{{ job }}").html("");
-				$("#job-progress-{{ job }}").removeClass("active");
-				$("#job-progress-{{ job }}").html("Done");
-				$("#job-progress-{{ job }}").css('width', '100%');
-			} else if (data == 'FAILURE') {
-				clearInterval(progresspump{{ forloop.counter }});
-				$("#result_row-{{ job }}").html("<p>Innlestur gagna mistókst!</p>");
-			} else {
-				$("#result-text-{{ job }}").html("(" + data.current + " af " + data.total + ")");
-				pct = ((data.current / data.total) * 100).toFixed(1)
-				/* update the progress bar width */
-	      		$("#job-progress-{{ job }}").css('width',pct+'%');
-	      		/* and display the numeric value */
-	      		$("#job-progress-{{ job }}").html(pct+'%');
+	var jobpump = setInterval(function checkjobs() {
+		$.get("{% url 'schools:api_task_monitor' %}?job_name=save_example_survey_answers", function(data){
+			myHtml = '';
+			if (typeof(data) == "object") {
+				for (job_data in data) {
+					if (typeof(job_data) == "object") {
+						if ("id" in job_data ) {
+							job_id = job_data["id"];
+							rowselector = "result-row-" + job_id;
+							identifierselector = "identifier-" + job_id;
+							jobprogressselector = "job-progress-" + job_id;
 
-	      		/* test to see if the job has completed */
-	      		if(pct > 99.9) {
-	        		clearInterval(progresspump);
-	        		$("#result-text-{{ job }}").html("");
-	        		$("#job-progress-{{ job }}").removeClass("active");
-	        		$("#job-progress-{{ job }}").html("Done");
-	      		}
-      		}
-      		$("#result-row-{{ job }}").show();
+							resulttextselector = "result-text-" + job_id;
+							resulttextouterselector = "outer-" + resulttextselector;
+
+							if ($("#" + rowselector).length == 0) {
+								$("#progressbars").append('<div class="row" id="' + rowselector + '"></div>');
+								$("#" + rowselector).css("display", "none");
+								$("#" + rowselector).append('<div class="col-md-2" id="' + identifierselector + '"></div>');
+								$("#" + rowselector).append('<div class="col-md-4" id="' + resulttextouterselector + '">Innlestur í gangi <span id="' + resulttextselector + '"></span></div>');
+								$("#" + rowselector).append('<div class="col-md-6"><div class="progress"><div id="' + jobprogressselector + '"></div></div></div>');
+								$("#" + jobprogressselector).addClass("progress-bar progress-bar-striped active");
+								$("#" + jobprogressselector).attr("aria-valuenow", "0");
+								$("#" + jobprogressselector).attr("aria-valuemin", "0");
+								$("#" + jobprogressselector).attr("aria-valuemax", "100");
+								$("#" + jobprogressselector).css("width", "0%");
+							}
+
+							if ("state" in job_data) {
+								state = job_data["state"];
+								if (typeof(state) == "object") {
+									$("#" + identifierselector).html("<b>" + state["exam_code"] + "</b>")
+									$("#" + resulttextselector).html("(" + state["current"] + " af " + state["total"] + ")");
+									pct = ((state["current"] / state["total"]) * 100).toFixed(1);
+									$("#" + jobprogressselector).css("width", pct + "%");
+									$("#" + jobprogressselector).html(pct + "%");
+
+								} elif (typeof(state) == "string") {
+									if (state == "FAILURE") {
+										$("#" + resulttextouterselector).html('<p class="danger">Innlestur mistókst!</p>');
+									} elif (state == "SUCCESS") {
+										$("#" + resulttextouterselector).html('<p>Innlestur tókst!</p>');
+										$("#" + jobprogressselector).css("width", "100%");
+										$("#" + jobprogressselector).html("100%");
+										$("#" + jobprogressselector).removeClass("active");
+									}
+								}
+								$("#" + rowselector).show();
+							}
+						}
+					}
+				} 
+			}
     	})
 	}, 3000);
-	{% endfor %}
 });
 </script>
 

@@ -31,11 +31,6 @@ def save_example_survey_answers(newdata):
         ssn = newentry['ssn']
         quickcode = newentry['quickcode']
         loop_counter += 1
-        current_task.update_state(state='PROGRESS', meta={
-            'current': loop_counter,
-            'total': newdata_len,
-            'quickcode': quickcode,
-        })
         try:
             if ssn not in student_cache.keys():
                 student_cache[ssn] = Student.objects.get(ssn=newentry['ssn'])
@@ -65,7 +60,11 @@ def save_example_survey_answers(newdata):
                 exam_code = newentry['survey_identifier']
             else:
                 groupsurvey = survey_cache[survey_identifier]
-
+        current_task.update_state(state='PROGRESS', meta={
+            'current': loop_counter,
+            'total': newdata_len,
+            'exam_code': exam_code,
+        })
         added += 1
         boolanswer = True if newentry['answer'] == '1' else False
         ExampleSurveyAnswer.objects.create(
