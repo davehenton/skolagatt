@@ -92,79 +92,16 @@
 {% endif %}
 {% endblock %}
 
+{% include 'celery_tasks_javascript.html' %}
 {% block script %}
 
 <script type="text/javascript">
-function abort_task(job_id) {
-	if (confirm("Ertu viss?")) {
-		$.post("{% url 'schools:api_task_monitor' %}", {'abort': true, 'job_id': job_id, 'csrfmiddlewaretoken': '{{ csrf_token }}'})
-		$("#result-row-" + job_id).remove();
-	}
-}
 
-function checkjobs() {
-	$.get("{% url 'schools:api_task_monitor' %}?job_name=save_example_survey_answers", function(data){
-		console.log(data);
-		if (typeof(data) == "object") {
-			for (i = 0; i < data.length; i++) {
-				job_data = data[i];
-				if (typeof(job_data) == "object") {
-					if ("id" in job_data ) {
-						job_id = job_data["id"];
-						rowselector = "result-row-" + job_id;
-						identifierselector = "identifier-" + job_id;
-						jobprogressselector = "job-progress-" + job_id;
-
-						resulttextselector = "result-text-" + job_id;
-						resulttextouterselector = "outer-" + resulttextselector;
-
-						if ($("#" + rowselector).length == 0) {
-							// Add a line for this job
-							$("#progressbars").append('<div class="row" id="' + rowselector + '"></div>');
-							$("#" + rowselector).css("display", "none");
-							$("#" + rowselector).append('<div class="col-md-4" id="' + resulttextouterselector + '">Innlestur í gangi <span id="' + resulttextselector + '"></span></div>');
-							$("#" + rowselector).append('<div class="col-md-5"><div class="progress"><div id="' + jobprogressselector + '"></div></div></div>');
-							$("#" + jobprogressselector).addClass("progress-bar progress-bar-striped active");
-							$("#" + jobprogressselector).attr("aria-valuenow", "0");
-							$("#" + jobprogressselector).attr("aria-valuemin", "0");
-							$("#" + jobprogressselector).attr("aria-valuemax", "100");
-							$("#" + jobprogressselector).css("width", "0%");
-							$("#" + rowselector).append('<div class="col-md-2" id="' + identifierselector + '"></div>');
-							$("#" + rowselector).append('<div class="col-md-1"><a title="Stöðva innlestur" href="javascript:abort_task(\'' + job_id + '\');" class="btn btn-xs"><span class="glyphicon glyphicon-remove-circle"></span></a></div>')
-						}
-
-						if ("state" in job_data) {
-							// Populate the line we added
-							state = job_data["state"];
-							if (typeof(state) == "object") {
-								$("#" + identifierselector).html(state["exam_code"])
-								$("#" + resulttextselector).html("(" + state["current"] + " af " + state["total"] + ")");
-								pct = ((state["current"] / state["total"]) * 100).toFixed(1);
-								$("#" + jobprogressselector).css("width", pct + "%");
-								$("#" + jobprogressselector).html(pct + "%");
-
-							} else if (typeof(state) == "string") {
-								if (state == "FAILURE") {
-									$("#" + resulttextouterselector).html('<p class="danger">Innlestur mistókst!</p>');
-									$("#" + jobprogressselector).removeClass("active");
-								} else if (state == "SUCCESS") {
-									$("#" + resulttextouterselector).html('<p>Innlestur tókst!</p>');
-									$("#" + jobprogressselector).css("width", "100%");
-									$("#" + jobprogressselector).html("100%");
-									$("#" + jobprogressselector).removeClass("active");
-								}
-							}
-							$("#" + rowselector).show();
-						}
-					}
-				}
-			} 
-		}
-	});
-}
 $(document).ready(function(){
-	checkjobs();
-	var jobpump = setInterval(checkjobs, 3000);
+	checkjobs('save_example_survey_answers');
+	var jobpump = setInterval(function(){
+		checkjobs('save_example_survey_answers');
+	}, 3000);
 });
 </script>
 

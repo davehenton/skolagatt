@@ -440,8 +440,6 @@ class SamraemdResultAdminListing(cm_mixins.SuperUserMixin, ListView):
         context['math_exams'] = math_exams
         context['ens_exams'] = ens_exams
 
-        context['jobs'] = cm_util.get_celery_jobs('save_samraemd_result')
-
         return context
 
 

@@ -31,7 +31,11 @@ def save_samraemd_result(self, newdata):
         logger.debug("looking up {}".format(newentry['ssn']))
         student = Student.objects.filter(ssn=newentry['ssn'])
         loop_counter += 1
-        current_task.update_state(state='PROGRESS', meta={'current': loop_counter, 'total': newdata_len})
+        current_task.update_state(state='PROGRESS', meta={
+            'current': loop_counter,
+            'total': newdata_len,
+            'exam_code': newentry['exam_code'],
+        })
         if not student.exists():
             logger.debug("Not found: {}".format(newentry['ssn']))
             continue
