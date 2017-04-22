@@ -46,11 +46,10 @@ class TaskMonitor(APIView):
             return Response('')
 
     def post(self, request):
-        if 'delete' in self.request.POST:
+        if 'abort' in self.request.POST:
             if 'job_id' in self.request.POST and 'job_name' in self.request.POST:
-                job_name = self.request.POST.get('job_name')
                 job_id = self.request.POST.get('job_id')
-                abort_celery_job(job_name, job_id)
+                abort_celery_job(job_id)
 
 
 

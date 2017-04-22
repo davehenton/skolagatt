@@ -16,8 +16,8 @@ from samraemd.models import (
 logger = get_task_logger(__name__)
 
 
-@task(name="save_samraemd_result", base=AbortableTask)
-def save_samraemd_result(newdata):
+@task(bind=True, name="save_samraemd_result", base=AbortableTask)
+def save_samraemd_result(self, newdata):
     # Iterate through the data
     logger.info("Importing a new set of Samraemd results ({} entries)".format(len(newdata)))
     updated = 0
