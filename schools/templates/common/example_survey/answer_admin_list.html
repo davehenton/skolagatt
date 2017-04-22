@@ -147,10 +147,10 @@ $(document).ready(function(){
 									$("#" + jobprogressselector).css("width", pct + "%");
 									$("#" + jobprogressselector).html(pct + "%");
 
-								} elif (typeof(state) == "string") {
+								} else if (typeof(state) == "string") {
 									if (state == "FAILURE") {
 										$("#" + resulttextouterselector).html('<p class="danger">Innlestur mistókst!</p>');
-									} elif (state == "SUCCESS") {
+									} else if (state == "SUCCESS") {
 										$("#" + resulttextouterselector).html('<p>Innlestur tókst!</p>');
 										$("#" + jobprogressselector).css("width", "100%");
 										$("#" + jobprogressselector).html("100%");
