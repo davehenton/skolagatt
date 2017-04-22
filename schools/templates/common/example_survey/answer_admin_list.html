@@ -129,7 +129,7 @@ $(document).ready(function(){
 								$("#" + jobprogressselector).attr("aria-valuemax", "100");
 								$("#" + jobprogressselector).css("width", "0%");
 								$("#" + rowselector).append('<div class="col-md-2" id="' + identifierselector + '"></div>');
-								$("#" + rowselector).append('<div class="col-md-1"><a title="Stöðva innlestur" href="javascript:abort_task(' + job_id + ');" class="btn btn-xs"><span class="glyphicon glyphicon-remove-circle"></span></a></div>')
+								$("#" + rowselector).append('<div class="col-md-1"><a title="Stöðva innlestur" href="javascript:abort_task(\'' + job_id + '\');" class="btn btn-xs"><span class="glyphicon glyphicon-remove-circle"></span></a></div>')
 							}
 
 							if ("state" in job_data) {
