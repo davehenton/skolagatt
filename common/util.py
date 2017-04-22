@@ -270,8 +270,6 @@ def get_celery_jobs(job_name):
 
 
 def abort_celery_job(job_id):
-    print("Trying to abort {}".format(job_id))
     job = AbortableAsyncResult(job_id)
     if job:
         return job.abort()
-    print("Something went wrong")
