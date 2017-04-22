@@ -112,7 +112,7 @@
 $(document).ready(function(){
 	var jobpump = setInterval(function checkjobs() {
 		$.get("{% url 'schools:api_task_monitor' %}?job_name=save_example_survey_answers", function(data){
-			myHtml = '';
+			console.log(data);
 			if (typeof(data) == "object") {
 				for (job_data in data) {
 					if (typeof(job_data) == "object") {
