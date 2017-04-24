@@ -157,6 +157,7 @@ class SchoolForm(forms.ModelForm):
             'managers': 'Stjórnendur',
             'teachers': 'Kennarar',
             'students': 'Nemendur',
+            'school_nr': 'Skólanúmer',
         }
 
 
