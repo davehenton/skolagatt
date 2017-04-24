@@ -1943,6 +1943,7 @@ class ExampleSurveyAnswerAdminImport(common_mixins.SuperUserMixin, CreateView):
 
             data = []
             errors = []
+
             try:
                 if extension == 'xlsx':
                     input_excel = self.request.FILES['file']
@@ -1951,6 +1952,32 @@ class ExampleSurveyAnswerAdminImport(common_mixins.SuperUserMixin, CreateView):
                     quickcode_cache = {}
                     for sheetsnumber in range(book.nsheets):
                         sheet = book.sheet_by_index(sheetsnumber)
+
+                        if not survey_identifier:
+                            errors.append({'text': 'Enginn prófkóði', 'row': 0})
+                        else:
+                            survey = Survey.objects.filter(identifier=survey_identifier).first()
+                            if survey:
+                                ssn_str = str(sheet.cell_value(1, ssn))
+                                student = Student.objects.filter(ssn=ssn_str).first()
+                                if student:
+                                    groupsurvey = GroupSurvey.objects.filter(
+                                        survey=survey,
+                                        studentgroup=student.studentgroup,
+                                    ).first()
+                                    if groupsurvey and ExampleSurveyAnswer.objects.filter(survey=survey).exists():
+                                        errors.append({
+                                            'text': 'Svör þegar til fyrir þennan kóða, öll ný svör bætast við',
+                                            'row': 0,
+                                        })
+
+                            else:
+                                if ExampleSurveyAnswer.objects.filter(exam_code=survey_identifier).exists():
+                                    errors.append({
+                                        'text': 'Svör þegar til fyrir þennan kóða, öll ný svör bætast við',
+                                        'row': 0,
+                                    })
+
                         for row in range(first, sheet.nrows):
                             ssn_str = str(sheet.cell_value(row, ssn))
                             quickcode_str = str(sheet.cell_value(row, quickcode))
