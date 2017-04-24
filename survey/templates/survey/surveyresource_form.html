@@ -3,7 +3,7 @@
 
 {% block content %}
 <div class="row">
-	<div class="col-md-6 md_form">
+	<div class="col-md-12 md_form">
 		<form id="surveyresource_form" action="" method="post">
 			{% csrf_token %}
 			{% include 'survey/_generic_form.html' %}
@@ -28,9 +28,11 @@
 			$("#title").html(title);
 			$("#preview").html(marked(textarea));
 		}
-		update_preview();
-		$('.md_form').on('keyup', function(event){
+		$(document).ready(function(){
 			update_preview();
-		})
+			$('.md_form').on('keyup', function(event){
+				update_preview();
+			})
+		});
 	</script>
 {% endblock %}
