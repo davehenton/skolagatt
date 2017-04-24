@@ -6,18 +6,11 @@ from django.contrib.auth.mixins import UserPassesTestMixin
 
 from django.core.urlresolvers import reverse_lazy
 import openpyxl
-from ast import literal_eval
 
 from . import forms
 from .models import (
     Survey, SurveyType, SurveyResource, SurveyTransformation,
     SurveyGradingTemplate, SurveyInputField, SurveyInputGroup
-)
-import common.util as common_util
-from common.models import (
-    SurveyResult,
-    StudentGroup,
-    GroupSurvey,
 )
 from .mixins import (
     SurveySuperSuccessMixin,

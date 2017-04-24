@@ -143,6 +143,7 @@ ICEKEY_VERIFICATION = 'https://innskraning.mms.is/verify_login/'
 ICEKEY_LOGIN = 'https://innskraning.mms.is/island_innskraning'
 
 FROALA_UPLOAD_PATH = 'uploads/froala_editor/images/'
+FROALA_INCLUDE_JQUERY = False
 
 # Celery settings
 
