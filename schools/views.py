@@ -1169,6 +1169,16 @@ class SurveyDetail(common_mixins.SchoolEmployeeMixin, DetailView):
         return context
 
 
+class SurveyResourcePrint(common_mixins.SchoolTeacherMixin, DetailView):
+    model = s_models.SurveyResource
+
+    def get_context_data(self, **kwargs):
+        # xxx will be available in the template as the related objects
+        context = super(SurveyResourcePrint, self).get_context_data(**kwargs)
+        context['survey'] = GroupSurvey.objects.get(pk=self.kwargs['survey_id'])
+        return context
+
+
 class SurveyCreate(common_mixins.SchoolEmployeeMixin, CreateView):
     model = GroupSurvey
     form_class = cm_forms.SurveyForm

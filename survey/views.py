@@ -17,6 +17,9 @@ from .mixins import (
     SurveyCreateSuperSuccessMixin,
     SurveyDeleteSuperSuccessMixin
 )
+from common.mixins import (
+    SchoolTeacherMixin,
+)
 
 
 class SurveyListing(UserPassesTestMixin, ListView):

@@ -139,6 +139,12 @@ class GroupSurvey(models.Model):
     def results(self):
         return SurveyResult.objects.filter(survey=self)
 
+    def title(self):
+        if self.survey:
+            return self.survey.title
+        else:
+            return ""
+
     def __str__(self):
         return self.survey.title
 

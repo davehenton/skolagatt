@@ -50,7 +50,7 @@ class SurveyResource(models.Model):
     title = models.CharField(max_length=128)
     resource_url = models.CharField(max_length=1024, null=True, blank=True)
     description = models.TextField(null=True, blank=True)
-    resource = FroalaField(null=True, blank=True)
+    resource_html = FroalaField(null=True, blank=True)
 
     def __str__(self):
         return self.title

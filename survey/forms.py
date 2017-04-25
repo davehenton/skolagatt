@@ -78,12 +78,12 @@ class SurveyResourceForm(forms.ModelForm):
 
     class Meta:
         model = models.SurveyResource
-        fields = ['title', 'description', 'resource']
+        fields = ['title', 'description', 'resource_html']
         labels = {
             'title': 'Titill',
             'resource_url': 'Vefslóð á prófgagn',
             'description': 'Lýsing',
-            'resource': 'Prófgagn',
+            'resource': 'Texti',
         }
 
 

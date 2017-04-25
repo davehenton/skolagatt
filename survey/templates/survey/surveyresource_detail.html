@@ -13,10 +13,20 @@
 	</div>
 </div>
 <div class="row">
+	{% if surveyresource.resource_html %}
+	<div class="col-md-6 col-xs-12">
+		<h3>Texti</h3>
+		<div>
+		{{surveyresource.resource_html|safe}}
+		</div>
+	</div>
+	{% endif %}
+	{% if surveyresource.resource_url %}
 	<div class="col-md-6 col-xs-12">
 		<h3>Hlekkur</h3>
 		<p><a href="{{surveyresource.resource_url}}">{{surveyresource.resource_url}}</a></p>
 	</div>
+	{% endif %}
 	<div class="col-md-6 col-xs-12">
 		<h3>Lýsing</h3>
 		<p class="md">{{surveyresource.description}}</p>
