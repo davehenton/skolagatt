@@ -119,7 +119,6 @@ class SurveyCreateMulti(SurveyCreateSuperSuccessMixin, CreateView):
         form = forms.SurveyForm(self.request.POST)
 
         if form.is_valid():
-            print("Creating surveys for years: {}".format(student_years))
             for student_year in student_years:
                 create_kwargs = form.cleaned_data.copy()
                 create_kwargs['student_year'] = student_year
@@ -127,7 +126,6 @@ class SurveyCreateMulti(SurveyCreateSuperSuccessMixin, CreateView):
                 create_kwargs['identifier'] = create_kwargs['identifier'].replace('%student_year%', student_year)
                 create_kwargs['created_by'] = self.request.user
                 survey = Survey.objects.create(**create_kwargs)
-                print("New survey: {}".format(survey.id))
 
                 if mandatory:
                     # Create GroupSurvey for every StudentGroup in this student_year.
