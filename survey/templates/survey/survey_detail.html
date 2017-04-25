@@ -1,4 +1,5 @@
 {% extends 'survey/index.html'%}
+{% load common_helpers %}
 
 {% block content %}
 <div class="row">
@@ -22,7 +23,7 @@
 	</div>
 	<div class="col-md-8 col-xs-12">
 		<h4>Lýsing:</h4>
-		<p>{{survey.description}}</p>
+		<p>{{survey.description|md|safe}}</p>
 	</div>
 </div>
 <hr>
@@ -33,7 +34,7 @@
 				<tr>
 					<th>
 						<h4>
-							Nánari upplýsingar 
+							Prófgögn 
 							<a href="{% url 'survey:survey_resource_create' survey.id %}" class="btn btn-default btn-xs">
 								<span class="glyphicon glyphicon-plus"></span>
 							</a>

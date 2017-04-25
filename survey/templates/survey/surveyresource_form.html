@@ -3,33 +3,19 @@
 
 {% block content %}
 <div class="row">
-	<div class="col-md-6 md_form">
+	<div class="col-md-12 md_form">
 		<form id="surveyresource_form" action="" method="post">
 			{% csrf_token %}
 			{% include 'survey/_generic_form.html' %}
 			<input type="submit" value="Save" class="btn btn-lg btn-success" />
 		</form>
 	</div>
-	<div class="col-md-6" id="markdown_container">
-		<h3 id="title">Sýnishorn texta</h3>
-		<div id="preview">
-		</div>
+	<div class="col-md-12" md_form>
+	<p>* - <i>Notið annaðhvort Vefslóð eða Meginmál</i></p>
 	</div>
 </div>
 {% endblock %}
 
 {% block script %}
-	<script>
-		function update_preview() {
-			//update preview
-			var title = $('#id_title').val();
-			var textarea = $('#id_description').val();
-			$("#title").html(title);
-			$("#preview").html(marked(textarea));
-		}
-		update_preview();
-		$('.md_form').on('keyup', function(event){
-			update_preview();
-		})
-	</script>
+	{{ form.media }}
 {% endblock %}

@@ -80,6 +80,7 @@ class School(models.Model):
     managers = models.ManyToManyField(Manager, blank=True)
     teachers = models.ManyToManyField(Teacher, blank=True)
     students = models.ManyToManyField(Student, blank=True)
+    school_nr = models.IntegerField(default=None, blank=True, null=True)
 
     def __str__(self):
         return self.name + " (" + self.ssn + ")"
@@ -137,6 +138,12 @@ class GroupSurvey(models.Model):
 
     def results(self):
         return SurveyResult.objects.filter(survey=self)
+
+    def title(self):
+        if self.survey:
+            return self.survey.title
+        else:
+            return ""
 
     def __str__(self):
         return self.survey.title

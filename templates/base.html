@@ -26,6 +26,10 @@
 	{# Froala License #}
 	<script id="fr-fek">try{(function (k){localStorage.FEK=k;t=document.getElementById('fr-fek');t.parentNode.removeChild(t);})('emtomcdeqrA6az==')}catch(e){}</script>
 	{# Froala License ends #}
+    <script src='{% static "marked/lib/marked.js" %}'></script>
+    {% include 'javascript.html' %}
+    {% block script %}
+    {% endblock %}
   </head>
 
   <body>
@@ -37,11 +41,5 @@
 		</div>
 		{% include 'footer.html' %}
   	</div>
-
-	<script src='{% static "marked/lib/marked.js" %}'></script>
-	{% include 'javascript.html' %}
-	{% block script %}
-	{% endblock %}
-
   </body>
 </html>
