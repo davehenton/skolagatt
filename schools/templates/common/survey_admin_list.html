@@ -11,7 +11,7 @@
 			<th class="col-xs-3"><h3><small>Dagsetning</small></h3></th>
 		</thead>
 		<tbody>
-	{% for survey in surveys %}
+	{% for survey in surveys|dictsortreversed:"id" %}
 		<tr>
 			<td class="col-xs-6">
 				<a href="{% url 'schools:group_admin_listing' survey.title %}">

@@ -10,12 +10,12 @@
 		<ul class="dropdown-menu">
 			<li>
 				<a href="{% url 'survey:survey_create'%}">
-					<span class="glyphicon glyphicon-plus"></span>&nbsp;Bæta við einu
+					<span class="glyphicon glyphicon-plus"></span>&nbsp;Bæta við prófi fyrir stakan árgang
 				</a>
 			</li>
 			<li>
 				<a href="{% url 'survey:survey_create_multi'%}">
-					<span class="glyphicon glyphicon-plus"></span>&nbsp;Bæta við mörgum
+					<span class="glyphicon glyphicon-plus"></span>&nbsp;Bæta við prófi fyrir marga árganga
 				</a>
 			</li>
 		</ul>
@@ -33,7 +33,7 @@
 			</tr>
 		</thead>
 		<tbody>
-			{% for survey in survey_list|dictsort:"title" %}
+			{% for survey in survey_list|dictsortreversed:"id" %}
 			<tr>
 				<td><a href="{% url 'survey:survey_detail' survey.id %}">{{survey.title}}</a></td>
 				<td><a href="{% url 'survey:survey_type_update' survey.survey_type.id %}">{{survey.survey_type}}</a></td>
