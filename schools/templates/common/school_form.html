@@ -33,6 +33,21 @@
 			{% endif %}
 		</div>
 	</div>
+	<div class="row">
+		{% if form.school_nr.errors %}
+		<div class="form-group form-group-lg has-feedback has-error col-md-6 col-sm-12">
+		{% else %}
+		<div class="form-group form-group-lg has-feedback col-md-6 col-sm-12">
+		{% endif %}
+			<label for="{{ form.school_nr.name }}">{{ form.school_nr.label }}</label>
+			{{ form.school_nr }}
+			{% if form.school_nr.errors %}
+				<span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+				<span id="inputError2Status" class="sr-only">(villa)</span>
+				<p>{{ form.school_nr.errors.as_text }}</p>
+			{% endif %}
+		</div>
+	</div>
 	<hr>
 	<div class="row">
 		<div class="col-md-6 col-sm-12">
