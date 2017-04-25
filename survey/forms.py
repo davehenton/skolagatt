@@ -81,7 +81,7 @@ class SurveyResourceForm(forms.ModelForm):
         fields = ['title', 'description', 'resource_html', 'resource_url']
         labels = {
             'title': 'Titill',
-            'resource_url': 'Vefslóð á prófgagn (Notið annaðhvort vefslóð eða Texta)',
+            'resource_url': 'Vefslóð á prófgagn*',
             'description': 'Lýsing',
             'resource_html': 'Meginmál',
         }

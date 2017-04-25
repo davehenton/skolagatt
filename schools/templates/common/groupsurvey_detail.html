@@ -166,12 +166,18 @@
 			<div class="md">{{ survey_details.description }}</div>
 		</div>
 		<div class="col-md-4 md-display">
-			<h3>Nánari upplýsingar</h3>
+			<h3>Prófgögn</h3>
 			<ul class="survey_resources">
 			{% for resource in survey_resources %}
 				<li>
 					<div>
-						<h4><a href="{{resource.resource_url}}">{{resource.title}}</a></h4>
+						{% if resource.resource_url %}
+							<h4><a href="{{resource.resource_url}}">{{resource.title}}</a></h4>
+						{% else %}
+							<h4>
+							<a href="{% url 'schools:surveyresource_print' school.id studentgroup.id groupsurvey.id resource.id %}">{{resource.title}}</a>
+							</h4>
+						{% endif %}
 						<p>{{resource.description|md|safe}}</p>
 					</div>
 				</li>
