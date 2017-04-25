@@ -83,7 +83,7 @@ class SurveyResourceForm(forms.ModelForm):
             'title': 'Titill',
             'resource_url': 'Vefslóð á prófgagn (Notið annaðhvort vefslóð eða Texta)',
             'description': 'Lýsing',
-            'resource_html': 'Texti',
+            'resource_html': 'Meginmál',
         }
 
 
