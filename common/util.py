@@ -111,7 +111,7 @@ def is_group_manager(request, kwargs):
             studentgroup_id = kwargs['pk']
         elif 'nemandi' in request.path and 'pk' in kwargs:
             studentgroup_id = cm_models.StudentGroup.objects.filter(students=kwargs['pk']).id
-    except ObjectDoesNotExist:
+    except (ObjectDoesNotExist, AttributeError):
         return False
     else:
         if studentgroup_id and cm_models.StudentGroup.objects.filter(
