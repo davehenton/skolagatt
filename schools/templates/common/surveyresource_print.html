@@ -1,7 +1,7 @@
 {% extends 'second_base.html'%}
 {% load staticfiles %}
 {% block stylesheet %}
-    <link href="{% static 'schools/css/example_survey_samraemd_detail_print.css' %}" rel="stylesheet">
+    <link href="{% static 'schools/css/survey_resource_print.css' %}" rel="stylesheet">
     <meta name="name" content="content">
 {% endblock %}
 
@@ -9,7 +9,7 @@
 <page size="A4">
     <div class="outer-border">
         <img src="{% static 'img/logo-3litur.png'%}" class="img-responsive mms-logo"/>
-        <h1 class="text-center">Prófgagn</h1>
+        <h1 class="text-center">{{surveyresource.title}}</h1>
         <div class="row headinfo">
             <div class="info col-xs-6">
                 <p>{{ school.name }}</p>
@@ -17,6 +17,7 @@
                 <p>{{ studentgroup.name }}</p>
             </div>
         </div>
+        <hr />
         <div class="content">
             {{ surveyresource.resource_html|safe }}
         </div>
