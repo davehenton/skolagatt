@@ -82,20 +82,44 @@ class SchoolListing(ListView):
 
     def get_context_data(self, **kwargs):
         context = super(SchoolListing, self).get_context_data(**kwargs)
-        try:
+        if self.request.user.is_authenticated:
             if self.request.user.is_superuser:
                 context['school_list'] = common_util.slug_sort(
                     School.objects.all(), 'name')
             else:
                 manager_schools = School.objects.filter(
-                    managers=Manager.objects.filter(user=self.request.user))
+                    managers=Manager.objects.filter(user=self.request.user)).all()
                 teacher_schools = School.objects.filter(
-                    teachers=Teacher.objects.filter(user=self.request.user))
+                    teachers=Teacher.objects.filter(user=self.request.user)).all()
                 context['school_list'] = list(
                     set(common_util.slug_sort(manager_schools | teacher_schools, 'name')))
-        except Exception as e:
-            pass
+
         return context
+
+    def get(self, *args, **kwargs):
+        school_list = []
+        if self.request.user.is_authenticated and not self.request.user.is_superuser:
+            manager = Manager.objects.filter(user=self.request.user)
+            teacher = Teacher.objects.filter(user=self.request.user)
+            if manager.exists():
+                manager = manager.first()
+                school_list += manager.school_set.all()
+            elif teacher.exists():
+                teacher = teacher.first()
+                school_list += teacher.school_set.all()
+                if teacher.studentgroup_set.count() == 1:
+                    studentgroup = teacher.studentgroup_set.first()
+                    return redirect(reverse_lazy('schools:group_detail', kwargs={
+                        'school_id': studentgroup.school.id,
+                        'pk': studentgroup.id,
+                    }))
+
+            school_list = list(set(school_list))
+
+        if len(school_list) == 1:
+            return redirect(reverse_lazy('schools:school_detail', kwargs={'pk': school_list[0].id}))
+
+        return super(SchoolListing, self).get(*args, **kwargs)
 
 
 class SchoolDetail(common_mixins.SchoolEmployeeMixin, DetailView):
@@ -2502,17 +2526,22 @@ def lesfimi_excel_for_principals(request, pk):
             ws['B' + str(index)] = this_year_result['students']
             ws['C' + str(index)] = this_year_result['students_who_took_test']
             if this_year_result['students'] > 0 and this_year_result['students_who_took_test'] > 0:
-                ws['D' + str(index)] = (this_year_result['students_who_took_test'] / this_year_result['students']) * 100
-                pct_over_90pct = (this_year_result['students_over_90pct'] /
-                                  this_year_result['students_who_took_test']) * 100
+                ws['D' + str(index)] = round(
+                    (this_year_result['students_who_took_test'] / this_year_result['students']) * 100
+                )
+                pct_over_90pct = round(
+                    (this_year_result['students_over_90pct'] / this_year_result['students_who_took_test']) * 100
+                )
                 ws['E' + str(index)] = pct_over_90pct
 
-                pct_over_50pct = (this_year_result['students_over_50pct'] /
-                                  this_year_result['students_who_took_test']) * 100
+                pct_over_50pct = round(
+                    (this_year_result['students_over_50pct'] / this_year_result['students_who_took_test']) * 100
+                )
                 ws['F' + str(index)] = pct_over_50pct
 
-                pct_over_25pct = (this_year_result['students_over_25pct'] /
-                                  this_year_result['students_who_took_test']) * 100
+                pct_over_25pct = round(
+                    (this_year_result['students_over_25pct'] / this_year_result['students_who_took_test']) * 100
+                )
                 ws['G' + str(index)] = pct_over_25pct
 
             else:

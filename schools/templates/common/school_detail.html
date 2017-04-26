@@ -44,6 +44,7 @@
 {% endblock %}
 {% block script %}
 <script type="text/javascript">
+$(document).ready(function(){
 	dataTable_settings["bPaginate"] = false;
 	dataTable_settings["bFilter"] = false;
 	// For first two tables
@@ -57,5 +58,6 @@
        { "type": 'icelandic-html', "targets": [3] },
     ];
     $('#studentgroup-list').DataTable(dataTable_settings);
+});
 </script>
 {% endblock %}

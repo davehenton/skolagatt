@@ -49,10 +49,12 @@
 
 {% block script %}
 <script type="text/javascript">
+$(document).ready(function(){
 	dataTable_settings["columnDefs"] = [
        { "targets": [-1, -2], "orderable": false },
        { "targets": [4], "type": "percent" }
     ];
 	$('#example_survey_question_list').DataTable(dataTable_settings);
+});
 </script>
 {% endblock %}

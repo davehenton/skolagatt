@@ -12,13 +12,14 @@ from .models import (
     Survey, SurveyType, SurveyResource, SurveyTransformation,
     SurveyGradingTemplate, SurveyInputField, SurveyInputGroup
 )
+from common.models import (
+    StudentGroup,
+    GroupSurvey,
+)
 from .mixins import (
     SurveySuperSuccessMixin,
     SurveyCreateSuperSuccessMixin,
     SurveyDeleteSuperSuccessMixin
-)
-from common.mixins import (
-    SchoolTeacherMixin,
 )
 
 
@@ -104,6 +105,43 @@ class SurveyCreate(SurveyCreateSuperSuccessMixin, CreateView):
         survey = form.save(commit=False)
         survey.created_by = self.request.user
         return super(SurveyCreate, self).form_valid(form)
+
+
+class SurveyCreateMulti(SurveyCreateSuperSuccessMixin, CreateView):
+    model = Survey
+    form_class = forms.SurveyCreateMultiForm
+    template_name = "survey/survey_create_multi_form.html"
+
+    def post(self, *args, **kwargs):
+        student_years = self.request.POST.getlist('student_year')
+        mandatory = self.request.POST.get('mandatory')
+
+        form = forms.SurveyForm(self.request.POST)
+
+        if form.is_valid():
+            for student_year in student_years:
+                create_kwargs = form.cleaned_data.copy()
+                create_kwargs['student_year'] = student_year
+                create_kwargs['title'] = create_kwargs['title'].replace('%student_year%', student_year)
+                create_kwargs['identifier'] = create_kwargs['identifier'].replace('%student_year%', student_year)
+                create_kwargs['created_by'] = self.request.user
+                survey = Survey.objects.create(**create_kwargs)
+
+                if mandatory:
+                    # Create GroupSurvey for every StudentGroup in this student_year.
+                    studentgroups = StudentGroup.objects.filter(student_year=student_year).all()
+                    for studentgroup in studentgroups:
+                        if studentgroup.students and studentgroup.students.count() > 0:
+                            GroupSurvey.objects.create(
+                                studentgroup=studentgroup,
+                                survey=survey,
+                            )
+            return redirect(self.get_success_url())
+        else:
+            return self.form_invalid(form)
+
+    def get_success_url(self):
+        return reverse_lazy('survey:survey_list')
 
 
 class SurveyUpdate(SurveySuperSuccessMixin, UpdateView):

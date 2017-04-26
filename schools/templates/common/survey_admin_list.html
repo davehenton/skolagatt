@@ -11,7 +11,7 @@
 			<th class="col-xs-3"><h3><small>Dagsetning</small></h3></th>
 		</thead>
 		<tbody>
-	{% for survey in surveys %}
+	{% for survey in surveys|dictsortreversed:"id" %}
 		<tr>
 			<td class="col-xs-6">
 				<a href="{% url 'schools:group_admin_listing' survey.title %}">
@@ -31,10 +31,12 @@
 {% endblock %}
 {% block script %}
 <script type="text/javascript">
+$(document).ready(function(){
 	dataTable_settings["columnDefs"] = [
        { "type": 'icelandic-html', "targets": [0,1] },
        { "type": 'num-html', "targets": [2] }
     ];
 	$('#survey_table').DataTable(dataTable_settings);
+});
 </script>
 {% endblock %}

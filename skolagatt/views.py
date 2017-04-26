@@ -39,14 +39,6 @@ def login(request):
             if user.exists():
                 user = authenticate(username=user.first().username)
                 auth_login(request, user)
-                if util.is_manager(request):
-                    return redirect(
-                        'schools:manager_overview',
-                        Manager.objects.filter(user=request.user).first().id)
-                elif util.is_teacher(request):
-                    return redirect(
-                        'schools:teacher_overview',
-                        Teacher.objects.filter(user=request.user).first().id)
                 return redirect('schools:school_listing')
         return render(request, 'local_login.html')
     else:
@@ -64,14 +56,6 @@ def login(request):
             # authenticate user
             user = authenticate(username=user.username)
             auth_login(request, user)
-            if util.is_manager(request):
-                return redirect(
-                    'schools:manager_overview',
-                    Manager.objects.filter(user=request.user).first().id)
-            elif util.is_teacher(request):
-                return redirect(
-                    'schools:teacher_overview',
-                    Teacher.objects.filter(user=request.user).first().id)
             return redirect('schools:school_listing')
         else:
             context = {

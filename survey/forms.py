@@ -1,5 +1,9 @@
 from django import forms
 from django.forms.widgets import SelectDateWidget
+from django.forms import (
+    MultipleChoiceField,
+    BooleanField,
+)
 from django.utils.translation import ugettext_lazy as _
 from django.utils import timezone
 
@@ -69,6 +73,35 @@ class SurveyForm(forms.ModelForm):
             'active_from': 'Virkt frá',
             'active_to': 'Virkt til',
         }
+
+
+class SurveyCreateMultiForm(SurveyForm):
+    STUDENT_YEAR_CHOICES = (
+        ('1', '1. bekkur'),
+        ('2', '2. bekkur'),
+        ('3', '3. bekkur'),
+        ('4', '4. bekkur'),
+        ('5', '5. bekkur'),
+        ('6', '6. bekkur'),
+        ('7', '7. bekkur'),
+        ('8', '8. bekkur'),
+        ('9', '9. bekkur'),
+        ('10', '10. bekkur'),
+    )
+    student_year = MultipleChoiceField(choices=STUDENT_YEAR_CHOICES)
+    mandatory = BooleanField(initial=True)
+
+    def __init__(self, *args, **kwargs):
+        super(SurveyCreateMultiForm, self).__init__(*args, **kwargs)
+        self.fields['identifier'].widget.attrs = {
+            'class': 'form-control',
+            'placeholder': 'b%student_year%_AB_monYY',
+        }
+        self.fields['title'].widget.attrs = {
+            'class': 'form-control',
+            'placeholder': '%student_year%. bekkur - Próftegund - mánuður',
+        }
+        self.fields['mandatory'].label = 'Óvalkvæmt (búa til bekkjarpróf)'
 
 
 class SurveyResourceForm(forms.ModelForm):

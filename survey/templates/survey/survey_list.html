@@ -3,7 +3,23 @@
 {% block content %}
 <h1>Próf</h1>
 <div>
-	<a href="{% url 'survey:survey_create'%}" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span>Bæta við prófi</a>
+	<div class="btn-group" role="group">
+		<a href="{% url 'survey:survey_create' %}" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+			<span class="caret"></span>&nbsp;Bæta við prófi
+		</a>
+		<ul class="dropdown-menu">
+			<li>
+				<a href="{% url 'survey:survey_create'%}">
+					<span class="glyphicon glyphicon-plus"></span>&nbsp;Bæta við prófi fyrir stakan árgang
+				</a>
+			</li>
+			<li>
+				<a href="{% url 'survey:survey_create_multi'%}">
+					<span class="glyphicon glyphicon-plus"></span>&nbsp;Bæta við prófi fyrir marga árganga
+				</a>
+			</li>
+		</ul>
+	</div>
 	<a href="{% url 'survey:survey_type_create'%}" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span>Bæta við próftegund</a>
 	<table id="survey_list" class="table table-striped table-hover">
 		<thead>
@@ -17,7 +33,7 @@
 			</tr>
 		</thead>
 		<tbody>
-			{% for survey in survey_list|dictsort:"title" %}
+			{% for survey in survey_list|dictsortreversed:"id" %}
 			<tr>
 				<td><a href="{% url 'survey:survey_detail' survey.id %}">{{survey.title}}</a></td>
 				<td><a href="{% url 'survey:survey_type_update' survey.survey_type.id %}">{{survey.survey_type}}</a></td>
@@ -38,6 +54,7 @@
 {% endblock %}
 {% block script %}
 <script type="text/javascript">
+$(document).ready(function(){
 	dataTable_settings["columnDefs"] = [
        { "type": 'icelandic-html', "targets": [0, 1] },
        { "type": 'dates', "targets": [3, 4] },
@@ -45,5 +62,6 @@
     ];
 
 	$('#survey_list').DataTable(dataTable_settings);
+});
 </script>
 {% endblock %}
