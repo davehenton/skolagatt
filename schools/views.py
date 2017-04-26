@@ -99,10 +99,18 @@ class SchoolListing(ListView):
         return context
 
     def get(self, *args, **kwargs):
-        context = self.get_context_data(**kwargs)
+        school_list = []
+        if not self.request.user.is_superuser:
+            manager = Manager.objects.filter(user=self.request.user)
+            teacher = Teacher.objects.filter(user=self.request.user)
+            if manager.exists():
+                school_list += manager.school_set.all()
+            if teacher.exists():
+                school_list += manager.school_set.all()
+            school_list = list(set(school_list))
 
-        if len(context['school_list']) == 1:
-            return redirect(reverse_lazy('schools:school_detail', kwargs={'pk': context['school_list'][0].id}))
+        if len(school_list) == 1:
+            return redirect(reverse_lazy('schools:school_detail', kwargs={'pk': school_list[0].id}))
 
         return super(SchoolListing, self).get(*args, **kwargs)
 
