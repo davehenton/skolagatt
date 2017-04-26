@@ -82,19 +82,16 @@ class SchoolListing(ListView):
 
     def get_context_data(self, **kwargs):
         context = super(SchoolListing, self).get_context_data(**kwargs)
-        try:
-            if self.request.user.is_superuser:
-                context['school_list'] = common_util.slug_sort(
-                    School.objects.all(), 'name')
-            else:
-                manager_schools = School.objects.filter(
-                    managers=Manager.objects.filter(user=self.request.user))
-                teacher_schools = School.objects.filter(
-                    teachers=Teacher.objects.filter(user=self.request.user))
-                context['school_list'] = list(
-                    set(common_util.slug_sort(manager_schools | teacher_schools, 'name')))
-        except Exception as e:
-            pass
+        if self.request.user.is_superuser:
+            context['school_list'] = common_util.slug_sort(
+                School.objects.all(), 'name')
+        else:
+            manager_schools = School.objects.filter(
+                managers=Manager.objects.filter(user=self.request.user)).all()
+            teacher_schools = School.objects.filter(
+                teachers=Teacher.objects.filter(user=self.request.user)).all()
+            context['school_list'] = list(
+                set(common_util.slug_sort(manager_schools | teacher_schools, 'name')))
 
         return context
 
