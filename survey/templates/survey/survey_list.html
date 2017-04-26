@@ -54,6 +54,7 @@
 {% endblock %}
 {% block script %}
 <script type="text/javascript">
+$(document).ready(function(){
 	dataTable_settings["columnDefs"] = [
        { "type": 'icelandic-html', "targets": [0, 1] },
        { "type": 'dates', "targets": [3, 4] },
@@ -61,5 +62,6 @@
     ];
 
 	$('#survey_list').DataTable(dataTable_settings);
+});
 </script>
 {% endblock %}

@@ -140,6 +140,7 @@
 {% endblock %}
 {% block script %}
 <script type="text/javascript">
+$(document).ready(function(){
 	{% if not school.id %}
 		dataTable_settings["columnDefs"] = [
 	       { "type": 'icelandic-html', "targets": [0, 1] },
@@ -156,5 +157,6 @@
 	    ];
     {% endif %}
 	$('.student-table').DataTable(dataTable_settings);
+});
 </script>
 {% endblock %}
