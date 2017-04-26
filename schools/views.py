@@ -98,13 +98,13 @@ class SchoolListing(ListView):
 
         return context
 
-    def get(self, **kwargs):
+    def get(self, *args, **kwargs):
         context = self.get_context_data(**kwargs)
 
         if len(context['school_list']) == 1:
             return redirect(reverse_lazy('schools:school_detail', kwargs={'pk': context['school_list'][0].id}))
 
-        return super(SchoolListing, self).get(**kwargs)
+        return super(SchoolListing, self).get(*args, **kwargs)
 
 
 class SchoolDetail(common_mixins.SchoolEmployeeMixin, DetailView):
