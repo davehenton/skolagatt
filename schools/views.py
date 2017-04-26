@@ -104,9 +104,18 @@ class SchoolListing(ListView):
             manager = Manager.objects.filter(user=self.request.user)
             teacher = Teacher.objects.filter(user=self.request.user)
             if manager.exists():
-                school_list += manager.first().school_set.all()
-            if teacher.exists():
-                school_list += teacher.first().school_set.all()
+                manager = manager.first()
+                school_list += manager.school_set.all()
+            elif teacher.exists():
+                teacher = teacher.first()
+                school_list += teacher.school_set.all()
+                if teacher.studentgroup_set.count() == 1:
+                    studentgroup = teacher.studentgroup_set.first()
+                    return redirect(reverse_lazy('schools:group_detail', kwargs={
+                        'school_id': studentgroup.school.id,
+                        'pk': studentgroup.id,
+                    }))
+
             school_list = list(set(school_list))
 
         if len(school_list) == 1:
