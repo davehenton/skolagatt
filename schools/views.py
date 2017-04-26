@@ -2526,17 +2526,22 @@ def lesfimi_excel_for_principals(request, pk):
             ws['B' + str(index)] = this_year_result['students']
             ws['C' + str(index)] = this_year_result['students_who_took_test']
             if this_year_result['students'] > 0 and this_year_result['students_who_took_test'] > 0:
-                ws['D' + str(index)] = (this_year_result['students_who_took_test'] / this_year_result['students']) * 100
-                pct_over_90pct = (this_year_result['students_over_90pct'] /
-                                  this_year_result['students_who_took_test']) * 100
+                ws['D' + str(index)] = round(
+                    (this_year_result['students_who_took_test'] / this_year_result['students']) * 100
+                )
+                pct_over_90pct = round(
+                    (this_year_result['students_over_90pct'] / this_year_result['students_who_took_test']) * 100
+                )
                 ws['E' + str(index)] = pct_over_90pct
 
-                pct_over_50pct = (this_year_result['students_over_50pct'] /
-                                  this_year_result['students_who_took_test']) * 100
+                pct_over_50pct = round(
+                    (this_year_result['students_over_50pct'] / this_year_result['students_who_took_test']) * 100
+                )
                 ws['F' + str(index)] = pct_over_50pct
 
-                pct_over_25pct = (this_year_result['students_over_25pct'] /
-                                  this_year_result['students_who_took_test']) * 100
+                pct_over_25pct = round(
+                    (this_year_result['students_over_25pct'] / this_year_result['students_who_took_test']) * 100
+                )
                 ws['G' + str(index)] = pct_over_25pct
 
             else:
