@@ -115,8 +115,10 @@ USE_L10N = True
 
 USE_TZ = True
 
-SESSION_COOKIE_AGE = 60 * 30  # Session will expiry after 30 minutes idle.
-SESSION_SAVE_EVERY_REQUEST = True
+SESSION_COOKIE_AGE = 90 * 60  # Session will expiry after 90 minutes idle.
+
+# SESSION_SAVE_EVERY_REQUEST = True
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 
 # Static files (CSS, JavaScript, Images)
