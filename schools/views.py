@@ -100,7 +100,7 @@ class SchoolListing(ListView):
 
     def get(self, *args, **kwargs):
         school_list = []
-        if not self.request.user.is_superuser:
+        if self.request.user.is_authenticated and not self.request.user.is_superuser:
             manager = Manager.objects.filter(user=self.request.user)
             teacher = Teacher.objects.filter(user=self.request.user)
             if manager.exists():
