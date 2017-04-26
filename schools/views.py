@@ -106,7 +106,7 @@ class SchoolListing(ListView):
             if manager.exists():
                 school_list += manager.first().school_set.all()
             if teacher.exists():
-                school_list += manager.first().school_set.all()
+                school_list += teacher.first().school_set.all()
             school_list = list(set(school_list))
 
         if len(school_list) == 1:
