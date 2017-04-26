@@ -56,6 +56,8 @@
 <script type="text/javascript">
 $(document).ready(function(){
 	dataTable_settings["columnDefs"] = [
+	   { "aaSorting": [] },
+       { "type": 'icelandic-html', "targets": [0, 1] },
        { "type": 'dates', "targets": [3, 4] },
        { "targets": -1, "orderable": false }
     ];
