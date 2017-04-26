@@ -26,6 +26,7 @@
 
 {% block script %}
 <script>
+$(document).ready(function(){
 	function nameLink(id, name, school_id) {
 		result = '';
 		if (school_id != null) {
@@ -80,13 +81,14 @@
 			$('table tbody tr').remove();
 		}
 	});
-	$(document).ready(function() {
-		if ($('#search-box').val().length > 1) {
-			if($('table tbody tr').length < 1) {
-				performSearch($('#search-box').val());
-			}
+	
+	if ($('#search-box').val().length > 1) {
+		if($('table tbody tr').length < 1) {
+			performSearch($('#search-box').val());
 		}
-	});
+	}
+	
+});
 </script>
 
 {% endblock %}
