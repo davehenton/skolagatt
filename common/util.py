@@ -89,6 +89,9 @@ def is_group_manager(request, kwargs):
     if not request.user.is_authenticated:
         return False
 
+    if request.user.is_superuser:
+        return True
+
     studentgroup_id = None
 
     try:
