@@ -52,6 +52,7 @@
 
 {% block script %}
 	<script type='text/javascript'>
+	$(document).ready(function(){
 		var data_results = {{data_result|safe}};
 		var update = [];
 		if(data_results){
@@ -141,5 +142,6 @@
 				this.className = classes[($.inArray(this.className, classes)+1)%classes.length];
 			});
 		});
+	});
 	</script>
 	{% endblock %}

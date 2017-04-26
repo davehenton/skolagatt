@@ -83,6 +83,7 @@
 {{ form.media }}
 {# <script type="text/javascript" src="{% static 'froala_editor/js/froala_editor.min.js' %}"></script> #}
 <script>
+$(document).ready(function(){
     $('#id_quickcode').change(function () {
     	var cat = $('#id_quickcode').val().substr(0, 2);
     	switch (cat) {
@@ -100,5 +101,6 @@
     			break;
     	}
     })
+});
 </script>
 {% endblock %}
