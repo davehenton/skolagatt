@@ -96,7 +96,7 @@ class SchoolListing(ListView):
         except Exception as e:
             pass
         if len(context['school_list']) == 1:
-            return redirect(reverse_lazy('school_detail', kwargs={'pk': context['school_list'][0].id}))
+            return redirect(reverse_lazy('schools:school_detail', kwargs={'pk': context['school_list'][0].id}))
         return context
 
 
