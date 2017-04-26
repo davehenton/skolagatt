@@ -95,9 +95,16 @@ class SchoolListing(ListView):
                     set(common_util.slug_sort(manager_schools | teacher_schools, 'name')))
         except Exception as e:
             pass
+
+        return context
+
+    def get(self, **kwargs):
+        context = self.get_context_data(**kwargs)
+
         if len(context['school_list']) == 1:
             return redirect(reverse_lazy('schools:school_detail', kwargs={'pk': context['school_list'][0].id}))
-        return context
+
+        return super(SchoolListing, self).get(**kwargs)
 
 
 class SchoolDetail(common_mixins.SchoolEmployeeMixin, DetailView):
