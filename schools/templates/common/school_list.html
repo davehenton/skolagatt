@@ -29,17 +29,21 @@
 			{% endif %}
 			<table id="school_list" class="table table-hover table-striped row">
 				<thead>
+					<th><h4>Skóla nr.</h4></th>
 					<th><h4>Nafn</h4></th>
 					<th><h4>Kennitala</h4></th>
 					{% if request.user.is_superuser %}
-					<th>Stjórn.#</th>
-					<th>Nem.#</th>
+					<th><h4>Stjórn.#</h4></th>
+					<th><h4>Nem.#</h4></th>
 					<th class="col-xs-2"></th>
 					{% endif %}
 				</thead>
 				<tbody>
 					{% for school in school_list %}
 					<tr>
+						<td>
+							<a href="{% url 'schools:school_detail' school.id %}">{{school.school_nr}}</a>
+						</td>
 						<td>
 							<a href="{% url 'schools:school_detail' school.id %}">{{school.name}}</a>
 						</td>
@@ -101,10 +105,15 @@
 {% block script %}
 <script type="text/javascript">
 $(document).ready(function(){
+	dataTable_settings["order"] = [1]
 	dataTable_settings["columnDefs"] = [
-       { "type": 'icelandic-html', "targets": [0] },
-       { "type": 'kt-html', "targets": 1},
-       { "targets": -1, "orderable": false }
+       { "type": 'icelandic-html', "targets": [1] },
+       { "type": 'kt-html', "targets": 2},
+       {% if request.user.is_superuser %}
+           { "targets": [2,3,4,5], "orderable": false },
+       {% else %}
+           { "targets": [2,3], "orderable": false },
+       {% endif %}
     ];
 	$('#school_list').DataTable(dataTable_settings);
 });
