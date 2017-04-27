@@ -47,7 +47,7 @@ page[size='A4'] {
     display      : block;
 
     width        : 210mm;
-    margin       : 1cm 1cm 1cm 1cm;
+    margin       : 0 auto;
     margin-bottom: 5mm;
     padding      : 3em;
 
@@ -57,7 +57,7 @@ page[size='A4'] {
     -webkit-print-color-adjust: exact;
 }
 @page {
-    margin: 0;
+    margin: 1em;
 }
 .outer-border {
     height    : 96%;
