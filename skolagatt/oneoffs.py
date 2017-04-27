@@ -383,7 +383,7 @@ def initialize_locations():
         school.post_code = '220'
         school.municipality = 'Hafnarfjarðarkaupstaður'
         school.part = 'Ngr. Reykjavíkur'
-		school.save()
+        school.save()
     else:
         print("school not found: NÚ")
 
@@ -393,7 +393,7 @@ def initialize_locations():
         school.post_code = '260'
         school.municipality = 'Reykjanesbær'
         school.part = 'Suðurnes'
-		school.save()
+        school.save()
     else:
         print("school not found: Akurskóli")
 
@@ -403,7 +403,7 @@ def initialize_locations():
         school.post_code = '210'
         school.municipality = 'Garðabær'
         school.part = 'Ngr. Reykjavíkur'
-		school.save()
+        school.save()
     else:
         print("school not found: Alþjóðaskólinn á Íslandi")
 
@@ -413,7 +413,7 @@ def initialize_locations():
         school.post_code = '370'
         school.municipality = 'Dalabyggð'
         school.part = 'Vesturland'
-		school.save()
+        school.save()
     else:
         print("school not found: Auðarskóli - grunnskóladeild Búðardal")
 
@@ -423,7 +423,7 @@ def initialize_locations():
         school.post_code = '101'
         school.municipality = 'Reykjavíkurborg'
         school.part = 'Reykjavík'
-		school.save()
+        school.save()
     else:
         print("school not found: Austurbæjarskóli")
 
@@ -433,7 +433,7 @@ def initialize_locations():
         school.post_code = '200'
         school.municipality = 'Kópavogsbær'
         school.part = 'Ngr. Reykjavíkur'
-		school.save()
+        school.save()
     else:
         print("school not found: Álfhólsskóli")
 
@@ -443,7 +443,7 @@ def initialize_locations():
         school.post_code = '225'
         school.municipality = 'Garðabær'
         school.part = 'Ngr. Reykjavíkur'
-		school.save()
+        school.save()
     else:
         print("school not found: Álftanesskóli")
 
@@ -453,7 +453,7 @@ def initialize_locations():
         school.post_code = '110'
         school.municipality = 'Reykjavíkurborg'
         school.part = 'Reykjavík'
-		school.save()
+        school.save()
     else:
         print("school not found: Árbæjarskóli")
 
@@ -463,7 +463,7 @@ def initialize_locations():
         school.post_code = '621'
         school.municipality = 'Dalvíkurbyggð'
         school.part = 'Norðurland eystra'
-		school.save()
+        school.save()
     else:
         print("school not found: Árskógarskóli")
 
@@ -473,7 +473,7 @@ def initialize_locations():
         school.post_code = '550'
         school.municipality = 'Sveitarf. Skagafjörður'
         school.part = 'Norðurland vestra'
-		school.save()
+        school.save()
     else:
         print("school not found: Árskóli")
 
@@ -483,7 +483,7 @@ def initialize_locations():
         school.post_code = '110'
         school.municipality = 'Reykjavíkurborg'
         school.part = 'Reykjavík'
-		school.save()
+        school.save()
     else:
         print("school not found: Ártúnsskóli")
 
@@ -493,7 +493,7 @@ def initialize_locations():
         school.post_code = '221'
         school.municipality = 'Hafnarfjarðarkaupstaður'
         school.part = 'Ngr. Reykjavíkur'
-		school.save()
+        school.save()
     else:
         print("school not found: Áslandsskóli")
 
@@ -503,7 +503,7 @@ def initialize_locations():
         school.post_code = '820'
         school.municipality = 'Sveitarfélagið Árborg'
         school.part = 'Suðurland'
-		school.save()
+        school.save()
     else:
         print("school not found: Barnaskólinn á Eyrarbakka og Stokkseyri")
 
@@ -513,7 +513,7 @@ def initialize_locations():
         school.post_code = '840'
         school.municipality = 'Bláskógabyggð'
         school.part = 'Suðurland'
-		school.save()
+        school.save()
     else:
         print("school not found: Bláskógaskóli - Laugarvatni")
 
@@ -523,7 +523,7 @@ def initialize_locations():
         school.post_code = '801'
         school.municipality = 'Bláskógabyggð'
         school.part = 'Suðurland'
-		school.save()
+        school.save()
     else:
         print("school not found: Bláskógaskóli - Reykholti")
 
@@ -533,7 +533,7 @@ def initialize_locations():
         school.post_code = '540'
         school.municipality = 'Blönduósbær'
         school.part = 'Norðurland vestra'
-		school.save()
+        school.save()
     else:
         print("school not found: Blönduskóli")
 
@@ -543,7 +543,7 @@ def initialize_locations():
         school.post_code = '640'
         school.municipality = 'Norðurþing'
         school.part = 'Norðurland eystra'
-		school.save()
+        school.save()
     else:
         print("school not found: Borgarhólsskóli")
 
@@ -553,7 +553,7 @@ def initialize_locations():
         school.post_code = '108'
         school.municipality = 'Reykjavíkurborg'
         school.part = 'Reykjavík'
-		school.save()
+        school.save()
     else:
         print("school not found: Breiðagerðisskóli")
 
@@ -563,7 +563,7 @@ def initialize_locations():
         school.post_code = '109'
         school.municipality = 'Reykjavíkurborg'
         school.part = 'Reykjavík'
-		school.save()
+        school.save()
     else:
         print("school not found: Breiðholtsskóli")
 
@@ -573,7 +573,7 @@ def initialize_locations():
         school.post_code = '300'
         school.municipality = 'Akraneskaupstaður'
         school.part = 'Vesturland'
-		school.save()
+        school.save()
     else:
         print("school not found: Brekkubæjarskóli")
 
@@ -583,7 +583,7 @@ def initialize_locations():
         school.post_code = '600'
         school.municipality = 'Akureyrarkaupstaður'
         school.part = 'Norðurland eystra'
-		school.save()
+        school.save()
     else:
         print("school not found: Brekkuskóli")
 
@@ -593,7 +593,7 @@ def initialize_locations():
         school.post_code = '701'
         school.municipality = 'Fljótsdalshérað'
         school.part = 'Austurland'
-		school.save()
+        school.save()
     else:
         print("school not found: Brúarásskóli")
 
@@ -603,7 +603,7 @@ def initialize_locations():
         school.post_code = '105'
         school.municipality = 'Reykjavíkurborg'
         school.part = 'Reykjavík'
-		school.save()
+        school.save()
     else:
         print("school not found: Brúarskóli")
 
@@ -613,7 +613,7 @@ def initialize_locations():
         school.post_code = '220'
         school.municipality = 'Hafnarfjarðarkaupstaður'
         school.part = 'Ngr. Reykjavíkur'
-		school.save()
+        school.save()
     else:
         print("school not found: Barnaskóli Hjallastefnunnar, Hafnarfirði")
 
@@ -623,7 +623,7 @@ def initialize_locations():
         school.post_code = '101'
         school.municipality = 'Reykjavíkurborg'
         school.part = 'Reykjavík'
-		school.save()
+        school.save()
     else:
         print("school not found: BSK Reykjavík")
 
@@ -633,7 +633,7 @@ def initialize_locations():
         school.post_code = '210'
         school.municipality = 'Garðabær'
         school.part = 'Ngr. Reykjavíkur'
-		school.save()
+        school.save()
     else:
         print("school not found: Barnaskóli Hjallastefnunnar í Garðabæ Vífilsstöðum")
 
@@ -643,7 +643,7 @@ def initialize_locations():
         school.post_code = '113'
         school.municipality = 'Reykjavíkurborg'
         school.part = 'Reykjavík'
-		school.save()
+        school.save()
     else:
         print("school not found: Dalskóli")
 
@@ -653,7 +653,7 @@ def initialize_locations():
         school.post_code = '700'
         school.municipality = 'Fljótsdalshérað'
         school.part = 'Austurland'
-		school.save()
+        school.save()
     else:
         print("school not found: Egilsstaðaskóli")
 
@@ -663,7 +663,7 @@ def initialize_locations():
         school.post_code = '701'
         school.municipality = 'Fljótsdalshérað'
         school.part = 'Austurland'
-		school.save()
+        school.save()
     else:
         print("school not found: Fellaskóli - Fellahreppi")
 
@@ -673,7 +673,7 @@ def initialize_locations():
         school.post_code = '111'
         school.municipality = 'Reykjavíkurborg'
         school.part = 'Reykjavík'
-		school.save()
+        school.save()
     else:
         print("school not found: Fellaskóli - Reykjavík")
 
@@ -683,7 +683,7 @@ def initialize_locations():
         school.post_code = '523'
         school.municipality = 'Árneshreppur'
         school.part = 'Vestfirðir'
-		school.save()
+        school.save()
     else:
         print("school not found: Finnbogastaðaskóli")
 
@@ -693,7 +693,7 @@ def initialize_locations():
         school.post_code = '210'
         school.municipality = 'Garðabær'
         school.part = 'Ngr. Reykjavíkur'
-		school.save()
+        school.save()
     else:
         print("school not found: Flataskóli")
 
@@ -703,7 +703,7 @@ def initialize_locations():
         school.post_code = '801'
         school.municipality = 'Flóahreppi'
         school.part = 'Suðurland'
-		school.save()
+        school.save()
     else:
         print("school not found: Flóaskóli")
 
@@ -713,7 +713,7 @@ def initialize_locations():
         school.post_code = '845'
         school.municipality = 'Hrunamannahreppur'
         school.part = 'Suðurland'
-		school.save()
+        school.save()
     else:
         print("school not found: Flúðaskóli")
 
@@ -723,7 +723,7 @@ def initialize_locations():
         school.post_code = '112'
         school.municipality = 'Reykjavíkurborg'
         school.part = 'Reykjavík'
-		school.save()
+        school.save()
     else:
         print("school not found: Foldaskóli")
 
@@ -733,7 +733,7 @@ def initialize_locations():
         school.post_code = '108'
         school.municipality = 'Reykjavíkurborg'
         school.part = 'Reykjavík'
-		school.save()
+        school.save()
     else:
         print("school not found: Fossvogsskóli")
 
@@ -743,7 +743,7 @@ def initialize_locations():
         school.post_code = '210'
         school.municipality = 'Garðabær'
         school.part = 'Ngr. Reykjavíkur'
-		school.save()
+        school.save()
     else:
         print("school not found: Garðaskóli")
 
@@ -753,7 +753,7 @@ def initialize_locations():
         school.post_code = '250'
         school.municipality = 'Sveitarfélagið Garður'
         school.part = 'Suðurnes'
-		school.save()
+        school.save()
     else:
         print("school not found: Gerðaskóli")
 
@@ -763,7 +763,7 @@ def initialize_locations():
         school.post_code = '603'
         school.municipality = 'Akureyrarkaupstaður'
         school.part = 'Norðurland eystra'
-		school.save()
+        school.save()
     else:
         print("school not found: Giljaskóli")
 
@@ -773,7 +773,7 @@ def initialize_locations():
         school.post_code = '603'
         school.municipality = 'Akureyrarkaupstaður'
         school.part = 'Norðurland eystra'
-		school.save()
+        school.save()
     else:
         print("school not found: Glerárskóli")
 
@@ -783,7 +783,7 @@ def initialize_locations():
         school.post_code = '107'
         school.municipality = 'Reykjavíkurborg'
         school.part = 'Reykjavík'
-		school.save()
+        school.save()
     else:
         print("school not found: Grandaskóli")
 
@@ -793,7 +793,7 @@ def initialize_locations():
         school.post_code = '610'
         school.municipality = 'Grýtubakkahreppur'
         school.part = 'Norðurland eystra'
-		school.save()
+        school.save()
     else:
         print("school not found: Grenivíkurskóli")
 
@@ -803,7 +803,7 @@ def initialize_locations():
         school.post_code = '611'
         school.municipality = 'Akureyrarkaupstaður'
         school.part = 'Norðurland eystra'
-		school.save()
+        school.save()
     else:
         print("school not found: Grímseyjarskóli")
 
@@ -813,7 +813,7 @@ def initialize_locations():
         school.post_code = '300'
         school.municipality = 'Akraneskaupstaður'
         school.part = 'Vesturland'
-		school.save()
+        school.save()
     else:
         print("school not found: Grundaskóli")
 
@@ -823,7 +823,7 @@ def initialize_locations():
         school.post_code = '415'
         school.municipality = 'Bolungarvíkurkaupstaður'
         school.part = 'Vestfirðir'
-		school.save()
+        school.save()
     else:
         print("school not found: Grunnskóli Bolungarvíkur")
 
@@ -833,7 +833,7 @@ def initialize_locations():
         school.post_code = '311'
         school.municipality = 'Borgarbyggð'
         school.part = 'Vesturland'
-		school.save()
+        school.save()
     else:
         print("school not found: Grunnskóli Borgarfjarðar")
 
@@ -843,7 +843,7 @@ def initialize_locations():
         school.post_code = '320'
         school.municipality = 'Borgarbyggð'
         school.part = 'Vesturland'
-		school.save()
+        school.save()
     else:
         print("school not found: Grunnskóli Borgarfjarðar")
 
@@ -853,7 +853,7 @@ def initialize_locations():
         school.post_code = '311'
         school.municipality = 'Borgarbyggð'
         school.part = 'Vesturland'
-		school.save()
+        school.save()
     else:
         print("school not found: Grunnskóli Borgarfjarðar")
 
@@ -863,7 +863,7 @@ def initialize_locations():
         school.post_code = '720'
         school.municipality = 'Borgarfjarðarhreppur'
         school.part = 'Austurland'
-		school.save()
+        school.save()
     else:
         print("school not found: Grunnskóli Borgarfjarðar eystra")
 
@@ -873,7 +873,7 @@ def initialize_locations():
         school.post_code = '620'
         school.municipality = 'Dalvíkurbyggð'
         school.part = 'Norðurland eystra'
-		school.save()
+        school.save()
     else:
         print("school not found: Dalvíkurskóli")
 
@@ -883,7 +883,7 @@ def initialize_locations():
         school.post_code = '765'
         school.municipality = 'Djúpavogshreppur'
         school.part = 'Austurland'
-		school.save()
+        school.save()
     else:
         print("school not found: Grunnskóli Djúpavogs")
 
@@ -893,7 +893,7 @@ def initialize_locations():
         school.post_code = '750'
         school.municipality = 'Fjarðabyggð'
         school.part = 'Austurland'
-		school.save()
+        school.save()
     else:
         print("school not found: Grunnskóli Fáskrúðsfjarðar")
 
@@ -903,7 +903,7 @@ def initialize_locations():
         school.post_code = '625'
         school.municipality = 'Fjallabyggð'
         school.part = 'Norðurland vestra'
-		school.save()
+        school.save()
     else:
         print("school not found: Grunnskóli Fjallabyggðar")
 
@@ -913,7 +913,7 @@ def initialize_locations():
         school.post_code = '580'
         school.municipality = 'Fjallabyggð'
         school.part = 'Norðurland vestra'
-		school.save()
+        school.save()
     else:
         print("school not found: Grunnskóli Fjallabyggðar")
 
@@ -923,7 +923,7 @@ def initialize_locations():
         school.post_code = '580'
         school.municipality = 'Fjallabyggð'
         school.part = 'Norðurland vestra'
-		school.save()
+        school.save()
     else:
         print("school not found: Grunnskóli Fjallabyggðar")
 
@@ -933,7 +933,7 @@ def initialize_locations():
         school.post_code = '240'
         school.municipality = 'Grindavíkurbær'
         school.part = 'Suðurnes'
-		school.save()
+        school.save()
     else:
         print("school not found: Grunnskóli Grindavíkur")
 
@@ -943,7 +943,7 @@ def initialize_locations():
         school.post_code = '350'
         school.municipality = 'Grundarfjarðarbær'
         school.part = 'Vesturland'
-		school.save()
+        school.save()
     else:
         print("school not found: Grunnskóli Grundarfjarðar")
 
@@ -953,7 +953,7 @@ def initialize_locations():
         school.post_code = '780'
         school.municipality = 'Sveitarfélagið Hornafjörður'
         school.part = 'Austurland'
-		school.save()
+        school.save()
     else:
         print("school not found: Grunnskóli Hornafjarðar")
 
@@ -963,7 +963,7 @@ def initialize_locations():
         school.post_code = '500'
         school.municipality = 'Bæjarhreppur'
         school.part = 'Norðurland vestra'
-		school.save()
+        school.save()
     else:
         print("school not found: Grunnskóli Húnaþings vestra")
 
@@ -973,7 +973,7 @@ def initialize_locations():
         school.post_code = '530'
         school.municipality = 'Húnaþing vestra'
         school.part = 'Norðurland vestra'
-		school.save()
+        school.save()
     else:
         print("school not found: Grunnskóli Húnaþings vestra")
 
@@ -983,7 +983,7 @@ def initialize_locations():
         school.post_code = '675'
         school.municipality = 'Norðurþing'
         school.part = 'Norðurland eystra'
-		school.save()
+        school.save()
     else:
         print("school not found: Grunnskóli Raufarhafnar")
 
@@ -993,7 +993,7 @@ def initialize_locations():
         school.post_code = '730'
         school.municipality = 'Fjarðabyggð'
         school.part = 'Austurland'
-		school.save()
+        school.save()
     else:
         print("school not found: Grunnskóli Reyðarfjarðar")
 
@@ -1003,7 +1003,7 @@ def initialize_locations():
         school.post_code = '170'
         school.municipality = 'Seltjarnarnesbær'
         school.part = 'Ngr. Reykjavíkur'
-		school.save()
+        school.save()
     else:
         print("school not found: Grunnskóli Seltjarnarness")
 
@@ -1013,7 +1013,7 @@ def initialize_locations():
         school.post_code = '170'
         school.municipality = 'Seltjarnarnesbær'
         school.part = 'Ngr. Reykjavíkur'
-		school.save()
+        school.save()
     else:
         print("school not found: Grunnskóli Seltjarnarness")
 
@@ -1023,7 +1023,7 @@ def initialize_locations():
         school.post_code = '360'
         school.municipality = 'Snæfellsbær'
         school.part = 'Vesturland'
-		school.save()
+        school.save()
     else:
         print("school not found: Grunnskóli Snæfellsbæjar - Hellissandi")
 
@@ -1033,7 +1033,7 @@ def initialize_locations():
         school.post_code = '355'
         school.municipality = 'Snæfellsbær'
         school.part = 'Vesturland'
-		school.save()
+        school.save()
     else:
         print("school not found: Grunnskóli Snæfellsbæjar - Lýsuhóli")
 
@@ -1043,7 +1043,7 @@ def initialize_locations():
         school.post_code = '355'
         school.municipality = 'Snæfellsbær'
         school.part = 'Vesturland'
-		school.save()
+        school.save()
     else:
         print("school not found: Grunnskóli Snæfellsbæjar - Ólafsvík")
 
@@ -1053,7 +1053,7 @@ def initialize_locations():
         school.post_code = '900'
         school.municipality = 'Vestmannaeyjabær'
         school.part = 'Suðurland'
-		school.save()
+        school.save()
     else:
         print("school not found: Grunnskóli Vestmannaeyja")
 
@@ -1063,7 +1063,7 @@ def initialize_locations():
         school.post_code = '451'
         school.municipality = 'Vesturbyggð'
         school.part = 'Vestfirðir'
-		school.save()
+        school.save()
     else:
         print("school not found: Grunnskóli Vesturbyggðar")
 
@@ -1073,7 +1073,7 @@ def initialize_locations():
         school.post_code = '465'
         school.municipality = 'Vesturbyggð'
         school.part = 'Vestfirðir'
-		school.save()
+        school.save()
     else:
         print("school not found: Bíldudalsskóli")
 
@@ -1083,7 +1083,7 @@ def initialize_locations():
         school.post_code = '450'
         school.municipality = 'Vesturbyggð'
         school.part = 'Vestfirðir'
-		school.save()
+        school.save()
     else:
         print("school not found: Grunnskóli Vesturbyggðar - Patreksskóli")
 
@@ -1093,7 +1093,7 @@ def initialize_locations():
         school.post_code = '425'
         school.municipality = 'Ísafjarðarbær'
         school.part = 'Vestfirðir'
-		school.save()
+        school.save()
     else:
         print("school not found: Grunnskóli Önundarfjarðar")
 
@@ -1103,7 +1103,7 @@ def initialize_locations():
         school.post_code = '671'
         school.municipality = 'Norðurþing'
         school.part = 'Norðurland eystra'
-		school.save()
+        school.save()
     else:
         print("school not found: Öxarfjarðarskóli, Norðurþingi")
 
@@ -1113,7 +1113,7 @@ def initialize_locations():
         school.post_code = '565'
         school.municipality = 'Sveitarf. Skagafjörður'
         school.part = 'Norðurland vestra'
-		school.save()
+        school.save()
     else:
         print("school not found: Grunnskólinn austan Vatna")
 
@@ -1123,7 +1123,7 @@ def initialize_locations():
         school.post_code = '551'
         school.municipality = 'Sveitarf. Skagafjörður'
         school.part = 'Norðurland vestra'
-		school.save()
+        school.save()
     else:
         print("school not found: Grunnskólinn austan Vatna")
 
@@ -1133,7 +1133,7 @@ def initialize_locations():
         school.post_code = '570'
         school.municipality = 'Sveitarf. Skagafjörður'
         school.part = 'Norðurland vestra'
-		school.save()
+        school.save()
     else:
         print("school not found: Grunnskólinn austan Vatna")
 
@@ -1143,7 +1143,7 @@ def initialize_locations():
         school.post_code = '685'
         school.municipality = 'Langanesbyggð'
         school.part = 'Austurland'
-		school.save()
+        school.save()
     else:
         print("school not found: Grunnskólinn á Bakkafirði")
 
@@ -1153,7 +1153,7 @@ def initialize_locations():
         school.post_code = '520'
         school.municipality = 'Kaldrananeshreppur'
         school.part = 'Vestfirðir'
-		school.save()
+        school.save()
     else:
         print("school not found: Grunnskólinn á Drangsnesi")
 
@@ -1163,7 +1163,7 @@ def initialize_locations():
         school.post_code = '735'
         school.municipality = 'Fjarðabyggð'
         school.part = 'Austurland'
-		school.save()
+        school.save()
     else:
         print("school not found: Grunnskólinn á Eskifirði")
 
@@ -1173,7 +1173,7 @@ def initialize_locations():
         school.post_code = '510'
         school.municipality = 'Strandabyggð'
         school.part = 'Vestfirðir'
-		school.save()
+        school.save()
     else:
         print("school not found: Grunnskólinn á Hólmavík")
 
@@ -1183,7 +1183,7 @@ def initialize_locations():
         school.post_code = '400'
         school.municipality = 'Ísafjarðarbær'
         school.part = 'Vestfirðir'
-		school.save()
+        school.save()
     else:
         print("school not found: Grunnskólinn á Ísafirði")
 
@@ -1193,7 +1193,7 @@ def initialize_locations():
         school.post_code = '430'
         school.municipality = 'Ísafjarðarbær'
         school.part = 'Vestfirðir'
-		school.save()
+        school.save()
     else:
         print("school not found: Grunnskólinn á Suðureyri")
 
@@ -1203,7 +1203,7 @@ def initialize_locations():
         school.post_code = '460'
         school.municipality = 'Tálknafjarðarhreppur'
         school.part = 'Vestfirðir'
-		school.save()
+        school.save()
     else:
         print("school not found: Grunnskólinn á Tálknafirði")
 
@@ -1213,7 +1213,7 @@ def initialize_locations():
         school.post_code = '470'
         school.municipality = 'Ísafjarðarbær'
         school.part = 'Vestfirðir'
-		school.save()
+        school.save()
     else:
         print("school not found: Grunnskólinn á Þingeyri")
 
@@ -1223,7 +1223,7 @@ def initialize_locations():
         school.post_code = '680'
         school.municipality = 'Langanesbyggð'
         school.part = 'Norðurland eystra'
-		school.save()
+        school.save()
     else:
         print("school not found: Grunnskólinn á Þórshöfn")
 
@@ -1233,7 +1233,7 @@ def initialize_locations():
         school.post_code = '850'
         school.municipality = 'Rangárþing ytra'
         school.part = 'Suðurland'
-		school.save()
+        school.save()
     else:
         print("school not found: Grunnskólinn Hellu")
 
@@ -1243,7 +1243,7 @@ def initialize_locations():
         school.post_code = '310'
         school.municipality = 'Borgarbyggð'
         school.part = 'Vesturland'
-		school.save()
+        school.save()
     else:
         print("school not found: Grunnskólinn í Borgarnesi")
 
@@ -1253,7 +1253,7 @@ def initialize_locations():
         school.post_code = '760'
         school.municipality = 'Breiðdalshreppur'
         school.part = 'Austurland'
-		school.save()
+        school.save()
     else:
         print("school not found: Grunnskólinn í Breiðdalshreppi")
 
@@ -1263,7 +1263,7 @@ def initialize_locations():
         school.post_code = '785'
         school.municipality = 'Sveitarfélagið Hornafjörður'
         school.part = 'Austurland'
-		school.save()
+        school.save()
     else:
         print("school not found: Grunnskólinn í Hofgarði")
 
@@ -1273,7 +1273,7 @@ def initialize_locations():
         school.post_code = '630'
         school.municipality = 'Akureyrarkaupstaður'
         school.part = 'Norðurland eystra'
-		school.save()
+        school.save()
     else:
         print("school not found: Hríseyjarskóli")
 
@@ -1283,7 +1283,7 @@ def initialize_locations():
         school.post_code = '810'
         school.municipality = 'Hveragerðisbær'
         school.part = 'Suðurland'
-		school.save()
+        school.save()
     else:
         print("school not found: Grunnskólinn í Hveragerði")
 
@@ -1293,7 +1293,7 @@ def initialize_locations():
         school.post_code = '245'
         school.municipality = 'Sandgerðisbær'
         school.part = 'Suðurnes'
-		school.save()
+        school.save()
     else:
         print("school not found: Grunnskólinn í Sandgerði")
 
@@ -1303,7 +1303,7 @@ def initialize_locations():
         school.post_code = '340'
         school.municipality = 'Stykkishólmsbær'
         school.part = 'Vesturland'
-		school.save()
+        school.save()
     else:
         print("school not found: Grunnskólinn í Stykkishólmi")
 
@@ -1313,7 +1313,7 @@ def initialize_locations():
         school.post_code = '815'
         school.municipality = 'Sveitarfélagið Ölfus'
         school.part = 'Suðurland'
-		school.save()
+        school.save()
     else:
         print("school not found: Grunnskólinn í Þorlákshöfn")
 
@@ -1323,7 +1323,7 @@ def initialize_locations():
         school.post_code = '107'
         school.municipality = 'Reykjavíkurborg'
         school.part = 'Reykjavík'
-		school.save()
+        school.save()
     else:
         print("school not found: Hagaskóli")
 
@@ -1333,7 +1333,7 @@ def initialize_locations():
         school.post_code = '112'
         school.municipality = 'Reykjavíkurborg'
         school.part = 'Reykjavík'
-		school.save()
+        school.save()
     else:
         print("school not found: Hamraskóli")
 
@@ -1343,7 +1343,7 @@ def initialize_locations():
         school.post_code = '260'
         school.municipality = 'Reykjanesbær'
         school.part = 'Suðurnes'
-		school.save()
+        school.save()
     else:
         print("school not found: Háaleitisskóli Reykjanesbæ")
 
@@ -1353,7 +1353,7 @@ def initialize_locations():
         school.post_code = '108'
         school.municipality = 'Reykjavíkurborg'
         school.part = 'Reykjavík'
-		school.save()
+        school.save()
     else:
         print("school not found: Háaleitisskóli Reykjavík")
 
@@ -1363,7 +1363,7 @@ def initialize_locations():
         school.post_code = '105'
         school.municipality = 'Reykjavíkurborg'
         school.part = 'Reykjavík'
-		school.save()
+        school.save()
     else:
         print("school not found: Háteigsskóli")
 
@@ -1373,7 +1373,7 @@ def initialize_locations():
         school.post_code = '301'
         school.municipality = 'Hvalfjarðarsveit'
         school.part = 'Vesturland'
-		school.save()
+        school.save()
     else:
         print("school not found: Heiðarskóli - Hvalfjarðarsveit")
 
@@ -1383,7 +1383,7 @@ def initialize_locations():
         school.post_code = '230'
         school.municipality = 'Reykjanesbær'
         school.part = 'Suðurnes'
-		school.save()
+        school.save()
     else:
         print("school not found: Heiðarskóli - Reykjanesbæ")
 
@@ -1393,7 +1393,7 @@ def initialize_locations():
         school.post_code = '601'
         school.municipality = 'Akureyrarkaupstaður'
         school.part = 'Norðurland eystra'
-		school.save()
+        school.save()
     else:
         print("school not found: Hlíðarskóli")
 
@@ -1403,7 +1403,7 @@ def initialize_locations():
         school.post_code = '105'
         school.municipality = 'Reykjavíkurborg'
         school.part = 'Reykjavík'
-		school.save()
+        school.save()
     else:
         print("school not found: Hlíðaskóli")
 
@@ -1413,7 +1413,7 @@ def initialize_locations():
         school.post_code = '210'
         school.municipality = 'Garðabær'
         school.part = 'Ngr. Reykjavíkur'
-		school.save()
+        school.save()
     else:
         print("school not found: Hofsstaðaskóli")
 
@@ -1423,7 +1423,7 @@ def initialize_locations():
         school.post_code = '230'
         school.municipality = 'Reykjanesbær'
         school.part = 'Suðurnes'
-		school.save()
+        school.save()
     else:
         print("school not found: Holtaskóli")
 
@@ -1433,7 +1433,7 @@ def initialize_locations():
         school.post_code = '111'
         school.municipality = 'Reykjavíkurborg'
         school.part = 'Reykjavík'
-		school.save()
+        school.save()
     else:
         print("school not found: Hólabrekkuskóli")
 
@@ -1443,7 +1443,7 @@ def initialize_locations():
         school.post_code = '601'
         school.municipality = 'Eyjafjarðarsveit'
         school.part = 'Norðurland eystra'
-		school.save()
+        school.save()
     else:
         print("school not found: Hrafnagilsskóli")
 
@@ -1453,7 +1453,7 @@ def initialize_locations():
         school.post_code = '220'
         school.municipality = 'Hafnarfjarðarkaupstaður'
         school.part = 'Ngr. Reykjavíkur'
-		school.save()
+        school.save()
     else:
         print("school not found: Hraunvallaskóli")
 
@@ -1463,7 +1463,7 @@ def initialize_locations():
         school.post_code = '541'
         school.municipality = 'Húnavatnshreppi'
         school.part = 'Norðurland vestra'
-		school.save()
+        school.save()
     else:
         print("school not found: Húnavallaskóli")
 
@@ -1473,7 +1473,7 @@ def initialize_locations():
         school.post_code = '112'
         school.municipality = 'Reykjavíkurborg'
         school.part = 'Reykjavík'
-		school.save()
+        school.save()
     else:
         print("school not found: Húsaskóli")
 
@@ -1483,7 +1483,7 @@ def initialize_locations():
         school.post_code = '220'
         school.municipality = 'Hafnarfjarðarkaupstaður'
         school.part = 'Ngr. Reykjavíkur'
-		school.save()
+        school.save()
     else:
         print("school not found: Hvaleyrarskóli")
 
@@ -1493,7 +1493,7 @@ def initialize_locations():
         school.post_code = '860'
         school.municipality = 'Rangárþing eystra'
         school.part = 'Suðurland'
-		school.save()
+        school.save()
     else:
         print("school not found: Hvolsskóli")
 
@@ -1503,7 +1503,7 @@ def initialize_locations():
         school.post_code = '545'
         school.municipality = 'Sveitarf. Skagaströnd'
         school.part = 'Norðurland vestra'
-		school.save()
+        school.save()
     else:
         print("school not found: Höfðaskóli")
 
@@ -1513,7 +1513,7 @@ def initialize_locations():
         school.post_code = '203'
         school.municipality = 'Kópavogsbær'
         school.part = 'Ngr. Reykjavíkur'
-		school.save()
+        school.save()
     else:
         print("school not found: Hörðuvallaskóli")
 
@@ -1523,7 +1523,7 @@ def initialize_locations():
         school.post_code = '113'
         school.municipality = 'Reykjavíkurborg'
         school.part = 'Reykjavík'
-		school.save()
+        school.save()
     else:
         print("school not found: Ingunnarskóli")
 
@@ -1533,7 +1533,7 @@ def initialize_locations():
         school.post_code = '200'
         school.municipality = 'Kópavogsbær'
         school.part = 'Ngr. Reykjavíkur'
-		school.save()
+        school.save()
     else:
         print("school not found: Kársnesskóli")
 
@@ -1543,7 +1543,7 @@ def initialize_locations():
         school.post_code = '112'
         school.municipality = 'Reykjavíkurborg'
         school.part = 'Reykjavík'
-		school.save()
+        school.save()
     else:
         print("school not found: Kelduskóli")
 
@@ -1553,7 +1553,7 @@ def initialize_locations():
         school.post_code = '801'
         school.municipality = 'Grímsnes- og Grafningshreppur'
         school.part = 'Suðurland'
-		school.save()
+        school.save()
     else:
         print("school not found: Kerhólsskóli")
 
@@ -1563,7 +1563,7 @@ def initialize_locations():
         school.post_code = '880'
         school.municipality = 'Skaftárhreppur'
         school.part = 'Suðurland'
-		school.save()
+        school.save()
     else:
         print("school not found: Kirkjubæjarskóli")
 
@@ -1573,7 +1573,7 @@ def initialize_locations():
         school.post_code = '105'
         school.municipality = 'Reykjavíkurborg'
         school.part = 'Reykjavík'
-		school.save()
+        school.save()
     else:
         print("school not found: Klettaskóli")
 
@@ -1583,7 +1583,7 @@ def initialize_locations():
         school.post_code = '116'
         school.municipality = 'Reykjavíkurborg'
         school.part = 'Reykjavík'
-		school.save()
+        school.save()
     else:
         print("school not found: Klébergsskóli")
 
@@ -1593,7 +1593,7 @@ def initialize_locations():
         school.post_code = '200'
         school.municipality = 'Kópavogsbær'
         school.part = 'Ngr. Reykjavíkur'
-		school.save()
+        school.save()
     else:
         print("school not found: Kópavogsskóli")
 
@@ -1603,7 +1603,7 @@ def initialize_locations():
         school.post_code = '270'
         school.municipality = 'Mosfellsbær'
         school.part = 'Ngr. Reykjavíkur'
-		school.save()
+        school.save()
     else:
         print("school not found: Krikaskóli")
 
@@ -1613,7 +1613,7 @@ def initialize_locations():
         school.post_code = '101'
         school.municipality = 'Reykjavíkurborg'
         school.part = 'Reykjavík'
-		school.save()
+        school.save()
     else:
         print("school not found: Landakotsskóli")
 
@@ -1623,7 +1623,7 @@ def initialize_locations():
         school.post_code = '104'
         school.municipality = 'Reykjavíkurborg'
         school.part = 'Reykjavík'
-		school.save()
+        school.save()
     else:
         print("school not found: Langholtsskóli")
 
@@ -1633,7 +1633,7 @@ def initialize_locations():
         school.post_code = '851'
         school.municipality = 'Rangárþingi ytra'
         school.part = 'Suðurland'
-		school.save()
+        school.save()
     else:
         print("school not found: Laugalandsskóli í Holtum")
 
@@ -1643,7 +1643,7 @@ def initialize_locations():
         school.post_code = '105'
         school.municipality = 'Reykjavíkurborg'
         school.part = 'Reykjavík'
-		school.save()
+        school.save()
     else:
         print("school not found: Laugalækjarskóli")
 
@@ -1653,7 +1653,7 @@ def initialize_locations():
         school.post_code = '311'
         school.municipality = 'Eyja-og Miklaholtshreppur'
         school.part = 'Vesturland'
-		school.save()
+        school.save()
     else:
         print("school not found: Laugargerðisskóli")
 
@@ -1663,7 +1663,7 @@ def initialize_locations():
         school.post_code = '105'
         school.municipality = 'Reykjavíkurborg'
         school.part = 'Reykjavík'
-		school.save()
+        school.save()
     else:
         print("school not found: Laugarnesskóli")
 
@@ -1673,7 +1673,7 @@ def initialize_locations():
         school.post_code = '270'
         school.municipality = 'Mosfellsbær'
         school.part = 'Ngr. Reykjavíkur'
-		school.save()
+        school.save()
     else:
         print("school not found: Lágafellsskóli")
 
@@ -1683,7 +1683,7 @@ def initialize_locations():
         school.post_code = '201'
         school.municipality = 'Kópavogsbær'
         school.part = 'Ngr. Reykjavíkur'
-		school.save()
+        school.save()
     else:
         print("school not found: Lindaskóli")
 
@@ -1693,7 +1693,7 @@ def initialize_locations():
         school.post_code = '600'
         school.municipality = 'Akureyrarkaupstaður'
         school.part = 'Norðurland eystra'
-		school.save()
+        school.save()
     else:
         print("school not found: Lundarskóli")
 
@@ -1703,7 +1703,7 @@ def initialize_locations():
         school.post_code = '220'
         school.municipality = 'Hafnarfjarðarkaupstaður'
         school.part = 'Ngr. Reykjavíkur'
-		school.save()
+        school.save()
     else:
         print("school not found: Lækjarskóli")
 
@@ -1713,7 +1713,7 @@ def initialize_locations():
         school.post_code = '107'
         school.municipality = 'Reykjavíkurborg'
         school.part = 'Reykjavík'
-		school.save()
+        school.save()
     else:
         print("school not found: Melaskóli")
 
@@ -1723,7 +1723,7 @@ def initialize_locations():
         school.post_code = '230'
         school.municipality = 'Reykjanesbær'
         school.part = 'Suðurnes'
-		school.save()
+        school.save()
     else:
         print("school not found: Myllubakkaskóli")
 
@@ -1733,7 +1733,7 @@ def initialize_locations():
         school.post_code = '600'
         school.municipality = 'Akureyrarkaupstaður'
         school.part = 'Norðurland eystra'
-		school.save()
+        school.save()
     else:
         print("school not found: Naustaskóli")
 
@@ -1743,7 +1743,7 @@ def initialize_locations():
         school.post_code = '740'
         school.municipality = 'Fjarðabyggð'
         school.part = 'Austurland'
-		school.save()
+        school.save()
     else:
         print("school not found: Nesskóli")
 
@@ -1753,7 +1753,7 @@ def initialize_locations():
         school.post_code = '260'
         school.municipality = 'Reykjanesbær'
         school.part = 'Suðurnes'
-		school.save()
+        school.save()
     else:
         print("school not found: Njarðvíkurskóli")
 
@@ -1763,7 +1763,7 @@ def initialize_locations():
         school.post_code = '110'
         school.municipality = 'Reykjavíkurborg'
         school.part = 'Reykjavík'
-		school.save()
+        school.save()
     else:
         print("school not found: Norðlingaskóli")
 
@@ -1773,7 +1773,7 @@ def initialize_locations():
         school.post_code = '600'
         school.municipality = 'Akureyrarkaupstaður'
         school.part = 'Norðurland eystra'
-		school.save()
+        school.save()
     else:
         print("school not found: Oddeyrarskóli")
 
@@ -1783,7 +1783,7 @@ def initialize_locations():
         school.post_code = '380'
         school.municipality = 'Reykhólahreppur'
         school.part = 'Vestfirðir'
-		school.save()
+        school.save()
     else:
         print("school not found: Reykhólaskóli")
 
@@ -1793,7 +1793,7 @@ def initialize_locations():
         school.post_code = '660'
         school.municipality = 'Skútustaðahreppur'
         school.part = 'Norðurland eystra'
-		school.save()
+        school.save()
     else:
         print("school not found: Reykjahlíðarskóli")
 
@@ -1803,7 +1803,7 @@ def initialize_locations():
         school.post_code = '112'
         school.municipality = 'Reykjavíkurborg'
         school.part = 'Reykjavík'
-		school.save()
+        school.save()
     else:
         print("school not found: Reykjavík International School")
 
@@ -1813,7 +1813,7 @@ def initialize_locations():
         school.post_code = '108'
         school.municipality = 'Reykjavíkurborg'
         school.part = 'Reykjavík'
-		school.save()
+        school.save()
     else:
         print("school not found: Réttarholtsskóli")
 
@@ -1823,7 +1823,7 @@ def initialize_locations():
         school.post_code = '112'
         school.municipality = 'Reykjavíkurborg'
         school.part = 'Reykjavík'
-		school.save()
+        school.save()
     else:
         print("school not found: Rimaskóli")
 
@@ -1833,7 +1833,7 @@ def initialize_locations():
         school.post_code = '201'
         school.municipality = 'Kópavogsbær'
         school.part = 'Ngr. Reykjavíkur'
-		school.save()
+        school.save()
     else:
         print("school not found: Salaskóli")
 
@@ -1843,7 +1843,7 @@ def initialize_locations():
         school.post_code = '110'
         school.municipality = 'Reykjavíkurborg'
         school.part = 'Reykjavík'
-		school.save()
+        school.save()
     else:
         print("school not found: Selásskóli")
 
@@ -1853,7 +1853,7 @@ def initialize_locations():
         school.post_code = '109'
         school.municipality = 'Reykjavíkurborg'
         school.part = 'Reykjavík'
-		school.save()
+        school.save()
     else:
         print("school not found: Seljaskóli")
 
@@ -1863,7 +1863,7 @@ def initialize_locations():
         school.post_code = '220'
         school.municipality = 'Hafnarfjarðarkaupstaður'
         school.part = 'Ngr. Reykjavíkur'
-		school.save()
+        school.save()
     else:
         print("school not found: Setbergsskóli")
 
@@ -1873,7 +1873,7 @@ def initialize_locations():
         school.post_code = '710'
         school.municipality = 'Seyðisfjarðarkaupstaður'
         school.part = 'Austurland'
-		school.save()
+        school.save()
     else:
         print("school not found: Seyðisfjarðarskóli")
 
@@ -1883,7 +1883,7 @@ def initialize_locations():
         school.post_code = '603'
         school.municipality = 'Akureyrarkaupstaður'
         school.part = 'Norðurland eystra'
-		school.save()
+        school.save()
     else:
         print("school not found: Síðuskóli")
 
@@ -1893,7 +1893,7 @@ def initialize_locations():
         school.post_code = '210'
         school.municipality = 'Garðabær'
         school.part = 'Ngr. Reykjavíkur'
-		school.save()
+        school.save()
     else:
         print("school not found: Sjálandsskóli")
 
@@ -1903,7 +1903,7 @@ def initialize_locations():
         school.post_code = '105'
         school.municipality = 'Reykjavíkurborg'
         school.part = 'Reykjavík'
-		school.save()
+        school.save()
     else:
         print("school not found: Skóli Ísaks Jónssonar")
 
@@ -1913,7 +1913,7 @@ def initialize_locations():
         school.post_code = '201'
         school.municipality = 'Kópavogsbær'
         school.part = 'Ngr. Reykjavíkur'
-		school.save()
+        school.save()
     else:
         print("school not found: Smáraskóli")
 
@@ -1923,7 +1923,7 @@ def initialize_locations():
         school.post_code = '200'
         school.municipality = 'Kópavogsbær'
         school.part = 'Ngr. Reykjavíkur'
-		school.save()
+        school.save()
     else:
         print("school not found: Snælandsskóli")
 
@@ -1933,7 +1933,7 @@ def initialize_locations():
         school.post_code = '641'
         school.municipality = 'Þingeyjarsveit'
         school.part = 'Norðurland eystra'
-		school.save()
+        school.save()
     else:
         print("school not found: Stórutjarnaskóli")
 
@@ -1943,7 +1943,7 @@ def initialize_locations():
         school.post_code = '190'
         school.municipality = 'Sveitarfélagið Vogar'
         school.part = 'Suðurnes'
-		school.save()
+        school.save()
     else:
         print("school not found: Stóru-Vogaskóli")
 
@@ -1953,7 +1953,7 @@ def initialize_locations():
         school.post_code = '755'
         school.municipality = 'Fjarðabyggð'
         school.part = 'Austurland'
-		school.save()
+        school.save()
     else:
         print("school not found: Stöðvarfjarðarskóli")
 
@@ -1963,7 +1963,7 @@ def initialize_locations():
         school.post_code = '105'
         school.municipality = 'Reykjavíkurborg'
         school.part = 'Reykjavík'
-		school.save()
+        school.save()
     else:
         print("school not found: Suðurhlíðarskóli")
 
@@ -1973,7 +1973,7 @@ def initialize_locations():
         school.post_code = '800'
         school.municipality = 'Sveitarfélagið Árborg'
         school.part = 'Suðurland'
-		school.save()
+        school.save()
     else:
         print("school not found: Sunnulækjarskóli")
 
@@ -1983,7 +1983,7 @@ def initialize_locations():
         school.post_code = '420'
         school.municipality = 'Súðavikurhreppur'
         school.part = 'Vestfirðir'
-		school.save()
+        school.save()
     else:
         print("school not found: Súðavíkurskóli")
 
@@ -1993,7 +1993,7 @@ def initialize_locations():
         school.post_code = '113'
         school.municipality = 'Reykjavíkurborg'
         school.part = 'Reykjavík'
-		school.save()
+        school.save()
     else:
         print("school not found: Sæmundarskóli")
 
@@ -2003,7 +2003,7 @@ def initialize_locations():
         school.post_code = '101'
         school.municipality = 'Reykjavíkurborg'
         school.part = 'Reykjavík'
-		school.save()
+        school.save()
     else:
         print("school not found: Tjarnarskóli")
 
@@ -2013,7 +2013,7 @@ def initialize_locations():
         school.post_code = '800'
         school.municipality = 'Sveitarfélagið Árborg'
         school.part = 'Suðurland'
-		school.save()
+        school.save()
     else:
         print("school not found: Vallaskóli")
 
@@ -2023,7 +2023,7 @@ def initialize_locations():
         school.post_code = '601'
         school.municipality = 'Svalbarðsstrandarhreppur'
         school.part = 'Norðurland eystra'
-		school.save()
+        school.save()
     else:
         print("school not found: Valsárskóli")
 
@@ -2033,7 +2033,7 @@ def initialize_locations():
         school.post_code = '560'
         school.municipality = 'Sveitarf. Skagafjörður'
         school.part = 'Norðurland vestra'
-		school.save()
+        school.save()
     else:
         print("school not found: Varmahlíðarskóli")
 
@@ -2043,7 +2043,7 @@ def initialize_locations():
         school.post_code = '270'
         school.municipality = 'Mosfellsbær'
         school.part = 'Ngr. Reykjavíkur'
-		school.save()
+        school.save()
     else:
         print("school not found: Varmárskóli")
 
@@ -2053,7 +2053,7 @@ def initialize_locations():
         school.post_code = '203'
         school.municipality = 'Kópavogsbær'
         school.part = 'Ngr. Reykjavíkur'
-		school.save()
+        school.save()
     else:
         print("school not found: Vatnsendaskóli")
 
@@ -2063,7 +2063,7 @@ def initialize_locations():
         school.post_code = '101'
         school.municipality = 'Reykjavíkurborg'
         school.part = 'Reykjavík'
-		school.save()
+        school.save()
     else:
         print("school not found: Vesturbæjarskóli")
 
@@ -2073,7 +2073,7 @@ def initialize_locations():
         school.post_code = '220'
         school.municipality = 'Hafnarfjarðarkaupstaður'
         school.part = 'Ngr. Reykjavíkur'
-		school.save()
+        school.save()
     else:
         print("school not found: Víðistaðaskóli")
 
@@ -2083,7 +2083,7 @@ def initialize_locations():
         school.post_code = '870'
         school.municipality = 'Mýrdalshreppur'
         school.part = 'Suðurland'
-		school.save()
+        school.save()
     else:
         print("school not found: Víkurskóli")
 
@@ -2093,7 +2093,7 @@ def initialize_locations():
         school.post_code = '104'
         school.municipality = 'Reykjavíkurborg'
         school.part = 'Reykjavík'
-		school.save()
+        school.save()
     else:
         print("school not found: Vogaskóli")
 
@@ -2103,7 +2103,7 @@ def initialize_locations():
         school.post_code = '690'
         school.municipality = 'Vopnafjarðarhreppur'
         school.part = 'Austurland'
-		school.save()
+        school.save()
     else:
         print("school not found: Vopnafjarðarskóli")
 
@@ -2113,7 +2113,7 @@ def initialize_locations():
         school.post_code = '112'
         school.municipality = 'Reykjavíkurborg'
         school.part = 'Reykjavík'
-		school.save()
+        school.save()
     else:
         print("school not found: Vættaskóli")
 
@@ -2123,7 +2123,7 @@ def initialize_locations():
         school.post_code = '113'
         school.municipality = 'Reykjavíkurborg'
         school.part = 'Reykjavík'
-		school.save()
+        school.save()
     else:
         print("school not found: Vættaskóli")
 
@@ -2133,7 +2133,7 @@ def initialize_locations():
         school.post_code = '203'
         school.municipality = 'Kópavogsbær'
         school.part = 'Ngr. Reykjavíkur'
-		school.save()
+        school.save()
     else:
         print("school not found: Waldorfskólinn í Lækjarbotnum")
 
@@ -2143,7 +2143,7 @@ def initialize_locations():
         school.post_code = '111'
         school.municipality = 'Reykjavíkurborg'
         school.part = 'Reykjavík'
-		school.save()
+        school.save()
     else:
         print("school not found: Waldorfskólinn Sólstafir")
 
@@ -2153,7 +2153,7 @@ def initialize_locations():
         school.post_code = '601'
         school.municipality = 'Hörgársveit'
         school.part = 'Norðurland eystra'
-		school.save()
+        school.save()
     else:
         print("school not found: Þelamerkurskóli")
 
@@ -2163,7 +2163,7 @@ def initialize_locations():
         school.post_code = '650'
         school.municipality = 'Þingeyjarsveit'
         school.part = 'Norðurland eystra'
-		school.save()
+        school.save()
     else:
         print("school not found: Þingeyjarskóli")
 
@@ -2173,7 +2173,7 @@ def initialize_locations():
         school.post_code = '801'
         school.municipality = 'Skeiða- og Gnúpverjahreppi'
         school.part = 'Suðurland'
-		school.save()
+        school.save()
     else:
         print("school not found: Þjórsárskóli")
 
@@ -2183,7 +2183,7 @@ def initialize_locations():
         school.post_code = '109'
         school.municipality = 'Reykjavíkurborg'
         school.part = 'Reykjavík'
-		school.save()
+        school.save()
     else:
         print("school not found: Ölduselsskóli")
 
@@ -2193,7 +2193,7 @@ def initialize_locations():
         school.post_code = '220'
         school.municipality = 'Hafnarfjarðarkaupstaður'
         school.part = 'Ngr. Reykjavíkur'
-		school.save()
+        school.save()
     else:
         print("school not found: Öldutúnsskóli")
 
