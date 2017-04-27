@@ -118,7 +118,7 @@ class StudentForm(forms.ModelForm):
 class SchoolForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(SchoolForm, self).__init__(*args, **kwargs)
-        fields_to_update = ['name', 'ssn']
+        fields_to_update = ['name', 'ssn', 'school_nr', 'address', 'post_code', 'municipality', 'part']
         add_field_classes(self, fields_to_update)
         self.fields['managers'].widget.attrs.update(
             {
@@ -158,6 +158,10 @@ class SchoolForm(forms.ModelForm):
             'teachers': 'Kennarar',
             'students': 'Nemendur',
             'school_nr': 'Skólanúmer',
+            'address': 'Heimilisfang',
+            'post_code': 'Póstnúmer',
+            'municipality': 'Sveitarfélag',
+            'part': 'Landshluti',
         }
 
 
