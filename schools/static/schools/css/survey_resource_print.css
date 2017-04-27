@@ -61,6 +61,7 @@ page[size='A4'] {
 }
 @page :first {
     margin: 0;
+    margin-bottom: 25mm;
 }
 .outer-border {
     height    : 96%;
