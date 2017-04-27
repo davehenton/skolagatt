@@ -47,7 +47,7 @@ page[size='A4'] {
     display      : block;
 
     width        : 210mm;
-    margin       : 0 auto;
+    margin       : 1cm 1cm 1cm 1cm;
     margin-bottom: 5mm;
     padding      : 3em;
 
