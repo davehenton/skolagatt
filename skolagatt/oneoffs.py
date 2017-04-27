@@ -1259,7 +1259,7 @@ def initialize_locations():
     else:
         print("school not found: Háaleitisskóli Reykjavík")
 
-    school = School.objects.filter(school_nr='1269', ssn='6710882639', name__startswith='Háteigsskóli').first()
+    school = School.objects.filter(school_nr='1269', ssn='5302697609', name__startswith='Háteigsskóli').first()
     if school:
         school.address = 'v/Háteigsveg'
         school.post_code = '105'
