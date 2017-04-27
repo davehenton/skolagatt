@@ -9,14 +9,8 @@
 <page size="A4">
     <div class="outer-border">
         <img src="{% static 'img/logo-3litur.png'%}" class="img-responsive mms-logo"/>
-        <h1 class="text-center">{{surveyresource.title}}</h1>
-        <div class="row headinfo">
-            <div class="info col-xs-6">
-                <p>{{ school.name }}</p>
-                <p>{{ survey.title }}</p>
-                <p>{{ studentgroup.name }}</p>
-            </div>
-        </div>
+        <h2 class="text-center">{{surveyresource.title}}</h1>
+        <h3 class="text-center">{{survey.title}}</h3>
         <hr />
         <div class="content">
             {{ surveyresource.resource_html|safe }}
