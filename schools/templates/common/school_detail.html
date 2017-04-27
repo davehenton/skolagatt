@@ -21,6 +21,13 @@
 		</div>
 	{% endif %}
 </div>
+<div class="row">
+	<div class="col-md-12">
+	    <p>{{school.address}}</p>
+	    <p>{{school.post_code}}, {{school.municipality}}</p>
+	    <p>{{school.part}}</p>
+    </div>
+</div>
 <hr/>
 {% if is_school_manager or request.user.is_superuser %}
 <div class="row">
