@@ -20,7 +20,8 @@
 				<tr>
 					<th>Heiti</th>
 					<th>Kenni</th>
-					<th class="col-xs-1"></th>
+					<th>Sjálfgefið</th>
+					<th class="col-xs-2"></th>
 				</tr>
 			</thead>
 			<tbody>
@@ -28,8 +29,12 @@
 					<tr>
 						<td>{{survey_input.label}}</td>
 						<td>{{survey_input.get_id}}</td>
+						<td>{{survey_input.default_value}}</td>
 						<td>
-							<a href="{% url 'survey:survey_input_delete' survey.id survey_input.id %}" class="btn btn-danger btn-xs pull-right"><span class="glyphicon glyphicon-trash"></span></a>
+							<div class="btn-group">
+								<a href="{% url 'survey:survey_input_update' survey.id survey_input.id %}" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
+								<a href="{% url 'survey:survey_input_delete' survey.id survey_input.id %}" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-trash"></span></a>
+							</div>
 						</td>
 					</tr>
 				{% endfor %}

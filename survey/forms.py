@@ -142,11 +142,12 @@ class SurveyInputFieldForm(forms.ModelForm):
 
     class Meta:
         model = models.SurveyInputField
-        fields = ['input_group', 'name', 'label']
+        fields = ['input_group', 'name', 'label', 'default_value']
         labels = {
             'input_group': 'Flokkur',
             'name': 'Tæknilegt heiti',
             'label': 'Sýnilegt heiti',
+            'default_value': 'Sjálfgefið gildi',
         }
 
 

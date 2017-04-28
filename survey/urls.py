@@ -95,5 +95,7 @@ urlpatterns = [
     url(r'^(?P<survey_id>\d+)/input/(?P<pk>\d+)/delete/$',
         views.SurveyInputFieldDelete.as_view(),
         name='survey_input_delete'),
-
+    url(r'^(?P<survey_id>\d+)/input(?P<pk>\d+)/update/$',
+        views.SurveyInputFieldUpdate.as_view(),
+        name='survey_input_update'),
 ]
