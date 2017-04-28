@@ -86,6 +86,9 @@
 			console.log(words);
 			results = "";
 			for(i in words){
+				if (words[i].match(/\s/) || words[i].length == 0) {
+					continue;
+				}
 				var replaced = val.replace(words[i], "<span count='"+i+"'>"+words[i]+"</span>"); //get replaced text
 				results += replaced.split('</span>')[0]+'</span>'; //add replaced text to results
 				val = replaced.split('</span>')[1]; //continue working on val
