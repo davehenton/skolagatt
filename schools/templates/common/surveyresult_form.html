@@ -137,11 +137,10 @@
 			}));
 
 		});
-		$( document ).ready(function() {
-		    $('span[count]').on('click',function(event){
-				var classes = ['','selected','codered'];
-				this.className = classes[($.inArray(this.className, classes)+1)%classes.length];
-			});
+
+	    $('span[count]').on('click',function(event){
+			var classes = ['','selected','codered'];
+			this.className = classes[($.inArray(this.className, classes)+1)%classes.length];
 		});
 	});
 	</script>
