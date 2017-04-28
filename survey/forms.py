@@ -151,17 +151,20 @@ class SurveyInputFieldForm(forms.ModelForm):
 
 
 class SurveyInputGroupForm(forms.ModelForm):
+    create_for_family = BooleanField(initial=False)
+
     def __init__(self, *args, **kwargs):
         super(SurveyInputGroupForm, self).__init__(*args, **kwargs)
         add_field_classes(self, self.fields)
 
     class Meta:
         model = models.SurveyInputGroup
-        fields = ['title', 'identifier', 'description']
+        fields = ['title', 'identifier', 'description', 'create_for_family']
         labels = {
             'title': 'Heiti',
             'identifier': 'Kenni',
-            'description': 'Lýsing'
+            'description': 'Lýsing',
+            'create_for_family': 'Á við öll próf sem voru gerð á sama tíma',
         }
 
 
