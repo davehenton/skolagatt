@@ -1140,7 +1140,7 @@ class SurveyDetail(common_mixins.SchoolEmployeeMixin, DetailView):
     def get_context_data(self, **kwargs):
         # xxx will be available in the template as the related objects
         context = super(SurveyDetail, self).get_context_data(**kwargs)
-        survey = Survey.objects.filter(pk=self.object.survey.id)[0]
+        survey = Survey.objects.filter(pk=self.object.survey.id).first()
         survey_type = SurveyType.objects.filter(survey=self.object.survey.id).values('id')
         dic = survey_type[0]
         survey_type = dic['id']
@@ -1335,35 +1335,28 @@ class SurveyResultCreate(common_mixins.SchoolEmployeeMixin, CreateView):
         return context
 
     def post(self, *args, **kwargs):
-        self.object = None
-        form = self.get_form()
-        # make data mutable
-        form.data = self.request.POST.copy()
-        form.data['student'] = Student.objects.get(pk=self.kwargs['student_id']).pk
-        form.data['survey'] = GroupSurvey.objects.get(pk=self.kwargs['survey_id']).pk
+        form = cm_forms.SurveyResultForm(self.request.POST)
         if form.is_valid():
-            return self.form_valid(form)
+            student = Student.objects.get(pk=self.kwargs['student_id'])
+            survey = GroupSurvey.objects.get(pk=self.kwargs['survey_id'])
+            survey_result = SurveyResult.objects.get_or_create(student=student, survey=survey)
+
+            survey_result.reported_by = Teacher.objects.filter(user_id=self.request.user.pk).first()
+            # extract data
+            survey_result_data = {'click_values': [], 'input_values': {}}
+            for k in self.request.POST:
+                if k != 'csrfmiddlewaretoken':
+                    if k == 'data_results[]':
+                        survey_result_data['click_values'] = json.dumps(
+                            self.request.POST.getlist('data_results[]')
+                        )
+                    else:
+                        survey_result_data['input_values'][k] = self.request.POST[k]
+            survey_result.results = json.dumps(survey_result_data)
+            survey_result.save()
+            return redirect(self.get_success_url())
         else:
             return self.form_invalid(form)
-
-    def form_valid(self, form):
-        survey_results = form.save(commit=False)
-        survey_results.reported_by = Teacher.objects.filter(user_id=self.request.user.pk).first()
-        survey_results.student = Student.objects.get(pk=self.kwargs['student_id'])
-        survey_results.survey = GroupSurvey.objects.get(pk=self.kwargs['survey_id'])
-        survey_results.created_at = timezone.now()
-        # extract data
-        survey_results_data = {'click_values': [], 'input_values': {}}
-        for k in self.request.POST:
-            if k != 'csrfmiddlewaretoken':
-                if k == 'data_results[]':
-                    survey_results_data['click_values'] = json.dumps(
-                        self.request.POST.getlist('data_results[]')
-                    )
-                else:
-                    survey_results_data['input_values'][k] = self.request.POST[k]
-        survey_results.results = json.dumps(survey_results_data)
-        return super(SurveyResultCreate, self).form_valid(form)
 
     def get_success_url(self):
         try:
