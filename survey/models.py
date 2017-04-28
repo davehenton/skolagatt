@@ -80,7 +80,7 @@ class SurveyInputGroup(models.Model):
         return self.surveyinputfield_set.order_by('name').all()
 
     def num_input_fields(self):
-        return len(self.input_fields())
+        return len(self.surveyinputfield_set.all())
 
 
 class SurveyInputField(models.Model):
