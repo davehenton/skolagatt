@@ -58,7 +58,7 @@
 					<tr>
 						<th>Nafn</th>
 						<th>Kennitala</th>
-						{% if '01b_LTL_' in groupsurvey.survey.identifier %}
+						{% if groupsurvey.survey.survey_type.title == 'Lesskimun' %}
 	 						<th class="col-md-2">Hljóð</th>
 	 						<th class="col-md-2">Mál</th>
 	 						<th class="col-md-2">Stafir</th>
@@ -87,7 +87,9 @@
 							<td>
 								{% if is_group_manager or is_school_manager %}
 									{% if not groupsurvey.is_expired %}
-									<a href="{% url 'schools:survey_result_update' school.id student.id groupsurvey.id student_result.id %}" class="btn btn-default btn-xs pull-right"><span class="glyphicon glyphicon-pencil"></span></a>
+									<div class="btn-group">
+									<a href="{% url 'schools:survey_result_update' school.id student.id groupsurvey.id student_result.id %}" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
+									<a href="{% url 'schools:survey_result_delete' school.id student.id groupsurvey.id student_result.id %}" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
 									{% endif %}
 								{% endif %}
 								<button class="btn btn-default btn-xs pull-right" type="button" data-toggle="modal" data-target="#results-{{student_result.id}}" aria-expanded="false" aria-controls="collapseExample">
@@ -95,7 +97,7 @@
 								</button>
 							</td>
 							{% else %}
-							{% if '01b_LTL_' in groupsurvey.survey.identifier %}
+							{% if groupsurvey.survey.survey_type.title == 'Lesskimun' %}
 		 						<td>-</td>
 		 						<td>-</td>
 		 						<td>-</td>
