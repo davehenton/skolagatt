@@ -322,7 +322,7 @@ class SurveyInputGroupCreate(SurveySuperSuccessMixin, CreateView):
         this_survey = Survey.objects.get(pk=self.kwargs['survey_id'])
         nr_inputs = int(self.request.POST['inputs'])
 
-        if form.create_for_family:
+        if form.cleaned_data['create_for_family']:
             surveys = Survey.objects.filter(survey_family_id=this_survey.survey_family_id).all()
             for survey in surveys:
                 self._create_objects(form, survey, nr_inputs)
