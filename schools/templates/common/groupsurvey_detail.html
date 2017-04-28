@@ -85,16 +85,17 @@
 		 							{% endfor %}
 		 						{% endwith %}
 							<td>
-								{% if is_group_manager or is_school_manager %}
-									{% if not groupsurvey.is_expired %}
-									<div class="btn-group">
-									<a href="{% url 'schools:survey_result_update' school.id student.id groupsurvey.id student_result.id %}" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
-									<a href="{% url 'schools:survey_result_delete' school.id student.id groupsurvey.id student_result.id %}" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
+								<div class="btn-group">
+									<button class="btn btn-default btn-xs" type="button" data-toggle="modal" data-target="#results-{{student_result.id}}" aria-expanded="false" aria-controls="collapseExample">
+										Niðurstöður
+									</button>
+									{% if is_group_manager or is_school_manager %}
+										{% if not groupsurvey.is_expired %}
+										<a href="{% url 'schools:survey_result_update' school.id student.id groupsurvey.id student_result.id %}" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
+										<a href="{% url 'schools:survey_result_delete' school.id student.id groupsurvey.id student_result.id %}" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-trash"></span></a>
+										{% endif %}
 									{% endif %}
-								{% endif %}
-								<button class="btn btn-default btn-xs pull-right" type="button" data-toggle="modal" data-target="#results-{{student_result.id}}" aria-expanded="false" aria-controls="collapseExample">
-									Niðurstöður
-								</button>
+								</div>
 							</td>
 							{% else %}
 							{% if groupsurvey.survey.survey_type.title == 'Lesskimun' %}
