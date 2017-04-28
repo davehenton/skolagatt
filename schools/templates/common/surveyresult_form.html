@@ -76,8 +76,8 @@
 			for(i in words){
 				breaks = words[i].match(/\<.*\>/)
 				if (breaks) {
-					word1 = words.substr(0,breaks.index);
-					word2 = words.substr(breaks.index + breaks[0].length);
+					word1 = words[i].substr(0,breaks.index);
+					word2 = words[i].substr(breaks.index + breaks[0].length);
 					words.splice(i, 1, word1, word2);
 				}
 			}
