@@ -74,7 +74,7 @@
 		function wrap_text( val ){
 			var words = val.split(/[ ,.]/)
 			for(i in words){
-				breaks = words[i].match(.match(/\<.*\>/))
+				breaks = words[i].match(/\<.*\>/)
 				if (breaks) {
 					word1 = words.substr(0,breaks.index);
 					word2 = words.substr(breaks.index + breaks[0].length);
