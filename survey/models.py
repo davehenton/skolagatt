@@ -10,7 +10,7 @@ class SurveyType(models.Model):
     """docstring for SurveyType"""
     identifier = models.CharField(max_length=64)
     title = models.CharField(max_length=128)
-    description = models.CharField(max_length=1024, null=True, blank=True)
+    description = models.CharField(max_length=1024, default='', blank=True)
 
     def __str__(self):
         return self.title
@@ -33,13 +33,14 @@ class Survey(models.Model):
         ('9', '9. bekkur'),
         ('10', '10. bekkur'),
     )
-    student_year = models.CharField(max_length=2, choices=YEARS, null=True, blank=True)
+    student_year = models.CharField(max_length=2, default='', choices=YEARS)
     description = FroalaField()
     created_at = models.DateTimeField(default=timezone.now)
     active_from = models.DateField(default=timezone.now)
     active_to = models.DateField(default=timezone.now)
     created_by = models.ForeignKey(User)
     old_version = models.ForeignKey('Survey', null=True, blank=True)
+    survey_family_id = models.CharField(max_length=36, default='', blank=True)
 
     def __str__(self):
         return self.title
@@ -70,17 +71,16 @@ class SurveyInputGroup(models.Model):
     survey = models.ForeignKey(Survey)
     title = models.CharField(max_length=128)
     identifier = models.CharField(max_length=32)
-    description = models.TextField(null=True, blank=True)
+    description = models.TextField(default='', blank=True)
 
     def __str__(self):
         return self.title
 
     def input_fields(self):
-        inputfields = SurveyInputField.objects.filter(input_group=self).order_by('name')
-        return inputfields
+        return self.surveyinputfield_set.order_by('name').all()
 
     def num_input_fields(self):
-        return len(self.input_fields())
+        return len(self.surveyinputfield_set.all())
 
 
 class SurveyInputField(models.Model):

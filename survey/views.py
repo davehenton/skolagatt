@@ -3,9 +3,10 @@ from django.views.generic import (
     ListView, CreateView, DetailView, UpdateView, DeleteView
 )
 from django.contrib.auth.mixins import UserPassesTestMixin
-
 from django.core.urlresolvers import reverse_lazy
+
 import openpyxl
+from uuid import uuid4
 
 from . import forms
 from .models import (
@@ -119,12 +120,14 @@ class SurveyCreateMulti(SurveyCreateSuperSuccessMixin, CreateView):
         form = forms.SurveyForm(self.request.POST)
 
         if form.is_valid():
+            survey_family_id = str(uuid4())
             for student_year in student_years:
                 create_kwargs = form.cleaned_data.copy()
                 create_kwargs['student_year'] = student_year
                 create_kwargs['title'] = create_kwargs['title'].replace('%student_year%', student_year)
                 create_kwargs['identifier'] = create_kwargs['identifier'].replace('%student_year%', student_year)
                 create_kwargs['created_by'] = self.request.user
+                create_kwargs['survey_family_id'] = survey_family_id
                 survey = Survey.objects.create(**create_kwargs)
 
                 if mandatory:
@@ -305,19 +308,29 @@ class SurveyInputGroupCreate(SurveySuperSuccessMixin, CreateView):
     model = SurveyInputGroup
     form_class = forms.SurveyInputGroupCreateForm
 
-    def form_valid(self, form):
+    def _create_objects(self, form, survey, nr_inputs):
         input_group = form.save(commit=False)
-        input_group.survey = Survey.objects.get(pk=self.kwargs['survey_id'])
+        input_group.id = None
+        input_group.survey = survey
         input_group.save()  # Save input group now so we can link inputfields to it
+
         # Create related SurveyInputFields
-        nr_inputs = int(self.request.POST['inputs'])
-        for x in range(0, nr_inputs):
-            inputfield = SurveyInputField(
-                name=x + 1, label=input_group.title, input_group=input_group
-            )
+        for x in range(1, nr_inputs + 1):
+            inputfield = SurveyInputField(name=x, label=input_group.title, input_group=input_group)
             inputfield.save()
 
-        return super(SurveyInputGroupCreate, self).form_valid(form)
+    def form_valid(self, form):
+        this_survey = Survey.objects.get(pk=self.kwargs['survey_id'])
+        nr_inputs = int(self.request.POST['inputs'])
+
+        if form.cleaned_data['create_for_family']:
+            surveys = Survey.objects.filter(survey_family_id=this_survey.survey_family_id).all()
+            for survey in surveys:
+                self._create_objects(form, survey, nr_inputs)
+        else:
+            self._create_objects(form, this_survey, nr_inputs)
+
+        return redirect(self.get_success_url())
 
     def get_context_data(self, **kwargs):
         context = super(SurveyInputGroupCreate, self).get_context_data(**kwargs)

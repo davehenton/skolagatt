@@ -72,7 +72,7 @@
 		// val = string
 		// output = string where each word has been wrapped with span count=word number
 		function wrap_text( val ){
-			var words = val.match(/([^\x00-\x7F]|\w)+/g);
+			var words = val.split(' ')
 			results = "";
 			for(i in words){
 				var replaced = val.replace(words[i], "<span count='"+i+"'>"+words[i]+"</span>"); //get replaced text
@@ -136,11 +136,10 @@
 			}));
 
 		});
-		$( document ).ready(function() {
-		    $('span[count]').on('click',function(event){
-				var classes = ['','selected','codered'];
-				this.className = classes[($.inArray(this.className, classes)+1)%classes.length];
-			});
+
+	    $('span[count]').on('click',function(event){
+			var classes = ['','selected','codered'];
+			this.className = classes[($.inArray(this.className, classes)+1)%classes.length];
 		});
 	});
 	</script>

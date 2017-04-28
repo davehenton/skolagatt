@@ -7,11 +7,7 @@ from common.models import (
     SurveyResult, SurveyLogin, Notification,
     ExampleSurveyQuestion, ExampleSurveyAnswer,
 )
-
-
-def add_field_classes(self, field_list):
-    for item in field_list:
-        self.fields[item].widget.attrs.update({'class': 'form-control'})
+from common.util import add_field_classes
 
 
 class NotificationForm(forms.ModelForm):
