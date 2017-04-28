@@ -171,7 +171,7 @@ class SurveyInputGroupCreateForm(SurveyInputGroupForm):
     def __init__(self, *args, **kwargs):
         super(SurveyInputGroupCreateForm, self).__init__(*args, **kwargs)
         self.fields['create_for_family'].label = 'Á við öll próf sem voru gerð á sama tíma'
-
+        self.fields['create_for_family'].widget.attrs.update({'class': ''})  # Bootstrap checkboxes arent nice
 
 
 class SurveyTransformationForm(forms.ModelForm):
