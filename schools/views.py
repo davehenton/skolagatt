@@ -1339,9 +1339,10 @@ class SurveyResultCreate(common_mixins.SchoolEmployeeMixin, CreateView):
         if form.is_valid():
             student = Student.objects.get(pk=self.kwargs['student_id'])
             survey = GroupSurvey.objects.get(pk=self.kwargs['survey_id'])
-            survey_result = SurveyResult.objects.get_or_create(student=student, survey=survey)
+            survey_result, created = SurveyResult.objects.get_or_create(student=student, survey=survey)
 
-            survey_result.reported_by = Teacher.objects.filter(user_id=self.request.user.pk).first()
+            if not created:
+                1survey_result.reported_by = Teacher.objects.filter(user_id=self.request.user.pk).first()
             # extract data
             survey_result_data = {'click_values': [], 'input_values': {}}
             for k in self.request.POST:
