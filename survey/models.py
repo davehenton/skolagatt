@@ -87,7 +87,7 @@ class SurveyInputField(models.Model):
     input_group = models.ForeignKey(SurveyInputGroup, on_delete=models.CASCADE)
     name = models.CharField(max_length=128)
     label = models.CharField(max_length=128)
-    default_value = models.CharField(max_length=128)
+    default_value = models.CharField(max_length=128, default='', blank=True)
 
     def get_id(self):
         return self.input_group.identifier + '_' + self.name
