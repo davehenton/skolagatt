@@ -81,6 +81,7 @@
 					words.splice(i, 1, word1, word2);
 				}
 			}
+			console.log(words);
 			results = "";
 			for(i in words){
 				var replaced = val.replace(words[i], "<span count='"+i+"'>"+words[i]+"</span>"); //get replaced text
