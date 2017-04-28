@@ -310,6 +310,7 @@ class SurveyInputGroupCreate(SurveySuperSuccessMixin, CreateView):
 
     def _create_objects(self, form, survey, nr_inputs):
         input_group = form.save(commit=False)
+        input_group.id = None
         input_group.survey = survey
         input_group.save()  # Save input group now so we can link inputfields to it
 
