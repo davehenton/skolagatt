@@ -74,11 +74,12 @@
 		function wrap_text( val ){
 			var words = val.split(/[ ,.]/)
 			for(i in words){
-				breaks = words[i].match(/\<.*\>/)
-				if (breaks) {
-					word1 = words[i].substr(0,breaks.index);
-					word2 = words[i].substr(breaks.index + breaks[0].length);
+				br = words[i].match(/\<.*\>/)
+				if (br) {
+					word1 = words[i].substr(0,br.index);
+					word2 = words[i].substr(br.index + br[0].length);
 					words.splice(i, 1, word1, word2);
+					i += 1; // Jump ahead
 				}
 			}
 			console.log(words);
