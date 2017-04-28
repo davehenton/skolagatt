@@ -31,7 +31,10 @@
 						<td>{{survey_input.get_id}}</td>
 						<td>{{survey_input.default_value}}</td>
 						<td>
-							<a href="{% url 'survey:survey_input_update' survey.id survey_input.id %}" class="btn btn-default btn-xs pull-right"><span class="glyphicon glyphicon-pencil"></span></a>&nbsp;<a href="{% url 'survey:survey_input_delete' survey.id survey_input.id %}" class="btn btn-danger btn-xs pull-right"><span class="glyphicon glyphicon-trash"></span></a>
+							<div class="btn-group">
+								<a href="{% url 'survey:survey_input_update' survey.id survey_input.id %}" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-pencil"></span></a>
+								<a href="{% url 'survey:survey_input_delete' survey.id survey_input.id %}" class="btn btn-danger btn-sm"><span class="glyphicon glyphicon-trash"></span></a>
+							</div>
 						</td>
 					</tr>
 				{% endfor %}
