@@ -33,7 +33,7 @@ class Survey(models.Model):
         ('9', '9. bekkur'),
         ('10', '10. bekkur'),
     )
-    student_year = models.CharField(max_length=2, choices=YEARS)
+    student_year = models.CharField(max_length=2, default='', choices=YEARS)
     description = FroalaField()
     created_at = models.DateTimeField(default=timezone.now)
     active_from = models.DateField(default=timezone.now)
