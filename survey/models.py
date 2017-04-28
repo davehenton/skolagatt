@@ -68,7 +68,7 @@ class SurveyGradingTemplate(models.Model):
 
 
 class SurveyInputGroup(models.Model):
-    survey = models.ForeignKey(Survey)
+    survey = models.ForeignKey(Survey, on_delete=models.CASCADE)
     title = models.CharField(max_length=128)
     identifier = models.CharField(max_length=32)
     description = models.TextField(default='', blank=True)
@@ -84,9 +84,10 @@ class SurveyInputGroup(models.Model):
 
 
 class SurveyInputField(models.Model):
-    input_group = models.ForeignKey(SurveyInputGroup)
+    input_group = models.ForeignKey(SurveyInputGroup, on_delete=models.CASCADE)
     name = models.CharField(max_length=128)
     label = models.CharField(max_length=128)
+    default_value = models.CharField(max_length=128)
 
     def get_id(self):
         return self.input_group.identifier + '_' + self.name
