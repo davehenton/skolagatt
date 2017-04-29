@@ -2306,7 +2306,7 @@ def survey_detail_excel(request, school_id, student_group, pk):
                     for student in studentgroup.students.order_by('name').all():
                         sr = SurveyResult.objects.filter(
                             studentgroup=studentgroup,
-                            groupsurvey=groupsurvey,
+                            survey=groupsurvey,
                             student=student)
                         if sr:
                             r = json.loads(sr.first().results)  # get student results
