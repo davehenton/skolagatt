@@ -190,7 +190,7 @@ $(document).ready(function(){
        { "type": 'icelandic-html', "targets": 0 },
        { "type": 'kt-html', "targets": 1 },
        { "targets": [-1], "orderable": false },
-       {% if '01b_LTL_' in groupsurvey.survey.identifier %}
+       {% if groupsurvey.survey.survey_type.title == 'Lesskimun' %}
        { "type": 'icelandic-html', "targets": [2,3,4] },
        {% else %}
        { "type": 'num-html', "targets": [2] },
