@@ -2475,7 +2475,7 @@ def lesfimi_excel_for_principals(request, pk):
     wb.remove_sheet(ws)
 
     tests = (
-        ('b{}_LF_mai17', 'Maí 2017')
+        ('b{}_LF_mai17', 'Maí 2017'),
         ('b{}_LF_jan17', 'Janúar 2017'),
         ('{}b_LF_sept', 'September 2016'),
     )
