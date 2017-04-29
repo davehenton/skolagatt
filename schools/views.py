@@ -2361,7 +2361,7 @@ def survey_detail_excel(request, school_id, student_group, pk):
                         ws[chr(col) + str(row)] = diff
                         ws[chr(col) + str(row)].fill = get_lesfimi_excel_cell_color(student_year, diff)
                     else:
-                        ws[chr(col) + row] = 0
+                        ws[chr(col) + str(row)] = 0
                     row += 1
 
                 # Fix column widths
