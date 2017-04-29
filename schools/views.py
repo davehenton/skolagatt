@@ -2366,8 +2366,8 @@ def survey_detail_excel(request, school_id, student_group, pk):
 
                 # Fix column widths
                 dims = {}
-                for row in ws.rows:
-                    for cell in row:
+                for wsrow in ws.rows:
+                    for cell in wsrow:
                         if cell.value:
                             dims[cell.column] = max((dims.get(cell.column, 0), len(str(cell.value))))
                 for col, value in dims.items():
