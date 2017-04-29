@@ -2400,7 +2400,7 @@ def survey_detail_excel(request, school_id, student_group, pk):
                 chart.title = "Niðurstöður úr Lesfimi, 2016 - 2017"
                 chart.y_axis.title = "Orð á mínútu"
                 chart.x_axis.title = "Nemandi"
-                data = Reference(ws_bar, min_col=2, min_row=1, max_row=len(datapoints), max_col=3)
+                data = Reference(ws_bar, min_col=2, min_row=1, max_row=len(datapoints), max_col=groupsurveys.count() + 1)
                 cats = Reference(ws_bar, min_col=1, min_row=2, max_row=len(datapoints))
                 chart.add_data(data, titles_from_data=True)
                 chart.set_categories(cats)
@@ -2410,7 +2410,7 @@ def survey_detail_excel(request, school_id, student_group, pk):
 
                 # Add reference lines
                 lchart = LineChart()
-                ldata = Reference(ws_bar, min_col=4, max_col=6, min_row=1, max_row=len(datapoints) + 1)
+                ldata = Reference(ws_bar, min_col=4, max_col=len(datapoints[0]), min_row=1, max_row=len(datapoints) + 1)
                 lchart.width = 40
                 lchart.height = 20
 
