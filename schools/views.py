@@ -2320,9 +2320,10 @@ def survey_detail_excel(request, school_id, student_group, pk):
                             ws[chr(col) + str(row)] = survey_student_result[0]
                             if col > ord('C'):
                                 # Time to highlight
-                                if isinstance(ws['C' + str(row)], int) and isinstance(ws[chr(col) + str(row)]):
-                                    diff = ws[chr(col) + str(row)] - ws['C' + str(row)]
-                                    ws[chr(col) + str(row)].fill = get_lesfimi_excel_cell_color(student_year, diff)
+                                if isinstance(ws[chr(col - 1) + str(row)].value, int):
+                                    if isinstance(ws[chr(col) + str(row)].value, int):
+                                        diff = ws[chr(col) + str(row)].value - ws[chr(col - 1) + str(row)].value
+                                        ws[chr(col) + str(row)].fill = get_lesfimi_excel_cell_color(student_year, diff)
 
                                 pass
                             value = survey_student_result[0]
@@ -2334,9 +2335,9 @@ def survey_detail_excel(request, school_id, student_group, pk):
                 # Lets make datapoints
                 datapoints = []
                 for index in range(1, row):
-                    datapoints.append([(ws['A' + str(index)],)])
+                    datapoints.append([(ws['A' + str(index)].value,)])
                     for column in range(ord('C'), col):
-                        datapoints[-1] += (ws[chr(column) + str(index)],)
+                        datapoints[-1] += (ws[chr(column) + str(index)].value,)
                     if index == 1:
                         datapoints[-1] += ('90% viðmið', '50% viðmið', '25% viðmið')
                     else:
@@ -2349,15 +2350,15 @@ def survey_detail_excel(request, school_id, student_group, pk):
                     # Find last comparison column
                     last = None
                     for c in range(ord('C'), col).__reversed__():
-                        if isinstance(ws[chr(c) + str(row)], int):
+                        if isinstance(ws[chr(c) + str(row)].value, int):
                             last = c
                     first = None
                     if last:
                         for c in range(ord('C'), last):
-                            if isinstance(ws[chr(c) + str(row)], int):
+                            if isinstance(ws[chr(c) + str(row)].value, int):
                                 first = c
                     if first and last:
-                        diff = ws[chr(last) + str(row)] - ws[chr(first) + str(row)]
+                        diff = ws[chr(last) + str(row)].value - ws[chr(first) + str(row)].value
                         ws[chr(col) + str(row)] = diff
                         ws[chr(col) + str(row)].fill = get_lesfimi_excel_cell_color(student_year, diff)
                     else:
