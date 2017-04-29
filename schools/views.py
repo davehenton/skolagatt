@@ -2305,7 +2305,6 @@ def survey_detail_excel(request, school_id, student_group, pk):
                     row = 2
                     for student in studentgroup.students.order_by('name').all():
                         sr = SurveyResult.objects.filter(
-                            studentgroup=studentgroup,
                             survey=groupsurvey,
                             student=student)
                         if sr:
