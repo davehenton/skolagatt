@@ -2290,7 +2290,7 @@ def survey_detail_excel(request, school_id, student_group, pk):
             if groupsurveys:
                 ws['A1'] = 'Nafn'
                 ws['B1'] = 'Kennitala'
-                row = 1
+                row = 2
                 for student in studentgroup.students.order_by('name'):
                     ws['A' + str(row)] = student.name
                     ws['B' + str(row)] = student.ssn
