@@ -37,7 +37,7 @@ class SuperUserMixin(UserPassesTestMixin):
 
 
 class GroupSurveyOpenMixin(UserPassesTestMixin):
-    login_url('denied')
+    login_url = reverse_lazy('denied')
 
     def test_func(self):
         return groupsurvey_is_open(self.request, self.kwargs)
