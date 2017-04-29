@@ -2334,7 +2334,7 @@ def survey_detail_excel(request, school_id, student_group, pk):
                 # Lets make datapoints
                 datapoints = []
                 for index in range(1, row):
-                    datapoints.append([(ws['A' + index],)])
+                    datapoints.append([(ws['A' + str(index)],)])
                     for column in range(ord('C'), col):
                         datapoints[-1] += (ws[chr(column) + str(index)],)
                     if index == 1:
