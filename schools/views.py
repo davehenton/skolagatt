@@ -2325,7 +2325,6 @@ def survey_detail_excel(request, school_id, student_group, pk):
                                         diff = ws[chr(col) + str(row)].value - ws[chr(col - 1) + str(row)].value
                                         ws[chr(col) + str(row)].fill = get_lesfimi_excel_cell_color(student_year, diff)
 
-                                pass
                             value = survey_student_result[0]
                         else:
                             ws[chr(col) + str(row)] = 'Vantar gögn'
@@ -2397,7 +2396,7 @@ def survey_detail_excel(request, school_id, student_group, pk):
                 chart = BarChart()
                 chart.type = "col"
                 chart.style = 10
-                chart.title = "Niðurstöður úr Lesfimi, sept 2016 - jan 2017"
+                chart.title = "Niðurstöður úr Lesfimi, 2016 - 2017"
                 chart.y_axis.title = "Orð á mínútu"
                 chart.x_axis.title = "Nemandi"
                 data = Reference(ws_bar, min_col=2, min_row=1, max_row=len(datapoints), max_col=3)
