@@ -1298,7 +1298,7 @@ class SurveyDelete(common_mixins.SchoolEmployeeMixin, DeleteView):
             return reverse_lazy('schools:school_listing')
 
 
-class SurveyResultCreate(common_mixins.SchoolEmployeeMixin, common_mixins.GroupSurveyOpenMixin, CreateView):
+class SurveyResultCreate(common_mixins.SchoolEmployeeMixin, CreateView):
     model = SurveyResult
     form_class = cm_forms.SurveyResultForm
 
@@ -1373,7 +1373,7 @@ class SurveyResultCreate(common_mixins.SchoolEmployeeMixin, common_mixins.GroupS
             return reverse_lazy('schools:school_listing')
 
 
-class SurveyResultUpdate(common_mixins.SchoolEmployeeMixin, common_mixins.GroupSurveyOpenMixin, UpdateView):
+class SurveyResultUpdate(common_mixins.SchoolEmployeeMixin, UpdateView):
     model = SurveyResult
     form_class = cm_forms.SurveyResultForm
 
@@ -1434,7 +1434,7 @@ class SurveyResultUpdate(common_mixins.SchoolEmployeeMixin, common_mixins.GroupS
             return reverse_lazy('schools:school_listing')
 
 
-class SurveyResultDelete(common_mixins.SchoolEmployeeMixin, common_mixins.GroupSurveyOpenMixin, DeleteView):
+class SurveyResultDelete(common_mixins.SchoolEmployeeMixin, DeleteView):
     model = SurveyResult
     template_name = "schools/confirm_delete.html"
 
