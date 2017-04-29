@@ -2286,7 +2286,6 @@ def survey_detail_excel(request, school_id, student_group, pk):
             student_year = studentgroup.student_year
             groupsurveys = GroupSurvey.objects.filter(
                 studentgroup=studentgroup,
-                student__in=studentgroup.students.all(),
                 survey__survey_type=survey_type).order_by('survey__active_to')
             if groupsurveys:
                 ws['A1'] = 'Nafn'
