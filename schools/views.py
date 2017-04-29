@@ -2309,6 +2309,7 @@ def survey_detail_excel(request, school_id, student_group, pk):
                             student=student)
                         if sr:
                             r = json.loads(sr.first().results)  # get student results
+                            r['click_values'] = json.loads(r['click_values'])
                             survey_student_result = common_util.calc_survey_results(
                                 survey_identifier=identifier,
                                 click_values=r['click_values'],
