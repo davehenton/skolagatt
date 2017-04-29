@@ -83,7 +83,7 @@
 										Niðurstöður
 									</button>
 									{% if is_group_manager or is_school_manager %}
-										{% if not groupsurvey.is_expired %}
+										{% if groupsurvey.is_open or request.user.is_superuser %}
 										<a href="{% url 'schools:survey_result_update' school.id student.id groupsurvey.id student_result.id %}" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
 										<a href="{% url 'schools:survey_result_delete' school.id student.id groupsurvey.id student_result.id %}" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-trash"></span></a>
 										{% endif %}
@@ -100,7 +100,7 @@
 		 					{% endif %}
 							<td>
 								{% if is_group_manager or is_school_manager %}
-									{% if groupsurvey.is_expired == False %}
+									{% if groupsurvey.is_open or request.user.is_superuser %}
 									<a href="{% url 'schools:survey_result_create' school.id student.id groupsurvey.id %}" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span>&nbsp;Skrá</a>
 									{% endif %}
 								{% endif %}

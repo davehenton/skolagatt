@@ -312,6 +312,14 @@ class GroupSurvey(models.Model):
             return True
         return False
 
+    def is_open(self):
+        curdate = timezone.now().date()
+
+        if curdate < self.active_to and curdate > self.active_from:
+            return True
+        else:
+            return False
+
     def results(self):
         return SurveyResult.objects.filter(survey=self)
 

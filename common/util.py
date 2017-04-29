@@ -122,6 +122,34 @@ def is_group_manager(request, kwargs):
     return False
 
 
+def groupsurvey_is_open(request, kwargs):
+    if not request.user.is_authenticated:
+        return False
+
+    if request.user.is_superuser:
+        return True
+
+    groupsurvey_id = None
+
+    try:
+        if 'groupsurvey_id' in kwargs:
+            groupsurvey_id = kwargs['groupsurvey_id']
+        elif 'survey_id' in kwargs:
+            groupsurvey_id = kwargs['survey_id']
+        elif 'pk' in kwargs:
+            groupsurvey_id = kwargs['pk']
+    except (ObjectDoesNotExist, AttributeError):
+        return False
+    else:
+        try:
+            groupsurvey = cm_models.GroupSurvey.objects.get(pk=groupsurvey_id)
+        except ObjectDoesNotExist:
+            return False
+        else:
+            return groupsurvey.is_open()
+    return False
+
+
 def slug_sort(q, attr):
     return sorted(q, key=lambda x: slugify(getattr(x, attr)))
 
