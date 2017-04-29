@@ -2318,7 +2318,10 @@ def survey_detail_excel(request, school_id, student_group, pk):
                                 survey_type=survey_type.id,
                                 transformation=transformation,
                             )
-                            ws[chr(col) + str(row)] = survey_student_result[0]
+                            if survey_student_result[0] == '':
+                                ws[chr(col) + str(row)] = 'Vantar gögn'
+                            else:
+                                ws[chr(col) + str(row)] = survey_student_result[0]
                             if col > ord('C'):
                                 # Time to highlight
                                 if isinstance(ws[chr(col - 1) + str(row)].value, int):
