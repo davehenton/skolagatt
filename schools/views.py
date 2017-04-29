@@ -2349,7 +2349,7 @@ def survey_detail_excel(request, school_id, student_group, pk):
                     # Find last comparison column
                     last = None
                     for c in range(ord('C'), col).__reversed__():
-                        if isinstance(ws[chr(c) + row], int):
+                        if isinstance(ws[chr(c) + str(row)], int):
                             last = c
                     first = None
                     if last:
