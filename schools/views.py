@@ -1214,7 +1214,14 @@ class SurveyCreate(common_mixins.SchoolEmployeeMixin, CreateView):
         form = super(SurveyCreate, self).get_form(self.form_class)
         group_year = StudentGroup.objects.get(
             pk=self.kwargs['student_group']).student_year
-        survey_set = Survey.objects.filter(student_year=group_year, active_to__gte=timezone.now().date())
+        survey_set = Survey.objects.filter(
+            student_year=group_year,
+            active_to__gte=timezone.now().date(),
+        ).exclude(
+            groupsurvey_set__in=GroupSurvey.objects.filter(
+                studentgroup_id=self.kwargs['student_group'],
+            ).values('survey_id'),
+        )
         form.fields['survey'].queryset = survey_set
         return form
 
@@ -1335,28 +1342,45 @@ class SurveyResultCreate(common_mixins.SchoolEmployeeMixin, CreateView):
         return context
 
     def post(self, *args, **kwargs):
-        form = cm_forms.SurveyResultForm(self.request.POST)
+        self.object = None
+        form = self.get_form()
+        # make data mutable
+        form.data = self.request.POST.copy()
+        form.data['student'] = Student.objects.get(pk=self.kwargs['student_id']).pk
+        form.data['survey'] = GroupSurvey.objects.get(pk=self.kwargs['survey_id']).pk
         if form.is_valid():
-            student = Student.objects.get(pk=self.kwargs['student_id'])
-            survey = GroupSurvey.objects.get(pk=self.kwargs['survey_id'])
-            survey_result, created = SurveyResult.objects.get_or_create(student=student, survey=survey)
-
-            survey_result.reported_by = Teacher.objects.filter(user_id=self.request.user.pk).first()
-            # extract data
-            survey_result_data = {'click_values': [], 'input_values': {}}
-            for k in self.request.POST:
-                if k != 'csrfmiddlewaretoken':
-                    if k == 'data_results[]':
-                        survey_result_data['click_values'] = json.dumps(
-                            self.request.POST.getlist('data_results[]')
-                        )
-                    else:
-                        survey_result_data['input_values'][k] = self.request.POST[k]
-            survey_result.results = json.dumps(survey_result_data)
-            survey_result.save()
-            return redirect(self.get_success_url())
+            return self.form_valid(form)
         else:
             return self.form_invalid(form)
+
+    def form_valid(self, form):
+        student = Student.objects.get(pk=self.kwargs['student_id'])
+        survey = GroupSurvey.objects.get(pk=self.kwargs['survey_id'])
+
+        result = SurveyResult.objects.filter(survey=survey, student=student)
+
+        survey_results = form.save(commit=False)
+
+        survey_results.reported_by = Teacher.objects.filter(user_id=self.request.user.pk).first()
+        survey_results.student = student
+        survey_results.survey = survey
+        survey_results.created_at = timezone.now()
+        # extract data
+        survey_results_data = {'click_values': [], 'input_values': {}}
+        for k in self.request.POST:
+            if k != 'csrfmiddlewaretoken':
+                if k == 'data_results[]':
+                    survey_results_data['click_values'] = json.dumps(
+                        self.request.POST.getlist('data_results[]')
+                    )
+                else:
+                    survey_results_data['input_values'][k] = self.request.POST[k]
+        survey_results.results = json.dumps(survey_results_data)
+        
+        if result.exists():
+            survey_results.id = result.first().id
+        survey_results.save()
+        return redirect(self.get_success_url())
 
     def get_success_url(self):
         try:
@@ -2203,26 +2227,6 @@ def group_admin_attendance_excel(request, survey_title):
     return response
 
 
-def get_lesfimi_excel_cell_color(student_year, diff):
-    # Student year
-    if int(student_year) <= 3:
-        if diff <= 7:
-            return PatternFill(start_color='ff0000', end_color='ff0000', fill_type="solid")
-
-        elif diff <= 20:
-            return PatternFill(start_color='ffff00', end_color='ffff00', fill_type="solid")
-        else:
-            return PatternFill(start_color='00ff00', end_color='00ff00', fill_type="solid")
-    else:
-        if diff < 0:
-            return PatternFill(start_color='ff0000', end_color='ff0000', fill_type="solid")
-
-        elif diff <= 10:
-            return PatternFill(start_color='ffff00', end_color='ffff00', fill_type="solid")
-        else:
-            return PatternFill(start_color='00ff00', end_color='00ff00', fill_type="solid")
-
-
 def survey_detail_excel(request, school_id, student_group, pk):
     studentgroup = StudentGroup.objects.get(pk=student_group)
     survey = GroupSurvey.objects.filter(pk=pk).first()
@@ -2233,9 +2237,8 @@ def survey_detail_excel(request, school_id, student_group, pk):
     ws = wb.get_active_sheet()
 
     identifier = survey.survey.identifier
-    survey_type = survey.survey.survey_type.title
 
-    if survey_type == 'Lesskimun':
+    if identifier.startswith('01b_LTL_'):
         ws.title = 'Lesskimun fyrir fyrsta bekk'
 
         ws['A1'] = 'Kennitala'
@@ -2266,7 +2269,14 @@ def survey_detail_excel(request, school_id, student_group, pk):
                     ws.cell('D' + str(index)).value = 'Vantar gögn'
                     ws.cell('E' + str(index)).value = 'Vantar gögn'
                 index += 1
-    elif survey_type == 'Lesfimi':
+    elif identifier.endswith('_LF_jan17'):
+        ws.title = 'Niðurstöður'
+        ws['A1'] = 'Kennitala'
+        ws['B1'] = 'Nafn'
+        ws['C1'] = 'September'
+        ws['D1'] = 'Janúar'
+        ws['E1'] = 'Mismunur'
+
         ref_values = {
             '1': (20, 55, 75),
             '2': (40, 85, 100),
@@ -2279,171 +2289,158 @@ def survey_detail_excel(request, school_id, student_group, pk):
             '9': (140, 180, 210),
             '10': (145, 180, 210),
         }
-        survey_type = SurveyType.objects.get(title='Lesfimi')
+
+        index = 2
+        survey_type = SurveyType.objects.filter(survey=survey.survey.id).values('id')
+        dic = survey_type[0]
+        survey_type = dic['id']
+        jan_transformation = SurveyTransformation.objects.filter(survey=survey.survey)
+
+        datapoints = []
+        datapoints.append(('Nafn', 'September', 'Janúar', '90% viðmið', '50% viðmið', '25% viðmið'))
 
         if studentgroup:
-            ws.title = 'Niðurstöður'
-            student_year = studentgroup.student_year
-            groupsurveys = GroupSurvey.objects.filter(
-                studentgroup=studentgroup,
-                survey__survey_type=survey_type).order_by('survey__active_to')
-            if groupsurveys:
-                ws['A1'] = 'Nafn'
-                ws['B1'] = 'Kennitala'
-                row = 2
-                for student in studentgroup.students.order_by('name'):
-                    ws['A' + str(row)] = student.name
-                    ws['B' + str(row)] = student.ssn
-                    row += 1
+            sept_identifier = "{}b_LF_sept".format(studentgroup.student_year)
+            sept_survey = Survey.objects.filter(identifier=sept_identifier).first()
+            sept_transformation = SurveyTransformation.objects.filter(survey=sept_survey)
+            sept_gs = GroupSurvey.objects.filter(survey=sept_survey, studentgroup=survey.studentgroup).first()
 
-                col = ord('C')
-                datapoints = []
-                for groupsurvey in groupsurveys:
-                    title = groupsurvey.survey.title.split()[-1].title()
-                    ws[chr(col) + '1'] = title
-                    transformation = SurveyTransformation.objects.filter(survey=groupsurvey.survey)
-                    row = 2
-                    for student in studentgroup.students.order_by('name').all():
-                        sr = SurveyResult.objects.filter(
-                            survey=groupsurvey,
-                            student=student)
-                        if sr:
-                            r = json.loads(sr.first().results)  # get student results
-                            r['click_values'] = json.loads(r['click_values'])
-                            survey_student_result = common_util.calc_survey_results(
-                                survey_identifier=identifier,
-                                click_values=r['click_values'],
-                                input_values=r['input_values'],
-                                student=student,
-                                survey_type=survey_type.id,
-                                transformation=transformation,
-                            )
-                            if survey_student_result[0] == '':
-                                ws[chr(col) + str(row)] = 'Vantar gögn'
-                            else:
-                                ws[chr(col) + str(row)] = survey_student_result[0]
-                            if col > ord('C'):
-                                # Time to highlight
-                                if isinstance(ws[chr(col - 1) + str(row)].value, int):
-                                    if isinstance(ws[chr(col) + str(row)].value, int):
-                                        diff = ws[chr(col) + str(row)].value - ws[chr(col - 1) + str(row)].value
-                                        ws[chr(col) + str(row)].fill = get_lesfimi_excel_cell_color(student_year, diff)
-
-                            value = survey_student_result[0]
-                        else:
-                            ws[chr(col) + str(row)] = 'Vantar gögn'
-                        row += 1
-                    col += 1
-
-                # Lets make datapoints
-                datapoints = []
-                for index in range(1, row):
-                    datapoints.append((ws['A' + str(index)].value,))
-                    for column in range(ord('C'), col):
-                        datapoints[-1] += (ws[chr(column) + str(index)].value,)
-                    if index == 1:
-                        datapoints[-1] += ('90% viðmið', '50% viðmið', '25% viðmið')
-                    else:
-                        refs = ref_values[student_year]
-                        datapoints[-1] += (refs[0], refs[1], refs[2])
-
-                ws[chr(col) + '1'] = 'Mismunur'
-                row = 2
-                for student in studentgroup.students.order_by('name').all():
-                    # Find last comparison column
-                    last = None
-                    for c in range(ord('C'), col).__reversed__():
-                        if isinstance(ws[chr(c) + str(row)].value, int):
-                            last = c
-                            break
-                    first = None
-                    if last:
-                        for c in range(ord('C'), last):
-                            if isinstance(ws[chr(c) + str(row)].value, int):
-                                first = c
-                                break
-                    if first and last:
-                        diff = ws[chr(last) + str(row)].value - ws[chr(first) + str(row)].value
-                        ws[chr(col) + str(row)].value = diff
-                        ws[chr(col) + str(row)].fill = get_lesfimi_excel_cell_color(student_year, diff)
-                    else:
-                        ws[chr(col) + str(row)] = 0
-                    row += 1
-
-                # Fix column widths
-                dims = {}
-                for wsrow in ws.rows:
-                    for cell in wsrow:
-                        if cell.value:
-                            dims[cell.column] = max((dims.get(cell.column, 0), len(str(cell.value))))
-                for col, value in dims.items():
-                    ws.column_dimensions[col].width = int(value) + 2
-
-                # Add legend
-                row += 2
-                ws['A' + str(row)].fill = PatternFill(start_color='ff0000', end_color='ff0000', fill_type='solid')
-                ws['B' + str(row)] = 'Lítil framvinda miðað við aldur'
-                ws.merge_cells('B' + str(row) + ':E' + str(row))
-                row += 1
-
-                ws['A' + str(row)].fill = PatternFill(start_color='ffff00', end_color='ffff00', fill_type='solid')
-                ws['B' + str(row)] = 'Fremur lítil framvinda'
-                ws.merge_cells('B' + str(row) + ':E' + str(row))
-                row += 1
-
-                ws['A' + str(row)].fill = PatternFill(start_color='00ff00', end_color='00ff00', fill_type='solid')
-                ws['B' + str(row)] = 'Góð framvinda'
-                ws.merge_cells('B' + str(row) + ':E' + str(row))
-
-                # Add bar chart
-                ws_bar = wb.create_sheet(title="Súlurit")
-                for datapoint in datapoints:
-                    ws_bar.append(datapoint)
-                chart = BarChart()
-                chart.type = "col"
-                chart.style = 10
-                chart.title = "Niðurstöður úr Lesfimi, 2016 - 2017"
-                chart.y_axis.title = "Orð á mínútu"
-                chart.x_axis.title = "Nemandi"
-                data = Reference(
-                    ws_bar,
-                    min_col=2,
-                    min_row=1,
-                    max_row=len(datapoints),
-                    max_col=groupsurveys.count() + 1,
-                )
-                cats = Reference(ws_bar, min_col=1, min_row=2, max_row=len(datapoints))
-                chart.add_data(data, titles_from_data=True)
-                chart.set_categories(cats)
-                chart.shape = 4
-                chart.width = 40
-                chart.height = 20
-
-                # Add reference lines
-                lchart = LineChart()
-                ldata = Reference(
-                    ws_bar,
-                    min_col=groupsurveys.count() + 2,
-                    max_col=len(datapoints[0]),
-                    min_row=1,
-                    max_row=len(datapoints) + 1,
-                )
-                lchart.width = 40
-                lchart.height = 20
-
-                lchart.layout = Layout(
-                    ManualLayout(
-                        xMode="edge",
-                        yMode="edge",
+            for student in studentgroup.students.all():
+                value_jan = 'Vantar gögn'
+                value_sept = 'Vantar gögn'
+                ws.cell('A' + str(index)).value = student.ssn
+                ws.cell('B' + str(index)).value = student.name
+                sy = studentgroup.student_year
+                sr = SurveyResult.objects.filter(student=student, survey=survey)
+                if sr:
+                    r = literal_eval(sr.first().results)  # get student results
+                    try:
+                        click_values = literal_eval(r['click_values'])
+                    except:
+                        click_values = []
+                    survey_student_result = common_util.calc_survey_results(
+                        survey_identifier=identifier,
+                        click_values=click_values,
+                        input_values=r['input_values'],
+                        student=student,
+                        survey_type=survey_type,
+                        transformation=jan_transformation,
                     )
-                )
-                lchart.add_data(ldata, titles_from_data=True)
-                chart += lchart
+                    value_jan = survey_student_result[0]
 
-                for idx in range(1, len(datapoints) + 1):
-                    ws_bar.row_dimensions[idx].hidden = True
+                sr = SurveyResult.objects.filter(student=student, survey=sept_gs)
+                if sr:
+                    r = literal_eval(sr.first().results)  # get student results
+                    try:
+                        click_values = literal_eval(r['click_values'])
+                    except:
+                        click_values = []
+                    survey_student_result = common_util.calc_survey_results(
+                        survey_identifier=sept_identifier,
+                        click_values=click_values,
+                        input_values=r['input_values'],
+                        student=student,
+                        survey_type=survey_type,
+                        transformation=sept_transformation,
+                    )
+                    value_sept = survey_student_result[0]
 
-                ws_bar.add_chart(chart, "A" + str(len(datapoints) + 1))
+                ws.cell('C' + str(index)).value = value_sept
+                ws.cell('D' + str(index)).value = value_jan
+                if isinstance(value_sept, int) and isinstance(value_jan, int):
+                    cur_cell = ws.cell('E' + str(index))
+                    diff = value_jan - value_sept
+
+                    # Student year
+                    if int(sy) <= 3:
+                        if diff <= 7:
+                            cur_cell.fill = PatternFill(start_color='ff0000', end_color='ff0000', fill_type="solid")
+
+                        elif diff <= 20:
+                            cur_cell.fill = PatternFill(start_color='ffff00', end_color='ffff00', fill_type="solid")
+                        else:
+                            cur_cell.fill = PatternFill(start_color='00ff00', end_color='00ff00', fill_type="solid")
+                    else:
+                        if diff < 0:
+                            cur_cell.fill = PatternFill(start_color='ff0000', end_color='ff0000', fill_type="solid")
+
+                        elif diff <= 10:
+                            cur_cell.fill = PatternFill(start_color='ffff00', end_color='ffff00', fill_type="solid")
+                        else:
+                            cur_cell.fill = PatternFill(start_color='00ff00', end_color='00ff00', fill_type="solid")
+
+                    cur_cell.value = diff
+
+                if not isinstance(value_sept, int):
+                    value_sept = 0
+                if not isinstance(value_jan, int):
+                    value_jan = 0
+
+                datapoints.append((student.name.split()[0], value_sept, value_jan, ref_values[
+                                  sy][0], ref_values[sy][1], ref_values[sy][2]))
+
+                index += 1
+
+        # Fix column widths
+        dims = {}
+        for row in ws.rows:
+            for cell in row:
+                if cell.value:
+                    dims[cell.column] = max((dims.get(cell.column, 0), len(str(cell.value))))
+        for col, value in dims.items():
+            ws.column_dimensions[col].width = int(value) + 2
+
+        # Add legend
+        index += 2
+        ws.cell('A' + str(index)).fill = PatternFill(start_color='ff0000', end_color='ff0000', fill_type='solid')
+        ws.cell('B' + str(index)).value = 'Lítil framvinda miðað við aldur'
+        ws.merge_cells('B' + str(index) + ':E' + str(index))
+        index += 1
+        ws.cell('A' + str(index)).fill = PatternFill(start_color='ffff00', end_color='ffff00', fill_type='solid')
+        ws.cell('B' + str(index)).value = 'Fremur lítil framvinda'
+        ws.merge_cells('B' + str(index) + ':E' + str(index))
+        index += 1
+        ws.cell('A' + str(index)).fill = PatternFill(start_color='00ff00', end_color='00ff00', fill_type='solid')
+        ws.cell('B' + str(index)).value = 'Góð framvinda'
+        ws.merge_cells('B' + str(index) + ':E' + str(index))
+
+        # Add bar chart
+        ws_bar = wb.create_sheet(title="Súlurit")
+        for datapoint in datapoints:
+            ws_bar.append(datapoint)
+        chart = BarChart()
+        chart.type = "col"
+        chart.style = 10
+        chart.title = "Niðurstöður úr Lesfimi, sept 2016 - jan 2017"
+        chart.y_axis.title = "Orð á mínútu"
+        chart.x_axis.title = "Nemandi"
+        data = Reference(ws_bar, min_col=2, min_row=1, max_row=len(datapoints), max_col=3)
+        cats = Reference(ws_bar, min_col=1, min_row=2, max_row=len(datapoints))
+        chart.add_data(data, titles_from_data=True)
+        chart.set_categories(cats)
+        chart.shape = 4
+        chart.width = 40
+        chart.height = 20
+
+        # Add reference lines
+        lchart = LineChart()
+        ldata = Reference(ws_bar, min_col=4, max_col=6, min_row=1, max_row=len(datapoints) + 1)
+        lchart.width = 40
+        lchart.height = 20
+
+        lchart.layout = Layout(
+            ManualLayout(
+                xMode="edge",
+                yMode="edge",
+            )
+        )
+        lchart.add_data(ldata, titles_from_data=True)
+        chart += lchart
+
+        for idx in range(1, len(datapoints) + 1):
+            ws_bar.row_dimensions[idx].hidden = True
+
+        ws_bar.add_chart(chart, "A" + str(len(datapoints) + 1))
 
     wb.save(response)
 
@@ -2475,7 +2472,6 @@ def lesfimi_excel_for_principals(request, pk):
     wb.remove_sheet(ws)
 
     tests = (
-        ('b{}_LF_mai17', 'Maí 2017'),
         ('b{}_LF_jan17', 'Janúar 2017'),
         ('{}b_LF_sept', 'September 2016'),
     )
