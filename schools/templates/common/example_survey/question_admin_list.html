@@ -6,9 +6,7 @@
 	<a href="{% url 'schools:example_survey_question_admin_create'%}" class="btn btn-default">
 		<span class="glyphicon glyphicon-plus"></span>&nbsp;Bæta við spurningu
 	</a>
-</div>
-<div class="row">
-	<div class="btn-group">
+	<div class="btn-group pull-right">
 		{% for quiz_type in quiz_types %}
 		<a href="{% url 'schools:example_survey_question_admin_print' quiz_type %}" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-print"></span>&nbsp;{{ quiz_type }}</a>
 		{% endfor %}
