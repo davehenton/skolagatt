@@ -1911,6 +1911,17 @@ class ExampleSurveyQuestionAdminDelete(common_mixins.SuperUserMixin, DeleteView)
         return ExampleSurveyQuestion.objects.get(pk=self.kwargs['pk'])
 
 
+class ExampleSurveyQuestionAdminPrint(common_mixins.SuperUserMixin, ListView):
+    model = ExampleSurveyQuestion
+    template_name = "common/example_survey/question_admin_print.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(ExampleSurveyQuestionAdminPrint, self).get_context_data(**kwargs)
+        quiz_type = self.request['quiz_type']
+        context['quiz_type'] = quiz_type
+        context['questions'] = ExampleSurveyQuestion.objects.filter(quiz_type=quiz_type).all()
+
+
 class ExampleSurveyAnswerAdminListing(common_mixins.SuperUserMixin, ListView):
     model = ExampleSurveyAnswer
     template_name = "common/example_survey/answer_admin_list.html"

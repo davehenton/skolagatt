@@ -1,0 +1,75 @@
+{% extends 'second_base.html'%}
+{% load staticfiles %}
+{% block stylesheet %}
+    <link href="{% static 'schools/css/example_survey_samraemd_detail_print.css' %}" rel="stylesheet">
+    <meta name="name" content="content">
+{% endblock %}
+
+{% block content %}
+<h3>Prófadæma spurningar</h3>
+<page size="A4">
+    <div class="outer-border">
+        <img src="{% static 'img/logo-3litur.png'%}" class="img-responsive mms-logo"/>
+        <h1 class="text-center">Samræmd könnunarpróf</h1>
+        <div class="row headinfo">
+            <div class="info col-xs-6">
+                <p>
+                {% if quiz_type == 'STÆ' %}
+                    Stærðfræðihluti
+                {% elif quiz_type == 'ÍSL' %}
+                    Íslenskuhluti
+                {% elif quiz_type == 'ENS' %}
+                    Enskuhluti
+                {% endif %}
+                {{ studentgroup.name }}
+                </p>
+            </div>
+        </div>
+        <div class="table-container">
+            <table class="table table-hover table-striped" id="example_survey_question_list">
+                <thead>
+                    <tr>
+                        <th>Flýtikóði</th>
+                        <th>Flokkur</th>
+                        <th>Lýsing</th>
+                        <th>Dæmi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for question in questions %}
+                    <tr>
+                        <td>{{question.quickcode}}</td>
+                        {% if question.category == 'RA' %}
+                            <td>Reikningur og aðgerðir</td>
+                        {% elif question.category == 'RM' %}
+                            <td>Rúmfræði</td>
+                        {% elif question.category == 'TT' %}
+                            <td>Tölur og talnaskilningur</td>
+                        {% elif question.category == 'AL' %}
+                            <td>Algebra</td>
+                        {% elif question.category == 'HP' %}
+                            <td>Hlutföll og prósentur</td>
+                        {% elif question.category == 'LE' %}
+                            <td>Lesskilningur</td>
+                        {% elif question.category == 'MN' %}
+                            <td>Málnotkun</td>
+                        {% else %}
+                            <td>{{ question.category }}</td>
+                        {% endif %}
+                        <td>{{question.description}}</td>
+                        <td>{{question.example}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="4">
+                            <p class="footer text-center col-xs-12">Menntamálastofnun - Víkurhvarfi 3 - 203 Kópavogi</p>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</page>
+{% endblock %}

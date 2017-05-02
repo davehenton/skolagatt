@@ -7,6 +7,13 @@
 		<span class="glyphicon glyphicon-plus"></span>&nbsp;Bæta við spurningu
 	</a>
 </div>
+<div class="row">
+	<div class="btn-group">
+		{% for quiz_type in ['STÆ', 'ÍSL', 'ENS' ] %}
+		<a href="{% url 'schools:example_survey_question_admin_print' quiz_type %}" class="btn btn-xs"><span class="glyphicon glyphicon-print"></span>&nbsp;{{ quiz_type }}</a>
+		{% endfor %}
+	</div>
+</div>
 <div>
 	<table class="table table-hover table-striped" id="example_survey_question_list">
 		<thead>
