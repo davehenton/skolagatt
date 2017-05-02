@@ -1861,7 +1861,7 @@ class ExampleSurveyQuestionAdminListing(common_mixins.SuperUserMixin, ListView):
         context = super(ExampleSurveyQuestionAdminListing, self).get_context_data(**kwargs)
 
         context['questions'] = ExampleSurveyQuestion.objects.all()
-        context['quiz_types'] = ExampleSurveyQuestion.objects.value_list('exam_type', flat=True).distinct()
+        context['quiz_types'] = ExampleSurveyQuestion.objects.values_list('exam_type', flat=True).distinct()
         return context
 
 
