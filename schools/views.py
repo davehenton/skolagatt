@@ -1921,6 +1921,7 @@ class ExampleSurveyQuestionAdminPrint(common_mixins.SuperUserMixin, ListView):
         quiz_type = self.kwargs['quiz_type']
         context['quiz_type'] = quiz_type
         context['questions'] = ExampleSurveyQuestion.objects.filter(quiz_type=quiz_type).all()
+        return context
 
 
 class ExampleSurveyAnswerAdminListing(common_mixins.SuperUserMixin, ListView):
