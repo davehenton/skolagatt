@@ -9,7 +9,7 @@
 </div>
 <div class="row">
 	<div class="btn-group">
-		{% for quiz_type in ['STÆ', 'ÍSL', 'ENS' ] %}
+		{% for quiz_type in quiz_types %}
 		<a href="{% url 'schools:example_survey_question_admin_print' quiz_type %}" class="btn btn-xs"><span class="glyphicon glyphicon-print"></span>&nbsp;{{ quiz_type }}</a>
 		{% endfor %}
 	</div>
