@@ -1218,9 +1218,7 @@ class SurveyCreate(common_mixins.SchoolEmployeeMixin, CreateView):
             student_year=group_year,
             active_to__gte=timezone.now().date(),
         ).exclude(
-            groupsurvey__in=GroupSurvey.objects.filter(
-                studentgroup_id=self.kwargs['student_group'],
-            ).values('survey_id'),
+            groupsurvey__in=GroupSurvey.objects.filter(studentgroup_id=self.kwargs['student_group'])
         )
         form.fields['survey'].queryset = survey_set
         return form
