@@ -231,6 +231,9 @@ urlpatterns = [
     url(r'^prófadæmi/spurningar/(?P<pk>\d+)/delete/$',
         views.ExampleSurveyQuestionAdminDelete.as_view(),
         name='example_survey_question_admin_delete'),
+    url(r'^prófadæmi/spurningar/(?P<quiz_type>[\w ]+)/print/$',
+        views.ExampleSurveyQuestionAdminPrint.as_view(),
+        name='example_survey_question_admin_print'),
 
     url(r'^prófadæmi/svör/exam_code/(?P<exam_code>[\w ]+)/$',
         views.ExampleSurveyAnswerAdminListing.as_view(),
