@@ -1918,7 +1918,7 @@ class ExampleSurveyQuestionAdminPrint(common_mixins.SuperUserMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super(ExampleSurveyQuestionAdminPrint, self).get_context_data(**kwargs)
-        quiz_type = self.request.GET['quiz_type']
+        quiz_type = self.kwargs['quiz_type']
         context['quiz_type'] = quiz_type
         context['questions'] = ExampleSurveyQuestion.objects.filter(quiz_type=quiz_type).all()
 
