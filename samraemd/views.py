@@ -681,7 +681,7 @@ class SamraemdResultDetail(cm_mixins.SchoolTeacherMixin, DetailView):
                     for result in s_models.SamraemdMathResult.objects.filter(
                         student_year=group,
                         exam_date__year=year
-                    ):
+                    ).annotate(result_type=Value('STÆ', CharField())):
                         if result.student in student_results:
                             student_results[result.student].append(result)
                         else:
@@ -690,7 +690,7 @@ class SamraemdResultDetail(cm_mixins.SchoolTeacherMixin, DetailView):
                     for result in s_models.SamraemdISLResult.objects.filter(
                         student_year=group,
                         exam_date__year=year
-                    ):
+                    ).annotate(result_type=Value('ÍSL', CharField())):
                         if result.student in student_results:
                             student_results[result.student].append(result)
                         else:
@@ -699,7 +699,7 @@ class SamraemdResultDetail(cm_mixins.SchoolTeacherMixin, DetailView):
                     for result in s_models.SamraemdENSResult.objects.filter(
                         student_year=group,
                         exam_date__year=year
-                    ):
+                    ).annotate(result_type=Value('ENS', CharField())):
                         if result.student in student_results:
                             student_results[result.student].append(result)
                         else:
