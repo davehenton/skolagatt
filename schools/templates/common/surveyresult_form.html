@@ -142,8 +142,10 @@
 			if ($(this).hasClass('selected')) {
 				var selectedCount = $(this).attr('count');
 				$('#grading_template span.codered').each(function(){
-					if ($(this).attr('count') > selectedCount) {
+					console.log("new selected is at " + selectedCount)
+					if ($(this).attr('count') < selectedCount) {
 						$(this).removeClass('codered');
+						console.log("removed codered at " + $(this).attr('count'))
 					}
 				});
 			}
