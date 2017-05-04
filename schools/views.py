@@ -2349,7 +2349,10 @@ def survey_detail_excel(request, school_id, student_group, pk):
                                 if isinstance(ws[chr(col - 1) + str(row)].value, int):
                                     if isinstance(ws[chr(col) + str(row)].value, int):
                                         diff = ws[chr(col) + str(row)].value - ws[chr(col - 1) + str(row)].value
-                                        if (ws[chr(col - 1) + '1'] == 'September' and ws[chr(col) + '1'] == 'Maí'):
+                                        if (
+                                            ws[chr(col - 1) + '1'].value == 'September' and
+                                            ws[chr(col) + '1'].value == 'Maí'
+                                        ):
                                             diff = round(diff / 2)  # Average, because distance too great for algorithm
                                         ws[chr(col) + str(row)].fill = get_lesfimi_excel_cell_color(student_year, diff)
 
@@ -2389,7 +2392,7 @@ def survey_detail_excel(request, school_id, student_group, pk):
                     if first and last:
                         diff = ws[chr(last) + str(row)].value - ws[chr(first) + str(row)].value
                         ws[chr(col) + str(row)].value = diff
-                        if (ws[chr(first) + '1'] == 'September' and ws[chr(last) + '1'] == 'Maí'):
+                        if (ws[chr(first) + '1'].value == 'September' and ws[chr(last) + '1'].value == 'Maí'):
                             diff = round(diff / 2)  # Average, because distance too great for algorithm
 
                         ws[chr(col) + str(row)].fill = get_lesfimi_excel_cell_color(student_year, diff)
