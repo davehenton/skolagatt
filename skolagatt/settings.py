@@ -105,7 +105,7 @@ CACHES = {
 # Internationalization
 # https://docs.djangoproject.com/en/1.9/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'is_IS'
 
 TIME_ZONE = 'UTC'
 
