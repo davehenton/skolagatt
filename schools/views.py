@@ -2321,7 +2321,7 @@ def survey_detail_excel(request, school_id, student_group, pk):
                 col = ord('C')
                 datapoints = []
                 for groupsurvey in groupsurveys:
-                    title = calendar.month_name[groupsurvey.active_to.month].title()
+                    title = calendar.month_name[groupsurvey.active_from.month].title()
                     ws[chr(col) + '1'] = title
                     transformation = SurveyTransformation.objects.filter(survey=groupsurvey.survey)
                     row = 2
