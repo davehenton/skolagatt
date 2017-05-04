@@ -18,6 +18,7 @@ from ast import literal_eval
 import json
 import xlrd
 import openpyxl
+import locale
 import calendar
 from openpyxl.styles import PatternFill
 from openpyxl.chart import AreaChart, BarChart, LineChart, Reference
@@ -2287,6 +2288,7 @@ def survey_detail_excel(request, school_id, student_group, pk):
                     ws.cell('E' + str(index)).value = 'Vantar gögn'
                 index += 1
     elif survey_type == 'Lesfimi':
+        locale.setlocale(locale.LC_ALL, "is_IS.UTF-8")
         ref_values = {
             '1': (20, 55, 75),
             '2': (40, 85, 100),
