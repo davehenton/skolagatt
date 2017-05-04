@@ -124,7 +124,7 @@
 			this.className = classes[($.inArray(this.className, classes)+1)%classes.length];
 
 			if $(this).hasClass('codered') {
-				that = this
+				var that = this;
 				$('#grading_template span.codered').each(function(){
 					if (this != that) {
 						$(this).removeClass('codered');
