@@ -11,6 +11,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from itertools import chain
+import itertools
+import re
 from uuid import uuid4
 from datetime import datetime, date
 from ast import literal_eval
@@ -1329,6 +1331,14 @@ class SurveyResultCreate(common_mixins.SchoolEmployeeMixin, CreateView):
                     grading_templates = SurveyGradingTemplate.objects.get(survey=survey)
                 except:
                     grading_templates = []
+
+                cnt = itertools.count(1)
+                context['grading_template_md'] = re.sub(
+                    r'(\w+)',
+                    lambda x: '<span count="{}">{}</span>'.format(next(cnt), x.group(1)),
+                    grading_templates.md
+                )
+
                 context['grading_template'] = grading_templates
                 input_groups = SurveyInputGroup.objects.filter(survey=survey)
                 i_gr = []
@@ -1415,7 +1425,16 @@ class SurveyResultUpdate(common_mixins.SchoolEmployeeMixin, UpdateView):
             grading_templates = SurveyGradingTemplate.objects.get(survey=survey)
         except:
             grading_templates = []
+
+        cnt = itertools.count(1)
+        context['grading_template_md'] = re.sub(
+            r'(\w+)',
+            lambda x: '<span count="{}">{}</span>'.format(next(cnt), x.group(1)),
+            grading_templates.md
+        )
+
         context['grading_template'] = grading_templates
+
         input_groups = SurveyInputGroup.objects.filter(survey=survey)
         i_gr = []
         for ig in input_groups:

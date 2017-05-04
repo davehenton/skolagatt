@@ -12,7 +12,7 @@
 	<div id="selected_words" class="row alert alert-info">
 		<p>{{grading_template.info|safe}}</p>
 	</div>
-	<div class='md' id="grading_template">{{grading_template.md|safe}}</div>
+	<div class='md' id="grading_template">{{grading_template_md|safe}}</div>
 	<hr />
 <form action="" method="post" id="survey_result_form" class="form-horizontal">
 	{% if input_groups %}
@@ -68,40 +68,8 @@
 			catch(err) {}
 		}
 
-		// input
-		// val = string
-		// output = string where each word has been wrapped with span count=word number
-		function wrap_text( val ){
-			var words = val.split(/[ ,.]/)
-
-			for (i=0; i < words.length; i++) {
-				br = words[i].match(/\<.*\>/)
-				if (br) {
-					word1 = words[i].substr(0,br.index);
-					word2 = words[i].substr(br.index + br[0].length);
-					words.splice(i, 1, word1, word2);
-					i += 1; // Jump ahead
-				}
-			}
-			console.log(words);
-			results = "";
-			for(i in words){
-				if (words[i].match(/\s/) || words[i].length == 0) {
-					continue;
-				}
-				var replaced = val.replace(words[i], "<span count='"+i+"'>"+words[i]+"</span>"); //get replaced text
-				results += replaced.split('</span>')[0]+'</span>'; //add replaced text to results
-				val = replaced.split('</span>')[1]; //continue working on val
-			}
-			results += val; //add the rest of val
-			return results;
-		}
-
 		// update click_input form
 		try {
-			//wrap each word in span count
-			var text_container = $("#grading_template");
-			text_container.html(wrap_text(text_container.html()));
 			//highlight words from update array
 			for(i in update) {
 				if(i==(update.length-1)){
