@@ -122,6 +122,21 @@
 	    $('span[count]').on('click',function(event){
 			var classes = ['','selected','codered'];
 			this.className = classes[($.inArray(this.className, classes)+1)%classes.length];
+
+			if $(this).hasClass('codered') {
+				that = this
+				$('#grading_template span.codered').each(function(){
+					if (this != that) {
+						$(this).removeClass('codered');
+					}
+				});
+				var coderedCount=$(this).attr('count');
+				$('#grading_template span.selected').each(function(){
+					if ($(this).attr("count") > coderedCount) {
+						$(this).removeClass('selected');
+					}
+				});
+			}
 		});
 	});
 	</script>
