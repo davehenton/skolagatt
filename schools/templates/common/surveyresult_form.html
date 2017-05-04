@@ -132,9 +132,10 @@
 				});
 				var coderedCount=$(this).attr('count');
 				$('#grading_template span.selected').each(function(){
-					console.log(coderedCount);
-					if ($(this).attr("count") > coderedCount) {
+					console.log("code red is at: " + coderedCount);
+					if (parseInt($(this).attr('count')) > coderedCount) {
 						$(this).removeClass('selected');
+						console.log("removed selected at " + $(this.attr('count')))
 					}
 				});
 			}
