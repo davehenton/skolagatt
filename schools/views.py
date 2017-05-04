@@ -18,6 +18,7 @@ from ast import literal_eval
 import json
 import xlrd
 import openpyxl
+import calendar
 from openpyxl.styles import PatternFill
 from openpyxl.chart import AreaChart, BarChart, LineChart, Reference
 from openpyxl.chart.layout import Layout, ManualLayout
@@ -2318,7 +2319,7 @@ def survey_detail_excel(request, school_id, student_group, pk):
                 col = ord('C')
                 datapoints = []
                 for groupsurvey in groupsurveys:
-                    title = groupsurvey.survey.title.split()[-1].title()
+                    title = calendar.month_name[groupsurvey.active_to.month].title()
                     ws[chr(col) + '1'] = title
                     transformation = SurveyTransformation.objects.filter(survey=groupsurvey.survey)
                     row = 2
@@ -2346,6 +2347,8 @@ def survey_detail_excel(request, school_id, student_group, pk):
                                 if isinstance(ws[chr(col - 1) + str(row)].value, int):
                                     if isinstance(ws[chr(col) + str(row)].value, int):
                                         diff = ws[chr(col) + str(row)].value - ws[chr(col - 1) + str(row)].value
+                                        if (ws[chr(col - 1) + '1'] == 'September' and ws[chr(col) + '1'] == 'Maí'):
+                                            diff = round(diff / 2)  # Average, because distance too great for algorithm
                                         ws[chr(col) + str(row)].fill = get_lesfimi_excel_cell_color(student_year, diff)
 
                             value = survey_student_result[0]
@@ -2366,7 +2369,7 @@ def survey_detail_excel(request, school_id, student_group, pk):
                         refs = ref_values[student_year]
                         datapoints[-1] += (refs[0], refs[1], refs[2])
 
-                ws[chr(col) + '1'] = 'Mismunur'
+                ws[chr(col) + '1'] = 'Heildarmismunur'
                 row = 2
                 for student in studentgroup.students.order_by('name').all():
                     # Find last comparison column
@@ -2384,9 +2387,12 @@ def survey_detail_excel(request, school_id, student_group, pk):
                     if first and last:
                         diff = ws[chr(last) + str(row)].value - ws[chr(first) + str(row)].value
                         ws[chr(col) + str(row)].value = diff
+                        if (ws[chr(first) + '1'] == 'September' and ws[chr(last) + '1'] == 'Maí'):
+                            diff = round(diff / 2)  # Average, because distance too great for algorithm
+
                         ws[chr(col) + str(row)].fill = get_lesfimi_excel_cell_color(student_year, diff)
                     else:
-                        ws[chr(col) + str(row)] = 0
+                        ws[chr(col) + str(row)] = 'Vantar gögn'
                     row += 1
 
                 # Fix column widths
