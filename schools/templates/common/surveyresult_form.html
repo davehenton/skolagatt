@@ -137,6 +137,14 @@
 					}
 				});
 			}
+			if ($(this).hasClass('selected')) {
+				var selectedCount = $(this).attr('count');
+				$('#grading_template span.codered').each(function(){
+					if ($(this).attr('count') > selectedCount) {
+						$(this).removeClass('codered');
+					}
+				});
+			}
 		});
 	});
 	</script>
