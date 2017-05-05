@@ -106,6 +106,12 @@
 			//event.preventDefault();
 			var selected_words = $("span.selected");
 			var red_word = $("span.codered");
+
+			if (red_word.length == 0) {
+				if (window.confirm('Ekkert orð var rauðmerkt til að merkja síðasta lesið orð. Ertu viss?') == false) {
+					return event.preventDefault();
+				}
+			}
 			selected_words.each(function(i){
 				$("#survey_result_form").append($("<input type='hidden' />").attr({
 					name:'data_results[]',
