@@ -119,6 +119,24 @@ strong {
     color : #000;
     margin: 1em 1em 1em 1em;
 }
+.content-group-1, .content-group-2, .content-group-3, .content-group-4 {
+    font-family : Helvetica;
+}
+.content-group-5, .content-group-6, .content-group-7, .content-group-8, .content-group-9, .content-group-10 {
+    font-family : Calibri;
+}
+.content-group-1, .content-group-2 {
+    font-size : 15pt;
+}
+.content-group-3 {
+    font-size : 14pt;
+}
+.content-group-4, .content-group-5, .content-group-6, .content-group-7 {
+    font-size : 13pt;
+}
+.content-group-8, .content-group-9, .content-group-10 {
+    font-size : 12pt;
+}
 tbody td {
     color : #000000;
 }
