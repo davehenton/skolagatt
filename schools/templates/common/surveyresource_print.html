@@ -8,11 +8,7 @@
 {% block content %}
 <page size="A4">
     <div class="outer-border">
-        <img src="{% static 'img/logo-3litur.png'%}" class="img-responsive mms-logo"/>
-        <h1 class="text-center">{{surveyresource.title}}</h1>
-        <h2 class="text-center">{{survey.title}}</h3>
-        <hr />
-        <div class="content">
+        <div class="content content-group-{{survey.survey.student_year}}">
             {{ surveyresource.resource_html|safe }}
         </div>
     </div>
