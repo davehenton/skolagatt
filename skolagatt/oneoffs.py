@@ -206,6 +206,45 @@ def lesfimi_excel_entire_country_stats():
     return response
 
 
+def _samraemd_excel_maeting():
+    wb = openpyxl.Workbook()
+    ws = wb.get_active_sheel()
+
+    schools = School.objects.all()
+    surveys = Survey.objects.filter(
+        identifier__in=['SKP109', 'SKP110', 'SKP209', 'SKP210'],
+    )
+    ws['A1'] = 'Kennitala'
+    ws['B1'] = 'Skóli'
+    ws['C1'] = 'Skólanúmer'
+    ws['D1'] = 'Próf'
+    ws['E1'] = 'Mæting'
+
+    for school in schools:
+        studentgroups = StudentGroup.objects.filter(
+            school=school,
+            student_year__in=['9', '10'],
+        ).all()
+        for studentgroup in studentgroups:
+            groupsurveys = GroupSurvey.objects.filter(
+                studentgroup=studentgroup,
+                survey__in=surveys,
+            ).all()
+            for groupsurvey in groupsurveys:
+                survey_results = SurveyResult.objects.filter(
+                    survey=groupsurvey,
+                ).all()
+                index = 2
+                for survey_result in survey_results:
+                    ws['A' + str(index)] = survey_result.student.ssn
+                    ws['B' + str(index)] = studentgroup.school.name
+                    ws['C' + str(index)] = studentgroup.school.school_nr
+                    ws['D' + str(index)] = groupsurvey.survey.title
+                    ws['E' + str(index)] = survey_result.results
+                    index += 1
+    wb.save(filename='/tmp/maeting.xlsx')
+
+
 def _lesfimi_excel_result_duplicates():
     wb = openpyxl.Workbook()
     ws = wb.get_active_sheet()
