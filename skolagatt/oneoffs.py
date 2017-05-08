@@ -237,18 +237,19 @@ def _samraemd_excel_maeting():
                 ).all()
                 index = 2
                 for survey_result in survey_results:
-                    r = json.loads(survey_result.results)
-                    if isinstance(r['click_values'], str):
-                        r['click_values'] = json.loads(r['click_values'])
-                    ws['A' + str(index)] = survey_result.student.ssn
-                    ws['B' + str(index)] = studentgroup.school.name
-                    ws['C' + str(index)] = studentgroup.school.school_nr
-                    ws['D' + str(index)] = groupsurvey.survey.title
-                    if len(r['click_values']) >= 1:
-                        ws['E' + str(index)] = r['click_values'][0]
-                    else:
-                        ws['E' + str(index)] = survey_results.results
-                    index += 1
+                    for sr in survey_result:
+                        r = json.loads(sr.results)
+                        if isinstance(r['click_values'], str):
+                            r['click_values'] = json.loads(r['click_values'])
+                        ws['A' + str(index)] = sr.student.ssn
+                        ws['B' + str(index)] = studentgroup.school.name
+                        ws['C' + str(index)] = studentgroup.school.school_nr
+                        ws['D' + str(index)] = groupsurvey.survey.title
+                        if len(r['click_values']) >= 1:
+                            ws['E' + str(index)] = r['click_values'][0]
+                        else:
+                            ws['E' + str(index)] = sr.results
+                        index += 1
     wb.save(filename='/tmp/maeting.xlsx')
 
 
