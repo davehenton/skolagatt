@@ -221,6 +221,7 @@ def _samraemd_excel_maeting():
     ws['D1'] = 'Próf'
     ws['E1'] = 'Mæting'
 
+    index = 2
     for school in schools:
         studentgroups = StudentGroup.objects.filter(
             school=school,
@@ -235,7 +236,6 @@ def _samraemd_excel_maeting():
                 survey_results = SurveyResult.objects.filter(
                     survey=groupsurvey,
                 ).all()
-                index = 2
                 for sr in survey_results:
                     ws['A' + str(index)] = sr.student.ssn
                     ws['B' + str(index)] = studentgroup.school.name
