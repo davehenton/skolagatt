@@ -4,6 +4,7 @@ from django.http import HttpResponse
 from ast import literal_eval
 
 import openpyxl
+import json
 from openpyxl.styles import PatternFill
 from openpyxl.chart import AreaChart, BarChart, Reference
 from openpyxl.chart.layout import Layout, ManualLayout
@@ -236,11 +237,14 @@ def _samraemd_excel_maeting():
                 ).all()
                 index = 2
                 for survey_result in survey_results:
+                    r = json.loads(survey_result)
+                    if isinstance(r['click_values'], str):
+                        r['click_values'] = json.loads(r['click_values'])
                     ws['A' + str(index)] = survey_result.student.ssn
                     ws['B' + str(index)] = studentgroup.school.name
                     ws['C' + str(index)] = studentgroup.school.school_nr
                     ws['D' + str(index)] = groupsurvey.survey.title
-                    ws['E' + str(index)] = survey_result.results
+                    ws['E' + str(index)] = r['click_values']
                     index += 1
     wb.save(filename='/tmp/maeting.xlsx')
 
