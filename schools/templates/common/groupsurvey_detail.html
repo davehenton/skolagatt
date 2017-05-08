@@ -126,7 +126,9 @@
 											<div>
 												<strong>Valin orð:</strong>
 												{% for val in results.click_values|literal_eval %}
-													<p class="click_values">{{val}}</p>
+													{% with val|split:"," as vals %}
+													<p class="click_values">{{vals.1}}</p>
+													{% endwith %}
 												{% endfor %}
 											</div>
 											{% endif %}

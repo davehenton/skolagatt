@@ -88,6 +88,11 @@ def get_graph(text):
         return {}
 
 
+@register.filter
+def split(value, arg):
+    return value.split(arg)
+
+
 def get_current_school(context):
     r = 'skoli\/(?P<school_id>[\d]*)'
     m = re.search(r, context.request.path)
