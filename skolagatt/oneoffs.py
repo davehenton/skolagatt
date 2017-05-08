@@ -247,8 +247,8 @@ def _samraemd_excel_maeting():
                     if len(r['click_values']) >= 1:
                         ws['E' + str(index)] = r['click_values'][0]
                     else:
-                        ws['E' + str(index)] = sr.results
-                        index += 1
+                        ws['E' + str(index)] = ''
+                    index += 1
     wb.save(filename='/tmp/maeting.xlsx')
 
 
