@@ -244,7 +244,7 @@ def _samraemd_excel_maeting():
                     ws['B' + str(index)] = studentgroup.school.name
                     ws['C' + str(index)] = studentgroup.school.school_nr
                     ws['D' + str(index)] = groupsurvey.survey.title
-                    ws['E' + str(index)] = r['click_values']
+                    ws['E' + str(index)] = r['click_values'][0]
                     index += 1
     wb.save(filename='/tmp/maeting.xlsx')
 
