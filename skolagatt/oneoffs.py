@@ -237,11 +237,17 @@ def _samraemd_excel_maeting():
                     survey=groupsurvey,
                 ).all()
                 for sr in survey_results:
+                    r = literal_eval(sr.results)
                     ws['A' + str(index)] = sr.student.ssn
                     ws['B' + str(index)] = studentgroup.school.name
                     ws['C' + str(index)] = studentgroup.school.school_nr
                     ws['D' + str(index)] = groupsurvey.survey.identifier
-                    ws['E' + str(index)] = sr.results
+                    try:
+                        click_values = literal_eval(r['click_values'])
+                        vals = click_values[0].split(',')
+                        ws['E' + str(index)] = vals[1]
+                    except:
+                        ws['E' + str(index)] = ''
                     index += 1
     dims = {}
     for row in ws.rows:
