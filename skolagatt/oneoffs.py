@@ -237,7 +237,7 @@ def _samraemd_excel_maeting():
                 ).all()
                 index = 2
                 for survey_result in survey_results:
-                    r = json.loads(survey_result)
+                    r = json.loads(survey_result.results)
                     if isinstance(r['click_values'], str):
                         r['click_values'] = json.loads(r['click_values'])
                     ws['A' + str(index)] = survey_result.student.ssn
