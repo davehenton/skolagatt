@@ -219,7 +219,8 @@ def _samraemd_excel_maeting():
     ws['B1'] = 'Skóli'
     ws['C1'] = 'Skólanúmer'
     ws['D1'] = 'Próf'
-    ws['E1'] = 'Mæting'
+    ws['E1'] = 'Kóði'
+    ws['F1'] = 'Staða'
 
     index = 2
     for school in schools:
@@ -245,7 +246,8 @@ def _samraemd_excel_maeting():
                     try:
                         click_values = literal_eval(r['click_values'])
                         vals = click_values[0].split(',')
-                        ws['E' + str(index)] = vals[1]
+                        ws['E' + str(index)] = vals[0]
+                        ws['F' + str(index)] = vals[1]
                     except:
                         ws['E' + str(index)] = ''
                     index += 1
