@@ -208,7 +208,7 @@ def lesfimi_excel_entire_country_stats():
 
 def _samraemd_excel_maeting():
     wb = openpyxl.Workbook()
-    ws = wb.get_active_sheel()
+    ws = wb.get_active_sheet()
 
     schools = School.objects.all()
     surveys = Survey.objects.filter(
