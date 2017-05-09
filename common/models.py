@@ -345,6 +345,106 @@ class SurveyResult(models.Model):
     )
     created_at = models.DateField(default=timezone.now)
 
+    def _lesskilnings_results(self, input_values):
+        '''
+        Skilum niðurstöðum prófs í lesskilningi
+        '''
+        # Cycle through input_values, sum up all values where the key starts with
+        # 'hljod_', 'mal_', 'bok_'. Checks for input errors.
+        lesskilnings_sums = {'hljod_': 0, 'mal_': 0, 'bok_': 0}
+        for key, value in input_values.items():
+            for type_sum in lesskilnings_sums.keys():
+                # type = 'hljod_' for instance, type_sum for 'hljod_' starts as 0
+                if key.startswith(type_sum):
+                    if not str(value).isdigit():
+                        # Input error so we will make this type_sum permanently = -1 to indicate error
+                        lesskilnings_sums[type_sum] = -1
+                    elif str(value).isdigit() and not lesskilnings_sums[type_sum] == -1:
+                        # Not input error so let's add up
+                        lesskilnings_sums[type_sum] += int(value)
+
+        hopar = []
+        if lesskilnings_sums["hljod_"] == -1:
+            hopar.append('Vantar gögn')
+        elif lesskilnings_sums["hljod_"] <= 14:
+            hopar.append('Áhætta 1')
+        elif lesskilnings_sums["hljod_"] <= 17:
+            hopar.append('Áhætta 2')
+        elif lesskilnings_sums["hljod_"] <= 19:
+            hopar.append('Óvissa')
+        else:
+            hopar.append('Utan áhættu')
+
+        if lesskilnings_sums["mal_"] == -1:
+            hopar.append('Vantar gögn')
+        elif lesskilnings_sums["mal_"] <= 14:
+            hopar.append('Áhætta 1')
+        elif lesskilnings_sums["mal_"] <= 16:
+            hopar.append('Áhætta 2')
+        elif lesskilnings_sums["mal_"] <= 17:
+            hopar.append('Óvissa')
+        else:
+            hopar.append('Utan áhættu')
+
+        if lesskilnings_sums["bok_"] == -1:
+            hopar.append('Vantar gögn')
+        elif lesskilnings_sums["bok_"] <= 7:
+            hopar.append('Áhætta 1')
+        elif lesskilnings_sums["bok_"] <= 10:
+            hopar.append('Áhætta 2')
+        elif lesskilnings_sums["bok_"] <= 12:
+            hopar.append('Óvissa')
+        else:
+            hopar.append('Utan áhættu')
+
+        return hopar
+
+    def _lesfimi_results(self, r, transformation):
+        click_values = r['click_values']
+        input_values = r['input_values']
+
+        try:
+            villur = len(click_values) - 1
+            if (villur < 3):
+                vill = 0
+            elif(villur < 10):
+                vill = villur - 2
+            else:
+                vill = villur * 2 - 11
+            words_read = int(click_values[-1].split(',')[0]) - vill
+            oam = int(round(words_read / 2))
+
+            time_read = [
+                value for key, value in input_values.items() if '_timi' in key.lower()]
+            time = int(round(int(time_read[0]) / 2))
+            oam = str(int(oam / time * 60))
+
+            if (transformation):
+                data = transformation.data
+                oam_string = int(data[oam])
+                return [oam_string]
+            else:
+                return [oam]
+        except:
+            return [""]
+
+    def calculated_results(self, use_transformation=True):
+        survey_type = self.survey.survey.survey_type.title
+        r = json.loads(self.results)
+        if isinstance(r['click_values'], str):
+            r['click_values'] = json.loads(r['click_values'])
+
+        if survey_type == 'Lesskimun':
+            return self._lesskilnings_results(r['input_values'])
+        elif survey_type == 'Lesfimi':
+            transformation = None
+            if use_transformation:
+                if self.survey.survey.surveytransformation_set.exists():
+                    transformation = self.survey.survey.surveytransformation_set.first()
+            return self._lesfimi_results(r, transformation)
+        else:
+            return r['click_values']
+
     @classmethod
     def get_results(cls, id):
         return json.loads(cls(pk=id).results)
