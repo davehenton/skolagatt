@@ -1160,7 +1160,7 @@ class SurveyDetail(common_mixins.SchoolEmployeeMixin, DetailView):
         for student in context['students']:
             sr = SurveyResult.objects.filter(student=student, survey=self.object)
             if sr:
-                student_results[student] = sr.first().calculated_results()
+                student_results[student] = sr.first().calculated_results(use_transformation=False)
             else:
                 student_results[student] = []
         context['student_results'] = student_results
@@ -2299,7 +2299,10 @@ def survey_detail_excel(request, school_id, student_group, pk):
             student_year = studentgroup.student_year
             groupsurveys = GroupSurvey.objects.filter(
                 studentgroup=studentgroup,
-                survey__survey_type=survey_type).order_by('survey__active_to')
+                survey__survey_type=survey_type
+            ).exclude(
+                survey__identifier__endswith='_LF_jan17'
+            ).order_by('survey__active_to')
             if groupsurveys:
                 ws['A1'] = 'Nafn'
                 ws['B1'] = 'Kennitala'
@@ -2320,7 +2323,7 @@ def survey_detail_excel(request, school_id, student_group, pk):
                             survey=groupsurvey,
                             student=student)
                         if sr:
-                            survey_student_result = sr.first().calculated_results()
+                            survey_student_result = sr.first().calculated_results(use_transformation=False)
                             if survey_student_result[0] == '':
                                 ws[chr(col) + str(row)] = 'Vantar gögn'
                             else:
@@ -2487,7 +2490,6 @@ def lesfimi_excel_for_principals(request, pk):
 
     tests = (
         ('b{}_LF_mai17', 'Maí 2017'),
-        ('b{}_LF_jan17', 'Janúar 2017'),
         ('{}b_LF_sept', 'September 2016'),
     )
     for test in tests:
@@ -2531,7 +2533,7 @@ def lesfimi_excel_for_principals(request, pk):
                             ))
                         for surveyresult in surveyresults.all():
                             try:
-                                survey_student_result = surveyresult.calculated_results()
+                                survey_student_result = surveyresult.calculated_results(use_transformation=False)
 
                                 if not survey_student_result[0] == '':
                                     this_year_result['students_who_took_test'] += 1
