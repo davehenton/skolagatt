@@ -302,15 +302,17 @@ def _generate_excel_audun():
     ws = wb.get_active_sheet()
     wb.remove_sheet(ws)
 
-    # Get all the surveys
     for year in range(1, 11):
-        for i in range(0, len(tests)):
-            identifier = tests[i][0].format(year)
+        # Get all the surveys
+        tests_year = tests
+        for i in range(0, len(tests_year)):
+            identifier = tests_year[i][0].format(year)
             survey = Survey.objects.get(identifier=identifier)
-            tests[i][2] = survey
+            tests_year[i][2] = survey
+        print("--")
+        print("tests_year:")
+        print(tests_year)
 
-    print(tests)
-    for year in range(1, 11):
         title = "Árgangur {}".format(year)
         ws = wb.create_sheet(title=title)
         ws['A1'] = 'Kennitala nemanda'
@@ -328,13 +330,15 @@ def _generate_excel_audun():
         groups = StudentGroup.objects.filter(student_year=year).all()
         for group in groups:
             school = group.school
-            tests_group = tests
+            tests_group = tests_year
             for i in range(0, len(tests_group)):
                 survey = tests_group[i][2]
                 try:
                     groupsurvey = GroupSurvey.objects.get(studentgroup=group, survey=survey)
                 except GroupSurvey.MultipleObjectsReturned:
                     groupsurvey = GroupSurvey.objects.filter(studentgroup=group, survey=survey).first()
+                except GroupSurvey.DoesNotExist:
+                    groupsurvey = None
                 tests_group[i].append(groupsurvey)
 
             print(tests_group)
@@ -348,20 +352,25 @@ def _generate_excel_audun():
                 col_nt = ord('I')
                 for test in tests_group:
                     groupsurvey = test[3]
-                    try:
-                        result = SurveyResult.objects.get(student=student, survey=groupsurvey)
-                        calc_res = result.calculated_results()[0]
-                        calc_res_nt = result.calculated_results(use_transformation=False)[0]
-                    except SurveyResult.DoesNotExist:
+
+                    if groupsurvey:
+                        try:
+                            result = SurveyResult.objects.get(student=student, survey=groupsurvey)
+                            calc_res = result.calculated_results()[0]
+                            calc_res_nt = result.calculated_results(use_transformation=False)[0]
+                        except SurveyResult.DoesNotExist:
+                            calc_res = 'N/A'
+                            calc_res_nt = 'N/A'
+                        except SurveyResult.MultipleObjectsReturned:
+                            result = SurveyResult.objects.filter(
+                                student=student,
+                                survey=groupsurvey
+                            ).order_by('-id')
+                            calc_res = result.first().calculated_results()[0]
+                            calc_res_nt = result.first().calculated_results(use_transformation=False)[0]
+                    else:
                         calc_res = 'N/A'
                         calc_res_nt = 'N/A'
-                    except SurveyResult.MultipleObjectsReturned:
-                        result = SurveyResult.objects.filter(
-                            student=student,
-                            survey=groupsurvey
-                        ).order_by('-id')
-                        calc_res = result.first().calculated_results()[0]
-                        calc_res_nt = result.first().calculated_results(use_transformation=False)[0]
 
                     ws[chr(col) + str(index)] = calc_res
                     ws[chr(col_nt) + str(index)] = calc_res_nt
