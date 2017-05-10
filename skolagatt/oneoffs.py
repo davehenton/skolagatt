@@ -309,6 +309,7 @@ def _generate_excel_audun():
             survey = Survey.objects.get(identifier=identifier)
             tests[i][2] = survey
 
+    print(tests)
     for year in range(1, 11):
         title = "Árgangur {}".format(year)
         ws = wb.create_sheet(title=title)
@@ -327,6 +328,17 @@ def _generate_excel_audun():
         groups = StudentGroup.objects.filter(student_year=year).all()
         for group in groups:
             school = group.school
+            tests_group = tests
+            for i in range(0, len(tests_group)):
+                survey = tests_group[i][2]
+                try:
+                    groupsurvey = GroupSurvey.objects.get(studentgroup=group, survey=survey)
+                except GroupSurvey.MultipleObjectsReturned:
+                    groupsurvey = GroupSurvey.objects.filter(studentgroup=group, survey=survey).first()
+                tests_group[i].append(groupsurvey)
+
+            print(tests_group)
+
             for student in group.students.all():
                 ws['A' + str(index)] = student.ssn
                 ws['B' + str(index)] = student.name
@@ -334,9 +346,8 @@ def _generate_excel_audun():
                 ws['D' + str(index)] = school.school_nr
                 col = ord('E')
                 col_nt = ord('I')
-                for test in tests:
-                    survey = test[2]
-                    groupsurvey = GroupSurvey.objects.filter(studentgroup=group, survey=survey).first()
+                for test in tests_group:
+                    groupsurvey = test[3]
                     try:
                         result = SurveyResult.objects.get(student=student, survey=groupsurvey)
                         calc_res = result.calculated_results()[0]
