@@ -292,9 +292,9 @@ def _lesfimi_excel_result_duplicates():
 
 def _generate_excel_audun():
     tests = [
-        ['{}b_LF_sept', 'September 2016', None],
-        ['b{}_LF_jan17', 'Janúar 2017', None],
-        ['b{}_LF_mai17', 'Maí 2017', None],
+        ['{}b_LF_sept', 'September 2016', None, None],
+        ['b{}_LF_jan17', 'Janúar 2017', None, None],
+        ['b{}_LF_mai17', 'Maí 2017', None, None],
     ]
 
     wb = openpyxl.Workbook()
@@ -309,9 +309,6 @@ def _generate_excel_audun():
             identifier = tests_year[i][0].format(year)
             survey = Survey.objects.get(identifier=identifier)
             tests_year[i][2] = survey
-        print("--")
-        print("tests_year:")
-        print(tests_year)
 
         title = "Árgangur {}".format(year)
         ws = wb.create_sheet(title=title)
@@ -339,9 +336,7 @@ def _generate_excel_audun():
                     groupsurvey = GroupSurvey.objects.filter(studentgroup=group, survey=survey).first()
                 except GroupSurvey.DoesNotExist:
                     groupsurvey = None
-                tests_group[i].append(groupsurvey)
-
-            print(tests_group)
+                tests_group[i][3] = groupsurvey
 
             for student in group.students.all():
                 ws['A' + str(index)] = student.ssn
