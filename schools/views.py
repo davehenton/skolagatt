@@ -2261,7 +2261,7 @@ def survey_detail_excel(request, school_id, student_group, pk):
                 ws.cell('B' + str(index)).value = student.name
                 sr = SurveyResult.objects.filter(student=student, survey=survey)
                 if sr:
-                    survey_student_result = sr.calculated_results()
+                    survey_student_result = sr.first().calculated_results()
                     ws.cell('C' + str(index)).value = survey_student_result[0]
                     ws.cell('D' + str(index)).value = survey_student_result[1]
                     ws.cell('E' + str(index)).value = survey_student_result[2]
@@ -2312,7 +2312,7 @@ def survey_detail_excel(request, school_id, student_group, pk):
                             survey=groupsurvey,
                             student=student)
                         if sr:
-                            survey_student_result = sr.calculated_results()
+                            survey_student_result = sr.first().calculated_results()
                             if survey_student_result[0] == '':
                                 ws[chr(col) + str(row)] = 'Vantar gögn'
                             else:
