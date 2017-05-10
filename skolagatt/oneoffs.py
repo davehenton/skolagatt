@@ -367,6 +367,8 @@ def _generate_excel_audun():
                 if first and last:
                     diff = ws[chr(last) + str(index)].value - ws[chr(first) + str(index)].value
                     ws['H' + str(index)] = diff
+                else:
+                    ws['H' + str(index)] = 'N/A'
                 index += 1
 
         dims = {}
