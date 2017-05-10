@@ -296,11 +296,11 @@ def _lesfimi_excel_result_duplicates():
 
 
 def _generate_excel_audun():
-    tests = (
-        ('{}b_LF_sept', 'September 2016', None),
-        ('b{}_LF_jan17', 'Janúar 2017', None),
-        ('b{}_LF_mai17', 'Maí 2017', None),
-    )
+    tests = [
+        ['{}b_LF_sept', 'September 2016', None],
+        ['b{}_LF_jan17', 'Janúar 2017', None],
+        ['b{}_LF_mai17', 'Maí 2017', None],
+    ]
 
     wb = openpyxl.Workbook()
 
