@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.http import HttpResponse
+from django.core.exceptions import ObjectDoesNotExist
 
 from ast import literal_eval
 
@@ -64,10 +65,6 @@ def lesfimi_excel_entire_country_stats():
         for year in range(1, 11):
             ws['A' + str(index)] = year
             survey = Survey.objects.filter(identifier=identifier.format(year)).first()
-            survey_type = SurveyType.objects.filter(survey=survey.id).values('id')
-            dic = survey_type[0]
-            survey_type = dic['id']
-            transformation = SurveyTransformation.objects.filter(survey=survey)
             studentgroups = StudentGroup.objects.filter(student_year=year).all()
             this_year_result = {
                 'students': 0,
@@ -93,16 +90,8 @@ def lesfimi_excel_entire_country_stats():
                                 studentgroup.school.name,
                             ))
                         for surveyresult in surveyresults.all():
-                            r = literal_eval(surveyresult.results)  # get student results
                             try:
-                                survey_student_result = common_util.calc_survey_results(
-                                    survey_identifier=identifier,
-                                    click_values=literal_eval(r['click_values']),
-                                    input_values=r['input_values'],
-                                    student=student,
-                                    survey_type=survey_type,
-                                    transformation=transformation,
-                                )
+                                survey_student_result = surveyresult.calculated_results()
                                 if not survey_student_result[0] == '':
                                     this_year_result['students_who_took_test'] += 1
                                     if int(survey_student_result[0]) >= ref_values[year][2]:
@@ -307,112 +296,78 @@ def _lesfimi_excel_result_duplicates():
 
 
 def _generate_excel_audun():
-    # def admin_output_excel(request):
-
-    # response = HttpResponse(
-    # content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-    # response['Content-Disposition'] = 'attachment; filename=Þjálguðgögn.xlsx'
+    tests = (
+        ('{}b_LF_sept', 'September 2016', None),
+        ('b{}_LF_jan17', 'Janúar 2017', None),
+        ('b{}_LF_mai17', 'Maí 2017', None),
+    )
 
     wb = openpyxl.Workbook()
 
     ws = wb.get_active_sheet()
     wb.remove_sheet(ws)
+
+    # Get all the surveys
     for year in range(1, 11):
-        index = 2
+        for i in range(0, len(tests)):
+            identifier = tests[i][0].format(year)
+            survey = Survey.objects.get(identifier=identifier)
+            tests[i][2] = survey
+
+    for year in range(1, 11):
         title = "Árgangur {}".format(year)
         ws = wb.create_sheet(title=title)
         ws['A1'] = 'Kennitala nemanda'
         ws['B1'] = 'Nafn'
-        ws['C1'] = 'September'
-        ws['D1'] = 'Janúar'
-        ws['E1'] = 'Mismunur'
-        ws['F1'] = 'September óþjálgað'
-        ws['G1'] = 'Janúar óþjálgað'
-
-        sept_identifier = "{}b_LF_sept".format(year)
-        surveys = Survey.objects.filter(survey_type_id=2, student_year=year, identifier=sept_identifier)
+        ws['C1'] = 'Nafn skóla'
+        ws['D1'] = 'Skóla nr'
+        ws['E1'] = 'September'
+        ws['F1'] = 'Janúar'
+        ws['G1'] = 'Maí'
+        ws['H1'] = 'Mismunur'
+        ws['I1'] = 'September óþjálgað'
+        ws['J1'] = 'Janúar óþjálgað'
+        ws['K1'] = 'Maí óþjálgað'
+        index = 2
         groups = StudentGroup.objects.filter(student_year=year).all()
-        for survey in surveys:
-            survey_type = SurveyType.objects.filter(survey=survey.id).values('id')
-            dic = survey_type[0]
-            survey_type = dic['id']
-            transformation_sept = SurveyTransformation.objects.filter(survey=survey)
-            for group in groups:
-                groupsurveys = GroupSurvey.objects.filter(studentgroup=group, survey=survey).all()
-                for groupsurvey in groupsurveys:
-                    results = SurveyResult.objects.filter(survey=groupsurvey)
-                    for result_sept in results:
-                        ws.cell('A' + str(index)).value = result_sept.student.ssn
-                        ws.cell('B' + str(index)).value = result_sept.student.name
-                        try:
-                            r_sept = literal_eval(result_sept.results)
-                            try:
-                                click_values = literal_eval(r_sept['click_values'])
-                            except:
-                                click_values = []
-                            survey_student_result_sept = common_util.calc_survey_results(
-                                sept_identifier,
-                                click_values,
-                                r_sept['input_values'],
-                                result_sept.student,
-                                survey_type,
-                                transformation_sept,
-                            )
-                            survey_student_result_sept_nt = common_util.calc_survey_results(
-                                sept_identifier,
-                                click_values,
-                                r_sept['input_values'],
-                                result_sept.student,
-                                survey_type,
-                            )
+        for group in groups:
+            for student in group.students.all():
+                ws['A' + str(index)] = student.ssn
+                ws['B' + str(index)] = student.name
+                ws['C' + str(index)] = student.school.name
+                ws['D' + str(index)] = student.school.school_nr
+                col = ord('E')
+                col_nt = ord('I')
+                for test in tests:
+                    survey = test[2]
+                    groupsurvey = GroupSurvey.objects.filter(studentgroup=group, survey=survey).first()
+                    try:
+                        result = SurveyResult.objects.get(student=student, survey=groupsurvey)
+                        calc_res = result.calculated_results()
+                        calc_res_nt = result.calculated_results(use_transformation=False)
+                    except ObjectDoesNotExist:
+                        calc_res = 'N/A'
+                        calc_res_nt = 'N/A'
+                    ws[chr(col) + str(index)] = calc_res
+                    ws[chr(col_nt) + str(index)] = calc_res_nt
+                    col += 1
+                    col_nt += 1
+                last = None
+                for c in range(ord('E'), ord('G') + 1).__reversed__():
+                    if isinstance(ws[chr(c) + str(index)].value, int):
+                        last = c
+                        break
+                first = None
+                if last:
+                    for c in range(ord('E'), ord('G') + 1):
+                        if isinstance(ws[chr(c) + str(index)].value, int):
+                            first = c
+                            break
+                if first and last:
+                    diff = ws[chr(last) + str(index)].value - ws[chr(first) + str(index)].value
+                    ws['H' + str(index)] = diff
+                index += 1
 
-                            if not survey_student_result_sept[0] == '':
-                                ws.cell('C' + str(index)).value = survey_student_result_sept[0]
-                            if not survey_student_result_sept_nt[0] == '':
-                                ws.cell('F' + str(index)).value = survey_student_result_sept_nt[0]
-                        except Exception as e:
-                            print('sept' + str(e))
-
-                        jan_identifier = "b{}_LF_jan17".format(year)
-                        jan_survey = Survey.objects.filter(identifier=jan_identifier).first()
-                        transformation_jan = SurveyTransformation.objects.filter(survey=jan_survey)
-                        jan_gs = GroupSurvey.objects.filter(
-                            survey=jan_survey, studentgroup=groupsurvey.studentgroup).first()
-
-                        if SurveyResult.objects.filter(student=result_sept.student, survey=jan_gs).exists():
-                            result_jan = SurveyResult.objects.filter(student=result_sept.student, survey=jan_gs).first()
-                            try:
-                                r_jan = literal_eval(result_jan.results)
-                                try:
-                                    click_values = literal_eval(r_jan['click_values'])
-                                except:
-                                    click_values = []
-                                survey_student_result_jan = common_util.calc_survey_results(
-                                    jan_identifier,
-                                    click_values,
-                                    r_jan['input_values'],
-                                    result_jan.student,
-                                    survey_type,
-                                    transformation_jan,
-                                )
-                                survey_student_result_jan_nt = common_util.calc_survey_results(
-                                    jan_identifier,
-                                    click_values,
-                                    r_jan['input_values'],
-                                    result_jan.student,
-                                    survey_type,
-                                )
-
-                                if not survey_student_result_jan[0] == '':
-                                    ws.cell('D' + str(index)).value = survey_student_result_jan[0]
-                                    if not survey_student_result_sept[0] == '':
-                                        diff = int(survey_student_result_jan[0]) - int(survey_student_result_sept[0])
-                                        ws.cell('E' + str(index)).value = diff
-                                    ws.cell('G' + str(index)).value = survey_student_result_jan_nt[0]
-                            except Exception as e:
-                                print('Jan' + str(e))
-
-                        index += 1
         dims = {}
         for row in ws.rows:
             for cell in row:
@@ -421,10 +376,7 @@ def _generate_excel_audun():
         for col, value in dims.items():
             ws.column_dimensions[col].width = int(value) + 2
 
-    wb.save(filename='/tmp/audun.xlsx')
-#    wb.save(response)
-
-#    return response
+    wb.save(filename='/tmp/lesfimi_hragogn.xlsx')
 
 
 def initialize_locations():

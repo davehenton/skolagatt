@@ -1144,21 +1144,15 @@ class SurveyDetail(common_mixins.SchoolEmployeeMixin, DetailView):
     def get_context_data(self, **kwargs):
         # xxx will be available in the template as the related objects
         context = super(SurveyDetail, self).get_context_data(**kwargs)
-        survey = Survey.objects.filter(pk=self.object.survey.id).first()
-        survey_type = SurveyType.objects.filter(survey=self.object.survey.id).values('id')
-        dic = survey_type[0]
-        survey_type = dic['id']
+        survey = self.object.survey
         context['survey_details'] = survey
         context['survey_resources'] = SurveyResource.objects.filter(survey=survey)
         context['school'] = School.objects.get(pk=self.kwargs['school_id'])
         context['studentgroup'] = StudentGroup.objects.get(pk=self.kwargs['student_group'])
-        transformation = SurveyTransformation.objects.filter(survey=survey)
-        if transformation == []:
-            transformation = -1
 
         try:
             context['students'] = self.object.studentgroup.students.all()
-            context['expired'] = True if self.object.survey.active_to < date.today() else False
+            context['expired'] = True if survey.active_to < date.today() else False
         except:
             context['students'] = []
             context['expired'] = False
@@ -1166,32 +1160,9 @@ class SurveyDetail(common_mixins.SchoolEmployeeMixin, DetailView):
         for student in context['students']:
             sr = SurveyResult.objects.filter(student=student, survey=self.object)
             if sr:
-                r = literal_eval(sr.first().results)  # get student results
-                try:
-                    student_results[student] = common_util.calc_survey_results(
-                        survey_identifier=self.object.survey.identifier,
-                        click_values=literal_eval(r['click_values']),
-                        input_values=r['input_values'],
-                        student=student,
-                        survey_type=survey_type,
-                        transformation=transformation,
-                    )
-                except Exception as e:
-                    student_results[student] = common_util.calc_survey_results(
-                        survey_identifier=self.object.survey.identifier,
-                        click_values=[],
-                        input_values=r['input_values'],
-                        student=student,
-                        survey_type=survey_type,
-                        transformation=transformation)
-
+                student_results[student] = sr.first().calculated_results()
             else:
-                student_results[student] = common_util.calc_survey_results(
-                    survey_identifier=self.object.survey.identifier,
-                    click_values=[],
-                    input_values={},
-                    student=student,
-                    survey_type=survey_type)
+                student_results[student] = []
         context['student_results'] = student_results
         context['field_types'] = ['text', 'number', 'text-list', 'number-list']
         return context
@@ -2272,7 +2243,6 @@ def survey_detail_excel(request, school_id, student_group, pk):
     wb = openpyxl.Workbook()
     ws = wb.get_active_sheet()
 
-    identifier = survey.survey.identifier
     survey_type = survey.survey.survey_type.title
 
     if survey_type == 'Lesskimun':
@@ -2291,13 +2261,7 @@ def survey_detail_excel(request, school_id, student_group, pk):
                 ws.cell('B' + str(index)).value = student.name
                 sr = SurveyResult.objects.filter(student=student, survey=survey)
                 if sr:
-                    r = literal_eval(sr.first().results)  # get student results
-                    survey_student_result = common_util.calc_survey_results(
-                        identifier,
-                        [],
-                        r['input_values'],
-                        student
-                    )
+                    survey_student_result = sr.first().calculated_results()
                     ws.cell('C' + str(index)).value = survey_student_result[0]
                     ws.cell('D' + str(index)).value = survey_student_result[1]
                     ws.cell('E' + str(index)).value = survey_student_result[2]
@@ -2306,6 +2270,14 @@ def survey_detail_excel(request, school_id, student_group, pk):
                     ws.cell('D' + str(index)).value = 'Vantar gögn'
                     ws.cell('E' + str(index)).value = 'Vantar gögn'
                 index += 1
+        # Fix column widths
+        dims = {}
+        for wsrow in ws.rows:
+            for cell in wsrow:
+                if cell.value:
+                    dims[cell.column] = max((dims.get(cell.column, 0), len(str(cell.value))))
+        for col, value in dims.items():
+            ws.column_dimensions[col].width = int(value) + 2
     elif survey_type == 'Lesfimi':
         locale.setlocale(locale.LC_ALL, "is_IS.UTF-8")
         ref_values = {
@@ -2342,24 +2314,13 @@ def survey_detail_excel(request, school_id, student_group, pk):
                 for groupsurvey in groupsurveys:
                     title = calendar.month_name[groupsurvey.active_from.month].title()
                     ws[chr(col) + '1'] = title
-                    transformation = SurveyTransformation.objects.filter(survey=groupsurvey.survey)
                     row = 2
                     for student in studentgroup.students.order_by('name').all():
                         sr = SurveyResult.objects.filter(
                             survey=groupsurvey,
                             student=student)
                         if sr:
-                            r = json.loads(sr.first().results)  # get student results
-                            if isinstance(r['click_values'], str):
-                                r['click_values'] = json.loads(r['click_values'])
-                            survey_student_result = common_util.calc_survey_results(
-                                survey_identifier=identifier,
-                                click_values=r['click_values'],
-                                input_values=r['input_values'],
-                                student=student,
-                                survey_type=survey_type.id,
-                                transformation=transformation,
-                            )
+                            survey_student_result = sr.first().calculated_results()
                             if survey_student_result[0] == '':
                                 ws[chr(col) + str(row)] = 'Vantar gögn'
                             else:
@@ -2545,10 +2506,6 @@ def lesfimi_excel_for_principals(request, pk):
         for year in range(1, 11):
             ws['A' + str(index)] = year
             survey = Survey.objects.filter(identifier=identifier.format(year)).first()
-            survey_type = SurveyType.objects.filter(survey=survey.id).values('id')
-            dic = survey_type[0]
-            survey_type = dic['id']
-            transformation = SurveyTransformation.objects.filter(survey=survey)
             studentgroups = StudentGroup.objects.filter(school=school, student_year=year).all()
             this_year_result = {
                 'students': 0,
@@ -2573,16 +2530,9 @@ def lesfimi_excel_for_principals(request, pk):
                                 studentgroup.name,
                             ))
                         for surveyresult in surveyresults.all():
-                            r = literal_eval(surveyresult.results)  # get student results
                             try:
-                                survey_student_result = common_util.calc_survey_results(
-                                    survey_identifier=identifier,
-                                    click_values=literal_eval(r['click_values']),
-                                    input_values=r['input_values'],
-                                    student=student,
-                                    survey_type=survey_type,
-                                    transformation=transformation,
-                                )
+                                survey_student_result = surveyresult.calculated_results()
+
                                 if not survey_student_result[0] == '':
                                     this_year_result['students_who_took_test'] += 1
                                     if int(survey_student_result[0]) >= ref_values[year][2]:

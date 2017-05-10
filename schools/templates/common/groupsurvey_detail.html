@@ -20,7 +20,7 @@
 						</div>
 					{% endif %}
 					{% if groupsurvey.survey.survey_type.title == 'Lesskimun' %}
-						<a href="{% url 'schools:survey_detail_excel' school.id studentgroup.id groupsurvey.id %}" class="btn btn-lg btn-default pull-right">Sækja niðurstöður úr Lesskimun á Excel formi</a>
+						<a href="{% url 'schools:survey_detail_excel' school.id studentgroup.id groupsurvey.id %}" class="btn btn-lg btn-primary pull-right">Sækja niðurstöður úr Lesskimun á Excel formi</a>
                     {% elif groupsurvey.survey.survey_type.title == 'Lesfimi' %}
 						<a href="{% url 'schools:survey_detail_excel' school.id studentgroup.id groupsurvey.id %}" class="btn btn-lg btn-primary pull-right">Sækja niðurstöður í Lesfimi á Excel formi</a>
 					{% endif %}
