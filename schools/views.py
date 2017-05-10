@@ -1160,7 +1160,7 @@ class SurveyDetail(common_mixins.SchoolEmployeeMixin, DetailView):
         for student in context['students']:
             sr = SurveyResult.objects.filter(student=student, survey=self.object)
             if sr:
-                student_results[student] = sr.calculated_results()
+                student_results[student] = sr.first().calculated_results()
             else:
                 student_results[student] = []
         context['student_results'] = student_results
