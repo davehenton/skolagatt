@@ -1,19 +1,15 @@
 # -*- coding: utf-8 -*-
 from django.http import HttpResponse
-from django.core.exceptions import ObjectDoesNotExist
 
 from ast import literal_eval
 
 import openpyxl
-import json
 from openpyxl.styles import PatternFill
 from openpyxl.chart import AreaChart, BarChart, Reference
 from openpyxl.chart.layout import Layout, ManualLayout
 
 from survey.models import (
     Survey,
-    SurveyType,
-    SurveyTransformation,
 )
 from common.models import (
     School,
@@ -21,7 +17,6 @@ from common.models import (
     GroupSurvey,
     SurveyResult,
 )
-import common.util as common_util
 
 
 def lesfimi_excel_entire_country_stats():
@@ -346,9 +341,17 @@ def _generate_excel_audun():
                         result = SurveyResult.objects.get(student=student, survey=groupsurvey)
                         calc_res = result.calculated_results()[0]
                         calc_res_nt = result.calculated_results(use_transformation=False)[0]
-                    except ObjectDoesNotExist:
+                    except SurveyResult.ObjectDoesNotExist:
                         calc_res = 'N/A'
                         calc_res_nt = 'N/A'
+                    except SurveyResult.MultipleObjectsReturned:
+                        result = SurveyResult.objects.filter(
+                            student=student,
+                            survey=groupsurvey
+                        ).extra(order_by=['LENGTH(`results`) DESC'])
+                        calc_res = result.first().calculated_results()[0]
+                        calc_res_nt = result.first().calculated_results(use_transformation=False)[0]
+
                     ws[chr(col) + str(index)] = calc_res
                     ws[chr(col_nt) + str(index)] = calc_res_nt
                     col += 1
