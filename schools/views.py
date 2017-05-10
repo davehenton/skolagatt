@@ -2270,6 +2270,14 @@ def survey_detail_excel(request, school_id, student_group, pk):
                     ws.cell('D' + str(index)).value = 'Vantar gögn'
                     ws.cell('E' + str(index)).value = 'Vantar gögn'
                 index += 1
+        # Fix column widths
+        dims = {}
+        for wsrow in ws.rows:
+            for cell in wsrow:
+                if cell.value:
+                    dims[cell.column] = max((dims.get(cell.column, 0), len(str(cell.value))))
+        for col, value in dims.items():
+            ws.column_dimensions[col].width = int(value) + 2
     elif survey_type == 'Lesfimi':
         locale.setlocale(locale.LC_ALL, "is_IS.UTF-8")
         ref_values = {
