@@ -344,8 +344,8 @@ def _generate_excel_audun():
                     groupsurvey = GroupSurvey.objects.filter(studentgroup=group, survey=survey).first()
                     try:
                         result = SurveyResult.objects.get(student=student, survey=groupsurvey)
-                        calc_res = result.calculated_results()
-                        calc_res_nt = result.calculated_results(use_transformation=False)
+                        calc_res = result.calculated_results()[0]
+                        calc_res_nt = result.calculated_results(use_transformation=False)[0]
                     except ObjectDoesNotExist:
                         calc_res = 'N/A'
                         calc_res_nt = 'N/A'
