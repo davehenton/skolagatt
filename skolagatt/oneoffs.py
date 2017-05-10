@@ -348,7 +348,7 @@ def _generate_excel_audun():
                         result = SurveyResult.objects.filter(
                             student=student,
                             survey=groupsurvey
-                        ).extra(order_by=['LENGTH(`results`) DESC'])
+                        ).order_by('-id')
                         calc_res = result.first().calculated_results()[0]
                         calc_res_nt = result.first().calculated_results(use_transformation=False)[0]
 
