@@ -331,11 +331,12 @@ def _generate_excel_audun():
         index = 2
         groups = StudentGroup.objects.filter(student_year=year).all()
         for group in groups:
+            school = group.school
             for student in group.students.all():
                 ws['A' + str(index)] = student.ssn
                 ws['B' + str(index)] = student.name
-                ws['C' + str(index)] = student.school.name
-                ws['D' + str(index)] = student.school.school_nr
+                ws['C' + str(index)] = school.name
+                ws['D' + str(index)] = school.school_nr
                 col = ord('E')
                 col_nt = ord('I')
                 for test in tests:
