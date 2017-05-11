@@ -424,7 +424,7 @@ class SurveyResult(models.Model):
                 oam_string = int(data[oam])
                 return [oam_string]
             else:
-                return [oam]
+                return [int(oam)]
         except:
             return [""]
 
