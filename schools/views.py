@@ -2401,7 +2401,7 @@ def survey_detail_excel(request, school_id, student_group, pk):
                 chart.type = "col"
                 chart.style = 10
                 chart.title = "Niðurstöður úr Lesfimi, 2016 - 2017"
-                chart.y_axis.title = "Orð á mínútu"
+                chart.y_axis.title = "Lesfimi"
                 chart.x_axis.title = "Nemandi"
                 data = Reference(
                     ws_bar,
