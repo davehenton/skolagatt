@@ -53,8 +53,9 @@
 {% block script %}
 	<script type='text/javascript'>
 	$(document).ready(function(){
-		var data_results = {{data_result|safe}};
+		var data_results = {{data_result|get_json|safe}};
 		var update = [];
+		console.log(data_results);
 		if(data_results){
 			//updating, prepare to highlight data
 			try {
