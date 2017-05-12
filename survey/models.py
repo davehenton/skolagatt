@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from django.db import models
 from django.utils import timezone
-from jsonfield import JSONField
+from django.contrib.postgres.fields import JSONField
 
 from froala_editor.fields import FroalaField
 

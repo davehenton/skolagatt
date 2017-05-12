@@ -41,6 +41,7 @@ def lesfimi_excel_entire_country_stats():
     wb.remove_sheet(ws)
 
     tests = (
+        ('b{}_LF_mai17', 'Maí 2017'),
         ('b{}_LF_jan17', 'Janúar 2017'),
         ('{}b_LF_sept', 'September 2016'),
     )

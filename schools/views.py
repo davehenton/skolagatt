@@ -1336,12 +1336,10 @@ class SurveyResultCreate(common_mixins.SchoolEmployeeMixin, CreateView):
             for k in self.request.POST:
                 if k != 'csrfmiddlewaretoken':
                     if k == 'data_results[]':
-                        survey_result_data['click_values'] = json.dumps(
-                            self.request.POST.getlist('data_results[]')
-                        )
+                        survey_result_data['click_values'] = self.request.POST.getlist('data_results[]')
                     else:
                         survey_result_data['input_values'][k] = self.request.POST[k]
-            survey_result.results = json.dumps(survey_result_data)
+            survey_result.results = survey_result_data
             survey_result.save()
             return redirect(self.get_success_url())
         else:
@@ -1374,12 +1372,10 @@ class SurveyResultUpdate(common_mixins.SchoolEmployeeMixin, UpdateView):
         for k in self.request.POST:
             if k != 'csrfmiddlewaretoken':
                 if k == 'data_results[]':
-                    survey_results_data['click_values'] = json.dumps(
-                        self.request.POST.getlist('data_results[]')
-                    )
+                    survey_results_data['click_values'] = self.request.POST.getlist('data_results[]')
                 else:
                     survey_results_data['input_values'][k] = self.request.POST[k]
-        survey_results.results = json.dumps(survey_results_data)
+        survey_results.results = survey_results_data
         return super(SurveyResultUpdate, self).form_valid(form)
 
     def get_context_data(self, **kwargs):
@@ -1388,9 +1384,10 @@ class SurveyResultUpdate(common_mixins.SchoolEmployeeMixin, UpdateView):
         context['student'] = Student.objects.filter(pk=self.kwargs['student_id'])
         groupsurvey = GroupSurvey.objects.get(pk=self.kwargs['survey_id'])
         context['survey'] = GroupSurvey.objects.filter(pk=self.kwargs['survey_id'])
-        context['data_result'] = json.loads(
-            SurveyResult.objects.get(pk=self.kwargs['pk']).results
-        ) or "''"
+        context['data_result'] = SurveyResult.objects.get(pk=self.kwargs['pk']).results or {
+            'click_values': [],
+            'input_values': [],
+        }
         survey = groupsurvey.survey
         try:
             grading_templates = SurveyGradingTemplate.objects.get(survey=survey)
@@ -2299,7 +2296,8 @@ def survey_detail_excel(request, school_id, student_group, pk):
             student_year = studentgroup.student_year
             groupsurveys = GroupSurvey.objects.filter(
                 studentgroup=studentgroup,
-                survey__survey_type=survey_type).order_by('survey__active_to')
+                survey__survey_type=survey_type
+            ).order_by('survey__active_to')
             if groupsurveys:
                 ws['A1'] = 'Nafn'
                 ws['B1'] = 'Kennitala'
@@ -2325,17 +2323,6 @@ def survey_detail_excel(request, school_id, student_group, pk):
                                 ws[chr(col) + str(row)] = 'Vantar gögn'
                             else:
                                 ws[chr(col) + str(row)] = survey_student_result[0]
-                            if col > ord('C'):
-                                # Time to highlight
-                                if isinstance(ws[chr(col - 1) + str(row)].value, int):
-                                    if isinstance(ws[chr(col) + str(row)].value, int):
-                                        diff = ws[chr(col) + str(row)].value - ws[chr(col - 1) + str(row)].value
-                                        if (
-                                            ws[chr(col - 1) + '1'].value == 'September' and
-                                            ws[chr(col) + '1'].value == 'Maí'
-                                        ):
-                                            diff = round(diff / 2)  # Average, because distance too great for algorithm
-                                        ws[chr(col) + str(row)].fill = get_lesfimi_excel_cell_color(student_year, diff)
 
                             value = survey_student_result[0]
                         else:
@@ -2355,7 +2342,7 @@ def survey_detail_excel(request, school_id, student_group, pk):
                         refs = ref_values[student_year]
                         datapoints[-1] += (refs[0], refs[1], refs[2])
 
-                ws[chr(col) + '1'] = 'Heildarmismunur'
+                ws[chr(col) + '1'] = 'Framvinda'
                 row = 2
                 for student in studentgroup.students.order_by('name').all():
                     # Find last comparison column
@@ -2414,7 +2401,7 @@ def survey_detail_excel(request, school_id, student_group, pk):
                 chart.type = "col"
                 chart.style = 10
                 chart.title = "Niðurstöður úr Lesfimi, 2016 - 2017"
-                chart.y_axis.title = "Orð á mínútu"
+                chart.y_axis.title = "Lesfimi"
                 chart.x_axis.title = "Nemandi"
                 data = Reference(
                     ws_bar,

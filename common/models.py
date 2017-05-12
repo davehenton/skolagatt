@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 from django.db import models
 
 from django.contrib.auth.models import User
+from django.contrib.postgres.fields import JSONField
 from django.utils import timezone
 
 import json
@@ -336,7 +337,7 @@ class GroupSurvey(models.Model):
 class SurveyResult(models.Model):
     student = models.ForeignKey('Student')
     created_at = models.DateTimeField(default=timezone.now)
-    results = models.TextField()
+    results = JSONField(null=True, blank=True)
     reported_by = models.ForeignKey(
         'Teacher', null=True, blank=True, on_delete=models.SET_NULL
     )
@@ -424,26 +425,23 @@ class SurveyResult(models.Model):
                 oam_string = int(data[oam])
                 return [oam_string]
             else:
-                return [oam]
+                return [int(oam)]
         except:
             return [""]
 
     def calculated_results(self, use_transformation=True):
         survey_type = self.survey.survey.survey_type.title
-        r = json.loads(self.results)
-        if isinstance(r['click_values'], str):
-            r['click_values'] = json.loads(r['click_values'])
 
         if survey_type == 'Lesskimun':
-            return self._lesskilnings_results(r['input_values'])
+            return self._lesskilnings_results(self.results['input_values'])
         elif survey_type == 'Lesfimi':
             transformation = None
             if use_transformation:
                 if self.survey.survey.surveytransformation_set.exists():
                     transformation = self.survey.survey.surveytransformation_set.first()
-            return self._lesfimi_results(r, transformation)
+            return self._lesfimi_results(self.results, transformation)
         else:
-            return r['click_values']
+            return self.results['click_values']
 
     @classmethod
     def get_results(cls, id):
