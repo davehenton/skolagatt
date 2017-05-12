@@ -1160,7 +1160,7 @@ class SurveyDetail(common_mixins.SchoolEmployeeMixin, DetailView):
         for student in context['students']:
             sr = SurveyResult.objects.filter(student=student, survey=self.object)
             if sr:
-                student_results[student] = sr.first().calculated_results(use_transformation=False)
+                student_results[student] = sr.first().calculated_results()
             else:
                 student_results[student] = []
         context['student_results'] = student_results
@@ -2297,8 +2297,6 @@ def survey_detail_excel(request, school_id, student_group, pk):
             groupsurveys = GroupSurvey.objects.filter(
                 studentgroup=studentgroup,
                 survey__survey_type=survey_type
-            ).exclude(
-                survey__identifier__endswith='_LF_jan17'
             ).order_by('survey__active_to')
             if groupsurveys:
                 ws['A1'] = 'Nafn'
@@ -2320,22 +2318,11 @@ def survey_detail_excel(request, school_id, student_group, pk):
                             survey=groupsurvey,
                             student=student)
                         if sr:
-                            survey_student_result = sr.first().calculated_results(use_transformation=False)
+                            survey_student_result = sr.first().calculated_results()
                             if survey_student_result[0] == '':
                                 ws[chr(col) + str(row)] = 'Vantar gögn'
                             else:
                                 ws[chr(col) + str(row)] = survey_student_result[0]
-                            if col > ord('C'):
-                                # Time to highlight
-                                if isinstance(ws[chr(col - 1) + str(row)].value, int):
-                                    if isinstance(ws[chr(col) + str(row)].value, int):
-                                        diff = ws[chr(col) + str(row)].value - ws[chr(col - 1) + str(row)].value
-                                        if (
-                                            ws[chr(col - 1) + '1'].value == 'September' and
-                                            ws[chr(col) + '1'].value == 'Maí'
-                                        ):
-                                            diff = round(diff / 2)  # Average, because distance too great for algorithm
-                                        ws[chr(col) + str(row)].fill = get_lesfimi_excel_cell_color(student_year, diff)
 
                             value = survey_student_result[0]
                         else:
@@ -2355,7 +2342,7 @@ def survey_detail_excel(request, school_id, student_group, pk):
                         refs = ref_values[student_year]
                         datapoints[-1] += (refs[0], refs[1], refs[2])
 
-                ws[chr(col) + '1'] = 'Heildarmismunur'
+                ws[chr(col) + '1'] = 'Framvinda'
                 row = 2
                 for student in studentgroup.students.order_by('name').all():
                     # Find last comparison column
@@ -2487,6 +2474,7 @@ def lesfimi_excel_for_principals(request, pk):
 
     tests = (
         ('b{}_LF_mai17', 'Maí 2017'),
+        ('b{}_LF_jan17', 'Janúar 2017'),
         ('{}b_LF_sept', 'September 2016'),
     )
     for test in tests:
@@ -2530,7 +2518,7 @@ def lesfimi_excel_for_principals(request, pk):
                             ))
                         for surveyresult in surveyresults.all():
                             try:
-                                survey_student_result = surveyresult.calculated_results(use_transformation=False)
+                                survey_student_result = surveyresult.calculated_results()
 
                                 if not survey_student_result[0] == '':
                                     this_year_result['students_who_took_test'] += 1
