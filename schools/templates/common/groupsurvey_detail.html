@@ -127,7 +127,7 @@
 												<strong>Valin orð:</strong>
 												{% for val in results.click_values %}
 													{% with val|split:"," as vals %}
-														{% if is_superuser %}
+														{% if request.user.is_superuser %}
 															<p class="click_values">{{vals.0}},{{vals.1}}</p>
 														{% else %}
 															<p class="click_values">{{vals.1}}</p>
