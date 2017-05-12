@@ -337,7 +337,7 @@ class GroupSurvey(models.Model):
 class SurveyResult(models.Model):
     student = models.ForeignKey('Student')
     created_at = models.DateTimeField(default=timezone.now)
-    results = JSONField()
+    results = JSONField(null=True, blank=True)
     reported_by = models.ForeignKey(
         'Teacher', null=True, blank=True, on_delete=models.SET_NULL
     )
