@@ -1336,12 +1336,10 @@ class SurveyResultCreate(common_mixins.SchoolEmployeeMixin, CreateView):
             for k in self.request.POST:
                 if k != 'csrfmiddlewaretoken':
                     if k == 'data_results[]':
-                        survey_result_data['click_values'] = json.dumps(
-                            self.request.POST.getlist('data_results[]')
-                        )
+                        survey_result_data['click_values'] = self.request.POST.getlist('data_results[]')
                     else:
                         survey_result_data['input_values'][k] = self.request.POST[k]
-            survey_result.results = json.dumps(survey_result_data)
+            survey_result.results = survey_result_data
             survey_result.save()
             return redirect(self.get_success_url())
         else:
@@ -1388,9 +1386,10 @@ class SurveyResultUpdate(common_mixins.SchoolEmployeeMixin, UpdateView):
         context['student'] = Student.objects.filter(pk=self.kwargs['student_id'])
         groupsurvey = GroupSurvey.objects.get(pk=self.kwargs['survey_id'])
         context['survey'] = GroupSurvey.objects.filter(pk=self.kwargs['survey_id'])
-        context['data_result'] = json.loads(
-            SurveyResult.objects.get(pk=self.kwargs['pk']).results
-        ) or "''"
+        context['data_result'] = SurveyResult.objects.get(pk=self.kwargs['pk']).results or {
+            'click_values': [],
+            'input_values': [],
+        }
         survey = groupsurvey.survey
         try:
             grading_templates = SurveyGradingTemplate.objects.get(survey=survey)
