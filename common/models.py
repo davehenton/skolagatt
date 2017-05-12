@@ -431,20 +431,17 @@ class SurveyResult(models.Model):
 
     def calculated_results(self, use_transformation=True):
         survey_type = self.survey.survey.survey_type.title
-        r = json.loads(self.results)
-        if isinstance(r['click_values'], str):
-            r['click_values'] = json.loads(r['click_values'])
 
         if survey_type == 'Lesskimun':
-            return self._lesskilnings_results(r['input_values'])
+            return self._lesskilnings_results(self.results['input_values'])
         elif survey_type == 'Lesfimi':
             transformation = None
             if use_transformation:
                 if self.survey.survey.surveytransformation_set.exists():
                     transformation = self.survey.survey.surveytransformation_set.first()
-            return self._lesfimi_results(r, transformation)
+            return self._lesfimi_results(self.results, transformation)
         else:
-            return r['click_values']
+            return self.results['click_values']
 
     @classmethod
     def get_results(cls, id):
