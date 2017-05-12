@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 from django.db import models
 
 from django.contrib.auth.models import User
+from django.contrib.postgres.fields import JSONField
 from django.utils import timezone
 
 import json
@@ -336,7 +337,7 @@ class GroupSurvey(models.Model):
 class SurveyResult(models.Model):
     student = models.ForeignKey('Student')
     created_at = models.DateTimeField(default=timezone.now)
-    results = models.TextField()
+    results = JSONField()
     reported_by = models.ForeignKey(
         'Teacher', null=True, blank=True, on_delete=models.SET_NULL
     )

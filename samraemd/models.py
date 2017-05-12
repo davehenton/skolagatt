@@ -2,9 +2,7 @@
 from __future__ import unicode_literals
 
 from django.db import models
-from django import forms
-from django.utils import timezone
-from jsonfield import JSONField
+from django.contrib.postgres.fields import JSONField
 
 from common.models import Student
 
