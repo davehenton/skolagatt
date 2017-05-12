@@ -1372,12 +1372,10 @@ class SurveyResultUpdate(common_mixins.SchoolEmployeeMixin, UpdateView):
         for k in self.request.POST:
             if k != 'csrfmiddlewaretoken':
                 if k == 'data_results[]':
-                    survey_results_data['click_values'] = json.dumps(
-                        self.request.POST.getlist('data_results[]')
-                    )
+                    survey_results_data['click_values'] = self.request.POST.getlist('data_results[]')
                 else:
                     survey_results_data['input_values'][k] = self.request.POST[k]
-        survey_results.results = json.dumps(survey_results_data)
+        survey_results.results = survey_results_data
         return super(SurveyResultUpdate, self).form_valid(form)
 
     def get_context_data(self, **kwargs):
