@@ -119,13 +119,13 @@
 						        <h4 class="modal-title" id="results-{{student_result.id}}Label">{{student}}</h4>
 						      </div>
 						      <div class="modal-body">
-						        {% with results=student_result.results|get_json %}
+						        {% with results=student_result.results %}
 									<div class='row'>
 										<div class='col-md-12'>
 											{% if results.click_values %}
 											<div>
 												<strong>Valin orð:</strong>
-												{% for val in results.click_values|literal_eval %}
+												{% for val in results.click_values %}
 													{% with val|split:"," as vals %}
 													<p class="click_values">{{vals.1}}</p>
 													{% endwith %}
