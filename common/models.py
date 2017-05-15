@@ -342,7 +342,7 @@ class SurveyResult(models.Model):
         'Teacher', null=True, blank=True, on_delete=models.SET_NULL
     )
     survey = models.ForeignKey(
-        'GroupSurvey', null=True, blank=True, on_delete=models.SET_NULL
+        'GroupSurvey', null=True, blank=True, on_delete=models.CASCADE
     )
     created_at = models.DateField(default=timezone.now)
 
