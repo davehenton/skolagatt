@@ -830,13 +830,14 @@ class StudentCreateImport(common_mixins.SchoolManagerMixin, CreateView):
         else:
             student_data = common_util.get_import_data(self.request, 'student_create_import')
             school = School.objects.get(pk=self.kwargs['school_id'])
+
             # iterate through students, add them if they don't exist then add to school
             for data in student_data:
-                student = None
-                try:
-                    student = Student.objects.create(**data)
-                except:
-                    student = Student.objects.get(ssn=data['ssn'])
+                student, created = Student.objects.get_or_create(**data)
+                if not created:
+                    # remove from other schools
+                    for old_school in student.school_set.all():
+                        old_school.students.remove(student)
                 school.students.add(student)
 
         return HttpResponseRedirect(self.get_success_url())

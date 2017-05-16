@@ -164,7 +164,10 @@ def store_import_data(request, slug, data):
     """Store data in cache, and store the cache id in current session"""
 
     cache_id = str(uuid4())
-    cache.set(cache_id, data, 15 * 60)  # Store for max 15 minutes
+    # Remove 'error' keys from dict list
+    remove_keys = ['error']
+    clean_data = list(map(lambda x: {k: v for k, v in x.items() if k not in remove_keys}, data))
+    cache.set(cache_id, clean_data, 15 * 60)  # Store for max 15 minutes
     request.session[slug] = cache_id
 
     return cache_id
