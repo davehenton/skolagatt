@@ -14,21 +14,25 @@ class SurveyResultLesfimiCalculatedResultsTests(TestCase):
     def setUp(self):
         self.groupsurveys = []
         self.surveyresults = []
+
+        self.survey_type = SurveyType.objects.create(
+            identifier='b1_LF',
+            title='Lesfimi',
+        )
         self.survey = Survey.objects.create(
             identifer='test_test_1',
-            survey_type=SurveyType.objects.create(
-                identifier='b1_LF',
-                title='Lesfimi',
-            )
+            survey_type=self.survey_type,
         )
+
         self.school = School.objects.first()
-        self.studentgroup = school.studentgroup_set.first()
+        self.studentgroup1 = school.studentgroup_set.all()[0]
         self.student1 = studentgroup.student_set.all()[0]
         self.student2 = studentgroup.student_set.all()[1]
         self.student3 = studentgroup.student_set.all()[2]
+
         self.groupsurveys.append(GroupSurvey.objects.create(
             survey=self.survey,
-            studentgroup=self.studentgroup,
+            studentgroup=self.studentgroup1,
         ))
         self.surveyresults.append(
             SurveyResult.create(
