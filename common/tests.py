@@ -8,21 +8,32 @@ from survey.models import (
 )
 
 
-class SurveyResultCalculatedResultsTests(TestCase):
+class SurveyResultLesfimiCalculatedResultsTests(TestCase):
     fixtures = ['common']
 
     def setUp(self):
-        self.surveys = []
         self.groupsurveys = []
         self.surveyresults = []
-        survey = Survey.objects.get(identifer='test_test_1')
-
-        groupsurveys.append(GroupSurvey.objects.create(
-            survey=survey,
+        self.survey = Survey.objects.create(
+            identifer='test_test_1',
+            survey_type=SurveyType.objects.create(
+                identifier='b1_LF',
+                title='Lesfimi',
+            )
+        )
+        self.school = School.objects.first()
+        self.studentgroup = school.studentgroup_set.first()
+        self.student1 = studentgroup.student_set.all()[0]
+        self.student2 = studentgroup.student_set.all()[1]
+        self.student3 = studentgroup.student_set.all()[2]
+        self.groupsurveys.append(GroupSurvey.objects.create(
+            survey=self.survey,
+            studentgroup=self.studentgroup,
         ))
         self.surveyresults.append(
             SurveyResult.create(
-                survey=groupsurvey,
+                survey=self.groupsurveys[0],
+                student=self.student1,
                 results={
                     'click_values': [
                         '1,test1',
@@ -33,4 +44,8 @@ class SurveyResultCalculatedResultsTests(TestCase):
                     ],
                 }
             ))
-        
+
+    def test_lesfimi_calculated_results(self):
+        calculated_results = self.surveyresults[0].calculated_results()
+        self.assertEqual(len(calculated_results), 1)
+        self.assertEqual(int(calculated_results[0]), 34)
