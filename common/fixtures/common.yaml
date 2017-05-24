@@ -1,87 +1,3 @@
--   model: common.manager
-    pk: 1
-    fields: {ssn: '1606862279', name: "Eldgr\xEDmur Leifsson", email: '', phone: '',
-        position: '', user: 24}
--   model: common.manager
-    pk: 2
-    fields: {ssn: '1510726239', name: "Seimur \xDE\xF3rormur Arnoddsson", email: '',
-        phone: '', position: '', user: 25}
--   model: common.teacher
-    pk: 3
-    fields: {ssn: '1211712799', name: "Kalmar Dan\xEDel Au\xF0bertsson", position: '',
-        user: 4}
--   model: common.teacher
-    pk: 4
-    fields: {ssn: '1010512349', name: "Matthildur Br\xEDet \xDE\xF3r\xF3lfsd\xF3ttir",
-        position: '', user: 5}
--   model: common.teacher
-    pk: 5
-    fields: {ssn: '1307949559', name: "En\xF3la \xD3lafsd\xF3ttir", position: '',
-        user: 6}
--   model: common.teacher
-    pk: 6
-    fields: {ssn: '1601497449', name: "Huglj\xFAf Erl\xEDn Arnaldsd\xF3ttir", position: '',
-        user: 7}
--   model: common.teacher
-    pk: 7
-    fields: {ssn: '2301922009', name: "Ingi S\xF6lvi Signarsson", position: '', user: 8}
--   model: common.teacher
-    pk: 8
-    fields: {ssn: '1312602459', name: "A\xF0alveig H\xFAg\xF3sd\xF3ttir", position: '',
-        user: 9}
--   model: common.teacher
-    pk: 9
-    fields: {ssn: 0908636069, name: "Mildr\xED\xF0ur Sigurbj\xF6rg D\xF3naldsd\xF3\
-            ttir", position: '', user: 10}
--   model: common.teacher
-    pk: 10
-    fields: {ssn: 0511477319, name: "Brimir \xDEormundur H\xF3lm\xFE\xF3rsson", position: '',
-        user: 11}
--   model: common.teacher
-    pk: 11
-    fields: {ssn: '2309489419', name: "Eymundur \xDEengilsson", position: '', user: 12}
--   model: common.teacher
-    pk: 12
-    fields: {ssn: '1108552819', name: "\xDE\xF3rarinn Arnd\xF3r Gilbertsson", position: '',
-        user: 13}
--   model: common.teacher
-    pk: 13
-    fields: {ssn: '2703559949', name: "\xC1lfs\xF3l Brimd\xEDs Ylsd\xF3ttir", position: '',
-        user: 14}
--   model: common.teacher
-    pk: 14
-    fields: {ssn: 0701856959, name: "Adr\xEDel Sigurmon Oddfreysson", position: '',
-        user: 15}
--   model: common.teacher
-    pk: 15
-    fields: {ssn: 0702802059, name: "Ingvaldur Sigd\xF3rsson", position: '', user: 16}
--   model: common.teacher
-    pk: 16
-    fields: {ssn: '2806615389', name: "J\xFAn\xEDana F\xEDfilsd\xF3ttir", position: '',
-        user: 17}
--   model: common.teacher
-    pk: 17
-    fields: {ssn: '2110709869', name: "Hj\xE1lmgeir Janusarson", position: '', user: 18}
--   model: common.teacher
-    pk: 18
-    fields: {ssn: 0706844709, name: "Fr\xF3\xF0n\xFD Teres\xEDa Gretarsd\xF3ttir",
-        position: '', user: 19}
--   model: common.teacher
-    pk: 19
-    fields: {ssn: '2007809659', name: "Bresi Kjartan Hj\xE1lmt\xFDsson", position: '',
-        user: 20}
--   model: common.teacher
-    pk: 20
-    fields: {ssn: '2804488509', name: "\xC1rs\xF3l Unnd\xEDs Dag\xFE\xF3rsd\xF3ttir",
-        position: '', user: 21}
--   model: common.teacher
-    pk: 21
-    fields: {ssn: 0611648479, name: "Hrappur Arnd\xF3r Imman\xFAelsson", position: '',
-        user: 22}
--   model: common.teacher
-    pk: 22
-    fields: {ssn: 0409836439, name: "\xDE\xF3rsteina Eyr\xFAn Halld\xF3rsd\xF3ttir",
-        position: '', user: 23}
 -   model: common.student
     pk: 1
     fields: {ssn: '3006105520', name: "Arnl\xEDn Benon\xFDsd\xF3ttir"}
@@ -1531,3 +1447,711 @@
         group_managers: [12]
         students: [188, 190, 185, 195, 189, 196, 187, 191, 181, 184, 198, 200, 197,
             182, 194, 183, 193, 186, 199, 192]
+-   model: auth.permission
+    pk: 1
+    fields: {name: Can add log entry, content_type: 1, codename: add_logentry}
+-   model: auth.permission
+    pk: 2
+    fields: {name: Can change log entry, content_type: 1, codename: change_logentry}
+-   model: auth.permission
+    pk: 3
+    fields: {name: Can delete log entry, content_type: 1, codename: delete_logentry}
+-   model: auth.permission
+    pk: 4
+    fields: {name: Can add permission, content_type: 2, codename: add_permission}
+-   model: auth.permission
+    pk: 5
+    fields: {name: Can change permission, content_type: 2, codename: change_permission}
+-   model: auth.permission
+    pk: 6
+    fields: {name: Can delete permission, content_type: 2, codename: delete_permission}
+-   model: auth.permission
+    pk: 7
+    fields: {name: Can add group, content_type: 3, codename: add_group}
+-   model: auth.permission
+    pk: 8
+    fields: {name: Can change group, content_type: 3, codename: change_group}
+-   model: auth.permission
+    pk: 9
+    fields: {name: Can delete group, content_type: 3, codename: delete_group}
+-   model: auth.permission
+    pk: 10
+    fields: {name: Can add user, content_type: 4, codename: add_user}
+-   model: auth.permission
+    pk: 11
+    fields: {name: Can change user, content_type: 4, codename: change_user}
+-   model: auth.permission
+    pk: 12
+    fields: {name: Can delete user, content_type: 4, codename: delete_user}
+-   model: auth.permission
+    pk: 13
+    fields: {name: Can add content type, content_type: 5, codename: add_contenttype}
+-   model: auth.permission
+    pk: 14
+    fields: {name: Can change content type, content_type: 5, codename: change_contenttype}
+-   model: auth.permission
+    pk: 15
+    fields: {name: Can delete content type, content_type: 5, codename: delete_contenttype}
+-   model: auth.permission
+    pk: 16
+    fields: {name: Can add session, content_type: 6, codename: add_session}
+-   model: auth.permission
+    pk: 17
+    fields: {name: Can change session, content_type: 6, codename: change_session}
+-   model: auth.permission
+    pk: 18
+    fields: {name: Can delete session, content_type: 6, codename: delete_session}
+-   model: auth.permission
+    pk: 19
+    fields: {name: Can add notification, content_type: 7, codename: add_notification}
+-   model: auth.permission
+    pk: 20
+    fields: {name: Can change notification, content_type: 7, codename: change_notification}
+-   model: auth.permission
+    pk: 21
+    fields: {name: Can delete notification, content_type: 7, codename: delete_notification}
+-   model: auth.permission
+    pk: 22
+    fields: {name: Can add manager, content_type: 8, codename: add_manager}
+-   model: auth.permission
+    pk: 23
+    fields: {name: Can change manager, content_type: 8, codename: change_manager}
+-   model: auth.permission
+    pk: 24
+    fields: {name: Can delete manager, content_type: 8, codename: delete_manager}
+-   model: auth.permission
+    pk: 25
+    fields: {name: Can add teacher, content_type: 9, codename: add_teacher}
+-   model: auth.permission
+    pk: 26
+    fields: {name: Can change teacher, content_type: 9, codename: change_teacher}
+-   model: auth.permission
+    pk: 27
+    fields: {name: Can delete teacher, content_type: 9, codename: delete_teacher}
+-   model: auth.permission
+    pk: 28
+    fields: {name: Can add student, content_type: 10, codename: add_student}
+-   model: auth.permission
+    pk: 29
+    fields: {name: Can change student, content_type: 10, codename: change_student}
+-   model: auth.permission
+    pk: 30
+    fields: {name: Can delete student, content_type: 10, codename: delete_student}
+-   model: auth.permission
+    pk: 31
+    fields: {name: Can add school, content_type: 11, codename: add_school}
+-   model: auth.permission
+    pk: 32
+    fields: {name: Can change school, content_type: 11, codename: change_school}
+-   model: auth.permission
+    pk: 33
+    fields: {name: Can delete school, content_type: 11, codename: delete_school}
+-   model: auth.permission
+    pk: 34
+    fields: {name: Can add student group, content_type: 12, codename: add_studentgroup}
+-   model: auth.permission
+    pk: 35
+    fields: {name: Can change student group, content_type: 12, codename: change_studentgroup}
+-   model: auth.permission
+    pk: 36
+    fields: {name: Can delete student group, content_type: 12, codename: delete_studentgroup}
+-   model: auth.permission
+    pk: 37
+    fields: {name: Can add group survey, content_type: 13, codename: add_groupsurvey}
+-   model: auth.permission
+    pk: 38
+    fields: {name: Can change group survey, content_type: 13, codename: change_groupsurvey}
+-   model: auth.permission
+    pk: 39
+    fields: {name: Can delete group survey, content_type: 13, codename: delete_groupsurvey}
+-   model: auth.permission
+    pk: 40
+    fields: {name: Can add survey result, content_type: 14, codename: add_surveyresult}
+-   model: auth.permission
+    pk: 41
+    fields: {name: Can change survey result, content_type: 14, codename: change_surveyresult}
+-   model: auth.permission
+    pk: 42
+    fields: {name: Can delete survey result, content_type: 14, codename: delete_surveyresult}
+-   model: auth.permission
+    pk: 43
+    fields: {name: Can add survey login, content_type: 15, codename: add_surveylogin}
+-   model: auth.permission
+    pk: 44
+    fields: {name: Can change survey login, content_type: 15, codename: change_surveylogin}
+-   model: auth.permission
+    pk: 45
+    fields: {name: Can delete survey login, content_type: 15, codename: delete_surveylogin}
+-   model: auth.permission
+    pk: 46
+    fields: {name: Can add example survey question, content_type: 16, codename: add_examplesurveyquestion}
+-   model: auth.permission
+    pk: 47
+    fields: {name: Can change example survey question, content_type: 16, codename: change_examplesurveyquestion}
+-   model: auth.permission
+    pk: 48
+    fields: {name: Can delete example survey question, content_type: 16, codename: delete_examplesurveyquestion}
+-   model: auth.permission
+    pk: 49
+    fields: {name: Can add example survey answer, content_type: 17, codename: add_examplesurveyanswer}
+-   model: auth.permission
+    pk: 50
+    fields: {name: Can change example survey answer, content_type: 17, codename: change_examplesurveyanswer}
+-   model: auth.permission
+    pk: 51
+    fields: {name: Can delete example survey answer, content_type: 17, codename: delete_examplesurveyanswer}
+-   model: auth.permission
+    pk: 52
+    fields: {name: Can add student exception support, content_type: 18, codename: add_studentexceptionsupport}
+-   model: auth.permission
+    pk: 53
+    fields: {name: Can change student exception support, content_type: 18, codename: change_studentexceptionsupport}
+-   model: auth.permission
+    pk: 54
+    fields: {name: Can delete student exception support, content_type: 18, codename: delete_studentexceptionsupport}
+-   model: auth.permission
+    pk: 55
+    fields: {name: Can add exceptions, content_type: 19, codename: add_exceptions}
+-   model: auth.permission
+    pk: 56
+    fields: {name: Can change exceptions, content_type: 19, codename: change_exceptions}
+-   model: auth.permission
+    pk: 57
+    fields: {name: Can delete exceptions, content_type: 19, codename: delete_exceptions}
+-   model: auth.permission
+    pk: 58
+    fields: {name: Can add support resource, content_type: 20, codename: add_supportresource}
+-   model: auth.permission
+    pk: 59
+    fields: {name: Can change support resource, content_type: 20, codename: change_supportresource}
+-   model: auth.permission
+    pk: 60
+    fields: {name: Can delete support resource, content_type: 20, codename: delete_supportresource}
+-   model: auth.permission
+    pk: 61
+    fields: {name: Can add samraemd math result, content_type: 21, codename: add_samraemdmathresult}
+-   model: auth.permission
+    pk: 62
+    fields: {name: Can change samraemd math result, content_type: 21, codename: change_samraemdmathresult}
+-   model: auth.permission
+    pk: 63
+    fields: {name: Can delete samraemd math result, content_type: 21, codename: delete_samraemdmathresult}
+-   model: auth.permission
+    pk: 64
+    fields: {name: Can add samraemd isl result, content_type: 22, codename: add_samraemdislresult}
+-   model: auth.permission
+    pk: 65
+    fields: {name: Can change samraemd isl result, content_type: 22, codename: change_samraemdislresult}
+-   model: auth.permission
+    pk: 66
+    fields: {name: Can delete samraemd isl result, content_type: 22, codename: delete_samraemdislresult}
+-   model: auth.permission
+    pk: 67
+    fields: {name: Can add samraemd ens result, content_type: 23, codename: add_samraemdensresult}
+-   model: auth.permission
+    pk: 68
+    fields: {name: Can change samraemd ens result, content_type: 23, codename: change_samraemdensresult}
+-   model: auth.permission
+    pk: 69
+    fields: {name: Can delete samraemd ens result, content_type: 23, codename: delete_samraemdensresult}
+-   model: auth.permission
+    pk: 70
+    fields: {name: Can add samraemd result, content_type: 24, codename: add_samraemdresult}
+-   model: auth.permission
+    pk: 71
+    fields: {name: Can change samraemd result, content_type: 24, codename: change_samraemdresult}
+-   model: auth.permission
+    pk: 72
+    fields: {name: Can delete samraemd result, content_type: 24, codename: delete_samraemdresult}
+-   model: auth.permission
+    pk: 73
+    fields: {name: Can add survey type, content_type: 25, codename: add_surveytype}
+-   model: auth.permission
+    pk: 74
+    fields: {name: Can change survey type, content_type: 25, codename: change_surveytype}
+-   model: auth.permission
+    pk: 75
+    fields: {name: Can delete survey type, content_type: 25, codename: delete_surveytype}
+-   model: auth.permission
+    pk: 76
+    fields: {name: Can add survey, content_type: 26, codename: add_survey}
+-   model: auth.permission
+    pk: 77
+    fields: {name: Can change survey, content_type: 26, codename: change_survey}
+-   model: auth.permission
+    pk: 78
+    fields: {name: Can delete survey, content_type: 26, codename: delete_survey}
+-   model: auth.permission
+    pk: 79
+    fields: {name: Can add survey resource, content_type: 27, codename: add_surveyresource}
+-   model: auth.permission
+    pk: 80
+    fields: {name: Can change survey resource, content_type: 27, codename: change_surveyresource}
+-   model: auth.permission
+    pk: 81
+    fields: {name: Can delete survey resource, content_type: 27, codename: delete_surveyresource}
+-   model: auth.permission
+    pk: 82
+    fields: {name: Can add survey grading template, content_type: 28, codename: add_surveygradingtemplate}
+-   model: auth.permission
+    pk: 83
+    fields: {name: Can change survey grading template, content_type: 28, codename: change_surveygradingtemplate}
+-   model: auth.permission
+    pk: 84
+    fields: {name: Can delete survey grading template, content_type: 28, codename: delete_surveygradingtemplate}
+-   model: auth.permission
+    pk: 85
+    fields: {name: Can add survey input group, content_type: 29, codename: add_surveyinputgroup}
+-   model: auth.permission
+    pk: 86
+    fields: {name: Can change survey input group, content_type: 29, codename: change_surveyinputgroup}
+-   model: auth.permission
+    pk: 87
+    fields: {name: Can delete survey input group, content_type: 29, codename: delete_surveyinputgroup}
+-   model: auth.permission
+    pk: 88
+    fields: {name: Can add survey input field, content_type: 30, codename: add_surveyinputfield}
+-   model: auth.permission
+    pk: 89
+    fields: {name: Can change survey input field, content_type: 30, codename: change_surveyinputfield}
+-   model: auth.permission
+    pk: 90
+    fields: {name: Can delete survey input field, content_type: 30, codename: delete_surveyinputfield}
+-   model: auth.permission
+    pk: 91
+    fields: {name: Can add survey transformation, content_type: 31, codename: add_surveytransformation}
+-   model: auth.permission
+    pk: 92
+    fields: {name: Can change survey transformation, content_type: 31, codename: change_surveytransformation}
+-   model: auth.permission
+    pk: 93
+    fields: {name: Can delete survey transformation, content_type: 31, codename: delete_surveytransformation}
+-   model: auth.user
+    pk: 1
+    fields:
+        password: ''
+        last_login: 2017-05-24 10:02:36.475998+00:00
+        is_superuser: true
+        username: '3009815269'
+        first_name: ''
+        last_name: ''
+        email: ''
+        is_staff: false
+        is_active: true
+        date_joined: 2017-05-23 13:28:22.687518+00:00
+        groups: []
+        user_permissions: []
+-   model: auth.user
+    pk: 4
+    fields:
+        password: ''
+        last_login: null
+        is_superuser: false
+        username: '1211712799'
+        first_name: ''
+        last_name: ''
+        email: ''
+        is_staff: false
+        is_active: true
+        date_joined: 2017-05-23 16:34:55.490316+00:00
+        groups: []
+        user_permissions: []
+-   model: auth.user
+    pk: 5
+    fields:
+        password: ''
+        last_login: null
+        is_superuser: false
+        username: '1010512349'
+        first_name: ''
+        last_name: ''
+        email: ''
+        is_staff: false
+        is_active: true
+        date_joined: 2017-05-23 16:34:55.835792+00:00
+        groups: []
+        user_permissions: []
+-   model: auth.user
+    pk: 6
+    fields:
+        password: ''
+        last_login: null
+        is_superuser: false
+        username: '1307949559'
+        first_name: ''
+        last_name: ''
+        email: ''
+        is_staff: false
+        is_active: true
+        date_joined: 2017-05-23 16:34:56.065937+00:00
+        groups: []
+        user_permissions: []
+-   model: auth.user
+    pk: 7
+    fields:
+        password: ''
+        last_login: null
+        is_superuser: false
+        username: '1601497449'
+        first_name: ''
+        last_name: ''
+        email: ''
+        is_staff: false
+        is_active: true
+        date_joined: 2017-05-23 16:34:56.465772+00:00
+        groups: []
+        user_permissions: []
+-   model: auth.user
+    pk: 8
+    fields:
+        password: ''
+        last_login: null
+        is_superuser: false
+        username: '2301922009'
+        first_name: ''
+        last_name: ''
+        email: ''
+        is_staff: false
+        is_active: true
+        date_joined: 2017-05-23 16:34:56.878003+00:00
+        groups: []
+        user_permissions: []
+-   model: auth.user
+    pk: 9
+    fields:
+        password: ''
+        last_login: null
+        is_superuser: false
+        username: '1312602459'
+        first_name: ''
+        last_name: ''
+        email: ''
+        is_staff: false
+        is_active: true
+        date_joined: 2017-05-23 16:34:57.113342+00:00
+        groups: []
+        user_permissions: []
+-   model: auth.user
+    pk: 10
+    fields:
+        password: ''
+        last_login: null
+        is_superuser: false
+        username: 0908636069
+        first_name: ''
+        last_name: ''
+        email: ''
+        is_staff: false
+        is_active: true
+        date_joined: 2017-05-23 16:34:57.437763+00:00
+        groups: []
+        user_permissions: []
+-   model: auth.user
+    pk: 11
+    fields:
+        password: ''
+        last_login: null
+        is_superuser: false
+        username: 0511477319
+        first_name: ''
+        last_name: ''
+        email: ''
+        is_staff: false
+        is_active: true
+        date_joined: 2017-05-23 16:34:57.668812+00:00
+        groups: []
+        user_permissions: []
+-   model: auth.user
+    pk: 12
+    fields:
+        password: ''
+        last_login: null
+        is_superuser: false
+        username: '2309489419'
+        first_name: ''
+        last_name: ''
+        email: ''
+        is_staff: false
+        is_active: true
+        date_joined: 2017-05-23 16:34:58.018266+00:00
+        groups: []
+        user_permissions: []
+-   model: auth.user
+    pk: 13
+    fields:
+        password: ''
+        last_login: null
+        is_superuser: false
+        username: '1108552819'
+        first_name: ''
+        last_name: ''
+        email: ''
+        is_staff: false
+        is_active: true
+        date_joined: 2017-05-23 16:34:58.448020+00:00
+        groups: []
+        user_permissions: []
+-   model: auth.user
+    pk: 14
+    fields:
+        password: ''
+        last_login: null
+        is_superuser: false
+        username: '2703559949'
+        first_name: ''
+        last_name: ''
+        email: ''
+        is_staff: false
+        is_active: true
+        date_joined: 2017-05-23 16:34:58.676707+00:00
+        groups: []
+        user_permissions: []
+-   model: auth.user
+    pk: 15
+    fields:
+        password: ''
+        last_login: null
+        is_superuser: false
+        username: 0701856959
+        first_name: ''
+        last_name: ''
+        email: ''
+        is_staff: false
+        is_active: true
+        date_joined: 2017-05-23 16:34:59.255605+00:00
+        groups: []
+        user_permissions: []
+-   model: auth.user
+    pk: 16
+    fields:
+        password: ''
+        last_login: null
+        is_superuser: false
+        username: 0702802059
+        first_name: ''
+        last_name: ''
+        email: ''
+        is_staff: false
+        is_active: true
+        date_joined: 2017-05-23 16:34:59.480092+00:00
+        groups: []
+        user_permissions: []
+-   model: auth.user
+    pk: 17
+    fields:
+        password: ''
+        last_login: null
+        is_superuser: false
+        username: '2806615389'
+        first_name: ''
+        last_name: ''
+        email: ''
+        is_staff: false
+        is_active: true
+        date_joined: 2017-05-23 16:34:59.802168+00:00
+        groups: []
+        user_permissions: []
+-   model: auth.user
+    pk: 18
+    fields:
+        password: ''
+        last_login: null
+        is_superuser: false
+        username: '2110709869'
+        first_name: ''
+        last_name: ''
+        email: ''
+        is_staff: false
+        is_active: true
+        date_joined: 2017-05-23 16:35:00.034671+00:00
+        groups: []
+        user_permissions: []
+-   model: auth.user
+    pk: 19
+    fields:
+        password: ''
+        last_login: null
+        is_superuser: false
+        username: 0706844709
+        first_name: ''
+        last_name: ''
+        email: ''
+        is_staff: false
+        is_active: true
+        date_joined: 2017-05-23 16:35:00.255728+00:00
+        groups: []
+        user_permissions: []
+-   model: auth.user
+    pk: 20
+    fields:
+        password: ''
+        last_login: null
+        is_superuser: false
+        username: '2007809659'
+        first_name: ''
+        last_name: ''
+        email: ''
+        is_staff: false
+        is_active: true
+        date_joined: 2017-05-23 16:35:00.483713+00:00
+        groups: []
+        user_permissions: []
+-   model: auth.user
+    pk: 21
+    fields:
+        password: ''
+        last_login: null
+        is_superuser: false
+        username: '2804488509'
+        first_name: ''
+        last_name: ''
+        email: ''
+        is_staff: false
+        is_active: true
+        date_joined: 2017-05-23 16:35:00.728669+00:00
+        groups: []
+        user_permissions: []
+-   model: auth.user
+    pk: 22
+    fields:
+        password: ''
+        last_login: null
+        is_superuser: false
+        username: 0611648479
+        first_name: ''
+        last_name: ''
+        email: ''
+        is_staff: false
+        is_active: true
+        date_joined: 2017-05-23 16:35:01.154671+00:00
+        groups: []
+        user_permissions: []
+-   model: auth.user
+    pk: 23
+    fields:
+        password: ''
+        last_login: null
+        is_superuser: false
+        username: 0409836439
+        first_name: ''
+        last_name: ''
+        email: ''
+        is_staff: false
+        is_active: true
+        date_joined: 2017-05-23 16:35:01.494221+00:00
+        groups: []
+        user_permissions: []
+-   model: auth.user
+    pk: 24
+    fields:
+        password: ''
+        last_login: null
+        is_superuser: false
+        username: '1606862279'
+        first_name: ''
+        last_name: ''
+        email: ''
+        is_staff: false
+        is_active: true
+        date_joined: 2017-05-23 16:35:10.542500+00:00
+        groups: []
+        user_permissions: []
+-   model: auth.user
+    pk: 25
+    fields:
+        password: ''
+        last_login: null
+        is_superuser: false
+        username: '1510726239'
+        first_name: ''
+        last_name: ''
+        email: ''
+        is_staff: false
+        is_active: true
+        date_joined: 2017-05-23 16:35:10.971376+00:00
+        groups: []
+        user_permissions: []
+-   model: common.teacher
+    pk: 3
+    fields: {ssn: '1211712799', name: "Kalmar Dan\xEDel Au\xF0bertsson", position: '',
+        user: 4}
+-   model: common.teacher
+    pk: 4
+    fields: {ssn: '1010512349', name: "Matthildur Br\xEDet \xDE\xF3r\xF3lfsd\xF3ttir",
+        position: '', user: 5}
+-   model: common.teacher
+    pk: 5
+    fields: {ssn: '1307949559', name: "En\xF3la \xD3lafsd\xF3ttir", position: '',
+        user: 6}
+-   model: common.teacher
+    pk: 6
+    fields: {ssn: '1601497449', name: "Huglj\xFAf Erl\xEDn Arnaldsd\xF3ttir", position: '',
+        user: 7}
+-   model: common.teacher
+    pk: 7
+    fields: {ssn: '2301922009', name: "Ingi S\xF6lvi Signarsson", position: '', user: 8}
+-   model: common.teacher
+    pk: 8
+    fields: {ssn: '1312602459', name: "A\xF0alveig H\xFAg\xF3sd\xF3ttir", position: '',
+        user: 9}
+-   model: common.teacher
+    pk: 9
+    fields: {ssn: 0908636069, name: "Mildr\xED\xF0ur Sigurbj\xF6rg D\xF3naldsd\xF3\
+            ttir", position: '', user: 10}
+-   model: common.teacher
+    pk: 10
+    fields: {ssn: 0511477319, name: "Brimir \xDEormundur H\xF3lm\xFE\xF3rsson", position: '',
+        user: 11}
+-   model: common.teacher
+    pk: 11
+    fields: {ssn: '2309489419', name: "Eymundur \xDEengilsson", position: '', user: 12}
+-   model: common.teacher
+    pk: 12
+    fields: {ssn: '1108552819', name: "\xDE\xF3rarinn Arnd\xF3r Gilbertsson", position: '',
+        user: 13}
+-   model: common.teacher
+    pk: 13
+    fields: {ssn: '2703559949', name: "\xC1lfs\xF3l Brimd\xEDs Ylsd\xF3ttir", position: '',
+        user: 14}
+-   model: common.teacher
+    pk: 14
+    fields: {ssn: 0701856959, name: "Adr\xEDel Sigurmon Oddfreysson", position: '',
+        user: 15}
+-   model: common.teacher
+    pk: 15
+    fields: {ssn: 0702802059, name: "Ingvaldur Sigd\xF3rsson", position: '', user: 16}
+-   model: common.teacher
+    pk: 16
+    fields: {ssn: '2806615389', name: "J\xFAn\xEDana F\xEDfilsd\xF3ttir", position: '',
+        user: 17}
+-   model: common.teacher
+    pk: 17
+    fields: {ssn: '2110709869', name: "Hj\xE1lmgeir Janusarson", position: '', user: 18}
+-   model: common.teacher
+    pk: 18
+    fields: {ssn: 0706844709, name: "Fr\xF3\xF0n\xFD Teres\xEDa Gretarsd\xF3ttir",
+        position: '', user: 19}
+-   model: common.teacher
+    pk: 19
+    fields: {ssn: '2007809659', name: "Bresi Kjartan Hj\xE1lmt\xFDsson", position: '',
+        user: 20}
+-   model: common.teacher
+    pk: 20
+    fields: {ssn: '2804488509', name: "\xC1rs\xF3l Unnd\xEDs Dag\xFE\xF3rsd\xF3ttir",
+        position: '', user: 21}
+-   model: common.teacher
+    pk: 21
+    fields: {ssn: 0611648479, name: "Hrappur Arnd\xF3r Imman\xFAelsson", position: '',
+        user: 22}
+-   model: common.teacher
+    pk: 22
+    fields: {ssn: 0409836439, name: "\xDE\xF3rsteina Eyr\xFAn Halld\xF3rsd\xF3ttir",
+        position: '', user: 23}
+-   model: common.manager
+    pk: 1
+    fields: {ssn: '1606862279', name: "Eldgr\xEDmur Leifsson", email: '', phone: '',
+        position: '', user: 24}
+-   model: common.manager
+    pk: 2
+    fields: {ssn: '1510726239', name: "Seimur \xDE\xF3rormur Arnoddsson", email: '',
+        phone: '', position: '', user: 25}
