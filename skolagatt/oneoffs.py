@@ -426,7 +426,8 @@ def initialize_locations():
     else:
         print("school not found: Akurskóli")
 
-    school = School.objects.filter(school_nr='2250', ssn='5104070160', name__startswith='Alþjóðaskólinn á Íslandi').first()
+    school = School.objects.filter(school_nr='2250', ssn='5104070160',
+                                   name__startswith='Alþjóðaskólinn á Íslandi').first()
     if school:
         school.address = 'Löngulínu 8'
         school.post_code = '210'
@@ -436,7 +437,8 @@ def initialize_locations():
     else:
         print("school not found: Alþjóðaskólinn á Íslandi")
 
-    school = School.objects.filter(school_nr='4332', ssn='5106942019', name__startswith='Auðarskóli - grunnskóladeild Búðardal').first()
+    school = School.objects.filter(school_nr='4332', ssn='5106942019',
+                                   name__startswith='Auðarskóli - grunnskóladeild Búðardal').first()
     if school:
         school.address = 'Miðbraut 10'
         school.post_code = '370'
@@ -526,7 +528,8 @@ def initialize_locations():
     else:
         print("school not found: Áslandsskóli")
 
-    school = School.objects.filter(school_nr='9274', ssn='5607972229', name__startswith='Barnaskólinn á Eyrarbakka og Stokkseyri').first()
+    school = School.objects.filter(school_nr='9274', ssn='5607972229',
+                                   name__startswith='Barnaskólinn á Eyrarbakka og Stokkseyri').first()
     if school:
         school.address = 'Háeyrarvöllum 56'
         school.post_code = '820'
@@ -536,7 +539,8 @@ def initialize_locations():
     else:
         print("school not found: Barnaskólinn á Eyrarbakka og Stokkseyri")
 
-    school = School.objects.filter(school_nr='9387', ssn='5106024119', name__startswith='Bláskógaskóli - Laugarvatni').first()
+    school = School.objects.filter(school_nr='9387', ssn='5106024119',
+                                   name__startswith='Bláskógaskóli - Laugarvatni').first()
     if school:
         school.address = 'Laugarvatn'
         school.post_code = '840'
@@ -546,7 +550,8 @@ def initialize_locations():
     else:
         print("school not found: Bláskógaskóli - Laugarvatni")
 
-    school = School.objects.filter(school_nr='9363', ssn='5106024120', name__startswith='Bláskógaskóli - Reykholti').first()
+    school = School.objects.filter(school_nr='9363', ssn='5106024120',
+                                   name__startswith='Bláskógaskóli - Reykholti').first()
     if school:
         school.address = 'Reykholti'
         school.post_code = '801'
@@ -636,7 +641,8 @@ def initialize_locations():
     else:
         print("school not found: Brúarskóli")
 
-    school = School.objects.filter(school_nr='2235', ssn='5405992039', name__startswith='Barnaskóli Hjallastefnunnar, Hafnarfirði').first()
+    school = School.objects.filter(school_nr='2235', ssn='5405992039',
+                                   name__startswith='Barnaskóli Hjallastefnunnar, Hafnarfirði').first()
     if school:
         school.address = 'Hjallabraut 55'
         school.post_code = '220'
@@ -656,7 +662,8 @@ def initialize_locations():
     else:
         print("school not found: BSK Reykjavík")
 
-    school = School.objects.filter(school_nr='2247', ssn='5405992039', name__startswith='Barnaskóli Hjallastefnunnar í Garðabæ Vífilsstöðum').first()
+    school = School.objects.filter(school_nr='2247', ssn='5405992039',
+                                   name__startswith='Barnaskóli Hjallastefnunnar í Garðabæ Vífilsstöðum').first()
     if school:
         school.address = 'Vífilsstaðavegur 123'
         school.post_code = '210'
@@ -686,7 +693,8 @@ def initialize_locations():
     else:
         print("school not found: Egilsstaðaskóli")
 
-    school = School.objects.filter(school_nr='8161', ssn='6810885639', name__startswith='Fellaskóli - Fellahreppi').first()
+    school = School.objects.filter(school_nr='8161', ssn='6810885639',
+                                   name__startswith='Fellaskóli - Fellahreppi').first()
     if school:
         school.address = 'Einhleypingi'
         school.post_code = '701'
@@ -696,7 +704,8 @@ def initialize_locations():
     else:
         print("school not found: Fellaskóli - Fellahreppi")
 
-    school = School.objects.filter(school_nr='1426', ssn='5901821179', name__startswith='Fellaskóli - Reykjavík').first()
+    school = School.objects.filter(school_nr='1426', ssn='5901821179',
+                                   name__startswith='Fellaskóli - Reykjavík').first()
     if school:
         school.address = 'Norðurfelli 17-19'
         school.post_code = '111'
@@ -846,7 +855,8 @@ def initialize_locations():
     else:
         print("school not found: Grundaskóli")
 
-    school = School.objects.filter(school_nr='5276', ssn='6710886629', name__startswith='Grunnskóli Bolungarvíkur').first()
+    school = School.objects.filter(school_nr='5276', ssn='6710886629',
+                                   name__startswith='Grunnskóli Bolungarvíkur').first()
     if school:
         school.address = 'Höfðastíg 3-5'
         school.post_code = '415'
@@ -856,7 +866,8 @@ def initialize_locations():
     else:
         print("school not found: Grunnskóli Bolungarvíkur")
 
-    school = School.objects.filter(school_nr='4188', ssn='5106942289', name__startswith='Grunnskóli Borgarfjarðar').first()
+    school = School.objects.filter(school_nr='4188', ssn='5106942289',
+                                   name__startswith='Grunnskóli Borgarfjarðar').first()
     if school:
         school.address = 'Hvanneyri'
         school.post_code = '311'
@@ -866,7 +877,8 @@ def initialize_locations():
     else:
         print("school not found: Grunnskóli Borgarfjarðar")
 
-    school = School.objects.filter(school_nr='4188', ssn='5106942289', name__startswith='Grunnskóli Borgarfjarðar').first()
+    school = School.objects.filter(school_nr='4188', ssn='5106942289',
+                                   name__startswith='Grunnskóli Borgarfjarðar').first()
     if school:
         school.address = 'Kleppjárnsreykjum'
         school.post_code = '320'
@@ -876,7 +888,8 @@ def initialize_locations():
     else:
         print("school not found: Grunnskóli Borgarfjarðar")
 
-    school = School.objects.filter(school_nr='4188', ssn='5106942289', name__startswith='Grunnskóli Borgarfjarðar').first()
+    school = School.objects.filter(school_nr='4188', ssn='5106942289',
+                                   name__startswith='Grunnskóli Borgarfjarðar').first()
     if school:
         school.address = 'Varmalandi'
         school.post_code = '311'
@@ -886,7 +899,8 @@ def initialize_locations():
     else:
         print("school not found: Grunnskóli Borgarfjarðar")
 
-    school = School.objects.filter(school_nr='8242', ssn='6810885719', name__startswith='Grunnskóli Borgarfjarðar eystra').first()
+    school = School.objects.filter(school_nr='8242', ssn='6810885719',
+                                   name__startswith='Grunnskóli Borgarfjarðar eystra').first()
     if school:
         school.address = 'Hólalandsvegi'
         school.post_code = '720'
@@ -916,7 +930,8 @@ def initialize_locations():
     else:
         print("school not found: Grunnskóli Djúpavogs")
 
-    school = School.objects.filter(school_nr='8357', ssn='6810886369', name__startswith='Grunnskóli Fáskrúðsfjarðar').first()
+    school = School.objects.filter(school_nr='8357', ssn='6810886369',
+                                   name__startswith='Grunnskóli Fáskrúðsfjarðar').first()
     if school:
         school.address = 'Hlíðargötu 56'
         school.post_code = '750'
@@ -926,7 +941,8 @@ def initialize_locations():
     else:
         print("school not found: Grunnskóli Fáskrúðsfjarðar")
 
-    school = School.objects.filter(school_nr='6412', ssn='6704100640', name__startswith='Grunnskóli Fjallabyggðar').first()
+    school = School.objects.filter(school_nr='6412', ssn='6704100640',
+                                   name__startswith='Grunnskóli Fjallabyggðar').first()
     if school:
         school.address = 'Tjarnarstíg'
         school.post_code = '625'
@@ -936,7 +952,8 @@ def initialize_locations():
     else:
         print("school not found: Grunnskóli Fjallabyggðar")
 
-    school = School.objects.filter(school_nr='6412', ssn='6704100640', name__startswith='Grunnskóli Fjallabyggðar').first()
+    school = School.objects.filter(school_nr='6412', ssn='6704100640',
+                                   name__startswith='Grunnskóli Fjallabyggðar').first()
     if school:
         school.address = 'Norðurgata'
         school.post_code = '580'
@@ -946,7 +963,8 @@ def initialize_locations():
     else:
         print("school not found: Grunnskóli Fjallabyggðar")
 
-    school = School.objects.filter(school_nr='6412', ssn='6704100640', name__startswith='Grunnskóli Fjallabyggðar').first()
+    school = School.objects.filter(school_nr='6412', ssn='6704100640',
+                                   name__startswith='Grunnskóli Fjallabyggðar').first()
     if school:
         school.address = 'Hlíðarvegur'
         school.post_code = '580'
@@ -956,7 +974,8 @@ def initialize_locations():
     else:
         print("school not found: Grunnskóli Fjallabyggðar")
 
-    school = School.objects.filter(school_nr='3114', ssn='6710884419', name__startswith='Grunnskóli Grindavíkur').first()
+    school = School.objects.filter(school_nr='3114', ssn='6710884419',
+                                   name__startswith='Grunnskóli Grindavíkur').first()
     if school:
         school.address = 'Skólabraut 1'
         school.post_code = '240'
@@ -966,7 +985,8 @@ def initialize_locations():
     else:
         print("school not found: Grunnskóli Grindavíkur")
 
-    school = School.objects.filter(school_nr='4289', ssn='4401692529', name__startswith='Grunnskóli Grundarfjarðar').first()
+    school = School.objects.filter(school_nr='4289', ssn='4401692529',
+                                   name__startswith='Grunnskóli Grundarfjarðar').first()
     if school:
         school.address = 'Borgarbraut 19'
         school.post_code = '350'
@@ -976,7 +996,8 @@ def initialize_locations():
     else:
         print("school not found: Grunnskóli Grundarfjarðar")
 
-    school = School.objects.filter(school_nr='8429', ssn='4902830219', name__startswith='Grunnskóli Hornafjarðar').first()
+    school = School.objects.filter(school_nr='8429', ssn='4902830219',
+                                   name__startswith='Grunnskóli Hornafjarðar').first()
     if school:
         school.address = 'Svalbarði 6 og Víkurbraut 9'
         school.post_code = '780'
@@ -986,7 +1007,8 @@ def initialize_locations():
     else:
         print("school not found: Grunnskóli Hornafjarðar")
 
-    school = School.objects.filter(school_nr='6176', ssn='4908992359', name__startswith='Grunnskóli Húnaþings vestra').first()
+    school = School.objects.filter(school_nr='6176', ssn='4908992359',
+                                   name__startswith='Grunnskóli Húnaþings vestra').first()
     if school:
         school.address = 'Borðeyri'
         school.post_code = '500'
@@ -996,7 +1018,8 @@ def initialize_locations():
     else:
         print("school not found: Grunnskóli Húnaþings vestra")
 
-    school = School.objects.filter(school_nr='6176', ssn='4908992359', name__startswith='Grunnskóli Húnaþings vestra').first()
+    school = School.objects.filter(school_nr='6176', ssn='4908992359',
+                                   name__startswith='Grunnskóli Húnaþings vestra').first()
     if school:
         school.address = 'Skólavegi 2'
         school.post_code = '530'
@@ -1006,7 +1029,8 @@ def initialize_locations():
     else:
         print("school not found: Grunnskóli Húnaþings vestra")
 
-    school = School.objects.filter(school_nr='7456', ssn='6401695599', name__startswith='Grunnskóli Raufarhafnar').first()
+    school = School.objects.filter(school_nr='7456', ssn='6401695599',
+                                   name__startswith='Grunnskóli Raufarhafnar').first()
     if school:
         school.address = 'Skólabraut '
         school.post_code = '675'
@@ -1016,7 +1040,8 @@ def initialize_locations():
     else:
         print("school not found: Grunnskóli Raufarhafnar")
 
-    school = School.objects.filter(school_nr='8334', ssn='6811886289', name__startswith='Grunnskóli Reyðarfjarðar').first()
+    school = School.objects.filter(school_nr='8334', ssn='6811886289',
+                                   name__startswith='Grunnskóli Reyðarfjarðar').first()
     if school:
         school.address = 'Heiðarvegur 14a'
         school.post_code = '730'
@@ -1026,7 +1051,8 @@ def initialize_locations():
     else:
         print("school not found: Grunnskóli Reyðarfjarðar")
 
-    school = School.objects.filter(school_nr='2424', ssn='5208043230', name__startswith='Grunnskóli Seltjarnarness').first()
+    school = School.objects.filter(school_nr='2424', ssn='5208043230',
+                                   name__startswith='Grunnskóli Seltjarnarness').first()
     if school:
         school.address = 'Nesvegur'
         school.post_code = '170'
@@ -1036,7 +1062,8 @@ def initialize_locations():
     else:
         print("school not found: Grunnskóli Seltjarnarness")
 
-    school = School.objects.filter(school_nr='2424', ssn='5208043230', name__startswith='Grunnskóli Seltjarnarness').first()
+    school = School.objects.filter(school_nr='2424', ssn='5208043230',
+                                   name__startswith='Grunnskóli Seltjarnarness').first()
     if school:
         school.address = 'Skólabraut '
         school.post_code = '170'
@@ -1046,7 +1073,8 @@ def initialize_locations():
     else:
         print("school not found: Grunnskóli Seltjarnarness")
 
-    school = School.objects.filter(school_nr='4278', ssn='6710886389', name__startswith='Grunnskóli Snæfellsbæjar - Hellissandi').first()
+    school = School.objects.filter(school_nr='4278', ssn='6710886389',
+                                   name__startswith='Grunnskóli Snæfellsbæjar - Hellissandi').first()
     if school:
         school.address = 'Keflavíkurgötu 2'
         school.post_code = '360'
@@ -1056,7 +1084,8 @@ def initialize_locations():
     else:
         print("school not found: Grunnskóli Snæfellsbæjar - Hellissandi")
 
-    school = School.objects.filter(school_nr='4278', ssn='6710885739', name__startswith='Grunnskóli Snæfellsbæjar - Lýsuhóli').first()
+    school = School.objects.filter(school_nr='4278', ssn='6710885739',
+                                   name__startswith='Grunnskóli Snæfellsbæjar - Lýsuhóli').first()
     if school:
         school.address = 'Lýsuhóli, Staðarsveit'
         school.post_code = '355'
@@ -1066,7 +1095,8 @@ def initialize_locations():
     else:
         print("school not found: Grunnskóli Snæfellsbæjar - Lýsuhóli")
 
-    school = School.objects.filter(school_nr='4278', ssn='6710885739', name__startswith='Grunnskóli Snæfellsbæjar - Ólafsvík').first()
+    school = School.objects.filter(school_nr='4278', ssn='6710885739',
+                                   name__startswith='Grunnskóli Snæfellsbæjar - Ólafsvík').first()
     if school:
         school.address = 'Ennisbraut 11'
         school.post_code = '355'
@@ -1076,7 +1106,8 @@ def initialize_locations():
     else:
         print("school not found: Grunnskóli Snæfellsbæjar - Ólafsvík")
 
-    school = School.objects.filter(school_nr='9471', ssn='6810887339', name__startswith='Grunnskóli Vestmannaeyja').first()
+    school = School.objects.filter(school_nr='9471', ssn='6810887339',
+                                   name__startswith='Grunnskóli Vestmannaeyja').first()
     if school:
         school.address = 'Barnaskólinn/Skólavegi'
         school.post_code = '900'
@@ -1086,7 +1117,8 @@ def initialize_locations():
     else:
         print("school not found: Grunnskóli Vestmannaeyja")
 
-    school = School.objects.filter(school_nr='5152', ssn='4810992859', name__startswith='Grunnskóli Vesturbyggðar').first()
+    school = School.objects.filter(school_nr='5152', ssn='4810992859',
+                                   name__startswith='Grunnskóli Vesturbyggðar').first()
     if school:
         school.address = 'Barðaströnd'
         school.post_code = '451'
@@ -1106,7 +1138,8 @@ def initialize_locations():
     else:
         print("school not found: Bíldudalsskóli")
 
-    school = School.objects.filter(school_nr='5152', ssn='4810992859', name__startswith='Grunnskóli Vesturbyggðar - Patreksskóli').first()
+    school = School.objects.filter(school_nr='5152', ssn='4810992859',
+                                   name__startswith='Grunnskóli Vesturbyggðar - Patreksskóli').first()
     if school:
         school.address = 'Aðalstræti 53'
         school.post_code = '450'
@@ -1116,7 +1149,8 @@ def initialize_locations():
     else:
         print("school not found: Grunnskóli Vesturbyggðar - Patreksskóli")
 
-    school = School.objects.filter(school_nr='5253', ssn='6710887439', name__startswith='Grunnskóli Önundarfjarðar').first()
+    school = School.objects.filter(school_nr='5253', ssn='6710887439',
+                                   name__startswith='Grunnskóli Önundarfjarðar').first()
     if school:
         school.address = 'Tjarnargötu'
         school.post_code = '425'
@@ -1126,7 +1160,8 @@ def initialize_locations():
     else:
         print("school not found: Grunnskóli Önundarfjarðar")
 
-    school = School.objects.filter(school_nr='7451', ssn='6401695599', name__startswith='Öxarfjarðarskóli, Norðurþingi').first()
+    school = School.objects.filter(school_nr='7451', ssn='6401695599',
+                                   name__startswith='Öxarfjarðarskóli, Norðurþingi').first()
     if school:
         school.address = 'Lundi'
         school.post_code = '671'
@@ -1136,7 +1171,8 @@ def initialize_locations():
     else:
         print("school not found: Öxarfjarðarskóli, Norðurþingi")
 
-    school = School.objects.filter(school_nr='6378', ssn='5506982349', name__startswith='Grunnskólinn austan Vatna').first()
+    school = School.objects.filter(school_nr='6378', ssn='5506982349',
+                                   name__startswith='Grunnskólinn austan Vatna').first()
     if school:
         school.address = 'Skólagötu'
         school.post_code = '565'
@@ -1146,7 +1182,8 @@ def initialize_locations():
     else:
         print("school not found: Grunnskólinn austan Vatna")
 
-    school = School.objects.filter(school_nr='6378', ssn='5506982349', name__startswith='Grunnskólinn austan Vatna').first()
+    school = School.objects.filter(school_nr='6378', ssn='5506982349',
+                                   name__startswith='Grunnskólinn austan Vatna').first()
     if school:
         school.address = 'Hólum'
         school.post_code = '551'
@@ -1156,7 +1193,8 @@ def initialize_locations():
     else:
         print("school not found: Grunnskólinn austan Vatna")
 
-    school = School.objects.filter(school_nr='6378', ssn='5506982349', name__startswith='Grunnskólinn austan Vatna').first()
+    school = School.objects.filter(school_nr='6378', ssn='5506982349',
+                                   name__startswith='Grunnskólinn austan Vatna').first()
     if school:
         school.address = 'Sólgörðum'
         school.post_code = '570'
@@ -1166,7 +1204,8 @@ def initialize_locations():
     else:
         print("school not found: Grunnskólinn austan Vatna")
 
-    school = School.objects.filter(school_nr='8116', ssn='6810885399', name__startswith='Grunnskólinn á Bakkafirði').first()
+    school = School.objects.filter(school_nr='8116', ssn='6810885399',
+                                   name__startswith='Grunnskólinn á Bakkafirði').first()
     if school:
         school.address = 'Skólagötu 5'
         school.post_code = '685'
@@ -1176,7 +1215,8 @@ def initialize_locations():
     else:
         print("school not found: Grunnskólinn á Bakkafirði")
 
-    school = School.objects.filter(school_nr='5377', ssn='6710887519', name__startswith='Grunnskólinn á Drangsnesi').first()
+    school = School.objects.filter(school_nr='5377', ssn='6710887519',
+                                   name__startswith='Grunnskólinn á Drangsnesi').first()
     if school:
         school.address = 'Aðalbraut 10'
         school.post_code = '520'
@@ -1186,7 +1226,8 @@ def initialize_locations():
     else:
         print("school not found: Grunnskólinn á Drangsnesi")
 
-    school = School.objects.filter(school_nr='8328', ssn='6810885129', name__startswith='Grunnskólinn á Eskifirði').first()
+    school = School.objects.filter(school_nr='8328', ssn='6810885129',
+                                   name__startswith='Grunnskólinn á Eskifirði').first()
     if school:
         school.address = 'Lambeyrarbraut 16'
         school.post_code = '735'
@@ -1196,7 +1237,8 @@ def initialize_locations():
     else:
         print("school not found: Grunnskólinn á Eskifirði")
 
-    school = School.objects.filter(school_nr='5388', ssn='6710887789', name__startswith='Grunnskólinn á Hólmavík').first()
+    school = School.objects.filter(school_nr='5388', ssn='6710887789',
+                                   name__startswith='Grunnskólinn á Hólmavík').first()
     if school:
         school.address = 'Skólabraut 20'
         school.post_code = '510'
@@ -1206,7 +1248,8 @@ def initialize_locations():
     else:
         print("school not found: Grunnskólinn á Hólmavík")
 
-    school = School.objects.filter(school_nr='5287', ssn='6710886549', name__startswith='Grunnskólinn á Ísafirði').first()
+    school = School.objects.filter(school_nr='5287', ssn='6710886549',
+                                   name__startswith='Grunnskólinn á Ísafirði').first()
     if school:
         school.address = 'Austurvegi 6'
         school.post_code = '400'
@@ -1216,7 +1259,8 @@ def initialize_locations():
     else:
         print("school not found: Grunnskólinn á Ísafirði")
 
-    school = School.objects.filter(school_nr='5264', ssn='5606861459', name__startswith='Grunnskólinn á Suðureyri').first()
+    school = School.objects.filter(school_nr='5264', ssn='5606861459',
+                                   name__startswith='Grunnskólinn á Suðureyri').first()
     if school:
         school.address = 'Túngötu 8'
         school.post_code = '430'
@@ -1226,7 +1270,8 @@ def initialize_locations():
     else:
         print("school not found: Grunnskólinn á Suðureyri")
 
-    school = School.objects.filter(school_nr='5163', ssn='5405992039', name__startswith='Grunnskólinn á Tálknafirði').first()
+    school = School.objects.filter(school_nr='5163', ssn='5405992039',
+                                   name__startswith='Grunnskólinn á Tálknafirði').first()
     if school:
         school.address = 'Sveinseyri'
         school.post_code = '460'
@@ -1236,7 +1281,8 @@ def initialize_locations():
     else:
         print("school not found: Grunnskólinn á Tálknafirði")
 
-    school = School.objects.filter(school_nr='5197', ssn='5606861299', name__startswith='Grunnskólinn á Þingeyri').first()
+    school = School.objects.filter(school_nr='5197', ssn='5606861299',
+                                   name__startswith='Grunnskólinn á Þingeyri').first()
     if school:
         school.address = 'Fjarðargötu 24'
         school.post_code = '470'
@@ -1246,7 +1292,8 @@ def initialize_locations():
     else:
         print("school not found: Grunnskólinn á Þingeyri")
 
-    school = School.objects.filter(school_nr='7478', ssn='4203691749', name__startswith='Grunnskólinn á Þórshöfn').first()
+    school = School.objects.filter(school_nr='7478', ssn='4203691749',
+                                   name__startswith='Grunnskólinn á Þórshöfn').first()
     if school:
         school.address = 'Langanesvegi 20'
         school.post_code = '680'
@@ -1266,7 +1313,8 @@ def initialize_locations():
     else:
         print("school not found: Grunnskólinn Hellu")
 
-    school = School.objects.filter(school_nr='4217', ssn='6710885819', name__startswith='Grunnskólinn í Borgarnesi').first()
+    school = School.objects.filter(school_nr='4217', ssn='6710885819',
+                                   name__startswith='Grunnskólinn í Borgarnesi').first()
     if school:
         school.address = 'Gunnlaugsgötu 13'
         school.post_code = '310'
@@ -1276,7 +1324,8 @@ def initialize_locations():
     else:
         print("school not found: Grunnskólinn í Borgarnesi")
 
-    school = School.objects.filter(school_nr='8374', ssn='6810886529', name__startswith='Grunnskólinn í Breiðdalshreppi').first()
+    school = School.objects.filter(school_nr='8374', ssn='6810886529',
+                                   name__startswith='Grunnskólinn í Breiðdalshreppi').first()
     if school:
         school.address = 'Selnesi 25'
         school.post_code = '760'
@@ -1286,7 +1335,8 @@ def initialize_locations():
     else:
         print("school not found: Grunnskólinn í Breiðdalshreppi")
 
-    school = School.objects.filter(school_nr='8471', ssn='6810887259', name__startswith='Grunnskólinn í Hofgarði').first()
+    school = School.objects.filter(school_nr='8471', ssn='6810887259',
+                                   name__startswith='Grunnskólinn í Hofgarði').first()
     if school:
         school.address = 'Öræfum'
         school.post_code = '785'
@@ -1306,7 +1356,8 @@ def initialize_locations():
     else:
         print("school not found: Hríseyjarskóli")
 
-    school = School.objects.filter(school_nr='9431', ssn='4710882509', name__startswith='Grunnskólinn í Hveragerði').first()
+    school = School.objects.filter(school_nr='9431', ssn='4710882509',
+                                   name__startswith='Grunnskólinn í Hveragerði').first()
     if school:
         school.address = 'Skólamörk 6'
         school.post_code = '810'
@@ -1316,7 +1367,8 @@ def initialize_locations():
     else:
         print("school not found: Grunnskólinn í Hveragerði")
 
-    school = School.objects.filter(school_nr='3126', ssn='6710885229', name__startswith='Grunnskólinn í Sandgerði').first()
+    school = School.objects.filter(school_nr='3126', ssn='6710885229',
+                                   name__startswith='Grunnskólinn í Sandgerði').first()
     if school:
         school.address = 'Skólastræti'
         school.post_code = '245'
@@ -1326,7 +1378,8 @@ def initialize_locations():
     else:
         print("school not found: Grunnskólinn í Sandgerði")
 
-    school = School.objects.filter(school_nr='4311', ssn='6710886039', name__startswith='Grunnskólinn í Stykkishólmi').first()
+    school = School.objects.filter(school_nr='4311', ssn='6710886039',
+                                   name__startswith='Grunnskólinn í Stykkishólmi').first()
     if school:
         school.address = 'v/Borgarbraut'
         school.post_code = '340'
@@ -1336,7 +1389,8 @@ def initialize_locations():
     else:
         print("school not found: Grunnskólinn í Stykkishólmi")
 
-    school = School.objects.filter(school_nr='9453', ssn='4203697009', name__startswith='Grunnskólinn í Þorlákshöfn').first()
+    school = School.objects.filter(school_nr='9453', ssn='4203697009',
+                                   name__startswith='Grunnskólinn í Þorlákshöfn').first()
     if school:
         school.address = 'Egilsbraut 35'
         school.post_code = '815'
@@ -1366,7 +1420,8 @@ def initialize_locations():
     else:
         print("school not found: Hamraskóli")
 
-    school = School.objects.filter(school_nr='3171', ssn='4803160290', name__startswith='Háaleitisskóli Reykjanesbæ').first()
+    school = School.objects.filter(school_nr='3171', ssn='4803160290',
+                                   name__startswith='Háaleitisskóli Reykjanesbæ').first()
     if school:
         school.address = 'Lindarbraut 624 - Vallarheiði'
         school.post_code = '260'
@@ -1376,7 +1431,8 @@ def initialize_locations():
     else:
         print("school not found: Háaleitisskóli Reykjanesbæ")
 
-    school = School.objects.filter(school_nr='1340', ssn='5704800149', name__startswith='Háaleitisskóli Reykjavík').first()
+    school = School.objects.filter(school_nr='1340', ssn='5704800149',
+                                   name__startswith='Háaleitisskóli Reykjavík').first()
     if school:
         school.address = 'Álftamýri 79'
         school.post_code = '108'
@@ -1396,7 +1452,8 @@ def initialize_locations():
     else:
         print("school not found: Háteigsskóli")
 
-    school = School.objects.filter(school_nr='4121', ssn='6306061950', name__startswith='Heiðarskóli - Hvalfjarðarsveit').first()
+    school = School.objects.filter(school_nr='4121', ssn='6306061950',
+                                   name__startswith='Heiðarskóli - Hvalfjarðarsveit').first()
     if school:
         school.address = 'Leirársveit'
         school.post_code = '301'
@@ -1406,7 +1463,8 @@ def initialize_locations():
     else:
         print("school not found: Heiðarskóli - Hvalfjarðarsveit")
 
-    school = School.objects.filter(school_nr='3160', ssn='4909992809', name__startswith='Heiðarskóli - Reykjanesbæ').first()
+    school = School.objects.filter(school_nr='3160', ssn='4909992809',
+                                   name__startswith='Heiðarskóli - Reykjanesbæ').first()
     if school:
         school.address = 'Heiðarhvammi'
         school.post_code = '230'
@@ -1656,7 +1714,8 @@ def initialize_locations():
     else:
         print("school not found: Langholtsskóli")
 
-    school = School.objects.filter(school_nr='9227', ssn='5201750169', name__startswith='Laugalandsskóli í Holtum').first()
+    school = School.objects.filter(school_nr='9227', ssn='5201750169',
+                                   name__startswith='Laugalandsskóli í Holtum').first()
     if school:
         school.address = 'Holtum'
         school.post_code = '851'
@@ -1826,7 +1885,8 @@ def initialize_locations():
     else:
         print("school not found: Reykjahlíðarskóli")
 
-    school = School.objects.filter(school_nr='1458', ssn='6103140900', name__startswith='Reykjavík International School').first()
+    school = School.objects.filter(school_nr='1458', ssn='6103140900',
+                                   name__startswith='Reykjavík International School').first()
     if school:
         school.address = 'Dyrhömrum 9'
         school.post_code = '112'
@@ -2156,7 +2216,8 @@ def initialize_locations():
     else:
         print("school not found: Vættaskóli")
 
-    school = School.objects.filter(school_nr='2396', ssn='6107972029', name__startswith='Waldorfskólinn í Lækjarbotnum').first()
+    school = School.objects.filter(school_nr='2396', ssn='6107972029',
+                                   name__startswith='Waldorfskólinn í Lækjarbotnum').first()
     if school:
         school.address = 'Lækjarbotnaland 53'
         school.post_code = '203'
@@ -2166,7 +2227,8 @@ def initialize_locations():
     else:
         print("school not found: Waldorfskólinn í Lækjarbotnum")
 
-    school = School.objects.filter(school_nr='1425', ssn='4306942199', name__startswith='Waldorfskólinn Sólstafir').first()
+    school = School.objects.filter(school_nr='1425', ssn='4306942199',
+                                   name__startswith='Waldorfskólinn Sólstafir').first()
     if school:
         school.address = 'Sóltúni 6'
         school.post_code = '111'
@@ -2225,4 +2287,3 @@ def initialize_locations():
         school.save()
     else:
         print("school not found: Öldutúnsskóli")
-

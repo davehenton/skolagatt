@@ -54,7 +54,6 @@ class TaskMonitor(APIView):
         return Response('')
 
 
-
 class StudentSearch(APIView):
     renderer_classes = (JSONRenderer, )
 

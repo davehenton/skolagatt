@@ -2,12 +2,12 @@ define PRODUCTION_SETTINGS
 ALLOWED_HOSTS = ['localhost']
 DATABASES = {
     'default': {
-        'ENGINE'   : 'django.db.backends.postgresql_psycopg2',
-        'NAME'     : 'skolagatt',
-        'USER'     : 'user',  # Postgres user that has all privileges for the skolagatt DB
-        'PASSWORD' : 'password',  # Password for Postgres user
-        'HOST'     : 'localhost',  # Address of postgres server, defaults to localhost (for dev)
-        'PORT'     : '5432',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'skolagatt',
+        'USER': 'postgres',  # Postgres user that has all privileges for the skolagatt DB
+        'PASSWORD': '',  # Password for Postgres user
+        'HOST': 'localhost',  # Address of postgres server, defaults to localhost (for dev)
+        'PORT': '5432',
     }
 }
 
@@ -23,7 +23,10 @@ skolagatt/production_settings.py:
 	@echo "$$PRODUCTION_SETTINGS" > skolagatt/production_settings.py
 
 check:
-	pep8
+	( \
+		source venv/bin/activate; \
+		pep8 -v; \
+	)
 
 venv: venv/bin/activate
 
