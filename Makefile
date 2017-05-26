@@ -32,7 +32,7 @@ venv/bin/activate: requirements.txt
 	venv/bin/pip install -Ur requirements.txt
 	touch venv/bin/activate
 
-test: clearmigrations venv skolagatt/production_settings.py
+test: venv skolagatt/production_settings.py clearmigrations
 	./manage.py test common
 
 genfixtures: venv skolagatt/production_settings.py
