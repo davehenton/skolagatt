@@ -9,12 +9,11 @@ from survey.models import (
 
 
 class SurveyResultLesfimiCalculatedResultsTests(TestCase):
-    fixtures = ['common']
+    fixtures = ['auth', 'contenttypes', 'common']
 
     def setUp(self):
         self.groupsurveys = []
         self.surveyresults = []
-        self.user = User.objects.filter(is_superuser=True).first()
         self.school = School.objects.first()
         self.studentgroup1 = self.school.studentgroup_set.all()[0]
         self.student1 = self.studentgroup1.students.all()[0]
@@ -29,7 +28,7 @@ class SurveyResultLesfimiCalculatedResultsTests(TestCase):
             identifier='test_test_1',
             survey_type=self.survey_type,
             student_year=self.studentgroup1.student_year,
-            created_by=self.user,
+            created_by_id=1,
         )
 
         self.groupsurveys.append(GroupSurvey.objects.create(
