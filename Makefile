@@ -32,7 +32,7 @@ venv/bin/activate: requirements.txt
 	venv/bin/pip install -Ur requirements.txt
 	touch venv/bin/activate
 
-test: venv skolagatt/production_settings.py
+test: clearmigrations venv skolagatt/production_settings.py
 	./manage.py test common
 
 genfixtures: venv skolagatt/production_settings.py
@@ -41,4 +41,6 @@ genfixtures: venv skolagatt/production_settings.py
 
 clean:
 	find . -name "*.pyc" | xargs rm -f
+
+clearmigrations:
 	find . -name "migrations" -type d| grep -v "site-packages\/django\/db\/migrations"
