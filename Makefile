@@ -41,3 +41,4 @@ genfixtures: venv skolagatt/production_settings.py
 
 clean:
 	find . -name "*.pyc" | xargs rm -f
+	find . -name "migrations" -type d| grep -v "site-packages\/django\/db\/migrations"
