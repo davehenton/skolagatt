@@ -41,8 +41,9 @@ test: venv skolagatt/production_settings.py clearmigrations
 		./manage.py test -v 2; \
 	)
 
-travis-test: skolagatt/production_settings.py
-	find ~/virtualenv/ -name "migrations -type d | grep -v "site-packages\/django\/db\/migrations" | xargs rm -rf
+travis-test: skolagatt/production_settings.py 
+	find ~/virtualenv/ -name "migrations" -type d | grep -v "site-packages\/django\/db\/migrations" | xargs rm -rf
+	pep8 -v
 	./manage.py test -v 2
 
 genfixtures: venv skolagatt/production_settings.py
