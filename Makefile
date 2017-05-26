@@ -14,7 +14,7 @@ DATABASES = {
 SECRET_KEY = 'k+&1)2^g5^a*4nl+vlz)_ezv8!bup(ttn0(byvm)(gx%&c)w-5'
 
 DEBUG = True
-CELERY_RESULT_BACKEND="db+postgresql+psycopg2://user:password@localhost:5432/skolagatt"
+CELERY_RESULT_BACKEND = "db+postgresql+psycopg2://user:password@localhost:5432/skolagatt"
 endef
 
 export PRODUCTION_SETTINGS
