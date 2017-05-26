@@ -108,7 +108,7 @@ class SurveyResultLesfimiCalculatedResultsTests(TestCase):
                     ],
                 }))
 
-    def test_lesfimi_calculated_results_low_oam_few_errors_no_transformation(self):
+    def test_lesfimi_calculated_results_2_errors_21_words_no_transformation(self):
         calculated_results = self.surveyresults1[0].calculated_results()
         self.assertEqual(len(calculated_results), 1)
         self.assertEqual(int(calculated_results[0]), 10)
