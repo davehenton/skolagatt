@@ -35,7 +35,7 @@ venv/bin/activate: requirements.txt
 test: venv skolagatt/production_settings.py clearmigrations
 	( \
 		source venv/bin/activate; \
-		./manage.py test -v 2 common; \
+		./manage.py test -v 2; \
 	)
 
 genfixtures: venv skolagatt/production_settings.py
