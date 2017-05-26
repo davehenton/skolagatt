@@ -108,17 +108,17 @@ class SurveyResultLesfimiCalculatedResultsTests(TestCase):
                     ],
                 }))
 
-    def test_lesfimi_calculated_results_2_errors_21_words_no_transformation(self):
+    def test_lesfimi_calculated_results_2_errors_21_words_no_transformation_eq_10(self):
         calculated_results = self.surveyresults1[0].calculated_results()
         self.assertEqual(len(calculated_results), 1)
         self.assertEqual(int(calculated_results[0]), 10)
 
-    def test_lesfimi_calculated_results_20_errors_100_words_no_transformation(self):
+    def test_lesfimi_calculated_results_20_errors_100_words_no_transformation_eq_36(self):
         calculated_results = self.surveyresults1[1].calculated_results()
         self.assertEqual(len(calculated_results), 1)
         self.assertEqual(int(calculated_results[0]), 36)
 
-    def test_lesfimi_calculated_results_9_errors_99_words_no_transformation(self):
+    def test_lesfimi_calculated_results_9_errors_99_words_no_transformation_eq_46(self):
         calculated_results = self.surveyresults1[2].calculated_results()
         self.assertEqual(len(calculated_results), 1)
         self.assertEqual(int(calculated_results[0]), 46)
