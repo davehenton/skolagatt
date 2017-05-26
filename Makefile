@@ -34,3 +34,7 @@ venv/bin/activate: requirements.txt
 
 test: venv skolagatt/production_settings.py
 	./manage.py test common
+
+genfixtures: venv skolagatt/production_settings.py
+	./manage.py dumpdata auth.user --format=json --indent=4 --natural-foreign > common/fixtures/auth.json
+	./manage.py dumpdata common --format=json --indent=4 --natural-foreign > common/fixtures/common.json

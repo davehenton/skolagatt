@@ -1,3 +1,4 @@
+from django.utils import timezone
 from lxml import html
 import requests
 import random
@@ -117,7 +118,7 @@ def generate_teachers():
             year = random.randint(1947, 1997)
             kennitala = kennitala_get(year)
             name = get_name()
-            user = User.objects.create(username=kennitala)
+            user = User.objects.create(username=kennitala, date_joined=timezone.now(), last_login=timezone.now())
             teacher = Teacher.objects.create(ssn=kennitala, name=name, user=user)
             school.teachers.add(teacher)
             studentgroup.group_managers.add(teacher)
@@ -131,6 +132,6 @@ def generate_managers():
         year = random.randint(1957, 1987)
         kennitala = kennitala_get(year)
         name = get_name()
-        user = User.objects.create(username=kennitala)
+        user = User.objects.create(username=kennitala, date_joined=timezone.now(), last_login=timezone.now())
         manager = Manager.objects.create(ssn=kennitala, name=name, user=user)
         school.managers.add(manager)

@@ -9,7 +9,7 @@ from survey.models import (
 
 
 class SurveyResultLesfimiCalculatedResultsTests(TestCase):
-    fixtures = ['auth', 'contenttypes', 'common']
+    fixtures = ['auth', 'common']
 
     def setUp(self):
         self.groupsurveys = []
@@ -54,4 +54,4 @@ class SurveyResultLesfimiCalculatedResultsTests(TestCase):
     def test_lesfimi_calculated_results(self):
         calculated_results = self.surveyresults[0].calculated_results()
         self.assertEqual(len(calculated_results), 1)
-        self.assertEqual(int(calculated_results[0]), 34)
+        self.assertEqual(int(calculated_results[0]), 10)
