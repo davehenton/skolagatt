@@ -8,4 +8,4 @@ install:
 services:
   - postgresql
 # command to run tests
-script: python manage.py test -v 2
+script: make travis-test
