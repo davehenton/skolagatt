@@ -38,3 +38,6 @@ test: venv skolagatt/production_settings.py
 genfixtures: venv skolagatt/production_settings.py
 	./manage.py dumpdata auth.user --format=json --indent=4 --natural-foreign > common/fixtures/auth.json
 	./manage.py dumpdata common --format=json --indent=4 --natural-foreign > common/fixtures/common.json
+
+clean:
+	find . -name "*.pyc" | xargs rm -f
