@@ -1,0 +1,4610 @@
+[
+{
+    "model": "common.manager",
+    "pk": 5,
+    "fields": {
+        "ssn": "3009842589",
+        "name": "Svala Hr\u00f6nn Sigurl\u00e1ssd\u00f3ttir",
+        "email": "",
+        "phone": "",
+        "position": "",
+        "user": [
+            "3009842589"
+        ]
+    }
+},
+{
+    "model": "common.manager",
+    "pk": 6,
+    "fields": {
+        "ssn": "1909668019",
+        "name": "Gunnleif Flosad\u00f3ttir",
+        "email": "",
+        "phone": "",
+        "position": "",
+        "user": [
+            "1909668019"
+        ]
+    }
+},
+{
+    "model": "common.teacher",
+    "pk": 43,
+    "fields": {
+        "ssn": "1905866429",
+        "name": "Rafael Hildigeir Anthonysson",
+        "position": "",
+        "user": [
+            "1905866429"
+        ]
+    }
+},
+{
+    "model": "common.teacher",
+    "pk": 44,
+    "fields": {
+        "ssn": "1001696499",
+        "name": "Ing\u00fe\u00f3r Johansson",
+        "position": "",
+        "user": [
+            "1001696499"
+        ]
+    }
+},
+{
+    "model": "common.teacher",
+    "pk": 45,
+    "fields": {
+        "ssn": "0105953639",
+        "name": "Uggi \u00c1smarsson",
+        "position": "",
+        "user": [
+            "0105953639"
+        ]
+    }
+},
+{
+    "model": "common.teacher",
+    "pk": 46,
+    "fields": {
+        "ssn": "0708954639",
+        "name": "L\u00ednberg Oddmar S\u00f3lbjartsson",
+        "position": "",
+        "user": [
+            "0708954639"
+        ]
+    }
+},
+{
+    "model": "common.teacher",
+    "pk": 47,
+    "fields": {
+        "ssn": "0307806719",
+        "name": "\u00de\u00f3rhalli M\u00falason",
+        "position": "",
+        "user": [
+            "0307806719"
+        ]
+    }
+},
+{
+    "model": "common.teacher",
+    "pk": 48,
+    "fields": {
+        "ssn": "1303863269",
+        "name": "S\u00e6finna \u00deorleif S\u00edvarsd\u00f3ttir",
+        "position": "",
+        "user": [
+            "1303863269"
+        ]
+    }
+},
+{
+    "model": "common.teacher",
+    "pk": 49,
+    "fields": {
+        "ssn": "1210636469",
+        "name": "Tryggv\u00edna Carmen Asparsd\u00f3ttir",
+        "position": "",
+        "user": [
+            "1210636469"
+        ]
+    }
+},
+{
+    "model": "common.teacher",
+    "pk": 50,
+    "fields": {
+        "ssn": "1802744139",
+        "name": "Svanr\u00f3s Bekansd\u00f3ttir",
+        "position": "",
+        "user": [
+            "1802744139"
+        ]
+    }
+},
+{
+    "model": "common.teacher",
+    "pk": 51,
+    "fields": {
+        "ssn": "0309494639",
+        "name": "\u00c1sd\u00eds J\u00f3ney \u00deorkelsd\u00f3ttir",
+        "position": "",
+        "user": [
+            "0309494639"
+        ]
+    }
+},
+{
+    "model": "common.teacher",
+    "pk": 52,
+    "fields": {
+        "ssn": "2106649719",
+        "name": "Nj\u00f6r\u00f0ur Erlendsson",
+        "position": "",
+        "user": [
+            "2106649719"
+        ]
+    }
+},
+{
+    "model": "common.teacher",
+    "pk": 53,
+    "fields": {
+        "ssn": "1712852329",
+        "name": "El\u00ednhei\u00f0ur Jenn\u00fd Au\u00f0bertsd\u00f3ttir",
+        "position": "",
+        "user": [
+            "1712852329"
+        ]
+    }
+},
+{
+    "model": "common.teacher",
+    "pk": 54,
+    "fields": {
+        "ssn": "1706758439",
+        "name": "Ingifinna Gu\u00f0j\u00f3nsd\u00f3ttir",
+        "position": "",
+        "user": [
+            "1706758439"
+        ]
+    }
+},
+{
+    "model": "common.teacher",
+    "pk": 55,
+    "fields": {
+        "ssn": "3108774929",
+        "name": "\u00cdsleif Isabella Hagbertsd\u00f3ttir",
+        "position": "",
+        "user": [
+            "3108774929"
+        ]
+    }
+},
+{
+    "model": "common.teacher",
+    "pk": 56,
+    "fields": {
+        "ssn": "0609799019",
+        "name": "Herv\u00f6r Sk\u00e6ringsd\u00f3ttir",
+        "position": "",
+        "user": [
+            "0609799019"
+        ]
+    }
+},
+{
+    "model": "common.teacher",
+    "pk": 57,
+    "fields": {
+        "ssn": "0104634599",
+        "name": "Thelma Sal\u00edn Sigurgr\u00edmsd\u00f3ttir",
+        "position": "",
+        "user": [
+            "0104634599"
+        ]
+    }
+},
+{
+    "model": "common.teacher",
+    "pk": 58,
+    "fields": {
+        "ssn": "1606746449",
+        "name": "Sveinveig H\u00famad\u00f3ttir",
+        "position": "",
+        "user": [
+            "1606746449"
+        ]
+    }
+},
+{
+    "model": "common.teacher",
+    "pk": 59,
+    "fields": {
+        "ssn": "1808803569",
+        "name": "Sigurj\u00f3n Nor\u00f0mann M\u00e1sson",
+        "position": "",
+        "user": [
+            "1808803569"
+        ]
+    }
+},
+{
+    "model": "common.teacher",
+    "pk": 60,
+    "fields": {
+        "ssn": "1112479519",
+        "name": "Hafr\u00fan Sigurgestsd\u00f3ttir",
+        "position": "",
+        "user": [
+            "1112479519"
+        ]
+    }
+},
+{
+    "model": "common.teacher",
+    "pk": 61,
+    "fields": {
+        "ssn": "1611969839",
+        "name": "Borg\u00fe\u00f3r R\u00f3sinbergsson",
+        "position": "",
+        "user": [
+            "1611969839"
+        ]
+    }
+},
+{
+    "model": "common.teacher",
+    "pk": 62,
+    "fields": {
+        "ssn": "1310586599",
+        "name": "Bergey Gunnborg Fj\u00f6rnisd\u00f3ttir",
+        "position": "",
+        "user": [
+            "1310586599"
+        ]
+    }
+},
+{
+    "model": "common.student",
+    "pk": 1,
+    "fields": {
+        "ssn": "3006105520",
+        "name": "Arnl\u00edn Benon\u00fdsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 2,
+    "fields": {
+        "ssn": "0812104030",
+        "name": "Karen Huldr\u00fan Au\u00f0\u00f3lfsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 3,
+    "fields": {
+        "ssn": "2707106380",
+        "name": "P\u00e1lr\u00fan N\u00f3elsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 4,
+    "fields": {
+        "ssn": "1601108720",
+        "name": "Amal P\u00e1lr\u00fan D\u00fdrad\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 5,
+    "fields": {
+        "ssn": "0104109590",
+        "name": "Bj\u00f6rgvin Gunnvaldur \u00cdmason"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 6,
+    "fields": {
+        "ssn": "0102109920",
+        "name": "Malla Baltasarsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 7,
+    "fields": {
+        "ssn": "2110104440",
+        "name": "Hj\u00e1lmveig \u00c1st\u00fer\u00fa\u00f0ur Stein\u00fe\u00f3rsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 8,
+    "fields": {
+        "ssn": "0812106160",
+        "name": "Marsibil Inger Gestsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 9,
+    "fields": {
+        "ssn": "2301109990",
+        "name": "Benedikta Hjartard\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 10,
+    "fields": {
+        "ssn": "3103108830",
+        "name": "Olivert Arn\u00falfur Bertelsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 11,
+    "fields": {
+        "ssn": "2511107350",
+        "name": "Heikir Hugo \u00deorbergsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 12,
+    "fields": {
+        "ssn": "0208104830",
+        "name": "Drengur \u00dalflj\u00f3tur Finnbogason"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 13,
+    "fields": {
+        "ssn": "2910104150",
+        "name": "V\u00e9n\u00fd Wilhelmsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 14,
+    "fields": {
+        "ssn": "0409107860",
+        "name": "Alrekur Arngils Dalbertsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 15,
+    "fields": {
+        "ssn": "0512105490",
+        "name": "Vigri Hr\u00fatur Steinfinnsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 16,
+    "fields": {
+        "ssn": "1311108200",
+        "name": "Lj\u00f3tunn Ingeborg Go\u00f0mundard\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 17,
+    "fields": {
+        "ssn": "1811102010",
+        "name": "Austmar Eric Vald\u00f3rsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 18,
+    "fields": {
+        "ssn": "2911102740",
+        "name": "Reidar Zophon\u00edas P\u00e1lmason"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 19,
+    "fields": {
+        "ssn": "2807108060",
+        "name": "Kolfinnur Ein\u00fe\u00f3rsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 20,
+    "fields": {
+        "ssn": "2910106950",
+        "name": "Sig\u00fe\u00f3r Ingibjartsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 21,
+    "fields": {
+        "ssn": "0309099170",
+        "name": "V\u00edgsteinn M\u00fdrkjartansson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 22,
+    "fields": {
+        "ssn": "1304099110",
+        "name": "Hrannar Steini D\u00f3s\u00f3\u00feeusarson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 23,
+    "fields": {
+        "ssn": "2712094520",
+        "name": "Fanngeir Zakar\u00edason"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 24,
+    "fields": {
+        "ssn": "0608097040",
+        "name": "Eyvindur Gumi Kristd\u00f3rsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 25,
+    "fields": {
+        "ssn": "1702099820",
+        "name": "Greipur Fj\u00f3lmundur Brynjarsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 26,
+    "fields": {
+        "ssn": "1407097000",
+        "name": "Sveinbj\u00f6rn K\u00e1rsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 27,
+    "fields": {
+        "ssn": "2809095480",
+        "name": "Alena Vinn\u00fd Hildigl\u00famsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 28,
+    "fields": {
+        "ssn": "1505095720",
+        "name": "Br\u00e1 \u00cdna Hnikarsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 29,
+    "fields": {
+        "ssn": "2907095470",
+        "name": "Hannes \u00der\u00e1ndur Ha\u00f0arson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 30,
+    "fields": {
+        "ssn": "0808094840",
+        "name": "J\u00f3ninna Lofn V\u00f6lundard\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 31,
+    "fields": {
+        "ssn": "0609096010",
+        "name": "\u00cdmi Fl\u00f3rentsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 32,
+    "fields": {
+        "ssn": "1606097610",
+        "name": "Sigurmon Hr\u00f3\u00f0mar K\u00e1rsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 33,
+    "fields": {
+        "ssn": "2912093000",
+        "name": "Haraldur Hl\u00ed\u00f0bergsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 34,
+    "fields": {
+        "ssn": "2407092360",
+        "name": "Loftur D\u00f3rsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 35,
+    "fields": {
+        "ssn": "1912099070",
+        "name": "\u00cdsak \u00dalriksson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 36,
+    "fields": {
+        "ssn": "1511099260",
+        "name": "Go\u00f0mundur Dagn\u00fdr Gunnsteinsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 37,
+    "fields": {
+        "ssn": "0601092220",
+        "name": "Valbj\u00f6rg Fri\u00f0mey Engilbertsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 38,
+    "fields": {
+        "ssn": "0601093620",
+        "name": "Margunnur Benna B\u00e6ronsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 39,
+    "fields": {
+        "ssn": "2510097240",
+        "name": "Svalr\u00fan Alva Hj\u00f6rvarsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 40,
+    "fields": {
+        "ssn": "1112094560",
+        "name": "Skj\u00f6ldur Ad\u00edelsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 41,
+    "fields": {
+        "ssn": "2708089640",
+        "name": "Vogur Sigurj\u00f3n Ingvason"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 42,
+    "fields": {
+        "ssn": "1511088730",
+        "name": "Sigurd\u00eds L\u00edney Alfre\u00f0sd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 43,
+    "fields": {
+        "ssn": "1712087260",
+        "name": "Arnlaug Krist\u00f3fersd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 44,
+    "fields": {
+        "ssn": "2405082140",
+        "name": "N\u00f3el Go\u00f0mundur Hr\u00f3mundarson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 45,
+    "fields": {
+        "ssn": "0912085980",
+        "name": "Petr\u00f3nella Bj\u00f6rg\u00falfsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 46,
+    "fields": {
+        "ssn": "0804082770",
+        "name": "Hei\u00f0l\u00f3a Hannesard\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 47,
+    "fields": {
+        "ssn": "1702086170",
+        "name": "Arnfinna R\u00far\u00ed Kolfinnsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 48,
+    "fields": {
+        "ssn": "2312089920",
+        "name": "Bjarnfr\u00ed\u00f0ur Anthonysd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 49,
+    "fields": {
+        "ssn": "1307086250",
+        "name": "Baugur Steinkelsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 50,
+    "fields": {
+        "ssn": "0607083710",
+        "name": "Marsibil Vera Amosard\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 51,
+    "fields": {
+        "ssn": "0902086400",
+        "name": "Fri\u00f0finna Gu\u00f0mundard\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 52,
+    "fields": {
+        "ssn": "0402087550",
+        "name": "Breki \u00c1rs\u00e6ll Hagbertsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 53,
+    "fields": {
+        "ssn": "1011083680",
+        "name": "\u00d6lvir Esjarsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 54,
+    "fields": {
+        "ssn": "2704088930",
+        "name": "Gu\u00f0steina Fannarsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 55,
+    "fields": {
+        "ssn": "2604086740",
+        "name": "Matth\u00eda Dorothea Gu\u00f0nad\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 56,
+    "fields": {
+        "ssn": "0209082540",
+        "name": "Valla\u00f0ur Art\u00farsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 57,
+    "fields": {
+        "ssn": "0309087910",
+        "name": "Margr\u00e9t Demusard\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 58,
+    "fields": {
+        "ssn": "2605085980",
+        "name": "Holti Stein\u00f3lfur Hugosson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 59,
+    "fields": {
+        "ssn": "2307086490",
+        "name": "Nikolas J\u00f3elsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 60,
+    "fields": {
+        "ssn": "2205086760",
+        "name": "Egill Lo\u00f0mundur Freymarsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 61,
+    "fields": {
+        "ssn": "1108079960",
+        "name": "Geir\u00f3lfur Sandur \u00deorsteinsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 62,
+    "fields": {
+        "ssn": "0305079590",
+        "name": "Magg\u00fd Hei\u00f0bj\u00f6rk Hall\u00fe\u00f3rsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 63,
+    "fields": {
+        "ssn": "2610079080",
+        "name": "Nella S\u00e6s\u00f3l Gautad\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 64,
+    "fields": {
+        "ssn": "2505073210",
+        "name": "Ingibjartur Edgar Ylsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 65,
+    "fields": {
+        "ssn": "1908079080",
+        "name": "Rafney Freyvi\u00f0sd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 66,
+    "fields": {
+        "ssn": "0711075150",
+        "name": "Valbergur Flemming Hr\u00f3aldsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 67,
+    "fields": {
+        "ssn": "0508072660",
+        "name": "Gunnhei\u00f0ur H\u00e6nisd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 68,
+    "fields": {
+        "ssn": "1206078390",
+        "name": "\u00dars\u00fala Fjalld\u00eds Oddbergsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 69,
+    "fields": {
+        "ssn": "1902072340",
+        "name": "Harpa Lillian Konradsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 70,
+    "fields": {
+        "ssn": "0803073300",
+        "name": "Hallfr\u00ed\u00f0ur Fri\u00f0d\u00eds Gunn\u00f3lad\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 71,
+    "fields": {
+        "ssn": "3009074580",
+        "name": "Berghreinn Valgar\u00f0sson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 72,
+    "fields": {
+        "ssn": "1302074800",
+        "name": "Hallgar\u00f0ur Hildimar Ingbergsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 73,
+    "fields": {
+        "ssn": "2402072810",
+        "name": "Gl\u00f3ey R\u00edta \u00deorbergsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 74,
+    "fields": {
+        "ssn": "1805077440",
+        "name": "Okt\u00f3 Duf\u00feaksson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 75,
+    "fields": {
+        "ssn": "3006072090",
+        "name": "Hrafnkatla Sigurlinnad\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 76,
+    "fields": {
+        "ssn": "3101079800",
+        "name": "Elva J\u00e1rnbr\u00e1 Arnfinnsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 77,
+    "fields": {
+        "ssn": "2202072340",
+        "name": "N\u00e1tts\u00f3l \u00c1std\u00eds Natansd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 78,
+    "fields": {
+        "ssn": "3103073270",
+        "name": "\u00c1svaldur Sigur\u00f0ur Hl\u00f6\u00f0var\u00f0sson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 79,
+    "fields": {
+        "ssn": "3003079060",
+        "name": "Hj\u00f6rleifur Grettir Jennason"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 80,
+    "fields": {
+        "ssn": "0205075000",
+        "name": "Vord\u00eds S\u00f3ld\u00f6gg Sigfre\u00f0sd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 81,
+    "fields": {
+        "ssn": "0311062730",
+        "name": "Hr\u00edmnir Hrappsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 82,
+    "fields": {
+        "ssn": "1901063490",
+        "name": "Arn\u00fe\u00f3r Alvin Eylaugsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 83,
+    "fields": {
+        "ssn": "3005063640",
+        "name": "M\u00fdrkjartan Dalmarsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 84,
+    "fields": {
+        "ssn": "2402063310",
+        "name": "Sigurp\u00e1ll Hallgeir Skefilsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 85,
+    "fields": {
+        "ssn": "2510063420",
+        "name": "Sn\u00e6borg Sveinger\u00f0ur Yngvarsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 86,
+    "fields": {
+        "ssn": "0704062760",
+        "name": "Kristborg D\u00fdrfinna Hrafnkelsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 87,
+    "fields": {
+        "ssn": "2406067040",
+        "name": "T\u00f3mas Gu\u00f0leifsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 88,
+    "fields": {
+        "ssn": "1104064790",
+        "name": "Fri\u00f0bj\u00f6rn Gunnleifsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 89,
+    "fields": {
+        "ssn": "3003068100",
+        "name": "\u00deorleikur Heimir Di\u00f0riksson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 90,
+    "fields": {
+        "ssn": "1311067690",
+        "name": "\u00dars\u00fala Johnsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 91,
+    "fields": {
+        "ssn": "1708066700",
+        "name": "Marela Ingimundard\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 92,
+    "fields": {
+        "ssn": "1804063280",
+        "name": "Steind\u00f3r \u00deorbergur Kajsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 93,
+    "fields": {
+        "ssn": "1501068770",
+        "name": "Bekan Sigurbergsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 94,
+    "fields": {
+        "ssn": "0309062090",
+        "name": "\u00daranus Fengur Smi\u00f0sson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 95,
+    "fields": {
+        "ssn": "1207063570",
+        "name": "Gunnvaldur Ernest\u00f3sson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 96,
+    "fields": {
+        "ssn": "1204062480",
+        "name": "H\u00fann Snorri \u00cdsmaels[1]son"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 97,
+    "fields": {
+        "ssn": "1505069210",
+        "name": "Annabella D\u00fdrley M\u00e1sd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 98,
+    "fields": {
+        "ssn": "1305063720",
+        "name": "Hrollaugur B\u00e6ronsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 99,
+    "fields": {
+        "ssn": "2703068960",
+        "name": "\u00daran\u00eda Bjarglind Alfre\u00f0sd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 100,
+    "fields": {
+        "ssn": "0407066150",
+        "name": "Yngvi \u00d3ttar Sigr\u00edksson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 101,
+    "fields": {
+        "ssn": "1411054340",
+        "name": "Kara Gu\u00f0bergsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 102,
+    "fields": {
+        "ssn": "1704055010",
+        "name": "Engilbjartur The\u00f3d\u00f3r \u00deorgeirsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 103,
+    "fields": {
+        "ssn": "2703053770",
+        "name": "\u00c1sthildur S\u00e6fr\u00ed\u00f0ur Hersteinsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 104,
+    "fields": {
+        "ssn": "3101057400",
+        "name": "Sigurhildur Efra\u00edmsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 105,
+    "fields": {
+        "ssn": "2601053530",
+        "name": "Bj\u00f6rg\u00falfur Aage Styrk\u00e1rsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 106,
+    "fields": {
+        "ssn": "2607054900",
+        "name": "Sen\u00eda Snorra K\u00e1rsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 107,
+    "fields": {
+        "ssn": "2208057430",
+        "name": "Torfey Laila Greipsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 108,
+    "fields": {
+        "ssn": "2808058070",
+        "name": "Geirr\u00ed\u00f0ur Melr\u00f3s Nikul\u00e1sard\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 109,
+    "fields": {
+        "ssn": "2612053780",
+        "name": "Sandel Brynsteinn Erlendsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 110,
+    "fields": {
+        "ssn": "2505059300",
+        "name": "Sigurbaldur Sn\u00e6varrsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 111,
+    "fields": {
+        "ssn": "2004055360",
+        "name": "\u00de\u00fafa Hrafnhei\u00f0ur Fri\u00f0steinsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 112,
+    "fields": {
+        "ssn": "0308056660",
+        "name": "Ali Torfason"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 113,
+    "fields": {
+        "ssn": "0707052650",
+        "name": "R\u00f6\u00f0ull J\u00f3ann Oliversson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 114,
+    "fields": {
+        "ssn": "2905058790",
+        "name": "Lil\u00fd \u00d3la Sigbjartsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 115,
+    "fields": {
+        "ssn": "2503058180",
+        "name": "J\u00f3mundur Eldar Gu\u00f0steinsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 116,
+    "fields": {
+        "ssn": "1702057820",
+        "name": "Eird\u00eds Borgd\u00eds B\u00e6ringsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 117,
+    "fields": {
+        "ssn": "0704056600",
+        "name": "N\u00f3vember Vilmenhart Sigmundarson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 118,
+    "fields": {
+        "ssn": "0909054730",
+        "name": "B\u00f6rkur Waltersson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 119,
+    "fields": {
+        "ssn": "1304052230",
+        "name": "Oddv\u00f6r Kolfreyja Wilhelmsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 120,
+    "fields": {
+        "ssn": "1510054030",
+        "name": "Neisti Marij\u00f3n Zakar\u00edasarson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 121,
+    "fields": {
+        "ssn": "0311048310",
+        "name": "Snorra Margit S\u00f3lbjartsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 122,
+    "fields": {
+        "ssn": "0302047270",
+        "name": "\u00c6sger\u00f0ur \u00d6rk Gautad\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 123,
+    "fields": {
+        "ssn": "2207045990",
+        "name": "\u00c1sr\u00fan Edit Sigurn\u00fdasard\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 124,
+    "fields": {
+        "ssn": "1007045280",
+        "name": "Krummi Fengsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 125,
+    "fields": {
+        "ssn": "1506045670",
+        "name": "S\u00e6v\u00f6r F\u00edfilsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 126,
+    "fields": {
+        "ssn": "1709044270",
+        "name": "D\u00fdrleif Hei\u00f0bj\u00f6rt Henningsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 127,
+    "fields": {
+        "ssn": "0409046970",
+        "name": "Finnbj\u00f6rg J\u00f3ney Matth\u00edasard\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 128,
+    "fields": {
+        "ssn": "0603049120",
+        "name": "Tyrfingur Reyr Arinbjarnarson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 129,
+    "fields": {
+        "ssn": "0105046190",
+        "name": "\u00deeyr H\u00edram Geirfinnsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 130,
+    "fields": {
+        "ssn": "1807043450",
+        "name": "Sk\u00e6ringur Valbergsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 131,
+    "fields": {
+        "ssn": "1011046560",
+        "name": "Fri\u00f0veig Bl\u00ed\u00f0a Huginsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 132,
+    "fields": {
+        "ssn": "2105042570",
+        "name": "Gizur R\u00f3senberg Loftsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 133,
+    "fields": {
+        "ssn": "1311042860",
+        "name": "Jack T\u00edmon Ei\u00f0sson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 134,
+    "fields": {
+        "ssn": "2805042380",
+        "name": "Hr\u00f3\u00f0mar R\u00ed\u00f3 Kristmundarson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 135,
+    "fields": {
+        "ssn": "1003043410",
+        "name": "\u00cdna Arnfinnsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 136,
+    "fields": {
+        "ssn": "1302047750",
+        "name": "\u00deyri Yrkilsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 137,
+    "fields": {
+        "ssn": "2008048210",
+        "name": "E\u00f0vald \u00d3skar Heilm\u00f3\u00f0s/arson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 138,
+    "fields": {
+        "ssn": "1101046340",
+        "name": "Tan\u00eda Unnd\u00eds Svanbergsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 139,
+    "fields": {
+        "ssn": "2012042080",
+        "name": "Birta Arey Sigurg\u00edslad\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 140,
+    "fields": {
+        "ssn": "1008042710",
+        "name": "B\u00e6ringur Valdemar Go\u00f0ason"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 141,
+    "fields": {
+        "ssn": "3003033310",
+        "name": "R\u00f3sinkara Boga Arad\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 142,
+    "fields": {
+        "ssn": "1004039350",
+        "name": "Ernest\u00f3 Skj\u00f6ldur Edwardsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 143,
+    "fields": {
+        "ssn": "1909036990",
+        "name": "\u00c1stmundur \u00c1sberg \u00deorsteinsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 144,
+    "fields": {
+        "ssn": "1502033840",
+        "name": "En\u00f3la J\u00f6kulr\u00f3s Ad\u00edelsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 145,
+    "fields": {
+        "ssn": "0911032060",
+        "name": "Eldgr\u00edmur Hrei\u00f0ar Bjarn\u00f3lfsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 146,
+    "fields": {
+        "ssn": "2712037800",
+        "name": "Mar\u00edas Gautsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 147,
+    "fields": {
+        "ssn": "1802032650",
+        "name": "Magda Finnd\u00eds \u00d6rlygsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 148,
+    "fields": {
+        "ssn": "3110039330",
+        "name": "J\u00f3el Liljarsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 149,
+    "fields": {
+        "ssn": "1006034110",
+        "name": "H\u00fann Kristfinnur Kornel\u00edusarson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 150,
+    "fields": {
+        "ssn": "1403032670",
+        "name": "Sam\u00fael Gn\u00fapur \u00d6gmundarson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 151,
+    "fields": {
+        "ssn": "1005036110",
+        "name": "Mjalld\u00eds Mar\u00edana N\u00f3nad\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 152,
+    "fields": {
+        "ssn": "1103032620",
+        "name": "Skapti Brimason"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 153,
+    "fields": {
+        "ssn": "1602034470",
+        "name": "G\u00eddeon V\u00edgmundarson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 154,
+    "fields": {
+        "ssn": "3001039280",
+        "name": "S\u00edvar Arnar Gr\u00edmlaugsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 155,
+    "fields": {
+        "ssn": "0506033420",
+        "name": "Richard Ingibertsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 156,
+    "fields": {
+        "ssn": "1601035070",
+        "name": "Vilhelm Benjam\u00edn Elbertsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 157,
+    "fields": {
+        "ssn": "1505035900",
+        "name": "T\u00f3r Gj\u00faki Erlingsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 158,
+    "fields": {
+        "ssn": "1707036690",
+        "name": "\u00deyri Dr\u00f6fn Ingivaldsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 159,
+    "fields": {
+        "ssn": "0507038000",
+        "name": "Hugberg Bl\u00e6var B\u00f3t\u00f3lfsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 160,
+    "fields": {
+        "ssn": "2810036660",
+        "name": "Bjarki Annarsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 161,
+    "fields": {
+        "ssn": "1901026290",
+        "name": "Brynd\u00eds Sunn\u00edva \u00c6varsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 162,
+    "fields": {
+        "ssn": "3110027160",
+        "name": "Kalla Valhildur \u00de\u00f3roddsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 163,
+    "fields": {
+        "ssn": "1004028740",
+        "name": "C\u00fdrus Bernhar\u00f0 Starka\u00f0arson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 164,
+    "fields": {
+        "ssn": "1511027860",
+        "name": "Hl\u00f6\u00f0ur Lev\u00ed \u00dej\u00f3\u00f0leifsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 165,
+    "fields": {
+        "ssn": "2202027040",
+        "name": "L\u00fdtingur Gunngeir Hallmannsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 166,
+    "fields": {
+        "ssn": "0702025490",
+        "name": "Gunnhildur L\u00fa\u00f0v\u00edgsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 167,
+    "fields": {
+        "ssn": "1502028410",
+        "name": "Sigurvina S\u00e6mannsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 168,
+    "fields": {
+        "ssn": "1409028100",
+        "name": "Ylur Marri Frankl\u00ednsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 169,
+    "fields": {
+        "ssn": "0710029690",
+        "name": "\u00c1st\u00fe\u00f3ra Sigurd\u00eds Mattad\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 170,
+    "fields": {
+        "ssn": "0603026420",
+        "name": "T\u00edm\u00f3teus Gu\u00f0leifur Hrafnkelsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 171,
+    "fields": {
+        "ssn": "2109023920",
+        "name": "Sandur Hj\u00e1lmgeir Emilsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 172,
+    "fields": {
+        "ssn": "2508029000",
+        "name": "Lofn Tea Snorrad\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 173,
+    "fields": {
+        "ssn": "1207022540",
+        "name": "Berghreinn \u00cdmi Illugason"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 174,
+    "fields": {
+        "ssn": "1605026810",
+        "name": "Hella Nadja Manfre\u00f0sd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 175,
+    "fields": {
+        "ssn": "0907029390",
+        "name": "Hildigl\u00famur Arnvi\u00f0ur Mattason"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 176,
+    "fields": {
+        "ssn": "2907029330",
+        "name": "Anna Ellertsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 177,
+    "fields": {
+        "ssn": "1012022910",
+        "name": "Kirst\u00edn La\u00edla Bjarnh\u00e9\u00f0insd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 178,
+    "fields": {
+        "ssn": "0302024730",
+        "name": "Stefan R\u00f6gnvar \u00d6rlaugsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 179,
+    "fields": {
+        "ssn": "2211022740",
+        "name": "Z\u00f3phan\u00edas Dagbjartur G\u00edgjarsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 180,
+    "fields": {
+        "ssn": "3003027260",
+        "name": "V\u00e9bj\u00f6rg Hildigunnur Steinbergsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 181,
+    "fields": {
+        "ssn": "0801013330",
+        "name": "Janus S\u00e6berg Valla\u00f0sson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 182,
+    "fields": {
+        "ssn": "2611017930",
+        "name": "Marl\u00eds Adelsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 183,
+    "fields": {
+        "ssn": "0810012860",
+        "name": "Mess\u00edana Brimd\u00eds Svanbergsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 184,
+    "fields": {
+        "ssn": "1601014310",
+        "name": "J\u00f3d\u00eds Birkisd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 185,
+    "fields": {
+        "ssn": "1911015450",
+        "name": "Ann Natalie Gunnlaugsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 186,
+    "fields": {
+        "ssn": "1212012830",
+        "name": "Steinar Valter J\u00f3marsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 187,
+    "fields": {
+        "ssn": "2901019800",
+        "name": "Ingvi Reyr Fri\u00f0mundarson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 188,
+    "fields": {
+        "ssn": "0812019190",
+        "name": "\u00c6gir V\u00e9geir \u00derymsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 189,
+    "fields": {
+        "ssn": "3112017000",
+        "name": "Hl\u00e9gestur Sturlaugur Fri\u00f0mundarson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 190,
+    "fields": {
+        "ssn": "2210019150",
+        "name": "Angant\u00fdr Hildi\u00fe\u00f3r V\u00e9geirsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 191,
+    "fields": {
+        "ssn": "2112017970",
+        "name": "Jakob\u00edna J\u00f3ra Anesard\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 192,
+    "fields": {
+        "ssn": "2907016000",
+        "name": "V\u00e9geir Adel Mar\u00edasarson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 193,
+    "fields": {
+        "ssn": "2201015760",
+        "name": "R\u00f3sant \u00deeyr Oddkelsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 194,
+    "fields": {
+        "ssn": "2101015780",
+        "name": "Mary Meda Duf\u00feaksd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 195,
+    "fields": {
+        "ssn": "2812014170",
+        "name": "Hei\u00f0ar H\u00e1leygur Gilsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 196,
+    "fields": {
+        "ssn": "1108012890",
+        "name": "H\u00f3lmkell Gu\u00f0r\u00f6\u00f0ur \u00d3ttarsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 197,
+    "fields": {
+        "ssn": "2511014340",
+        "name": "Kolgr\u00edmur Rasmusarson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 198,
+    "fields": {
+        "ssn": "0105015390",
+        "name": "J\u00f3runn Kolmarsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 199,
+    "fields": {
+        "ssn": "1606014770",
+        "name": "Sveinhildur Sigurbergsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 200,
+    "fields": {
+        "ssn": "1303012070",
+        "name": "Klemenz Garrason"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 201,
+    "fields": {
+        "ssn": "2208105690",
+        "name": "Nell\u00fd Na\u00f3m\u00ed Jesd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 202,
+    "fields": {
+        "ssn": "0912102070",
+        "name": "L\u00fa\u00f0v\u00edg Kolsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 203,
+    "fields": {
+        "ssn": "3010108500",
+        "name": "D\u00fdrley Mirra Villad\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 204,
+    "fields": {
+        "ssn": "1501109120",
+        "name": "Matt\u00fd \u00deorgr\u00edma Svansd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 205,
+    "fields": {
+        "ssn": "0101109550",
+        "name": "Axel Lars J\u00f6rvarsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 206,
+    "fields": {
+        "ssn": "2010107720",
+        "name": "Hafgr\u00edmur Bernhar\u00f0sson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 207,
+    "fields": {
+        "ssn": "2109105140",
+        "name": "Alexa Sigurb\u00e1ra Fj\u00f3larsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 208,
+    "fields": {
+        "ssn": "1104102470",
+        "name": "Hrafnd\u00eds Hilar\u00edusard\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 209,
+    "fields": {
+        "ssn": "3004102940",
+        "name": "Sigd\u00f3r Allan \u00c1rbj\u00f6rnsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 210,
+    "fields": {
+        "ssn": "1010103920",
+        "name": "Anja Leikn\u00fd S\u00e6mannsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 211,
+    "fields": {
+        "ssn": "0111104010",
+        "name": "St\u00edna Silv\u00eda Erlingsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 212,
+    "fields": {
+        "ssn": "2701109400",
+        "name": "H\u00fanger\u00f0ur Sylv\u00eda Fr\u00f3\u00f0ad\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 213,
+    "fields": {
+        "ssn": "0602108020",
+        "name": "Natal\u00eda Gyr\u00f0isd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 214,
+    "fields": {
+        "ssn": "1911108540",
+        "name": "Elli Valdi F\u00e1fnisson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 215,
+    "fields": {
+        "ssn": "1702106540",
+        "name": "Enja Rafney Sigurleifsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 216,
+    "fields": {
+        "ssn": "1709105240",
+        "name": "D\u00f3r \u00c1sbergsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 217,
+    "fields": {
+        "ssn": "0804102630",
+        "name": "Eirn\u00fd Tindsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 218,
+    "fields": {
+        "ssn": "1601107830",
+        "name": "Eldur Sveinlaugur Val\u00fe\u00f3rsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 219,
+    "fields": {
+        "ssn": "1106103860",
+        "name": "Svan J\u00f3nas Brynleifsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 220,
+    "fields": {
+        "ssn": "2802108110",
+        "name": "Vord\u00eds Freym\u00f3\u00f0sd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 221,
+    "fields": {
+        "ssn": "0407099590",
+        "name": "\u00c1lfd\u00eds Valka \u00dalfgeirsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 222,
+    "fields": {
+        "ssn": "2603094040",
+        "name": "Mikaela Frankl\u00ednsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 223,
+    "fields": {
+        "ssn": "3007098420",
+        "name": "J\u00f6rvi Parmes \u00c1sr\u00f6\u00f0arson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 224,
+    "fields": {
+        "ssn": "1506093480",
+        "name": "\u00derastar Christian Bo\u00f0ason"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 225,
+    "fields": {
+        "ssn": "1102095760",
+        "name": "Fri\u00f0rika Vernhar\u00f0sd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 226,
+    "fields": {
+        "ssn": "1305094600",
+        "name": "Vigd\u00eds Mar\u00f3l\u00edna H\u00f3lmbertsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 227,
+    "fields": {
+        "ssn": "2406097620",
+        "name": "Erling Sigf\u00fas Sk\u00falason"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 228,
+    "fields": {
+        "ssn": "2006096970",
+        "name": "J\u00f3hann Ingivaldur Adelsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 229,
+    "fields": {
+        "ssn": "0810094810",
+        "name": "\u00c1st\u00fe\u00f3r Hl\u00e9sson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 230,
+    "fields": {
+        "ssn": "2208099860",
+        "name": "S\u00f3lbj\u00f6rn Bent P\u00e1lsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 231,
+    "fields": {
+        "ssn": "0304098170",
+        "name": "Steinr\u00fan El\u00edsa Gu\u00f0bjartsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 232,
+    "fields": {
+        "ssn": "1704095230",
+        "name": "J\u00farek Jens Kristbjarnarson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 233,
+    "fields": {
+        "ssn": "2010093160",
+        "name": "M\u00f3ey Hj\u00e1lmsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 234,
+    "fields": {
+        "ssn": "1909097000",
+        "name": "Skarph\u00e9\u00f0inn Finnbj\u00f6rn Bergvinsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 235,
+    "fields": {
+        "ssn": "2403097420",
+        "name": "Axel\u00eda Tan\u00eda Yrkilsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 236,
+    "fields": {
+        "ssn": "2301092140",
+        "name": "Sveina Mar\u00edt \u00deorsteinsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 237,
+    "fields": {
+        "ssn": "0702094970",
+        "name": "H\u00f6gna Baldwinsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 238,
+    "fields": {
+        "ssn": "2805098170",
+        "name": "Milda R\u00f3sn\u00fd M\u00fdrkjartansd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 239,
+    "fields": {
+        "ssn": "1908092770",
+        "name": "S\u00e6r\u00f3s M\u00f3ei\u00f0ur Sveinbjarnar\nSveinbj\u00f6rnsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 240,
+    "fields": {
+        "ssn": "3107096110",
+        "name": "Elmar Vatnarsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 241,
+    "fields": {
+        "ssn": "0102086610",
+        "name": "Oddbj\u00f6rn Duf\u00feakur Birkisson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 242,
+    "fields": {
+        "ssn": "2012086100",
+        "name": "Erik Hl\u00f6\u00f0var\u00f0ur H\u00f3seasarson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 243,
+    "fields": {
+        "ssn": "0512084470",
+        "name": "Hrafnlaug El\u00edn\u00f3rsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 244,
+    "fields": {
+        "ssn": "1711089500",
+        "name": "Magg\u00fd D\u00f3maldsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 245,
+    "fields": {
+        "ssn": "1701084340",
+        "name": "Hildegard Konkord\u00eda Esjarsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 246,
+    "fields": {
+        "ssn": "2305085690",
+        "name": "Sigurvin H\u00f3lm\u00fe\u00f3rsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 247,
+    "fields": {
+        "ssn": "2301089860",
+        "name": "Vald\u00f3r Bjarnarsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 248,
+    "fields": {
+        "ssn": "3110089940",
+        "name": "El\u00eds Hrolleifsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 249,
+    "fields": {
+        "ssn": "0508086370",
+        "name": "Mirra Daggr\u00f3s Gamal\u00edelsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 250,
+    "fields": {
+        "ssn": "1901088050",
+        "name": "Hildisif Bergr\u00edn Gaujad\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 251,
+    "fields": {
+        "ssn": "0512083310",
+        "name": "M\u00e1ney Alda Hagal\u00ednsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 252,
+    "fields": {
+        "ssn": "1807088120",
+        "name": "Valbergur N\u00f3el Kristinsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 253,
+    "fields": {
+        "ssn": "1109083850",
+        "name": "J\u00f3fr\u00ed\u00f0ur Mja\u00f0veig S\u00e6\u00fe\u00f3rsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 254,
+    "fields": {
+        "ssn": "1604088980",
+        "name": "Ludvig Marelsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 255,
+    "fields": {
+        "ssn": "0707084420",
+        "name": "V\u00edgmundur Sigurberg Gumason"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 256,
+    "fields": {
+        "ssn": "1101087370",
+        "name": "Bjartmann Hei\u00f0bertsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 257,
+    "fields": {
+        "ssn": "2706085580",
+        "name": "\u00d3li Georgsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 258,
+    "fields": {
+        "ssn": "0606087920",
+        "name": "Ann Dag\u00fe\u00f3rsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 259,
+    "fields": {
+        "ssn": "1906083440",
+        "name": "S\u00e6berg Sk\u00e6ringur Hr\u00e6reksson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 260,
+    "fields": {
+        "ssn": "2402089030",
+        "name": "Freyja Evlal\u00eda R\u00f3sinkarsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 261,
+    "fields": {
+        "ssn": "2011079460",
+        "name": "Ingibert Kristmundur Sturluson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 262,
+    "fields": {
+        "ssn": "1204074490",
+        "name": "Ar\u00edanna Sveinbergsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 263,
+    "fields": {
+        "ssn": "2801075060",
+        "name": "Jakob\u00edna N\u00edna R\u00f6gnvarsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 264,
+    "fields": {
+        "ssn": "0112074480",
+        "name": "Elen\u00f3ra Fr\u00f3\u00f0ad\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 265,
+    "fields": {
+        "ssn": "2308076710",
+        "name": "Brynleifur H\u00e1steinn Reginbaldursson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 266,
+    "fields": {
+        "ssn": "0409076880",
+        "name": "Tryggvi Hraunarsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 267,
+    "fields": {
+        "ssn": "1807078670",
+        "name": "Elvar Flemming S\u00f6lvarsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 268,
+    "fields": {
+        "ssn": "2209078560",
+        "name": "Marsel\u00edna \u00c1lfhildur A\u00f0almundard\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 269,
+    "fields": {
+        "ssn": "0207074100",
+        "name": "N\u00f3i Finnbj\u00f6rn \u00deorvaldsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 270,
+    "fields": {
+        "ssn": "2210073280",
+        "name": "V\u00e1li Bernhard Ragnarsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 271,
+    "fields": {
+        "ssn": "1305076110",
+        "name": "Ar\u00edella Ind\u00edra Au\u00f0bj\u00f6rnsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 272,
+    "fields": {
+        "ssn": "1401077780",
+        "name": "Margeir \u00d6nd\u00f3lfur \u00der\u00fa\u00f0marsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 273,
+    "fields": {
+        "ssn": "1107079830",
+        "name": "V\u00e9steinn Otrason"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 274,
+    "fields": {
+        "ssn": "0503077270",
+        "name": "Kar\u00f3 Ey\u00fe\u00f3rsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 275,
+    "fields": {
+        "ssn": "1506075310",
+        "name": "Zophon\u00edas Alex\u00edus Gu\u00f0fre\u00f0sson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 276,
+    "fields": {
+        "ssn": "1803078260",
+        "name": "R\u00faben Austmarsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 277,
+    "fields": {
+        "ssn": "0904073170",
+        "name": "Bl\u00e6ngur \u00deorgestsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 278,
+    "fields": {
+        "ssn": "0606075240",
+        "name": "\u00c1g\u00fast\u00edna Martha Geir\u00f3lfsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 279,
+    "fields": {
+        "ssn": "2307078550",
+        "name": "Valger\u00f0ur S\u00fdrusard\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 280,
+    "fields": {
+        "ssn": "1502078350",
+        "name": "Herfr\u00ed\u00f0ur G\u00edsl\u00edna St\u00f3r\u00f3lfsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 281,
+    "fields": {
+        "ssn": "2306069270",
+        "name": "Kristn\u00fd \u00dej\u00f3\u00f0var\u00f0sd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 282,
+    "fields": {
+        "ssn": "2310068260",
+        "name": "Gl\u00f3 Dalr\u00f3s Hildi\u00fe\u00f3rsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 283,
+    "fields": {
+        "ssn": "0810067250",
+        "name": "S\u00f3lr\u00fan Malen Gissurard\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 284,
+    "fields": {
+        "ssn": "1010065490",
+        "name": "Tanja Gunn\u00f3lfsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 285,
+    "fields": {
+        "ssn": "2503066950",
+        "name": "Matador Finnur Elfr\u00e1\u00f0sson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 286,
+    "fields": {
+        "ssn": "2302063920",
+        "name": "\u00d6sp Unnsteinsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 287,
+    "fields": {
+        "ssn": "2206069450",
+        "name": "Au\u00f0geir Patrekur Angant\u00fdsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 288,
+    "fields": {
+        "ssn": "2207069150",
+        "name": "Hj\u00e1lmr\u00fan Hertha Willumsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 289,
+    "fields": {
+        "ssn": "2204063850",
+        "name": "Tinni Erlendur Fransson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 290,
+    "fields": {
+        "ssn": "0603063030",
+        "name": "Finnbj\u00f6rk \u00c1rbj\u00f6rg Hauksteinsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 291,
+    "fields": {
+        "ssn": "1201069610",
+        "name": "F\u00e1fnir Sigurleifsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 292,
+    "fields": {
+        "ssn": "3010069770",
+        "name": "Baltasar Falgeir Herbj\u00f6rnsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 293,
+    "fields": {
+        "ssn": "2711069980",
+        "name": "Dagbj\u00f6rt Solveig \u00c1lfgeirsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 294,
+    "fields": {
+        "ssn": "1508066230",
+        "name": "Kristgeir Benon\u00fdsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 295,
+    "fields": {
+        "ssn": "1607065460",
+        "name": "Liljar Vernhar\u00f0 Konstant\u00ednusarson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 296,
+    "fields": {
+        "ssn": "0102064210",
+        "name": "Herm\u00edna Steinunn Oddfreysd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 297,
+    "fields": {
+        "ssn": "1611067200",
+        "name": "J\u00f3sef\u00edna Ingimar\u00eda Sverrisd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 298,
+    "fields": {
+        "ssn": "0308065060",
+        "name": "Otti Hektor Gu\u00f0j\u00f3nsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 299,
+    "fields": {
+        "ssn": "0512066650",
+        "name": "Guttormur D\u00f3rason"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 300,
+    "fields": {
+        "ssn": "0901069960",
+        "name": "Arnfinna Vanda Steinbergsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 301,
+    "fields": {
+        "ssn": "1502057510",
+        "name": "H\u00fani Kaldason"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 302,
+    "fields": {
+        "ssn": "1504059630",
+        "name": "Eric Finnsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 303,
+    "fields": {
+        "ssn": "1309058700",
+        "name": "Fanny J\u00f3nn\u00fd Saxad\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 304,
+    "fields": {
+        "ssn": "1406058750",
+        "name": "Vigg\u00f3 Aron Kristbjarnarson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 305,
+    "fields": {
+        "ssn": "0203052230",
+        "name": "Kar\u00edtas Al\u00eds Gu\u00f0mons[1]d\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 306,
+    "fields": {
+        "ssn": "0608059540",
+        "name": "Magnea J\u00fal\u00edana \u00d6ssurard\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 307,
+    "fields": {
+        "ssn": "0107053710",
+        "name": "Kidd\u00fd Flosad\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 308,
+    "fields": {
+        "ssn": "3009057140",
+        "name": "Sn\u00e6\u00fe\u00f3r Hafbergsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 309,
+    "fields": {
+        "ssn": "3006059820",
+        "name": "Max N\u00f3ason"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 310,
+    "fields": {
+        "ssn": "1207058650",
+        "name": "Hafd\u00eds Finnj\u00f3nsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 311,
+    "fields": {
+        "ssn": "1506052960",
+        "name": "Herluf Kl\u00e6ngur Alvarsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 312,
+    "fields": {
+        "ssn": "0303053100",
+        "name": "Ed\u00edlon Fri\u00f0leifsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 313,
+    "fields": {
+        "ssn": "1004052960",
+        "name": "Fannd\u00eds A\u00f0alveig Geraldsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 314,
+    "fields": {
+        "ssn": "0609055330",
+        "name": "\u00de\u00f3rlaug \u00deorlaugsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 315,
+    "fields": {
+        "ssn": "1606056180",
+        "name": "Inga \u00de\u00f3rgunnur Reginsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 316,
+    "fields": {
+        "ssn": "1211056320",
+        "name": "Sigvar\u00f0ur Ott\u00f3sson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 317,
+    "fields": {
+        "ssn": "2609056430",
+        "name": "Run\u00f3lfur Jochum Gunnarsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 318,
+    "fields": {
+        "ssn": "2508057800",
+        "name": "Vopni Gr\u00edmnir Baldvinsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 319,
+    "fields": {
+        "ssn": "2408053750",
+        "name": "Ingifr\u00ed\u00f0ur Nadia L\u00e1rusard\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 320,
+    "fields": {
+        "ssn": "0201059090",
+        "name": "Sn\u00e6laugur Erlar Edgarsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 321,
+    "fields": {
+        "ssn": "1110045360",
+        "name": "Bessi A\u00f0alsteinsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 322,
+    "fields": {
+        "ssn": "3105043860",
+        "name": "Kolgr\u00edmur Grankell Baldwinsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 323,
+    "fields": {
+        "ssn": "1110042850",
+        "name": "Vilberg H\u00e1mundur Konradsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 324,
+    "fields": {
+        "ssn": "2311049330",
+        "name": "\u00c1rd\u00eds S\u00eds\u00ed Eymarsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 325,
+    "fields": {
+        "ssn": "1106043000",
+        "name": "\u00deorgr\u00edmur N\u00edelsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 326,
+    "fields": {
+        "ssn": "0907045160",
+        "name": "Dalbert Atli \u00c1sgr\u00edmsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 327,
+    "fields": {
+        "ssn": "2504047510",
+        "name": "Bolli Ingberg Adolfsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 328,
+    "fields": {
+        "ssn": "2907048390",
+        "name": "Selka \u00c1str\u00f3s Unn\u00fe\u00f3rsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 329,
+    "fields": {
+        "ssn": "2108043310",
+        "name": "Hei\u00f0mar Gr\u00edmkell Guttormsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 330,
+    "fields": {
+        "ssn": "2005044610",
+        "name": "Gu\u00f0mundur Beinir Gautsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 331,
+    "fields": {
+        "ssn": "1002049240",
+        "name": "Janus Gu\u00f0var\u00f0sson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 332,
+    "fields": {
+        "ssn": "2610043560",
+        "name": "Sigfastur Hr\u00f3lfur Kristgeirsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 333,
+    "fields": {
+        "ssn": "1710048370",
+        "name": "Mj\u00f6ll Kristlind Fri\u00f0\u00fej\u00f3fsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 334,
+    "fields": {
+        "ssn": "1912048400",
+        "name": "Irma Jennad\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 335,
+    "fields": {
+        "ssn": "1108045200",
+        "name": "Valva Valdhei\u00f0ur Sigfre\u00f0sd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 336,
+    "fields": {
+        "ssn": "2111045110",
+        "name": "L\u00edfd\u00eds Kaldad\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 337,
+    "fields": {
+        "ssn": "2803047940",
+        "name": "Ella Gu\u00f0mund\u00edna Sal\u00f3monsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 338,
+    "fields": {
+        "ssn": "0405046050",
+        "name": "Gestr\u00fan Natansd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 339,
+    "fields": {
+        "ssn": "2106047900",
+        "name": "\u00c1stmar Gunnbj\u00f6rnsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 340,
+    "fields": {
+        "ssn": "1210043210",
+        "name": "\u00c1smundur Viktorsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 341,
+    "fields": {
+        "ssn": "2302038140",
+        "name": "Bergur Fri\u00f0leifsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 342,
+    "fields": {
+        "ssn": "0507038350",
+        "name": "Agneta Skarph\u00e9\u00f0insd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 343,
+    "fields": {
+        "ssn": "1908038640",
+        "name": "J\u00f3rlaug Fann\u00fd Geir\u00fej\u00f3fsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 344,
+    "fields": {
+        "ssn": "0206033720",
+        "name": "Svand\u00eds D\u00fana Bjarnfre\u00f0sd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 345,
+    "fields": {
+        "ssn": "1605037850",
+        "name": "Lindar \u00c1svaldur Geirhvatsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 346,
+    "fields": {
+        "ssn": "0203034920",
+        "name": "Marhei\u00f0ur B\u00f3el Sindrad\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 347,
+    "fields": {
+        "ssn": "2109033050",
+        "name": "Valhildur Styrsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 348,
+    "fields": {
+        "ssn": "2602036300",
+        "name": "Sigurborg Britta Einvar\u00f0sd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 349,
+    "fields": {
+        "ssn": "0712033280",
+        "name": "Tj\u00f6rfi Eymarsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 350,
+    "fields": {
+        "ssn": "1506038110",
+        "name": "Adam R\u00f6kkvi Sigmannsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 351,
+    "fields": {
+        "ssn": "2510032110",
+        "name": "Katar\u00ednus K\u00f3psson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 352,
+    "fields": {
+        "ssn": "2205039330",
+        "name": "S\u00e6borg Valborg Andrad\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 353,
+    "fields": {
+        "ssn": "2904039870",
+        "name": "G\u00edslunn Hilar\u00edusard\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 354,
+    "fields": {
+        "ssn": "0211037210",
+        "name": "Hedda Bj\u00f6rgmundard\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 355,
+    "fields": {
+        "ssn": "0707033940",
+        "name": "Gl\u00f3\u00f0 Eiv\u00f6r J\u00f3savinsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 356,
+    "fields": {
+        "ssn": "2109036820",
+        "name": "Siggeir V\u00edkingur Haddsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 357,
+    "fields": {
+        "ssn": "0501032260",
+        "name": "Geirr\u00ed\u00f0ur \u00deorgr\u00edma Geirlaugsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 358,
+    "fields": {
+        "ssn": "1804036710",
+        "name": "H\u00fanbogi Flemming Veigarsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 359,
+    "fields": {
+        "ssn": "1102039260",
+        "name": "Valbj\u00f6rt Geirfr\u00ed\u00f0ur Rudolfsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 360,
+    "fields": {
+        "ssn": "0407033220",
+        "name": "Angi K\u00e1rason"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 361,
+    "fields": {
+        "ssn": "1411028930",
+        "name": "Sn\u00e6bj\u00f6rg Steinlaug Hagal\u00ednsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 362,
+    "fields": {
+        "ssn": "1004022890",
+        "name": "Skarph\u00e9\u00f0inn Arthursson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 363,
+    "fields": {
+        "ssn": "0203024290",
+        "name": "Skefill M\u00e1rus Eyj\u00f3lfsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 364,
+    "fields": {
+        "ssn": "1902027200",
+        "name": "M\u00f3na A\u00f0alfr\u00ed\u00f0ur Au\u00f0bergsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 365,
+    "fields": {
+        "ssn": "0208023750",
+        "name": "Susan \u00c1stvaldsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 366,
+    "fields": {
+        "ssn": "0205022740",
+        "name": "Fylkir Siguroddur Gautreksson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 367,
+    "fields": {
+        "ssn": "0609022830",
+        "name": "Au\u00f0na Kidd\u00fd S\u00f3f\u00f3n\u00edasard\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 368,
+    "fields": {
+        "ssn": "1307027590",
+        "name": "P\u00e1lfr\u00ed\u00f0ur Asparsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 369,
+    "fields": {
+        "ssn": "0702025650",
+        "name": "Zakar\u00edas Fannarsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 370,
+    "fields": {
+        "ssn": "1901024320",
+        "name": "A\u00f0alsteinn Bj\u00f6rg\u00falfur Hartvigsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 371,
+    "fields": {
+        "ssn": "2502023930",
+        "name": "Marja Arnkatla Sigurmannsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 372,
+    "fields": {
+        "ssn": "2412023990",
+        "name": "\u00d6rbr\u00fan R\u00f3senbergsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 373,
+    "fields": {
+        "ssn": "0807022050",
+        "name": "Hartmann \u00de\u00f3rmundur Joshuason"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 374,
+    "fields": {
+        "ssn": "0311028120",
+        "name": "Halley Deb\u00f3ra Gretarsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 375,
+    "fields": {
+        "ssn": "0508028760",
+        "name": "Hallvar\u00f0ur Hafnar Brimisson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 376,
+    "fields": {
+        "ssn": "0308024380",
+        "name": "Brynger\u00f0ur Ragnbj\u00f6rg Valmarsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 377,
+    "fields": {
+        "ssn": "0907023350",
+        "name": "Nicole Au\u00f0n\u00fd Estefansd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 378,
+    "fields": {
+        "ssn": "1905029530",
+        "name": "Gl\u00famur J\u00f3vinsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 379,
+    "fields": {
+        "ssn": "2111025510",
+        "name": "Vilger\u00f0ur Sigurj\u00f3nsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 380,
+    "fields": {
+        "ssn": "2307025860",
+        "name": "Jaki Hergill H\u00e1rlaugsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 381,
+    "fields": {
+        "ssn": "0603013280",
+        "name": "V\u00e9n\u00fd Fri\u00f0d\u00eds Gautvi\u00f0sd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 382,
+    "fields": {
+        "ssn": "2109013610",
+        "name": "Valr\u00fan Sigurli\u00f0ad\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 383,
+    "fields": {
+        "ssn": "2111018730",
+        "name": "J\u00f3nhei\u00f0ur Kjallaksd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 384,
+    "fields": {
+        "ssn": "2206018970",
+        "name": "Berg\u00fe\u00f3ra Leonsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 385,
+    "fields": {
+        "ssn": "2603018290",
+        "name": "Unn\u00fe\u00f3r Tindri Birkisson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 386,
+    "fields": {
+        "ssn": "2106012600",
+        "name": "Geisli Rannver Hr\u00fatsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 387,
+    "fields": {
+        "ssn": "0603015570",
+        "name": "Kl\u00e1d\u00eda Vignisd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 388,
+    "fields": {
+        "ssn": "0902014330",
+        "name": "\u00d6rvar Aron Berentsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 389,
+    "fields": {
+        "ssn": "1911012350",
+        "name": "Mar\u00eduerla Sigurn\u00fdasard\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 390,
+    "fields": {
+        "ssn": "1703012850",
+        "name": "Vera Herfr\u00ed\u00f0ur Gr\u00edmlaugsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 391,
+    "fields": {
+        "ssn": "0501014280",
+        "name": "Tal\u00eda Brimad\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 392,
+    "fields": {
+        "ssn": "1212019410",
+        "name": "Flosi Makan Elbertsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 393,
+    "fields": {
+        "ssn": "0208013280",
+        "name": "Leifur Sigursteinsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 394,
+    "fields": {
+        "ssn": "2306015500",
+        "name": "Oddkell Dvalinsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 395,
+    "fields": {
+        "ssn": "2602019640",
+        "name": "Valfr\u00ed\u00f0ur Sigurbrandsd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 396,
+    "fields": {
+        "ssn": "1712018610",
+        "name": "Otkell Valmar Bergsveinsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 397,
+    "fields": {
+        "ssn": "0810013240",
+        "name": "J\u00f3hann Lindberg Beinteinsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 398,
+    "fields": {
+        "ssn": "0303013660",
+        "name": "H\u00e1var\u00f0ur \u00deorbj\u00f6rnsson"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 399,
+    "fields": {
+        "ssn": "1703014980",
+        "name": "\u00cdda Fri\u00f0laug Gr\u00edmnisd\u00f3ttir"
+    }
+},
+{
+    "model": "common.student",
+    "pk": 400,
+    "fields": {
+        "ssn": "1210015350",
+        "name": "Natal\u00eda Hl\u00f6\u00f0mundard\u00f3ttir"
+    }
+},
+{
+    "model": "common.school",
+    "pk": 1,
+    "fields": {
+        "name": "H\u00f6fu\u00f0borgarsk\u00f3linn",
+        "ssn": "0101012020",
+        "school_nr": 1234,
+        "address": "Vesturg\u00f6tu 1",
+        "post_code": "101",
+        "municipality": "Reykjav\u00edkurborg",
+        "part": "Reykjav\u00edk",
+        "managers": [
+            6
+        ],
+        "teachers": [
+            62,
+            61,
+            53,
+            60,
+            56,
+            54,
+            55,
+            59,
+            58,
+            57
+        ],
+        "students": [
+            370,
+            350,
+            342,
+            278,
+            207,
+            221,
+            360,
+            210,
+            258,
+            324,
+            262,
+            271,
+            300,
+            340,
+            339,
+            229,
+            287,
+            367,
+            235,
+            205,
+            292,
+            341,
+            384,
+            321,
+            256,
+            277,
+            327,
+            376,
+            265,
+            293,
+            326,
+            216,
+            203,
+            312,
+            217,
+            218,
+            264,
+            248,
+            337,
+            214,
+            240,
+            267,
+            215,
+            302,
+            242,
+            227,
+            291,
+            313,
+            303,
+            290,
+            392,
+            260,
+            225,
+            366,
+            357,
+            386,
+            338,
+            353,
+            282,
+            355,
+            378,
+            330,
+            299,
+            310,
+            206,
+            374,
+            375,
+            373,
+            398,
+            354,
+            329,
+            280,
+            311,
+            296,
+            245,
+            250,
+            288,
+            237,
+            208,
+            243,
+            358,
+            212,
+            301,
+            399,
+            315,
+            261,
+            319,
+            334,
+            380,
+            263,
+            331,
+            253,
+            228,
+            397,
+            383,
+            343,
+            223,
+            297,
+            232,
+            305,
+            274,
+            351,
+            307,
+            387,
+            322,
+            294,
+            281,
+            393,
+            336,
+            295,
+            345,
+            202,
+            254,
+            244,
+            306,
+            251,
+            272,
+            346,
+            389,
+            371,
+            268,
+            285,
+            204,
+            309,
+            222,
+            238,
+            249,
+            333,
+            233,
+            364,
+            213,
+            400,
+            201,
+            377,
+            269,
+            241,
+            394,
+            257,
+            372,
+            388,
+            286,
+            396,
+            298,
+            368,
+            276,
+            317,
+            259,
+            352,
+            239,
+            328,
+            209,
+            332,
+            356,
+            348,
+            246,
+            316,
+            362,
+            234,
+            363,
+            361,
+            320,
+            308,
+            230,
+            283,
+            231,
+            211,
+            365,
+            344,
+            219,
+            236,
+            391,
+            284,
+            289,
+            349,
+            266,
+            385,
+            252,
+            359,
+            247,
+            395,
+            279,
+            347,
+            270,
+            382,
+            335,
+            381,
+            390,
+            273,
+            226,
+            304,
+            255,
+            323,
+            379,
+            318,
+            220,
+            369,
+            275,
+            325,
+            314,
+            224
+        ]
+    }
+},
+{
+    "model": "common.school",
+    "pk": 2,
+    "fields": {
+        "name": "Akureyrarsk\u00f3linn",
+        "ssn": "0202021010",
+        "school_nr": 4321,
+        "address": "R\u00e1\u00f0h\u00fastorgi 10",
+        "post_code": "600",
+        "municipality": "Akureyrarkaupsta\u00f0ur",
+        "part": "Nor\u00f0urland eystra",
+        "managers": [
+            5
+        ],
+        "teachers": [
+            51,
+            44,
+            46,
+            52,
+            43,
+            48,
+            50,
+            49,
+            45,
+            47
+        ],
+        "students": [
+            188,
+            122,
+            27,
+            112,
+            14,
+            4,
+            190,
+            97,
+            176,
+            185,
+            47,
+            43,
+            1,
+            82,
+            123,
+            103,
+            143,
+            169,
+            78,
+            17,
+            140,
+            49,
+            93,
+            9,
+            173,
+            71,
+            139,
+            160,
+            48,
+            105,
+            5,
+            118,
+            28,
+            52,
+            161,
+            163,
+            12,
+            126,
+            137,
+            60,
+            116,
+            145,
+            76,
+            102,
+            144,
+            142,
+            24,
+            23,
+            127,
+            88,
+            51,
+            131,
+            61,
+            108,
+            153,
+            132,
+            73,
+            36,
+            25,
+            54,
+            67,
+            166,
+            95,
+            70,
+            72,
+            29,
+            33,
+            69,
+            195,
+            46,
+            11,
+            174,
+            175,
+            7,
+            79,
+            189,
+            164,
+            196,
+            58,
+            75,
+            22,
+            81,
+            134,
+            98,
+            159,
+            149,
+            96,
+            31,
+            135,
+            64,
+            187,
+            35,
+            133,
+            191,
+            181,
+            184,
+            148,
+            115,
+            30,
+            198,
+            162,
+            101,
+            2,
+            177,
+            200,
+            19,
+            197,
+            86,
+            124,
+            114,
+            16,
+            172,
+            34,
+            165,
+            147,
+            62,
+            6,
+            91,
+            57,
+            38,
+            146,
+            182,
+            8,
+            50,
+            194,
+            55,
+            183,
+            151,
+            83,
+            77,
+            120,
+            63,
+            59,
+            44,
+            117,
+            119,
+            74,
+            10,
+            53,
+            3,
+            45,
+            65,
+            18,
+            155,
+            113,
+            193,
+            141,
+            125,
+            150,
+            109,
+            171,
+            106,
+            110,
+            42,
+            104,
+            32,
+            84,
+            167,
+            20,
+            154,
+            130,
+            152,
+            40,
+            85,
+            121,
+            178,
+            186,
+            92,
+            39,
+            26,
+            199,
+            138,
+            170,
+            87,
+            107,
+            157,
+            128,
+            99,
+            94,
+            68,
+            90,
+            66,
+            37,
+            56,
+            180,
+            192,
+            13,
+            15,
+            21,
+            156,
+            41,
+            80,
+            168,
+            100,
+            179,
+            129,
+            89,
+            111,
+            158,
+            136
+        ]
+    }
+},
+{
+    "model": "common.studentgroup",
+    "pk": 1,
+    "fields": {
+        "name": "1. bekkur",
+        "student_year": "1",
+        "school": 1,
+        "group_managers": [
+            53
+        ],
+        "students": [
+            207,
+            210,
+            205,
+            216,
+            203,
+            217,
+            218,
+            214,
+            215,
+            206,
+            208,
+            212,
+            202,
+            204,
+            213,
+            201,
+            209,
+            211,
+            219,
+            220
+        ]
+    }
+},
+{
+    "model": "common.studentgroup",
+    "pk": 2,
+    "fields": {
+        "name": "2. bekkur",
+        "student_year": "2",
+        "school": 1,
+        "group_managers": [
+            54
+        ],
+        "students": [
+            221,
+            229,
+            235,
+            240,
+            227,
+            225,
+            237,
+            228,
+            223,
+            232,
+            222,
+            238,
+            233,
+            239,
+            234,
+            230,
+            231,
+            236,
+            226,
+            224
+        ]
+    }
+},
+{
+    "model": "common.studentgroup",
+    "pk": 3,
+    "fields": {
+        "name": "3. bekkur",
+        "student_year": "3",
+        "school": 1,
+        "group_managers": [
+            55
+        ],
+        "students": [
+            258,
+            256,
+            248,
+            242,
+            260,
+            245,
+            250,
+            243,
+            253,
+            254,
+            244,
+            251,
+            249,
+            241,
+            257,
+            259,
+            246,
+            252,
+            247,
+            255
+        ]
+    }
+},
+{
+    "model": "common.studentgroup",
+    "pk": 4,
+    "fields": {
+        "name": "4. bekkur",
+        "student_year": "4",
+        "school": 1,
+        "group_managers": [
+            56
+        ],
+        "students": [
+            278,
+            262,
+            271,
+            277,
+            265,
+            264,
+            267,
+            280,
+            261,
+            263,
+            274,
+            272,
+            268,
+            269,
+            276,
+            266,
+            279,
+            270,
+            273,
+            275
+        ]
+    }
+},
+{
+    "model": "common.studentgroup",
+    "pk": 5,
+    "fields": {
+        "name": "5. bekkur",
+        "student_year": "5",
+        "school": 1,
+        "group_managers": [
+            57
+        ],
+        "students": [
+            300,
+            287,
+            292,
+            293,
+            291,
+            290,
+            282,
+            299,
+            296,
+            288,
+            297,
+            294,
+            281,
+            295,
+            285,
+            286,
+            298,
+            283,
+            284,
+            289
+        ]
+    }
+},
+{
+    "model": "common.studentgroup",
+    "pk": 6,
+    "fields": {
+        "name": "6. bekkur",
+        "student_year": "6",
+        "school": 1,
+        "group_managers": [
+            58
+        ],
+        "students": [
+            312,
+            302,
+            313,
+            303,
+            310,
+            311,
+            301,
+            315,
+            319,
+            305,
+            307,
+            306,
+            309,
+            317,
+            316,
+            320,
+            308,
+            304,
+            318,
+            314
+        ]
+    }
+},
+{
+    "model": "common.studentgroup",
+    "pk": 7,
+    "fields": {
+        "name": "7. bekkur",
+        "student_year": "7",
+        "school": 1,
+        "group_managers": [
+            59
+        ],
+        "students": [
+            324,
+            340,
+            339,
+            321,
+            327,
+            326,
+            337,
+            338,
+            330,
+            329,
+            334,
+            331,
+            322,
+            336,
+            333,
+            328,
+            332,
+            335,
+            323,
+            325
+        ]
+    }
+},
+{
+    "model": "common.studentgroup",
+    "pk": 8,
+    "fields": {
+        "name": "8. bekkur",
+        "student_year": "8",
+        "school": 1,
+        "group_managers": [
+            60
+        ],
+        "students": [
+            350,
+            342,
+            360,
+            341,
+            357,
+            353,
+            355,
+            354,
+            358,
+            343,
+            351,
+            345,
+            346,
+            352,
+            356,
+            348,
+            344,
+            349,
+            359,
+            347
+        ]
+    }
+},
+{
+    "model": "common.studentgroup",
+    "pk": 9,
+    "fields": {
+        "name": "9. bekkur",
+        "student_year": "9",
+        "school": 1,
+        "group_managers": [
+            61
+        ],
+        "students": [
+            370,
+            367,
+            376,
+            366,
+            378,
+            374,
+            375,
+            373,
+            380,
+            371,
+            364,
+            377,
+            372,
+            368,
+            362,
+            363,
+            361,
+            365,
+            379,
+            369
+        ]
+    }
+},
+{
+    "model": "common.studentgroup",
+    "pk": 10,
+    "fields": {
+        "name": "10. bekkur",
+        "student_year": "10",
+        "school": 1,
+        "group_managers": [
+            62
+        ],
+        "students": [
+            384,
+            392,
+            386,
+            398,
+            399,
+            397,
+            383,
+            387,
+            393,
+            389,
+            400,
+            394,
+            388,
+            396,
+            391,
+            385,
+            395,
+            382,
+            381,
+            390
+        ]
+    }
+},
+{
+    "model": "common.studentgroup",
+    "pk": 11,
+    "fields": {
+        "name": "1. bekkur",
+        "student_year": "1",
+        "school": 2,
+        "group_managers": [
+            43
+        ],
+        "students": [
+            14,
+            4,
+            1,
+            17,
+            9,
+            5,
+            12,
+            11,
+            7,
+            2,
+            19,
+            16,
+            6,
+            8,
+            10,
+            3,
+            18,
+            20,
+            13,
+            15
+        ]
+    }
+},
+{
+    "model": "common.studentgroup",
+    "pk": 12,
+    "fields": {
+        "name": "2. bekkur",
+        "student_year": "2",
+        "school": 2,
+        "group_managers": [
+            44
+        ],
+        "students": [
+            27,
+            28,
+            24,
+            23,
+            36,
+            25,
+            29,
+            33,
+            22,
+            31,
+            35,
+            30,
+            34,
+            38,
+            32,
+            40,
+            39,
+            26,
+            37,
+            21
+        ]
+    }
+},
+{
+    "model": "common.studentgroup",
+    "pk": 13,
+    "fields": {
+        "name": "3. bekkur",
+        "student_year": "3",
+        "school": 2,
+        "group_managers": [
+            45
+        ],
+        "students": [
+            47,
+            43,
+            49,
+            48,
+            52,
+            60,
+            51,
+            54,
+            46,
+            58,
+            57,
+            50,
+            55,
+            59,
+            44,
+            53,
+            45,
+            42,
+            56,
+            41
+        ]
+    }
+},
+{
+    "model": "common.studentgroup",
+    "pk": 14,
+    "fields": {
+        "name": "4. bekkur",
+        "student_year": "4",
+        "school": 2,
+        "group_managers": [
+            46
+        ],
+        "students": [
+            78,
+            71,
+            76,
+            61,
+            73,
+            67,
+            70,
+            72,
+            69,
+            79,
+            75,
+            64,
+            62,
+            77,
+            63,
+            74,
+            65,
+            68,
+            66,
+            80
+        ]
+    }
+},
+{
+    "model": "common.studentgroup",
+    "pk": 15,
+    "fields": {
+        "name": "5. bekkur",
+        "student_year": "5",
+        "school": 2,
+        "group_managers": [
+            47
+        ],
+        "students": [
+            97,
+            82,
+            93,
+            88,
+            95,
+            81,
+            98,
+            96,
+            86,
+            91,
+            83,
+            84,
+            85,
+            92,
+            87,
+            99,
+            94,
+            90,
+            100,
+            89
+        ]
+    }
+},
+{
+    "model": "common.studentgroup",
+    "pk": 16,
+    "fields": {
+        "name": "6. bekkur",
+        "student_year": "6",
+        "school": 2,
+        "group_managers": [
+            48
+        ],
+        "students": [
+            112,
+            103,
+            105,
+            118,
+            116,
+            102,
+            108,
+            115,
+            101,
+            114,
+            120,
+            117,
+            119,
+            113,
+            109,
+            106,
+            110,
+            104,
+            107,
+            111
+        ]
+    }
+},
+{
+    "model": "common.studentgroup",
+    "pk": 17,
+    "fields": {
+        "name": "7. bekkur",
+        "student_year": "7",
+        "school": 2,
+        "group_managers": [
+            49
+        ],
+        "students": [
+            122,
+            123,
+            140,
+            139,
+            126,
+            137,
+            127,
+            131,
+            132,
+            134,
+            135,
+            133,
+            124,
+            125,
+            130,
+            121,
+            138,
+            128,
+            129,
+            136
+        ]
+    }
+},
+{
+    "model": "common.studentgroup",
+    "pk": 18,
+    "fields": {
+        "name": "8. bekkur",
+        "student_year": "8",
+        "school": 2,
+        "group_managers": [
+            50
+        ],
+        "students": [
+            143,
+            160,
+            145,
+            144,
+            142,
+            153,
+            159,
+            149,
+            148,
+            147,
+            146,
+            151,
+            155,
+            141,
+            150,
+            154,
+            152,
+            157,
+            156,
+            158
+        ]
+    }
+},
+{
+    "model": "common.studentgroup",
+    "pk": 19,
+    "fields": {
+        "name": "9. bekkur",
+        "student_year": "9",
+        "school": 2,
+        "group_managers": [
+            51
+        ],
+        "students": [
+            176,
+            169,
+            173,
+            161,
+            163,
+            166,
+            174,
+            175,
+            164,
+            162,
+            177,
+            172,
+            165,
+            171,
+            167,
+            178,
+            170,
+            180,
+            168,
+            179
+        ]
+    }
+},
+{
+    "model": "common.studentgroup",
+    "pk": 20,
+    "fields": {
+        "name": "10. bekkur",
+        "student_year": "10",
+        "school": 2,
+        "group_managers": [
+            52
+        ],
+        "students": [
+            188,
+            190,
+            185,
+            195,
+            189,
+            196,
+            187,
+            191,
+            181,
+            184,
+            198,
+            200,
+            197,
+            182,
+            194,
+            183,
+            193,
+            186,
+            199,
+            192
+        ]
+    }
+}
+]

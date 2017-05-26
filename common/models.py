@@ -335,15 +335,11 @@ class GroupSurvey(models.Model):
 
 
 class SurveyResult(models.Model):
-    student = models.ForeignKey('Student')
+    student = models.ForeignKey('Student', null=True, blank=True, on_delete=models.SET_NULL)
     created_at = models.DateTimeField(default=timezone.now)
     results = JSONField(null=True, blank=True)
-    reported_by = models.ForeignKey(
-        'Teacher', null=True, blank=True, on_delete=models.SET_NULL
-    )
-    survey = models.ForeignKey(
-        'GroupSurvey', null=True, blank=True, on_delete=models.CASCADE
-    )
+    reported_by = models.ForeignKey('Teacher', null=True, blank=True, on_delete=models.SET_NULL)
+    survey = models.ForeignKey('GroupSurvey', null=True, blank=True, on_delete=models.CASCADE)
     created_at = models.DateField(default=timezone.now)
 
     def _lesskilnings_results(self, input_values):
@@ -400,32 +396,30 @@ class SurveyResult(models.Model):
 
         return hopar
 
-    def _lesfimi_results(self, r, transformation):
-        click_values = r['click_values']
-        input_values = r['input_values']
-
+    def _lesfimi_results(self, click_values, transformation):
         try:
             villur = len(click_values) - 1
-            if (villur < 3):
-                vill = 0
-            elif(villur < 10):
-                vill = villur - 2
-            else:
-                vill = villur * 2 - 11
-            words_read = int(click_values[-1].split(',')[0]) - vill
-            oam = int(round(words_read / 2))
 
-            time_read = [
-                value for key, value in input_values.items() if '_timi' in key.lower()]
-            time = int(round(int(time_read[0]) / 2))
-            oam = str(int(oam / time * 60))
+            if (villur < 3):
+                villur = 0
+            elif(villur < 10):
+                villur -= 2
+            else:
+                villur *= 2
+                villur -= 11
+
+            last_word_num = int(click_values[-1].split(',')[0])
+            vegin_oam = last_word_num - villur
+            vegin_oam = int(round(vegin_oam / 2))
 
             if (transformation):
                 data = transformation.data
-                oam_string = int(data[oam])
-                return [oam_string]
-            else:
-                return [int(oam)]
+                vegin_oam = data[str(vegin_oam)]
+
+            if vegin_oam < 0:
+                vegin_oam = 0
+
+            return [vegin_oam]
         except:
             return [""]
 
@@ -439,7 +433,7 @@ class SurveyResult(models.Model):
             if use_transformation:
                 if self.survey.survey.surveytransformation_set.exists():
                     transformation = self.survey.survey.surveytransformation_set.first()
-            return self._lesfimi_results(self.results, transformation)
+            return self._lesfimi_results(self.results['click_values'], transformation)
         else:
             return self.results['click_values']
 
