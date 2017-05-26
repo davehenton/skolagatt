@@ -33,10 +33,10 @@ venv/bin/activate: requirements.txt
 	touch venv/bin/activate
 
 test: venv skolagatt/production_settings.py clearmigrations
-        ( \
-                source venv/bin/activate; \
-                ./manage.py test common; \
-        )
+	( \
+		source venv/bin/activate; \
+		./manage.py test common; \
+	)
 
 genfixtures: venv skolagatt/production_settings.py
 	./manage.py dumpdata auth.user --format=json --indent=4 --natural-foreign > common/fixtures/auth.json
@@ -46,4 +46,4 @@ clean:
 	find . -name "*.pyc" | xargs rm -f
 
 clearmigrations:
-	find . -name "migrations" -type d| grep -v "site-packages\/django\/db\/migrations"
+	find . -name "migrations" -type d | grep -v "site-packages\/django\/db\/migrations" | xargs rm -rf 
