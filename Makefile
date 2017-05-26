@@ -33,7 +33,10 @@ venv/bin/activate: requirements.txt
 	touch venv/bin/activate
 
 test: venv skolagatt/production_settings.py clearmigrations
-	./manage.py test common
+        ( \
+                source venv/bin/activate; \
+                ./manage.py test common; \
+        )
 
 genfixtures: venv skolagatt/production_settings.py
 	./manage.py dumpdata auth.user --format=json --indent=4 --natural-foreign > common/fixtures/auth.json
