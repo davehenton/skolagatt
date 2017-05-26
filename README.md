@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/menntamalastofnun/skolagatt.svg?branch=master)](https://travis-ci.org/menntamalastofnun/skolagatt)
+
 # Skólagátt
 
 ## Samskiptatæki milli menntamálastofnunnar og grunnskóla landsins
@@ -41,12 +43,12 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-        # 'ENGINE'   : 'django.db.backends.postgresql_psycopg2',
-        # 'NAME'     : 'skolagatt',
-        # 'USER'     : 'user',  # Postgres user that has all privileges for the skolagatt DB
-        # 'PASSWORD' : 'password',  # Password for Postgres user
-        # 'HOST'     : 'localhost',  # Address of postgres server, defaults to localhost (for dev)
-        # 'PORT'     : '5432',
+        # 'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        # 'NAME': 'skolagatt',
+        # 'USER': 'user',  # Postgres user that has all privileges for the skolagatt DB
+        # 'PASSWORD': 'password',  # Password for Postgres user
+        # 'HOST': 'localhost',  # Address of postgres server, defaults to localhost (for dev)
+        # 'PORT': '5432',
     }
 }
 
