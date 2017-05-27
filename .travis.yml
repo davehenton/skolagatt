@@ -7,7 +7,5 @@ install:
   - pip install -r requirements.txt
 addons:
   postgresql: "9.5"
-services:
-  - postgresql
 # command to run tests
 script: make travis-test
