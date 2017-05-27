@@ -23,13 +23,16 @@ class NotificationForm(forms.ModelForm):
 
 
 class FormWithSsnField(forms.ModelForm):
-    def _validate_ssn(data, key):
+    person = True
+
+    def _validate_ssn(self, data, key):
         ssn = data.get(key)
         kt = Kennitala(ssn)
-        if not kt.validate() or not kt.is_personal(ssn):
-            raise forms.ValidationError(
-                {key: "Kennitala ekki rétt slegin inn"}
-            )
+        if not kt.validate():
+            if (self.person and not kt.is_person()) or (not self.person and kt.is_person()):
+                raise forms.ValidationError(
+                    {key: "Kennitala ekki rétt slegin inn"}
+                )
 
     def clean(self):
         cleaned_data = super(FormWithSsnField, self).clean()
@@ -105,6 +108,8 @@ class StudentForm(FormWithSsnField):
 
 
 class SchoolForm(FormWithSsnField):
+    person = False
+
     def __init__(self, *args, **kwargs):
         super(SchoolForm, self).__init__(*args, **kwargs)
         fields_to_update = ['name', 'ssn', 'school_nr', 'address', 'post_code', 'municipality', 'part']
