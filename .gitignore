@@ -21,7 +21,7 @@ pip-selfcheck.json
 /skolagatt/share
 /skolagatt/bin
 *.swp
-*.json
+/*.json
 /backup
 uploads/
 celerybeat-schedule
