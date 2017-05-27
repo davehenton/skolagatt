@@ -10,5 +10,8 @@ addons:
   postgresql: "9.5"
 services:
   - redis-server
+# for codecoverage on codeclimate.com
+env:
+  CODECLIMATE_REPO_TOKEN: 487c91389b4ddd1ea050bef2a1c822db7d54f302aad677daa82cd7ae92adfeb6
 # command to run tests
 script: make travis-test
