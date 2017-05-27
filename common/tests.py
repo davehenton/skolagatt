@@ -13,13 +13,9 @@ class SurveyResultLesfimiCalculatedResultsTests(TestCase):
     fixtures = ['auth', 'common']
 
     def setUp(self):
-        self.surveyresults1 = []
-        self.surveyresults2 = []
         self.school = School.objects.first()
         self.studentgroup1 = self.school.studentgroup_set.all()[0]
-        self.student1 = self.studentgroup1.students.all()[0]
-        self.student2 = self.studentgroup1.students.all()[1]
-        self.student3 = self.studentgroup1.students.all()[2]
+        self.students1 = self.studentgroup1.students.all()
 
         self.survey_type = SurveyType.objects.create(
             identifier='b1_LF',
@@ -56,75 +52,73 @@ class SurveyResultLesfimiCalculatedResultsTests(TestCase):
             studentgroup=self.studentgroup1,
         )
 
-        self.surveyresults1.append(
-            SurveyResult.objects.create(
-                survey=self.groupsurvey1,
-                student=self.student1,
-                results={
-                    'click_values': [
-                        '1,test1',
-                        '11,test2',
-                        '21,test3',
-                    ],
-                    'input_values': [
-                    ],
-                }
-            ))
-        self.surveyresults1.append(
-            SurveyResult.objects.create(
-                survey=self.groupsurvey1,
-                student=self.student2,
-                results={
-                    'click_values': [
-                        '1,test1', '2,test2', '3,test3', '4,test4', '5,test5', '6,test6', '7,test7', '8,test8',
-                        '9,test9', '10,test10', '11,test11', '12,test12', '13,test13', '14,test14', '15,test15',
-                        '16,test16', '17,test17', '18,test18', '19,test19', '20,test20', '100,test10'
-                    ],
-                    'input_values': [
-                    ],
-                }
-            ))
-        self.surveyresults1.append(
-            SurveyResult.objects.create(
-                survey=self.groupsurvey1,
-                student=self.student2,
-                results={
-                    'click_values': [
-                        '1,test1', '2,test2', '3,test3', '4,test4', '5,test5', '6,test6', '7,test7', '8,test8',
-                        '9,test9', '99,test10'
-                    ],
-                    'input_values': [
-                    ],
-                }
-            ))
-        self.surveyresults2.append(
-            SurveyResult.objects.create(
-                survey=self.groupsurvey2,
-                student=self.student3,
-                results={
-                    'click_values': [
-                        '200,test',
-                    ],
-                    'input_values': [
-                    ],
-                }))
+    def _gen_clicked_words(self, num):
+        click_values = []
+        for i in range(1, num + 1):
+            click_values.append('{},word{}'.format(i, i))
+
+        return click_values
 
     def test_lesfimi_calculated_results_2_errors_21_words_no_transformation_eq_10(self):
-        calculated_results = self.surveyresults1[0].calculated_results()
+        click_values = self._gen_clicked_words(2)  # Generate 2 wrong words
+        click_values.append('21,word21')  # Add the last word
+        obj = SurveyResult(
+            survey=self.groupsurvey1,
+            student=self.students1[0],
+            results={
+                'click_values': click_values,
+                'input_values': [],
+            }
+        )
+        calculated_results = obj.calculated_results()
         self.assertEqual(len(calculated_results), 1)
         self.assertEqual(int(calculated_results[0]), 10)
 
     def test_lesfimi_calculated_results_20_errors_100_words_no_transformation_eq_36(self):
-        calculated_results = self.surveyresults1[1].calculated_results()
+        click_values = self._gen_clicked_words(20)  # Generate 20 wrong words
+        click_values.append('100,word100')  # Add the last word
+
+        obj = SurveyResult(
+            survey=self.groupsurvey1,
+            student=self.students1[1],
+            results={
+                'click_values': click_values,
+                'input_values': [],
+            }
+        )
+        calculated_results = obj.calculated_results()
         self.assertEqual(len(calculated_results), 1)
         self.assertEqual(int(calculated_results[0]), 36)
 
     def test_lesfimi_calculated_results_9_errors_99_words_no_transformation_eq_46(self):
-        calculated_results = self.surveyresults1[2].calculated_results()
+        click_values = self._gen_clicked_words(9)  # Generate 9 wrong words
+        click_values.append('99,word99')  # Add the last word
+
+        obj = SurveyResult(
+            survey=self.groupsurvey1,
+            student=self.students1[2],
+            results={
+                'click_values': click_values,
+                'input_values': [],
+            }
+        )
+
+        calculated_results = obj.calculated_results()
         self.assertEqual(len(calculated_results), 1)
         self.assertEqual(int(calculated_results[0]), 46)
 
     def test_lesfimi_calculated_results_with_transformation_of_100_to_79(self):
-        calculated_results = self.surveyresults2[0].calculated_results()
+        obj = SurveyResult(
+            survey=self.groupsurvey2,
+            student=self.students1[3],
+            results={
+                'click_values': [
+                    '200,test',
+                ],
+                'input_values': [
+                ],
+            }
+        )
+        calculated_results = obj.calculated_results()
         self.assertEqual(len(calculated_results), 1)
         self.assertEqual(int(calculated_results[0]), 79)
