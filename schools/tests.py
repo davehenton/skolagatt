@@ -43,3 +43,15 @@ class SchoolListingViewTests(TestCase):
         response = SchoolListing.as_view()(request)
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, reverse('schools:school_detail', kwargs={'pk': school.id}))
+
+    def test_school_list_redirects_to_group_detail_for_teacher(self):
+        school = School.objects.get(name='Akureyrarskólinn')
+        studentgroup = school.studentgroup_set.filter(name='4. bekkur').first()
+        request = self.factory.get(reverse('schools:school_listing'))
+        request.user = studentgroup.group_managers.first().user
+        response = SchoolListing.as_view()(request)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, reverse('schools:group_detail', kwargs={
+            'school_id': school.id,
+            'pk': studentgroup.id
+        }))
