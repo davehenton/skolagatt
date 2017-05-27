@@ -38,6 +38,7 @@ venv/bin/activate: requirements.txt
 test: venv skolagatt/production_settings.py clearmigrations
 	( \
 		source venv/bin/activate; \
+		./manage.py collectstatic; \
 		./manage.py test -v 2; \
 	)
 
