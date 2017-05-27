@@ -85,7 +85,7 @@ class SchoolListing(ListView):
     model = School
 
     def get_context_data(self, **kwargs):
-        context = super(SchoolListing, self).get_context_data(**kwargs)
+        context = {}
         if self.request.user.is_authenticated:
             if self.request.user.is_superuser:
                 context['school_list'] = common_util.slug_sort(
