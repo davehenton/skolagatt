@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from common.models import Student, SurveyResult, GroupSurvey, School, StudentGroup
 from rest_framework import serializers
 import json

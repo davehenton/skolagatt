@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import common.util as cm_util
 
 

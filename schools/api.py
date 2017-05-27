@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from rest_framework import viewsets, permissions
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response

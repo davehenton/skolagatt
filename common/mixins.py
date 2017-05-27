@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from django.core.urlresolvers import reverse_lazy
 from django.contrib.auth.mixins import UserPassesTestMixin
 

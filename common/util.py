@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from django.utils.text import slugify
 from django.core.cache import cache
 from django.core.exceptions import ObjectDoesNotExist
