@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/menntamalastofnun/skolagatt.svg?branch=master)](https://travis-ci.org/menntamalastofnun/skolagatt)
+[![Build Status](https://travis-ci.org/menntamalastofnun/skolagatt.svg?branch=master)](https://travis-ci.org/menntamalastofnun/skolagatt) [![Code Climate](https://codeclimate.com/github/menntamalastofnun/skolagatt/badges/gpa.svg)](https://codeclimate.com/github/menntamalastofnun/skolagatt)
 
 # Skólagátt
 
