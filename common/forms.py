@@ -25,21 +25,31 @@ class NotificationForm(forms.ModelForm):
 class FormWithSsnField(forms.ModelForm):
     person = True
 
-    def _validate_ssn(self, data, key):
-        ssn = data.get(key)
+    def _validate_ssn(self, key):
+        ssn = self.cleaned_data.get(key)
         kt = Kennitala(ssn)
-        if not kt.validate():
-            if (self.person and not kt.is_person()) or (not self.person and kt.is_person()):
-                raise forms.ValidationError(
-                    {key: "Kennitala ekki rétt slegin inn"}
-                )
+        if kt.validate():
+            if self.person:
+                if kt.is_personal(ssn):
+                    return True
+            else:
+                if not kt.is_personal(ssn):
+                    return True
 
-    def clean(self):
-        cleaned_data = super(FormWithSsnField, self).clean()
-        if 'ssn' in cleaned_data:
-            self._validate_ssn(cleaned_data, 'ssn')
-        elif 'username' in cleaned_data:
-            self._validate_ssn(cleaned_data, 'username')
+        self.errors[key] = ['Kennitala ekki rétt slegin inn']
+        return False
+
+    def is_valid(self):
+        valid_ret = super(FormWithSsnField, self).is_valid()
+
+        if 'ssn' in self.cleaned_data:
+            if not self._validate_ssn('ssn'):
+                return False
+        elif 'username' in self.cleaned_data:
+            if not self._validate_ssn('username'):
+                return False
+
+        return valid_ret
 
 
 class ManagerForm(FormWithSsnField):
