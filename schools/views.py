@@ -30,7 +30,7 @@ from kennitala import Kennitala
 
 import common.mixins as common_mixins
 from common.models import (
-    Notification, School, Manager, Teacher, Student,
+    School, Manager, Teacher, Student,
     StudentGroup, GroupSurvey, SurveyResult, SurveyLogin,
     ExampleSurveyQuestion, ExampleSurveyAnswer,
 )
@@ -52,33 +52,6 @@ from schools.tasks import save_example_survey_answers
 
 def lesferill(request):
     return render(request, 'common/lesferill.html')
-
-
-class NotificationCreate(UserPassesTestMixin, CreateView):
-    model = Notification
-    form_class = cm_forms.NotificationForm
-
-    @method_decorator(csrf_exempt)
-    def dispatch(self, request, *args, **kwargs):
-        return super(NotificationCreate, self).dispatch(request, *args, **kwargs)
-
-    def test_func(self):
-        return self.request.user.is_authenticated
-
-    def post(self, *args, **kwargs):
-        try:
-            notification_type = self.request.POST.get('notification_type', None)
-            notification_id = self.request.POST.get('notification_id', None)
-
-            if notification_type and notification_id:
-                Notification.objects.create(
-                    user=self.request.user,
-                    notification_type=notification_type,
-                    notification_id=notification_id)
-
-            return JsonResponse({'result': 'success'})
-        except Exception as e:
-            return JsonResponse({'result': 'error'})
 
 
 class SchoolListing(ListView):
@@ -141,22 +114,6 @@ class SchoolDetail(common_mixins.SchoolEmployeeMixin, DetailView):
             GroupSurvey.objects.filter(
                 studentgroup__in=self.object.studentgroup_set.all()), 'survey')
         context['students'] = self.object.students.all()
-
-        all_messages = common_util.get_messages()
-        messages = []
-        for message in all_messages:
-            if message['file'] is not None:
-                file_name = message['file'].split('/')[-1]
-                file_name = file_name.encode('utf-8')
-                message['file_name'] = file_name
-            messages.append(message)
-
-        if common_util.is_school_teacher(self.request, self.kwargs):
-            context['messages'] = [
-                message for message in messages if message['teachers_allow'] is True
-            ]
-        else:
-            context['messages'] = messages
 
         return context
 

@@ -49,30 +49,7 @@ $(function() {
 	$('#all_students').filterByText($("#search_year"), false, true);
 }); 
 
-//Create notification
-$(document.body).on('click', 'a[data-query="message"]', function(){ 
-	var data = {
-		id               : $(this).attr("data-target").split('-')[1],
-		notification_type: 'message'
-	}
-	console.log(data);
-	$.ajax({
-		url     : $(this).attr("data-url"),
-		type    : "POST",
-		data    : data,
-		success :function(response){},
-		complete:function(){},
-		error   :function (xhr, textStatus, thrownError){
-	        console.log("error doing something");
-	    }
-	});	
-});
-
 $(document).ready(function() {
-	$(document.body).on('click', '#message-header', function(){ 
-		var details = $(this).nextUntil('#message-header').toggle();
-	});
-
 	$("#notes, #notes2").on('click',function(){
 		if($('#textareaid').is(":visible"))
 		{

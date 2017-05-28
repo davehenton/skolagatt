@@ -37,10 +37,6 @@ urlpatterns = [
         views.SchoolDelete.as_view(),
         name='school_delete'),
 
-    url(r'^notification/create/$',
-        views.NotificationCreate.as_view(),
-        name='notification_create'),
-
     url(r'^lesferill/$',
         views.lesferill,
         name='lesferill'),

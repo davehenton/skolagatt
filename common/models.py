@@ -14,18 +14,6 @@ from froala_editor.fields import FroalaField
 from survey.models import Survey
 
 
-class Notification(models.Model):
-    notification_type = models.CharField(max_length=128)
-    notification_id = models.IntegerField()
-    user = models.ForeignKey(User)
-
-    class Meta:
-        unique_together = (("notification_type", "notification_id"),)
-
-    def __str__(self):
-        return self.notification_type
-
-
 class Manager(models.Model):
     ssn = models.CharField(max_length=10, unique=True)
     name = models.CharField(max_length=128)
