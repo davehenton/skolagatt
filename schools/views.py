@@ -142,22 +142,6 @@ class SchoolDetail(common_mixins.SchoolEmployeeMixin, DetailView):
                 studentgroup__in=self.object.studentgroup_set.all()), 'survey')
         context['students'] = self.object.students.all()
 
-        all_messages = common_util.get_messages()
-        messages = []
-        for message in all_messages:
-            if message['file'] is not None:
-                file_name = message['file'].split('/')[-1]
-                file_name = file_name.encode('utf-8')
-                message['file_name'] = file_name
-            messages.append(message)
-
-        if common_util.is_school_teacher(self.request, self.kwargs):
-            context['messages'] = [
-                message for message in messages if message['teachers_allow'] is True
-            ]
-        else:
-            context['messages'] = messages
-
         return context
 
 

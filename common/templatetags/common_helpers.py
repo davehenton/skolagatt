@@ -15,7 +15,7 @@ from common.models import (
     SurveyResult,
     Notification,
 )
-from common.util import get_messages, is_school_teacher
+from common.util import is_school_teacher
 
 register = template.Library()
 
@@ -109,41 +109,6 @@ def get_user_schools(context):
         return {'schools': schools}
     except:
         return {'schools': []}
-
-
-@register.inclusion_tag('common/_message_list.html', takes_context=True)
-def get_user_messages(context, **kwargs):
-    try:
-        messages = []
-        all_messages = get_messages()
-        for message in all_messages:
-            if message['file'] is not None:
-                file_name = message['file'].split('/')[-1]
-                file_name = file_name.encode('utf-8')
-                message['file_name'] = file_name
-            messages.append(message)
-
-        if is_school_teacher(context['request'], kwargs):
-            context['messages'] = [
-                message for message in messages if message['teachers_allow'] is True
-            ]
-        else:
-            context['messages'] = messages
-
-        return {'messages': messages}
-    except Exception as e:
-        return {'messages': []}
-
-
-@register.simple_tag(takes_context=True)
-def get_nr_notifications(context, messages):
-    message_ids = [m['pk'] for m in messages]
-    n = Notification.objects.filter(
-        user=context.request.user).filter(
-        notification_type='message').filter(
-        notification_id__in=message_ids
-    )
-    return len(messages) - len(n)
 
 
 @register.simple_tag(takes_context=True)

@@ -12,12 +12,6 @@ from uuid import uuid4
 import common.models as cm_models
 
 
-def get_messages():
-    """Get all messages from innrivefur"""
-    # TODO: implement for native app
-    return []
-
-
 def get_current_school(path_variables):
     if 'school_id' in path_variables:
         return path_variables['school_id']
