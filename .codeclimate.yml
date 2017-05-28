@@ -1,2 +1,2 @@
-exclude_files:
+exclude_paths:
   - "*/tests.py"
