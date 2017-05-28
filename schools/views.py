@@ -30,7 +30,7 @@ from kennitala import Kennitala
 
 import common.mixins as common_mixins
 from common.models import (
-    Notification, School, Manager, Teacher, Student,
+    School, Manager, Teacher, Student,
     StudentGroup, GroupSurvey, SurveyResult, SurveyLogin,
     ExampleSurveyQuestion, ExampleSurveyAnswer,
 )
@@ -52,33 +52,6 @@ from schools.tasks import save_example_survey_answers
 
 def lesferill(request):
     return render(request, 'common/lesferill.html')
-
-
-class NotificationCreate(UserPassesTestMixin, CreateView):
-    model = Notification
-    form_class = cm_forms.NotificationForm
-
-    @method_decorator(csrf_exempt)
-    def dispatch(self, request, *args, **kwargs):
-        return super(NotificationCreate, self).dispatch(request, *args, **kwargs)
-
-    def test_func(self):
-        return self.request.user.is_authenticated
-
-    def post(self, *args, **kwargs):
-        try:
-            notification_type = self.request.POST.get('notification_type', None)
-            notification_id = self.request.POST.get('notification_id', None)
-
-            if notification_type and notification_id:
-                Notification.objects.create(
-                    user=self.request.user,
-                    notification_type=notification_type,
-                    notification_id=notification_id)
-
-            return JsonResponse({'result': 'success'})
-        except Exception as e:
-            return JsonResponse({'result': 'error'})
 
 
 class SchoolListing(ListView):
