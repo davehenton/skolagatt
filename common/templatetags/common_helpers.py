@@ -13,7 +13,6 @@ from common.models import (
     Teacher,
     School,
     SurveyResult,
-    Notification,
 )
 from common.util import is_school_teacher
 

@@ -5,21 +5,10 @@ from django.contrib.auth.models import User
 from common.models import (
     Manager, Teacher, Student,
     School, StudentGroup, GroupSurvey,
-    SurveyResult, SurveyLogin, Notification,
+    SurveyResult, SurveyLogin,
     ExampleSurveyQuestion, ExampleSurveyAnswer,
 )
 from common.util import add_field_classes
-
-
-class NotificationForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
-        super(NotificationForm, self).__init__(*args, **kwargs)
-        add_field_classes(self, self.fields)
-
-    class Meta:
-        model = Notification
-        fields = ['notification_type', 'notification_id']
-        widgets = {'user': forms.HiddenInput()}
 
 
 class FormWithSsnField(forms.ModelForm):
