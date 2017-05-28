@@ -22,18 +22,40 @@ class NotificationForm(forms.ModelForm):
         widgets = {'user': forms.HiddenInput()}
 
 
-class ManagerForm(forms.ModelForm):
+class FormWithSsnField(forms.ModelForm):
+    person = True
+
+    def _validate_ssn(self, key):
+        ssn = self.cleaned_data.get(key)
+        kt = Kennitala(ssn)
+        if kt.validate():
+            if self.person:
+                if kt.is_personal(ssn):
+                    return True
+            else:
+                if not kt.is_personal(ssn):
+                    return True
+
+        self.errors[key] = ['Kennitala ekki rétt slegin inn']
+        return False
+
+    def is_valid(self):
+        valid_ret = super(FormWithSsnField, self).is_valid()
+
+        if 'ssn' in self.cleaned_data:
+            if not self._validate_ssn('ssn'):
+                return False
+        elif 'username' in self.cleaned_data:
+            if not self._validate_ssn('username'):
+                return False
+
+        return valid_ret
+
+
+class ManagerForm(FormWithSsnField):
     def __init__(self, *args, **kwargs):
         super(ManagerForm, self).__init__(*args, **kwargs)
         add_field_classes(self, self.fields)
-
-    def clean(self):
-        cleaned_data = super(ManagerForm, self).clean()
-        kt = Kennitala(cleaned_data.get('ssn'))
-        if not kt.validate() or not kt.is_personal(cleaned_data.get('ssn')):
-            raise forms.ValidationError(
-                {"ssn": "Kennitala ekki rétt slegin inn"}
-            )
 
     class Meta:
         model = Manager
@@ -54,18 +76,10 @@ class ManagerForm(forms.ModelForm):
         }
 
 
-class TeacherForm(forms.ModelForm):
+class TeacherForm(FormWithSsnField):
     def __init__(self, *args, **kwargs):
         super(TeacherForm, self).__init__(*args, **kwargs)
         add_field_classes(self, self.fields)
-
-    def clean(self):
-        cleaned_data = super(TeacherForm, self).clean()
-        kt = Kennitala(cleaned_data.get('ssn'))
-        if not kt.validate() or not kt.is_personal(cleaned_data.get('ssn')):
-            raise forms.ValidationError(
-                {"ssn": "Kennitala ekki rétt slegin inn"}
-            )
 
     class Meta:
         model = Teacher
@@ -84,19 +98,10 @@ class TeacherForm(forms.ModelForm):
         }
 
 
-class StudentForm(forms.ModelForm):
+class StudentForm(FormWithSsnField):
     def __init__(self, *args, **kwargs):
         super(StudentForm, self).__init__(*args, **kwargs)
         add_field_classes(self, self.fields)
-
-    def clean(self):
-        cleaned_data = super(StudentForm, self).clean()
-        kt = Kennitala(cleaned_data.get('ssn'))
-        if not kt.validate() or not kt.is_personal(cleaned_data.get('ssn')):
-            self.fields['ssn'].error_messages = 'Kennitala ekki rétt'
-            raise forms.ValidationError(
-                {"ssn": "Kennitala ekki rétt slegin inn"}
-            )
 
     class Meta:
         model = Student
@@ -112,37 +117,19 @@ class StudentForm(forms.ModelForm):
         }
 
 
-class SchoolForm(forms.ModelForm):
+class SchoolForm(FormWithSsnField):
+    person = False
+
     def __init__(self, *args, **kwargs):
         super(SchoolForm, self).__init__(*args, **kwargs)
         fields_to_update = ['name', 'ssn', 'school_nr', 'address', 'post_code', 'municipality', 'part']
         add_field_classes(self, fields_to_update)
-        self.fields['managers'].widget.attrs.update(
-            {
-                'class': 'form-control input-lg col-md-6 col-xs-12',
-                'size': '4'
-            }
-        )
-        self.fields['teachers'].widget.attrs.update(
-            {
-                'class': 'form-control input-lg col-md-6 col-xs-12',
-                'size': '6'
-            }
-        )
-        self.fields['students'].widget.attrs.update(
-            {
-                'class': 'form-control input-lg col-md-6 col-xs-12',
-                'size': '12'
-            }
-        )
-
-    def clean(self):
-        cleaned_data = super(SchoolForm, self).clean()
-        kt = Kennitala(cleaned_data.get('ssn'))
-        if not kt.validate() or kt.is_personal(cleaned_data.get('ssn')):
-            raise forms.ValidationError(
-                {"ssn": "Kennitala ekki rétt slegin inn"}
-            )
+        add_field_classes(self, ['managers', 'teachers', 'students'], cssdef={
+            'class': 'form-control input-lg col-md-6 col-xs-12',
+        })
+        self.fields['managers'].widget.attrs.update({'size': 4})
+        self.fields['teachers'].widget.attrs.update({'size': 6})
+        self.fields['students'].widget.attrs.update({'size': 12})
 
     class Meta:
         model = School
@@ -223,18 +210,10 @@ class SurveyLoginForm(forms.ModelForm):
         }
 
 
-class SuperUserForm(forms.ModelForm):
+class SuperUserForm(FormWithSsnField):
     def __init__(self, *args, **kwargs):
         super(SuperUserForm, self).__init__(*args, **kwargs)
-        self.fields['username'].widget.attrs.update({'class': 'form-control'})
-
-    def clean(self):
-        cleaned_data = super(SuperUserForm, self).clean()
-        kt = Kennitala(cleaned_data.get('username'))
-        if not kt.validate() or not kt.is_personal(cleaned_data.get('username')):
-            raise forms.ValidationError(
-                {"ssn": "Kennitala ekki rétt slegin inn"}
-            )
+        add_field_classes(self, ['username'])
 
     class Meta:
         model = User

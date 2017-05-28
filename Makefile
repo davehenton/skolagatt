@@ -38,14 +38,14 @@ venv/bin/activate: requirements.txt
 test: venv skolagatt/production_settings.py clearmigrations
 	( \
 		source venv/bin/activate; \
-		./manage.py collectstatic; \
+		./manage.py collectstatic --no-input; \
 		./manage.py test -v 2; \
 	)
 
 travis-test: skolagatt/production_settings.py 
 	find ~/virtualenv/ -name "migrations" -type d | grep -v "site-packages\/django\/db\/migrations" | xargs rm -rf
 	pep8 -v
-	./manage.py collectstatic
+	./manage.py collectstatic --no-input
 	coverage run ./manage.py test -v 2
 
 genfixtures: venv skolagatt/production_settings.py
