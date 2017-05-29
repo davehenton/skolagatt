@@ -48,21 +48,6 @@ class UtilTests(TestCase):
         ret = common.util.get_current_school(kwargs)
         self.assertEqual(ret, 1000)
 
-    def test_util_get_current_studentgroup_returns_studentgroup_id(self):
-        kwargs = {'studentgroup_id': 1000}
-        ret = common.util.get_current_studentgroup(kwargs)
-        self.assertEqual(ret, 1000)
-
-    def test_util_get_current_studentgroup_returns_pk(self):
-        kwargs = {'pk': 1000}
-        ret = common.util.get_current_studentgroup(kwargs)
-        self.assertEqual(ret, 1000)
-
-    def test_util_get_current_studentgroup_prefers_studentgroup_id_over_pk(self):
-        kwargs = {'studentgroup_id': 1000, 'pk': 1001}
-        ret = common.util.get_current_studentgroup(kwargs)
-        self.assertEqual(ret, 1000)
-
     def test_util_get_current_school_returns_none_without_school_id_or_pk(self):
         kwargs = {'thing': 1000}
         ret = common.util.get_current_school(kwargs)
@@ -170,16 +155,6 @@ class UtilTests(TestCase):
         user = teacher.user
         request = self._generate_request(user)
         kwargs = {'school_id': self.school_a.id, 'pk': teacher.studentgroup_set.first().id}
-        self.assertTrue(request.user.is_authenticated)
-        ret = common.util.is_school_teacher(request, kwargs)
-        self.assertFalse(ret)
-
-    def test_is_school_teacher_returns_false_if_it_gets_a_teacher_from_same_school_but_another_group(self):
-        teacher = self.school_a.teachers.all()[1]
-        otherstudentgroup = self.school_a.teachers.all()[0].studentgroup_set.first()
-        user = teacher.user
-        request = self._generate_request(user)
-        kwargs = {'school_id': self.school_a.id, 'pk': otherstudentgroup.id}
         self.assertTrue(request.user.is_authenticated)
         ret = common.util.is_school_teacher(request, kwargs)
         self.assertFalse(ret)

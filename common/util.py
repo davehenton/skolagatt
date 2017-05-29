@@ -19,13 +19,6 @@ def get_current_school(path_variables):
         return path_variables['pk']
     return None
 
-def get_current_studentgroup(path_variables):
-    if 'studentgroup_id' in path_variables:
-        return path_variables['studentgroup_id']
-    elif 'pk' in path_variables:
-        return path_variables['pk']
-    return None
-
 
 def is_school_manager(request, kwargs):
     if not request.user.is_authenticated:
@@ -60,20 +53,18 @@ def is_school_teacher(request, kwargs):
         return True
     school_id = get_current_school(kwargs)
     teacher = cm_models.Teacher.objects.filter(user=request.user)
-    if school_id and cm_models.School.objects.filter(
-        pk=school_id,
-        teachers=teacher,
-    ):
-        studentgroup_id = get_current_studentgroup(kwargs)
-        if studentgroup_id:
-            if cm_models.StudentGroup.objects.filter(
-                pk=studentgroup_id,
-                group_managers=teacher,
-            ):
-                return True
-        else:
+    if not teacher:
+        return False
+    if school_id:
+        if cm_models.School.objects.filter(
+            pk=school_id,
+            teachers=teacher,
+        ):
             return True
-
+        else:
+            return False
+    elif teacher:
+        return True
     return False
 
 
@@ -87,8 +78,7 @@ def is_teacher(request):
 def is_group_manager(request, kwargs):
     if not request.user.is_authenticated:
         return False
-
-    if request.user.is_superuser:
+    elif request.user.is_superuser:
         return True
 
     studentgroup_id = None

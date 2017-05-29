@@ -2,7 +2,12 @@
 from django.core.urlresolvers import reverse_lazy
 from django.contrib.auth.mixins import UserPassesTestMixin
 
-from common.util import is_school_manager, is_school_teacher
+from common.util import (
+    is_school_manager,
+    is_school_teacher,
+    groupsurvey_is_open,
+    is_group_manager,
+)
 
 
 class SchoolEmployeeMixin(UserPassesTestMixin):
@@ -42,3 +47,10 @@ class GroupSurveyOpenMixin(UserPassesTestMixin):
 
     def test_func(self):
         return groupsurvey_is_open(self.request, self.kwargs)
+
+
+class GroupManagerMixin(UserPassesTestMixin):
+    login_url = reverse_lazy('denied')
+
+    def test_func(self):
+        return is_group_manager(self.request, self.kwargs)
