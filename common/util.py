@@ -21,10 +21,10 @@ def get_current_school(path_variables):
 
 
 def is_school_manager(request, kwargs):
-    if request.user.is_superuser:
-        return True
-    elif not request.user.is_authenticated:
+    if not request.user.is_authenticated:
         return False
+    elif request.user.is_superuser:
+        return True
 
     try:
         school_id = get_current_school(kwargs)
