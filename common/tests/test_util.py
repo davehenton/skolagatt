@@ -6,7 +6,9 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from ..models import (
     School,
+    GroupSurvey,
 )
+from survey.models import Survey
 import common.util
 
 # Tests for common.util
@@ -259,3 +261,102 @@ class UtilTests(TestCase):
         ret = common.util.get_studentgroup_id(mock_request, kwargs)
         myMockModel.objects.get.assert_called_once_with(pk=1001)
         self.assertEqual(ret, None)
+
+    def test_is_group_manager_returns_false_when_user_is_not_authenticated(self):
+        mock_request = mock.Mock()
+        mock_request.user.is_authenticated = False
+        ret = common.util.is_group_manager(mock_request, {'pk': self.school_a.id})
+        self.assertFalse(ret)
+
+    def test_is_group_manager_returns_true_when_user_is_superuser(self):
+        mock_request = mock.Mock()
+        mock_request.user.is_authenticated = True
+        mock_request.user.is_superuser = True
+        ret = common.util.is_group_manager(mock_request, {'pk': self.school_a.id})
+        self.assertTrue(ret)
+
+    @mock.patch('common.util.get_studentgroup_id')
+    def test_is_group_manager_returns_true_if_group_manager_asks(self, myMock):
+        studentgroup = self.school_a.studentgroup_set.first()
+        myMock.return_value = studentgroup.id
+        user = studentgroup.group_managers.first().user
+        request = self._generate_request(user)
+        self.assertTrue(request.user.is_authenticated)
+        kwargs = {'hello': 'world'}
+        ret = common.util.is_group_manager(request, kwargs)
+        myMock.assert_called_once_with(request, kwargs)
+        self.assertTrue(ret)
+
+    @mock.patch('common.util.get_studentgroup_id')
+    def test_is_group_manager_returns_false_if_non_group_manager_asks(self, myMock):
+        studentgroup = self.school_a.studentgroup_set.all()[0]
+        otherstudentgroup = self.school_a.studentgroup_set.all()[1]
+        myMock.return_value = studentgroup.id
+        user = otherstudentgroup.group_managers.first().user
+        request = self._generate_request(user)
+        self.assertTrue(request.user.is_authenticated)
+        kwargs = {'hello': 'world'}
+        ret = common.util.is_group_manager(request, kwargs)
+        myMock.assert_called_once_with(request, kwargs)
+        self.assertFalse(ret)
+
+    def test_get_groupsurvey_id_returns_groupsurvey_id_if_in_kwargs(self):
+        kwargs = {'groupsurvey_id': 1000}
+        ret = common.util.get_groupsurvey_id(kwargs)
+        self.assertEqual(ret, kwargs['groupsurvey_id'])
+
+    def test_get_groupsurvey_id_returns_survey_id_if_in_kwargs(self):
+        kwargs = {'survey_id': 1000}
+        ret = common.util.get_groupsurvey_id(kwargs)
+        self.assertEqual(ret, kwargs['survey_id'])
+
+    def test_get_groupsurvey_id_returns_pk_if_in_kwargs(self):
+        kwargs = {'pk': 1000}
+        ret = common.util.get_groupsurvey_id(kwargs)
+        self.assertEqual(ret, kwargs['pk'])
+
+    def test_groupsurvey_is_open_returns_false_when_user_is_not_authenticated(self):
+        mock_request = mock.Mock()
+        mock_request.user.is_authenticated = False
+        ret = common.util.groupsurvey_is_open(mock_request, {'pk': 1})
+        self.assertFalse(ret)
+
+    def test_groupsurvey_is_open_returns_true_when_user_is_superuser(self):
+        mock_request = mock.Mock()
+        mock_request.user.is_authenticated = True
+        mock_request.user.is_superuser = True
+        ret = common.util.groupsurvey_is_open(mock_request, {'pk': 1})
+        self.assertTrue(ret)
+
+    @mock.patch('common.util.get_groupsurvey_id')
+    def test_groupsurvey_is_open_returns_false_if_get_groupsurvey_id_returns_none(self, myMock):
+        mock_request = mock.Mock()
+        mock_request.user.is_authenticated = True
+        mock_request.user.is_superuser = False
+
+        myMock.return_value = None
+        kwargs = {'pk': 1000}
+        ret = common.util.groupsurvey_is_open(mock_request, kwargs)
+        myMock.assert_called_once_with(kwargs)
+        self.assertFalse(ret)
+
+    @mock.patch('common.util.get_groupsurvey_id')
+    @mock.patch('common.models.GroupSurvey')
+    def test_groupsurvey_is_open_returns_true_for_open_groupsurvey(self, myMockModel, myMockFunction):
+        myMockObj2 = mock.Mock()
+        myMockObj2.is_open.return_value = True
+        myMockObj1 = mock.Mock()
+        myMockObj1.first.return_value = myMockObj2
+        myMockModel.objects.filter.return_value = myMockObj1
+        myMockFunction.return_value = 1000
+        mock_request = mock.Mock()
+        mock_request.user.is_authenticated = True
+        mock_request.user.is_superuser = False
+        kwargs = {'hello': 'world'}
+
+        ret = common.util.groupsurvey_is_open(mock_request, kwargs)
+        myMockFunction.assert_called_once_with(kwargs)
+        myMockModel.objects.filter.assert_called_once_with(pk=1000)
+        myMockObj1.first.assert_called_once()
+        myMockObj2.is_open.assert_called_once()
+        self.assertTrue(ret)
