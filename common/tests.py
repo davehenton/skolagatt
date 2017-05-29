@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-from django.test import TestCase, mock
-from django import forms
+from django.test import TestCase, mock, RequestFactory
+from django.core.urlresolvers import reverse
 
 from .models import (
     School,
@@ -24,8 +24,14 @@ class UtilTests(TestCase):
 
     def setUp(self):
         super(UtilTests, self).setUp()
+        self.factory = RequestFactory()
         self.school_a = School.objects.all()[0]
         self.school_b = School.objects.all()[1]
+
+    def _generate_request(self, user):
+        request = self.factory.get(reverse('index'))
+        request.user = user
+        return request
 
     def test_util_get_current_school_returns_school_id(self):
         kwargs = {'school_id': 1000}
@@ -35,6 +41,26 @@ class UtilTests(TestCase):
     def test_util_get_current_school_returns_pk(self):
         kwargs = {'pk': 1000}
         ret = common.util.get_current_school(kwargs)
+        self.assertEqual(ret, 1000)
+
+    def test_util_get_current_school_prefers_school_id_over_pk(self):
+        kwargs = {'school_id': 1000, 'pk': 1001}
+        ret = common.util.get_current_school(kwargs)
+        self.assertEqual(ret, 1000)
+
+    def test_util_get_current_studentgroup_returns_studentgroup_id(self):
+        kwargs = {'studentgroup_id': 1000}
+        ret = common.util.get_current_studentgroup(kwargs)
+        self.assertEqual(ret, 1000)
+
+    def test_util_get_current_studentgroup_returns_pk(self):
+        kwargs = {'pk': 1000}
+        ret = common.util.get_current_studentgroup(kwargs)
+        self.assertEqual(ret, 1000)
+
+    def test_util_get_current_studentgroup_prefers_studentgroup_id_over_pk(self):
+        kwargs = {'studentgroup_id': 1000, 'pk': 1001}
+        ret = common.util.get_current_studentgroup(kwargs)
         self.assertEqual(ret, 1000)
 
     def test_util_get_current_school_returns_none_without_school_id_or_pk(self):
@@ -53,6 +79,133 @@ class UtilTests(TestCase):
         mock_request.user.is_authenticated = False
         ret = common.util.is_school_manager(mock_request, {})
         self.assertFalse(ret)
+
+    def test_is_school_manager_returns_true_if_logged_in_as_manager(self):
+        user = self.school_a.managers.first().user
+        request = self._generate_request(user)
+        self.assertTrue(request.user.is_authenticated)
+        ret = common.util.is_school_manager(request, {'pk': self.school_a.id})
+        self.assertTrue(ret)
+
+    def test_is_school_manager_returns_false_if_logged_in_as_teacher(self):
+        user = self.school_a.teachers.first().user
+        request = self._generate_request(user)
+        self.assertTrue(request.user.is_authenticated)
+        ret = common.util.is_school_manager(request, {'pk': self.school_a.id})
+        self.assertFalse(ret)
+
+    def test_is_school_manager_returns_false_if_logged_in_as_manager_for_another_school(self):
+        user = self.school_a.managers.first().user
+        request = self._generate_request(user)
+        self.assertTrue(request.user.is_authenticated)
+        ret = common.util.is_school_manager(request, {'pk': self.school_b.id})
+        self.assertFalse(ret)
+
+    @mock.patch('common.util.get_current_school')
+    def test_is_school_manager_returns_false_on_exception(self, myMock):
+        myMock.side_effect = Exception("I've excepted")
+        user = self.school_a.managers.first().user
+        request = self._generate_request(user)
+        self.assertTrue(request.user.is_authenticated)
+        kwargs = {'pk': self.school_a.id}
+        ret = common.util.is_school_manager(request, kwargs)
+        myMock.assert_called_once_with(kwargs)
+        self.assertFalse(ret)
+
+    def test_is_manager_returns_false_when_user_is_unauthenticated(self):
+        mock_request = mock.Mock()
+        mock_request.user.is_authenticated = False
+        ret = common.util.is_manager(mock_request)
+        self.assertFalse(ret)
+
+    def test_is_manager_returns_false_when_user_is_not_manager(self):
+        user = self.school_a.teachers.first().user
+        request = self._generate_request(user)
+        self.assertTrue(request.user.is_authenticated)
+        ret = common.util.is_manager(request)
+        self.assertFalse(ret)
+
+    def test_is_manager_returns_true_when_user_is_manager(self):
+        user = self.school_a.managers.first().user
+        request = self._generate_request(user)
+        self.assertTrue(request.user.is_authenticated)
+        ret = common.util.is_manager(request)
+        self.assertTrue(ret)
+
+    def test_is_school_teacher_returns_false_when_user_is_not_authenticated(self):
+        mock_request = mock.Mock()
+        mock_request.user.is_authenticated = False
+        ret = common.util.is_school_teacher(mock_request, {'pk': self.school_a.id})
+        self.assertFalse(ret)
+
+    def test_is_school_teacher_returns_true_when_user_is_superuser(self):
+        mock_request = mock.Mock()
+        mock_request.user.is_authenticated = True
+        mock_request.user.is_superuser = True
+        ret = common.util.is_school_teacher(mock_request, {'pk': self.school_a.id})
+        self.assertTrue(ret)
+
+    @mock.patch('common.util.is_school_manager')
+    def test_is_school_teacher_calls_is_school_manager_and_returns_true_if_true(self, myMock):
+        myMock.return_value = True
+        mock_request = mock.Mock()
+        mock_request.user.is_authenticated = True
+        mock_request.user.is_superuser = False
+        kwargs = {'pk': 1000}
+        ret = common.util.is_school_teacher(mock_request, kwargs)
+        myMock.assert_called_once_with(mock_request, kwargs)
+        self.assertTrue(ret)
+
+    def test_is_school_teacher_returns_true_if_it_gets_a_real_school_teacher(self):
+        teacher = self.school_a.teachers.first()
+        user = teacher.user
+        request = self._generate_request(user)
+        kwargs = {'school_id': self.school_a.id, 'pk': teacher.studentgroup_set.first().id}
+        self.assertTrue(request.user.is_authenticated)
+        ret = common.util.is_school_teacher(request, kwargs)
+        self.assertTrue(ret)
+
+    def test_is_school_teacher_returns_false_if_it_gets_a_teacher_from_another_school(self):
+        teacher = self.school_b.teachers.first()
+        user = teacher.user
+        request = self._generate_request(user)
+        kwargs = {'school_id': self.school_a.id, 'pk': teacher.studentgroup_set.first().id}
+        self.assertTrue(request.user.is_authenticated)
+        ret = common.util.is_school_teacher(request, kwargs)
+        self.assertFalse(ret)
+
+    def test_is_school_teacher_returns_false_if_it_gets_a_teacher_from_same_school_but_another_group(self):
+        teacher = self.school_a.teachers.all()[1]
+        otherstudentgroup = self.school_a.teachers.all()[0].studentgroup_set.first()
+        user = teacher.user
+        request = self._generate_request(user)
+        kwargs = {'school_id': self.school_a.id, 'pk': otherstudentgroup.id}
+        self.assertTrue(request.user.is_authenticated)
+        ret = common.util.is_school_teacher(request, kwargs)
+        self.assertFalse(ret)
+
+    def test_is_teacher_returns_false_when_user_is_not_authenticated(self):
+        mock_request = mock.Mock()
+        mock_request.user.is_authenticated = False
+        ret = common.util.is_teacher(mock_request)
+        self.assertFalse(ret)
+
+    def test_is_teacher_returns_true_when_user_is_teacher(self):
+        teacher = self.school_a.teachers.first()
+        user = teacher.user
+        request = self._generate_request(user)
+        self.assertTrue(request.user.is_authenticated)
+        ret = common.util.is_teacher(request)
+        self.assertTrue(ret)
+
+    def test_is_teacher_returns_false_when_user_is_not_teacher(self):
+        manager = self.school_a.managers.first()
+        user = manager.user
+        request = self._generate_request(user)
+        self.assertTrue(request.user.is_authenticated)
+        ret = common.util.is_teacher(request)
+        self.assertFalse(ret)
+
 
 
 class SurveyResultLesfimiCalculatedResultsTests(TestCase):
