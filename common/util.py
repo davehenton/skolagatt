@@ -129,6 +129,7 @@ def get_groupsurvey_id(kwargs):
 
     return groupsurvey_id
 
+
 def groupsurvey_is_open(request, kwargs):
     if not request.user.is_authenticated:
         return False
