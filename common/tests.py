@@ -181,6 +181,7 @@ class UtilTests(TestCase):
         ret = common.util.is_teacher(request)
         self.assertFalse(ret)
 
+    # XXX: Add tests for common.util.is_group_manager()
 
 
 class SurveyResultLesfimiCalculatedResultsTests(TestCase):
