@@ -330,6 +330,9 @@ class SurveyResult(models.Model):
     survey = models.ForeignKey('GroupSurvey', null=True, blank=True, on_delete=models.CASCADE)
     created_at = models.DateField(default=timezone.now)
 
+    class Meta:
+        unique_together = (("student", "survey"))
+
     def _lesskilnings_results(self, input_values):
         '''
         Skilum niðurstöðum prófs í lesskilningi
