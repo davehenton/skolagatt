@@ -22,6 +22,7 @@ class SurveyResultLesfimiCalculatedResultsTests(TestCase):
     fixtures = ['auth', 'common']
 
     def setUp(self):
+        super(SurveyResultLesfimiCalculatedResultsTests, self).setUp()
         self.school = School.objects.first()
         self.studentgroup1 = self.school.studentgroup_set.all()[0]
         self.students1 = self.studentgroup1.students.all()
@@ -135,6 +136,7 @@ class SurveyResultLesfimiCalculatedResultsTests(TestCase):
 
 class FormWithSsnFieldTests(TestCase):
     def setUp(self):
+        super(FormWithSsnFieldTests, self).setUp()
         self.school_testdict = {
             'name': 'Formlegi skólinn',
             'ssn': '5708150320',
