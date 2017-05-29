@@ -28,5 +28,5 @@ ratings:
   - "**.rb"
 exclude_paths:
 - vendor/
-- "*/tests.py"
+- "*/tests/test_*.py"
 - static/
