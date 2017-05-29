@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from django.test import TestCase
+from django.test import TestCase, mock
 from django import forms
 
 from .models import (
@@ -16,6 +16,43 @@ from survey.models import (
     SurveyType,
     SurveyTransformation,
 )
+import common.util
+
+
+class UtilTests(TestCase):
+    fixtures = ['auth', 'common']
+
+    def setUp(self):
+        super(UtilTests, self).setUp()
+        self.school_a = School.objects.all()[0]
+        self.school_b = School.objects.all()[1]
+
+    def test_util_get_current_school_returns_school_id(self):
+        kwargs = {'school_id': 1000}
+        ret = common.util.get_current_school(kwargs)
+        self.assertEqual(ret, 1000)
+
+    def test_util_get_current_school_returns_pk(self):
+        kwargs = {'pk': 1000}
+        ret = common.util.get_current_school(kwargs)
+        self.assertEqual(ret, 1000)
+
+    def test_util_get_current_school_returns_none_without_school_id_or_pk(self):
+        kwargs = {'thing': 1000}
+        ret = common.util.get_current_school(kwargs)
+        self.assertEqual(ret, None)
+
+    def test_is_school_manager_returns_true_for_superuser(self):
+        mock_request = mock.Mock()
+        mock_request.user.is_superuser = True
+        ret = common.util.is_school_manager(mock_request, {})
+        self.assertTrue(ret)
+
+    def test_is_school_manager_returns_false_if_not_logged_in(self):
+        mock_request = mock.Mock()
+        mock_request.user.is_authenticated = False
+        ret = common.util.is_school_manager(mock_request, {})
+        self.assertFalse(ret)
 
 
 class SurveyResultLesfimiCalculatedResultsTests(TestCase):
