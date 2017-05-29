@@ -357,6 +357,6 @@ class UtilTests(TestCase):
         ret = common.util.groupsurvey_is_open(mock_request, kwargs)
         myMockFunction.assert_called_once_with(kwargs)
         myMockModel.objects.filter.assert_called_once_with(pk=1000)
-        myMockObj1.first.assert_called_once()
-        myMockObj2.is_open.assert_called_once()
+        myMockObj1.first.assert_called_once_with()
+        myMockObj2.is_open.assert_called_once_with()
         self.assertTrue(ret)
