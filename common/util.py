@@ -75,14 +75,8 @@ def is_teacher(request):
     return False
 
 
-def is_group_manager(request, kwargs):
-    if not request.user.is_authenticated:
-        return False
-    elif request.user.is_superuser:
-        return True
-
+def get_studentgroup_id(request, kwargs):
     studentgroup_id = None
-
     try:
         if 'student_group' in kwargs:
             studentgroup_id = kwargs['student_group']
@@ -99,16 +93,28 @@ def is_group_manager(request, kwargs):
         elif 'bekkur' in request.path and 'pk' in kwargs:
             studentgroup_id = kwargs['pk']
         elif 'nemandi' in request.path and 'pk' in kwargs:
-            studentgroup_id = cm_models.StudentGroup.objects.filter(students=kwargs['pk']).id
+            studentgroup_id = cm_models.StudentGroup.objects.filter(students=kwargs['pk']).first().id
     except (ObjectDoesNotExist, AttributeError):
-        return False
+        return None
     else:
-        if studentgroup_id and cm_models.StudentGroup.objects.filter(
-            pk=studentgroup_id,
-            group_managers=cm_models.Teacher.objects.filter(user=request.user)
-        ):
-            return True
-    return False
+        return studentgroup_id
+
+
+def is_group_manager(request, kwargs):
+    if not request.user.is_authenticated:
+        return False
+    elif request.user.is_superuser:
+        return True
+
+    studentgroup_id = get_studentgroup_id(request, kwargs)
+
+    if studentgroup_id and cm_models.StudentGroup.objects.filter(
+        pk=studentgroup_id,
+        group_managers=cm_models.Teacher.objects.filter(user=request.user)
+    ):
+        return True
+    else:
+        return False
 
 
 def groupsurvey_is_open(request, kwargs):
