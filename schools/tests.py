@@ -11,14 +11,72 @@ from common.models import (
 )
 from .views import (
     SchoolListing,
+    SchoolDetail,
 )
 from skolagatt.test_utils import kennitala_get
+from common.util import slug_sort
+
+
+class SchoolDetailViewTests(TestCase):
+    fixtures = ['auth', 'common']
+
+    def setUp(self):
+        super(SchoolDetailViewTests, self).setUp()
+        self.client = Client()
+        self.factory = RequestFactory()
+        self.school = School.objects.get(name='Akureyrarskólinn')
+
+    def _call_school_detail_view(self, user):
+        kwargs = {'pk': self.school.id}
+        request = self.factory.get(reverse('schools:school_detail', kwargs=kwargs))
+        request.user = user
+        return SchoolDetail.as_view()(request, **kwargs)
+
+    def _check_school_detail_view_output(self, response):
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, self.school.name)
+        self.assertEqual(len(response.context_data['studentgroup_list']), self.school.studentgroup_set.count())
+        self.assertEqual(len(response.context_data['managers']), self.school.managers.count())
+        self.assertEqual(len(response.context_data['teachers']), self.school.teachers.count())
+        self.assertEqual(len(response.context_data['students']), self.school.students.count())
+
+        self.assertEqual(slug_sort(response.context_data['studentgroup_list'], 'name'), slug_sort(
+            self.school.studentgroup_set.all(), 'name'))
+        self.assertEqual(slug_sort(response.context_data['managers'], 'name'), slug_sort(
+            self.school.managers.all(), 'name'))
+        self.assertEqual(slug_sort(response.context_data['teachers'], 'name'), slug_sort(
+            self.school.teachers.all(), 'name'))
+        self.assertEqual(slug_sort(response.context_data['students'], 'name'), slug_sort(
+            self.school.students.all(), 'name'))
+
+    def test_school_detail_without_login_gets_denied(self):
+        response = self.client.get(reverse('schools:school_detail', kwargs={'pk': self.school.id}))
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(response.url.startswith('/denied'))
+
+    def test_school_detail_shows_all_data_for_school_manager(self):
+        user = self.school.managers.first().user
+        response = self._call_school_detail_view(user)
+        self._check_school_detail_view_output(response)
+
+    def test_school_detail_shows_all_data_for_school_teacher(self):
+        user = self.school.teachers.first().user
+        response = self._call_school_detail_view(user)
+        self._check_school_detail_view_output(response)
+
+    def test_school_detail_denies_access_to_nonrelevant_managers(self):
+        otherschool = School.objects.get(name='Höfuðborgarskólinn')
+        user = otherschool.managers.first().user
+        response = self._call_school_detail_view(user)
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(response.url.startswith('/denied'))
 
 
 class SchoolListingViewTests(TestCase):
     fixtures = ['auth', 'common']
 
     def setUp(self):
+        super(SchoolListingViewTests, self).setUp()
         self.client = Client()
         self.factory = RequestFactory()
 
