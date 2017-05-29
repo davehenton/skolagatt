@@ -6,8 +6,6 @@ from django.core.urlresolvers import reverse_lazy
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.contrib.auth.models import User
 from django.utils import timezone
-from django.utils.decorators import method_decorator
-from django.views.decorators.csrf import csrf_exempt
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from itertools import chain
@@ -17,7 +15,6 @@ from uuid import uuid4
 from datetime import datetime, date
 from ast import literal_eval
 
-import json
 import xlrd
 import openpyxl
 import locale
@@ -39,7 +36,7 @@ import common.forms as cm_forms
 import samraemd.models as s_models
 from survey.models import (
     Survey, SurveyGradingTemplate, SurveyInputField,
-    SurveyInputGroup, SurveyResource, SurveyTransformation,
+    SurveyInputGroup, SurveyResource,
     SurveyType
 )
 
