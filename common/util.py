@@ -117,6 +117,18 @@ def is_group_manager(request, kwargs):
         return False
 
 
+def get_groupsurvey_id(kwargs):
+    groupsurvey_id = None
+
+    if 'groupsurvey_id' in kwargs:
+        groupsurvey_id = kwargs['groupsurvey_id']
+    elif 'survey_id' in kwargs:
+        groupsurvey_id = kwargs['survey_id']
+    elif 'pk' in kwargs:
+        groupsurvey_id = kwargs['pk']
+
+    return groupsurvey_id
+
 def groupsurvey_is_open(request, kwargs):
     if not request.user.is_authenticated:
         return False
@@ -124,24 +136,12 @@ def groupsurvey_is_open(request, kwargs):
     if request.user.is_superuser:
         return True
 
-    groupsurvey_id = None
+    groupsurvey_id = get_groupsurvey_id(kwargs)
 
-    try:
-        if 'groupsurvey_id' in kwargs:
-            groupsurvey_id = kwargs['groupsurvey_id']
-        elif 'survey_id' in kwargs:
-            groupsurvey_id = kwargs['survey_id']
-        elif 'pk' in kwargs:
-            groupsurvey_id = kwargs['pk']
-    except (ObjectDoesNotExist, AttributeError):
-        return False
-    else:
-        try:
-            groupsurvey = cm_models.GroupSurvey.objects.get(pk=groupsurvey_id)
-        except ObjectDoesNotExist:
-            return False
-        else:
-            return groupsurvey.is_open()
+    if groupsurvey_id:
+        groupsurvey = cm_models.GroupSurvey.objects.filter(pk=groupsurvey_id)
+        if groupsurvey:
+            return groupsurvey.first().is_open()
     return False
 
 
