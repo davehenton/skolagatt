@@ -107,9 +107,6 @@ class SchoolDetail(common_mixins.SchoolEmployeeMixin, DetailView):
             self.object.managers.all(), 'name')
         context['teachers'] = common_util.slug_sort(
             self.object.teachers.all(), 'name')
-        context['surveys'] = common_util.slug_sort(
-            GroupSurvey.objects.filter(
-                studentgroup__in=self.object.studentgroup_set.all()), 'survey')
         context['students'] = self.object.students.all()
 
         return context
