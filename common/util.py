@@ -150,10 +150,10 @@ def slug_sort(q, attr):
     return sorted(q, key=lambda x: slugify(getattr(x, attr)))
 
 
-def add_field_classes(self, field_list, cssdef={'class': 'form-control'}):
+def add_field_classes(obj, field_list, cssdef={'class': 'form-control'}):
     ''' To add form-control class to form fields '''
     for item in field_list:
-        self.fields[item].widget.attrs.update(cssdef)
+        obj.fields[item].widget.attrs.update(cssdef)
 
 
 def store_import_data(request, slug, data):
