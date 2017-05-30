@@ -82,6 +82,20 @@ class SurveyResultLesfimiCalculatedResultsTests(TestCase):
         self.assertEqual(len(calculated_results), 1)
         self.assertEqual(int(calculated_results[0]), 10)
 
+    def test_lesfimi_calculated_results_returns_integer(self):
+        click_values = []
+        click_values.append('20, word20')
+        obj = SurveyResult(
+            survey=self.groupsurvey1,
+            student=self.students1[0],
+            results={
+                'click_values': click_values,
+                'input_values': [],
+            }
+        )
+        calculated_results = obj.calculated_results()
+        self.assertTrue(isinstance(calculated_results[0], int))
+
     def test_lesfimi_calculated_results_20_errors_100_words_no_transformation_eq_36(self):
         click_values = self._gen_clicked_words(20)  # Generate 20 wrong words
         click_values.append('100,word100')  # Add the last word
