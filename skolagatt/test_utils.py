@@ -58,7 +58,7 @@ class FixtureGenerator(object):
     def fodurnafn_get(self, kyn):
         fodurnafn_url = 'https://is.wikipedia.org'
         fodurnafn_fj = len(self.nofn[0])
-        fodurnafn_i = random.randint(0, fodurnafn_fj)
+        fodurnafn_i = random.randint(0, fodurnafn_fj - 1)
         nafn = self.nofn[0][fodurnafn_i]
         url_search = '//div[@id="mw-content-text"]/ul/li/a[@title="{}"]/@href'.format(nafn)
         fodurnafn = self.kk_tree.xpath(url_search)
@@ -83,12 +83,12 @@ class FixtureGenerator(object):
         output = ''
         kyn = random.randint(0, 1)
         nafn_fj = len(self.nofn[kyn])
-        nafn = random.randint(0, nafn_fj)
+        nafn = random.randint(0, nafn_fj - 1)
         output += self.nofn[kyn][nafn]
         # Athuga hvort við ætlum að hafa miðnafn
         if random.randint(0, 2) in [0, 1]:
             output += ' '
-            midnafn = random.randint(0, nafn_fj)
+            midnafn = random.randint(0, nafn_fj - 1)
             output += self.nofn[kyn][midnafn]
         output += ' '
         output += self.fodurnafn_get(kyn)
