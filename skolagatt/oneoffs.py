@@ -291,6 +291,30 @@ def _lesfimi_excel_result_duplicates():
     wb.save(filename='/tmp/duplicates.xlsx')
 
 
+def _surveyresult_dupls():
+    wb = openpyxl.Workbook()
+    ws = wb.get_active_sheet()
+    ws['A1'] = 'surveyresult_id'
+    ws['B1'] = 'student_id'
+    ws['C1'] = 'survey_id'
+    ws['D1'] = 'results'
+    groupsurveys = GroupSurvey.objects.all()
+    index = 2
+    for groupsurvey in groupsurveys:
+        if groupsurvey.studentgroup:
+            for student in groupsurvey.studentgroup.students.all():
+                results = SurveyResult.objects.filter(survey=groupsurvey, student=student)
+                if (results.count() > 1):
+                    for result in results.all():
+                        ws['A' + str(index)] = str(result.id)
+                        ws['B' + str(index)] = str(result.student_id)
+                        ws['C' + str(index)] = str(result.survey_id)
+                        ws['D' + str(index)] = str(result.results)
+                        index += 1
+                    index += 1
+    wb.save(filename='/tmp/dupl.xlsx')
+
+
 def _generate_excel_audun():
     tests = [
         ['{}b_LF_sept', 'September 2016', None, None],

@@ -290,6 +290,9 @@ class GroupSurvey(models.Model):
     active_from = models.DateField(default=timezone.now)
     active_to = models.DateField(default=timezone.now)
 
+    # class Meta:
+    #     unique_together = (("studentgroup", "survey"))
+
     def save(self, *args, **kwargs):
         if self.survey:
             self.active_from = self.survey.active_from
@@ -330,8 +333,8 @@ class SurveyResult(models.Model):
     survey = models.ForeignKey('GroupSurvey', null=True, blank=True, on_delete=models.CASCADE)
     created_at = models.DateField(default=timezone.now)
 
-    class Meta:
-        unique_together = (("student", "survey"))
+    # class Meta:
+    #     unique_together = (("student", "survey"))
 
     def _lesskilnings_results(self, input_values):
         '''
