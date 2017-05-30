@@ -378,3 +378,13 @@ class UtilTests(TestCase):
 
         ret = common.util.slug_sort(input_list, 'name')
         self.assertEqual(ret, expected_output)
+
+    def test_add_field_classes(self):
+        myObj = mock.Mock()
+        myObj.fields = {'hello': mock.Mock(), 'world': mock.Mock(), 'again': mock.Mock()}
+        cssdef = {'test': 'testing'}
+        ret = common.util.add_field_classes(myObj, ['hello', 'world'], cssdef)
+        self.assertEqual(ret, None)
+        myObj.fields['hello'].widget.attrs.update.assert_called_once_with(cssdef)
+        myObj.fields['world'].widget.attrs.update.assert_called_once_with(cssdef)
+        myObj.fields['again'].widget.attrs.update.assert_not_called()
