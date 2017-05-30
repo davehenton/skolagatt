@@ -2274,7 +2274,7 @@ def survey_detail_excel(request, school_id, student_group, pk):
                             if survey_student_result[0] == '':
                                 ws[chr(col) + str(row)] = 'Vantar gögn'
                             else:
-                                ws[chr(col) + str(row)] = survey_student_result[0]
+                                ws[chr(col) + str(row)] = int(survey_student_result[0])
 
                             value = survey_student_result[0]
                         else:
