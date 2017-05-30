@@ -388,3 +388,53 @@ class UtilTests(TestCase):
         myObj.fields['hello'].widget.attrs.update.assert_called_once_with(cssdef)
         myObj.fields['world'].widget.attrs.update.assert_called_once_with(cssdef)
         myObj.fields['again'].widget.attrs.update.assert_not_called()
+
+
+class ImportDataUtilTests(TestCase):
+    slug = 'my_test'
+    fake_data = [{'hello': 'world'}, {'this': 'is'}, {'a': 'test'}, {'error': 'is here'}]
+    expected_data = [{'hello': 'world'}, {'this': 'is'}, {'a': 'test'}, {}]
+
+    def setUp(self):
+        class FakeRequestWithSession:
+            session = {}
+        self.fake_request = FakeRequestWithSession()
+
+    def _step1(self):
+        self.cache_id = common.util.store_import_data(self.fake_request, self.slug, self.fake_data)
+
+    def _step2(self):
+        return common.util.get_import_data(self.fake_request, self.slug)
+
+    def _step3(self):
+        common.util.cancel_import_data(self.fake_request, self.slug)
+
+    def _run_step1(self):
+        self._step1()
+        self.assertTrue(self.slug in self.fake_request.session)
+        self.assertEqual(self.fake_request.session[self.slug], self.cache_id)
+        self.myMock.set.assert_called_once_with(self.cache_id, self.expected_data, 15 * 60)
+        self.myMock.reset_mock()
+
+    def _run_step2(self):
+        self.myMock.get.return_value = self.expected_data
+        data = self._step2()
+        self.assertFalse(self.slug in self.fake_request.session)
+        self.assertEqual(self.expected_data, data)
+        self.myMock.get.assert_called_once_with(self.cache_id)
+        self.myMock.delete.assert_called_once_with(self.cache_id)
+        self.myMock.reset_mock()
+
+    def _run_step3(self):
+        self._step3()
+        self.assertFalse(self.slug in self.fake_request.session)
+        self.myMock.delete.assert_called_once_with(self.cache_id)
+        self.myMock.reset_mock()
+
+    @mock.patch('common.util.cache')
+    def test_import_data_functions(self, myMock):
+        self.myMock = myMock
+        self._run_step1()
+        self._run_step2()
+        self._run_step1()
+        self._run_step3()
