@@ -75,14 +75,8 @@ def is_teacher(request):
     return False
 
 
-def is_group_manager(request, kwargs):
-    if not request.user.is_authenticated:
-        return False
-    elif request.user.is_superuser:
-        return True
-
+def get_studentgroup_id(request, kwargs):
     studentgroup_id = None
-
     try:
         if 'student_group' in kwargs:
             studentgroup_id = kwargs['student_group']
@@ -99,16 +93,41 @@ def is_group_manager(request, kwargs):
         elif 'bekkur' in request.path and 'pk' in kwargs:
             studentgroup_id = kwargs['pk']
         elif 'nemandi' in request.path and 'pk' in kwargs:
-            studentgroup_id = cm_models.StudentGroup.objects.filter(students=kwargs['pk']).id
+            studentgroup_id = cm_models.StudentGroup.objects.filter(students=kwargs['pk']).first().id
     except (ObjectDoesNotExist, AttributeError):
-        return False
+        return None
     else:
-        if studentgroup_id and cm_models.StudentGroup.objects.filter(
-            pk=studentgroup_id,
-            group_managers=cm_models.Teacher.objects.filter(user=request.user)
-        ):
-            return True
-    return False
+        return studentgroup_id
+
+
+def is_group_manager(request, kwargs):
+    if not request.user.is_authenticated:
+        return False
+    elif request.user.is_superuser:
+        return True
+
+    studentgroup_id = get_studentgroup_id(request, kwargs)
+
+    if studentgroup_id and cm_models.StudentGroup.objects.filter(
+        pk=studentgroup_id,
+        group_managers=cm_models.Teacher.objects.filter(user=request.user)
+    ):
+        return True
+    else:
+        return False
+
+
+def get_groupsurvey_id(kwargs):
+    groupsurvey_id = None
+
+    if 'groupsurvey_id' in kwargs:
+        groupsurvey_id = kwargs['groupsurvey_id']
+    elif 'survey_id' in kwargs:
+        groupsurvey_id = kwargs['survey_id']
+    elif 'pk' in kwargs:
+        groupsurvey_id = kwargs['pk']
+
+    return groupsurvey_id
 
 
 def groupsurvey_is_open(request, kwargs):
@@ -118,24 +137,12 @@ def groupsurvey_is_open(request, kwargs):
     if request.user.is_superuser:
         return True
 
-    groupsurvey_id = None
+    groupsurvey_id = get_groupsurvey_id(kwargs)
 
-    try:
-        if 'groupsurvey_id' in kwargs:
-            groupsurvey_id = kwargs['groupsurvey_id']
-        elif 'survey_id' in kwargs:
-            groupsurvey_id = kwargs['survey_id']
-        elif 'pk' in kwargs:
-            groupsurvey_id = kwargs['pk']
-    except (ObjectDoesNotExist, AttributeError):
-        return False
-    else:
-        try:
-            groupsurvey = cm_models.GroupSurvey.objects.get(pk=groupsurvey_id)
-        except ObjectDoesNotExist:
-            return False
-        else:
-            return groupsurvey.is_open()
+    if groupsurvey_id:
+        groupsurvey = cm_models.GroupSurvey.objects.filter(pk=groupsurvey_id)
+        if groupsurvey:
+            return groupsurvey.first().is_open()
     return False
 
 
@@ -143,10 +150,10 @@ def slug_sort(q, attr):
     return sorted(q, key=lambda x: slugify(getattr(x, attr)))
 
 
-def add_field_classes(self, field_list, cssdef={'class': 'form-control'}):
+def add_field_classes(obj, field_list, cssdef={'class': 'form-control'}):
     ''' To add form-control class to form fields '''
     for item in field_list:
-        self.fields[item].widget.attrs.update(cssdef)
+        obj.fields[item].widget.attrs.update(cssdef)
 
 
 def store_import_data(request, slug, data):

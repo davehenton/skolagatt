@@ -9,12 +9,14 @@ from common.models import (
     Teacher,
     Manager,
 )
-from .views import (
+from ..views import (
     SchoolListing,
     SchoolDetail,
 )
 from skolagatt.test_utils import kennitala_get
 from common.util import slug_sort
+
+# Tests for schools.views
 
 
 class SchoolDetailViewTests(TestCase):
