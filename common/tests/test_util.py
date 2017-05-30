@@ -360,3 +360,21 @@ class UtilTests(TestCase):
         myMockObj1.first.assert_called_once_with()
         myMockObj2.is_open.assert_called_once_with()
         self.assertTrue(ret)
+
+    def test_slug_sort_sorts(self):
+        class TestObj(object):
+            def __init__(self, value):
+                self.name = value
+
+            def __str__(self):
+                return self.name
+
+        TestObj1 = TestObj('Aye')
+        TestObj2 = TestObj('Bee')
+        TestObj3 = TestObj('Cee')
+
+        input_list = [TestObj2, TestObj3, TestObj1]
+        expected_output = [TestObj1, TestObj2, TestObj3]
+
+        ret = common.util.slug_sort(input_list, 'name')
+        self.assertEqual(ret, expected_output)
