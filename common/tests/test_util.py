@@ -6,9 +6,7 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from ..models import (
     School,
-    GroupSurvey,
 )
-from survey.models import Survey
 import common.util
 
 # Tests for common.util
