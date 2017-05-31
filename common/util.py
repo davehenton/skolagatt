@@ -59,12 +59,8 @@ def is_school_manager(request, kwargs):
 
 
 def is_manager(request):
-    try:
-        login_check(request)
-    except NotLoggedIn:
+    if not request.user.is_authenticated:
         return False
-    except IsSuperUser:
-        return True
 
     return cm_models.Manager.objects.filter(user=request.user).exists()
 
@@ -89,12 +85,8 @@ def is_school_teacher(request, kwargs):
 
 
 def is_teacher(request):
-    try:
-        login_check(request)
-    except NotLoggedIn:
+    if not request.user.is_authenticated:
         return False
-    except IsSuperUser:
-        return True
 
     return cm_models.Teacher.objects.filter(user=request.user).exists()
 
