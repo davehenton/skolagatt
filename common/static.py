@@ -13,6 +13,18 @@ STUDENT_YEAR_LIST = (
     ('9', '9. bekkur'),
     ('10', '10. bekkur'),
 )
+STUDENT_YEAR_MODEL_CHOICES = (
+    ('1', '1. bekkur'),
+    ('2', '2. bekkur'),
+    ('3', '3. bekkur'),
+    ('4', '4. bekkur'),
+    ('5', '5. bekkur'),
+    ('6', '6. bekkur'),
+    ('7', '7. bekkur'),
+    ('8', '8. bekkur'),
+    ('9', '9. bekkur'),
+    ('10', '10. bekkur'),
+)
 
 POST_CODE_LIST = (
     ('101', '101'), ('103', '103'), ('104', '104'), ('105', '105'), ('107', '107'), ('108', '108'), ('109', '109'),

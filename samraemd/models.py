@@ -5,20 +5,7 @@ from django.db import models
 from django.contrib.postgres.fields import JSONField
 
 from common.models import Student
-
-
-_YEAR_IN_SCHOOL_CHOICES = (
-    ('1', '1. bekkur'),
-    ('2', '2. bekkur'),
-    ('3', '3. bekkur'),
-    ('4', '4. bekkur'),
-    ('5', '5. bekkur'),
-    ('6', '6. bekkur'),
-    ('7', '7. bekkur'),
-    ('8', '8. bekkur'),
-    ('9', '9. bekkur'),
-    ('10', '10. bekkur'),
-)
+from common.static import STUDENT_YEAR_MODEL_CHOICES
 
 
 class _SamraemdBaseModel(models.Model):
@@ -32,7 +19,7 @@ class _SamraemdBaseModel(models.Model):
 class _SamraemdStudentYear(models.Model):
     student_year = models.CharField(
         max_length=2,
-        choices=_YEAR_IN_SCHOOL_CHOICES,
+        choices=STUDENT_YEAR_MODEL_CHOICES,
     )
 
     class Meta:
@@ -119,7 +106,7 @@ class SamraemdResult(_SamraemdBaseModel):
     exam_name = models.CharField(max_length=125, null=True)
     student_year = models.CharField(
         max_length=2,
-        choices=_YEAR_IN_SCHOOL_CHOICES,
+        choices=STUDENT_YEAR_MODEL_CHOICES,
         null=True
     )
 

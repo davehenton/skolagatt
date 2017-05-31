@@ -11,6 +11,7 @@ from django.utils import timezone
 from . import models
 
 from common.util import add_field_classes
+from common.static import STUDENT_YEAR_MODEL_CHOICES
 
 
 class SurveyTypeForm(forms.ModelForm):
@@ -77,19 +78,7 @@ class SurveyForm(forms.ModelForm):
 
 
 class SurveyCreateMultiForm(SurveyForm):
-    STUDENT_YEAR_CHOICES = (
-        ('1', '1. bekkur'),
-        ('2', '2. bekkur'),
-        ('3', '3. bekkur'),
-        ('4', '4. bekkur'),
-        ('5', '5. bekkur'),
-        ('6', '6. bekkur'),
-        ('7', '7. bekkur'),
-        ('8', '8. bekkur'),
-        ('9', '9. bekkur'),
-        ('10', '10. bekkur'),
-    )
-    student_year = MultipleChoiceField(choices=STUDENT_YEAR_CHOICES)
+    student_year = MultipleChoiceField(choices=STUDENT_YEAR_MODEL_CHOICES)
     mandatory = BooleanField(initial=True)
 
     def __init__(self, *args, **kwargs):
