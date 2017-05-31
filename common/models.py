@@ -382,56 +382,55 @@ class SurveyResult(models.Model):
 
         return level_thresholds
 
+    def _apply_lesskimun_thresholds(self, the_sum, thresholds):
+        if the_sum == -1:
+            return 'Vantar gögn'
+
+        for label, threshold in thresholds.items():
+            if the_sum <= threshold:
+                return label
+        return 'Utan áhættu'
+
     def _get_lesskimun_levels(self, sums):
         level_thresholds = self._get_lesskimun_level_thresholds()
         output = []
 
         for key in level_thresholds.keys():
-            if sums[key] == -1:
-                output.append('Vantar gögn')
-                continue
-            hit_threshold = False
-            for label, threshold in level_thresholds[key].items():
-                if sums[key] <= threshold:
-                    hit_threshold = True
-                    output.append(label)
-                    break
-            if not hit_threshold:
-                output.append('Utan áhættu')
-
+            level = self._apply_lesskimun_thresholds(sums[key], level_thresholds[key])
+            output.append(level)
         return output
 
     def _lesskimun_results(self):
-        '''
-        Skilum niðurstöðum prófs í lesskilningi
-        '''
         sums = self._lesskimun_input_sums()
 
         return self._get_lesskimun_levels(sums)
 
+    def _lesfimi_get_errors(self, click_values):
+        errors = len(click_values) - 1
+
+        if errors < 3:
+            return 0
+        elif errors < 10:
+            return errors - 2
+        else:
+            return (2 * errors) - 11
+
     def _lesfimi_results(self, transformation):
         click_values = self.results['click_values']
         try:
-            villur = len(click_values) - 1
-
-            if (villur < 3):
-                villur = 0
-            elif (villur < 10):
-                villur -= 2
-            else:
-                villur *= 2
-                villur -= 11
+            errors = self._lesfimi_get_errors(click_values)
 
             last_word_num = int(click_values[-1].split(',')[0])
-            vegin_oam = last_word_num - villur
+            vegin_oam = last_word_num - errors
             vegin_oam = int(round(vegin_oam / 2))
 
             if (transformation):
                 data = transformation.data
-                vegin_oam = data[str(vegin_oam)]
+                key = str(vegin_oam)
+                if key in data:
+                    vegin_oam = data[key]
 
-            if vegin_oam < 0:
-                vegin_oam = 0
+            vegin_oam = max(0, vegin_oam)
 
             return [vegin_oam]
         except:
