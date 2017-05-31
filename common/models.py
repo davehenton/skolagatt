@@ -336,67 +336,84 @@ class SurveyResult(models.Model):
     # class Meta:
     #     unique_together = (("student", "survey"))
 
-    def _lesskilnings_results(self, input_values):
+    def _clean_lesskimun_sums(self, sums):
+        keys = ['hljod', 'mal', 'bok']
+
+        for key in keys:
+            sums[key] = sums.pop(key + '_')
+
+    def _lesskimun_input_sums(self):
         '''
-        Skilum niðurstöðum prófs í lesskilningi
+        Cycle through input_values, sum up all values where the key starts with
+        'hljod_', 'mal_', 'bok_'. Checks for input errors.
         '''
-        # Cycle through input_values, sum up all values where the key starts with
-        # 'hljod_', 'mal_', 'bok_'. Checks for input errors.
-        lesskilnings_sums = {'hljod_': 0, 'mal_': 0, 'bok_': 0}
+        input_values = self.results['input_values']
+
+        sums = {'hljod_': 0, 'mal_': 0, 'bok_': 0}
         for key, value in input_values.items():
-            for type_sum in lesskilnings_sums.keys():
+            for type_sum in sums.keys():
                 # type = 'hljod_' for instance, type_sum for 'hljod_' starts as 0
                 if key.startswith(type_sum):
                     if not str(value).isdigit():
                         # Input error so we will make this type_sum permanently = -1 to indicate error
-                        lesskilnings_sums[type_sum] = -1
-                    elif str(value).isdigit() and not lesskilnings_sums[type_sum] == -1:
+                        sums[type_sum] = -1
+                    elif str(value).isdigit() and not sums[type_sum] == -1:
                         # Not input error so let's add up
-                        lesskilnings_sums[type_sum] += int(value)
+                        sums[type_sum] += int(value)
+
+        self._clean_lesskimun_sums(sums)
+        return sums
+
+    def _lesskimun_results(self):
+        '''
+        Skilum niðurstöðum prófs í lesskilningi
+        '''
+        lesskimun_sums = self._lesskimun_input_sums()
 
         hopar = []
-        if lesskilnings_sums["hljod_"] == -1:
+        if lesskimun_sums["hljod"] == -1:
             hopar.append('Vantar gögn')
-        elif lesskilnings_sums["hljod_"] <= 14:
+        elif lesskimun_sums["hljod"] <= 14:
             hopar.append('Áhætta 1')
-        elif lesskilnings_sums["hljod_"] <= 17:
+        elif lesskimun_sums["hljod"] <= 17:
             hopar.append('Áhætta 2')
-        elif lesskilnings_sums["hljod_"] <= 19:
+        elif lesskimun_sums["hljod"] <= 19:
             hopar.append('Óvissa')
         else:
             hopar.append('Utan áhættu')
 
-        if lesskilnings_sums["mal_"] == -1:
+        if lesskimun_sums["mal"] == -1:
             hopar.append('Vantar gögn')
-        elif lesskilnings_sums["mal_"] <= 14:
+        elif lesskimun_sums["mal"] <= 14:
             hopar.append('Áhætta 1')
-        elif lesskilnings_sums["mal_"] <= 16:
+        elif lesskimun_sums["mal"] <= 16:
             hopar.append('Áhætta 2')
-        elif lesskilnings_sums["mal_"] <= 17:
+        elif lesskimun_sums["mal"] <= 17:
             hopar.append('Óvissa')
         else:
             hopar.append('Utan áhættu')
 
-        if lesskilnings_sums["bok_"] == -1:
+        if lesskimun_sums["bok"] == -1:
             hopar.append('Vantar gögn')
-        elif lesskilnings_sums["bok_"] <= 7:
+        elif lesskimun_sums["bok"] <= 7:
             hopar.append('Áhætta 1')
-        elif lesskilnings_sums["bok_"] <= 10:
+        elif lesskimun_sums["bok"] <= 10:
             hopar.append('Áhætta 2')
-        elif lesskilnings_sums["bok_"] <= 12:
+        elif lesskimun_sums["bok"] <= 12:
             hopar.append('Óvissa')
         else:
             hopar.append('Utan áhættu')
 
         return hopar
 
-    def _lesfimi_results(self, click_values, transformation):
+    def _lesfimi_results(self, transformation):
+        click_values = self.results['click_values']
         try:
             villur = len(click_values) - 1
 
             if (villur < 3):
                 villur = 0
-            elif(villur < 10):
+            elif (villur < 10):
                 villur -= 2
             else:
                 villur *= 2
@@ -421,13 +438,13 @@ class SurveyResult(models.Model):
         survey_type = self.survey.survey.survey_type.title
 
         if survey_type == 'Lesskimun':
-            return self._lesskilnings_results(self.results['input_values'])
+            return self._lesskimun_results()
         elif survey_type == 'Lesfimi':
             transformation = None
             if use_transformation:
                 if self.survey.survey.surveytransformation_set.exists():
                     transformation = self.survey.survey.surveytransformation_set.first()
-            return self._lesfimi_results(self.results['click_values'], transformation)
+            return self._lesfimi_results(transformation)
         else:
             return self.results['click_values']
 
