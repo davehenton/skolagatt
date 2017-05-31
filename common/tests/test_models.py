@@ -190,13 +190,6 @@ class SurveyResultLesskimunCalculatedResultsTests(TestCase):
             studentgroup=self.studentgroup1,
         )
 
-    def test_clean_lesskimun_sums(self):
-        obj = SurveyResult()
-        input_dict = {'hljod_': 1, 'bok_': 2, 'mal_': 3}
-        expected_output = {'hljod': 1, 'bok': 2, 'mal': 3}
-        obj._clean_lesskimun_sums(input_dict)
-        self.assertEqual(input_dict, expected_output)
-
     def test_lesskimun_input_sums_hljod(self):
         obj = SurveyResult(results=dict(input_values=dict(hljod_1=1, hljod_2=2)))
         ret = obj._lesskimun_input_sums()

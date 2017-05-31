@@ -165,12 +165,6 @@ class SurveyResult(models.Model):
     # class Meta:
     #     unique_together = (("student", "survey"))
 
-    def _clean_lesskimun_sums(self, sums):
-        keys = ['hljod', 'mal', 'bok']
-
-        for key in keys:
-            sums[key] = sums.pop(key + '_')
-
     def _lesskimun_input_sums(self):
         '''
         Cycle through input_values, sum up all values where the key starts with
@@ -178,19 +172,14 @@ class SurveyResult(models.Model):
         '''
         input_values = self.results['input_values']
 
-        sums = {'hljod_': 0, 'mal_': 0, 'bok_': 0}
+        sums = {'hljod': 0, 'mal': 0, 'bok': 0}
         for key, value in input_values.items():
-            for type_sum in sums.keys():
-                # type = 'hljod_' for instance, type_sum for 'hljod_' starts as 0
-                if key.startswith(type_sum):
-                    if not str(value).isdigit():
-                        # Input error so we will make this type_sum permanently = -1 to indicate error
-                        sums[type_sum] = -1
-                    elif str(value).isdigit() and not sums[type_sum] == -1:
-                        # Not input error so let's add up
-                        sums[type_sum] += int(value)
+            typ, idx = key.split('_')
+            if not str(value).isdigit():
+                sums[typ] = -1
+            elif str(value).isdigit() and not sums[typ] == -1:
+                sums[typ] += int(value)
 
-        self._clean_lesskimun_sums(sums)
         return sums
 
     def _get_lesskimun_level_thresholds(self):
