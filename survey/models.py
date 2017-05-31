@@ -4,6 +4,8 @@ from django.db import models
 from django.utils import timezone
 from django.contrib.postgres.fields import JSONField
 
+from common.static import STUDENT_YEAR_LIST
+
 from froala_editor.fields import FroalaField
 
 
@@ -21,19 +23,7 @@ class Survey(models.Model):
     identifier = models.CharField(max_length=128)
     title = models.CharField(max_length=256)
     survey_type = models.ForeignKey(SurveyType)
-    YEARS = (
-        ('0', 'Blandaður árgangur'),
-        ('1', '1. bekkur'),
-        ('2', '2. bekkur'),
-        ('3', '3. bekkur'),
-        ('4', '4. bekkur'),
-        ('5', '5. bekkur'),
-        ('6', '6. bekkur'),
-        ('7', '7. bekkur'),
-        ('8', '8. bekkur'),
-        ('9', '9. bekkur'),
-        ('10', '10. bekkur'),
-    )
+    YEARS = STUDENT_YEAR_LIST
     student_year = models.CharField(max_length=2, default='', choices=YEARS)
     description = FroalaField()
     created_at = models.DateTimeField(default=timezone.now)
