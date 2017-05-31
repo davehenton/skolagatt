@@ -8,6 +8,7 @@ from django.contrib.postgres.fields import JSONField
 from django.utils import timezone
 
 import json
+from collections import OrderedDict
 
 from froala_editor.fields import FroalaField
 
@@ -364,47 +365,48 @@ class SurveyResult(models.Model):
         self._clean_lesskimun_sums(sums)
         return sums
 
+    def _get_lesskimun_levels(self, sums):
+        level_thresholds = OrderedDict({
+            'hljod': OrderedDict({
+                'Áhætta 1': 14,
+                'Áhætta 2': 17,
+                'Óvissa': 19,
+            }),
+            'mal': OrderedDict({
+                'Áhætta 1': 14,
+                'Áhætta 2': 16,
+                'Óvissa': 17,
+            }),
+            'bok': OrderedDict({
+                'Áhætta 1': 7,
+                'Áhætta 2': 10,
+                'Óvissa': 12,
+            })
+        })
+        output = []
+
+        for key in level_thresholds.keys():
+            if sums[key] == -1:
+                output.append('Vantar gögn')
+                continue
+            hit_threshold = False
+            for label, threshold in level_thresholds[key].items():
+                if sums[key] <= threshold:
+                    hit_threshold = True
+                    output.append(label)
+                    break
+            if not hit_threshold:
+                output.append('Utan áhættu')
+
+        return output
+
     def _lesskimun_results(self):
         '''
         Skilum niðurstöðum prófs í lesskilningi
         '''
-        lesskimun_sums = self._lesskimun_input_sums()
+        sums = self._lesskimun_input_sums()
 
-        hopar = []
-        if lesskimun_sums["hljod"] == -1:
-            hopar.append('Vantar gögn')
-        elif lesskimun_sums["hljod"] <= 14:
-            hopar.append('Áhætta 1')
-        elif lesskimun_sums["hljod"] <= 17:
-            hopar.append('Áhætta 2')
-        elif lesskimun_sums["hljod"] <= 19:
-            hopar.append('Óvissa')
-        else:
-            hopar.append('Utan áhættu')
-
-        if lesskimun_sums["mal"] == -1:
-            hopar.append('Vantar gögn')
-        elif lesskimun_sums["mal"] <= 14:
-            hopar.append('Áhætta 1')
-        elif lesskimun_sums["mal"] <= 16:
-            hopar.append('Áhætta 2')
-        elif lesskimun_sums["mal"] <= 17:
-            hopar.append('Óvissa')
-        else:
-            hopar.append('Utan áhættu')
-
-        if lesskimun_sums["bok"] == -1:
-            hopar.append('Vantar gögn')
-        elif lesskimun_sums["bok"] <= 7:
-            hopar.append('Áhætta 1')
-        elif lesskimun_sums["bok"] <= 10:
-            hopar.append('Áhætta 2')
-        elif lesskimun_sums["bok"] <= 12:
-            hopar.append('Óvissa')
-        else:
-            hopar.append('Utan áhættu')
-
-        return hopar
+        return self._get_lesskimun_levels(sums)
 
     def _lesfimi_results(self, transformation):
         click_values = self.results['click_values']
