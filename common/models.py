@@ -365,24 +365,25 @@ class SurveyResult(models.Model):
         self._clean_lesskimun_sums(sums)
         return sums
 
+    def _get_lesskimun_level_thresholds(self):
+        level_thresholds = OrderedDict()
+        level_thresholds['hljod'] = OrderedDict()
+        level_thresholds['mal'] = OrderedDict()
+        level_thresholds['bok'] = OrderedDict()
+        level_thresholds['hljod']['Áhætta 1'] = 14
+        level_thresholds['hljod']['Áhætta 2'] = 17
+        level_thresholds['hljod']['Óvissa'] = 19
+        level_thresholds['mal']['Áhætta 1'] = 14
+        level_thresholds['mal']['Áhætta 2'] = 16
+        level_thresholds['mal']['Óvissa'] = 17
+        level_thresholds['bok']['Áhætta 1'] = 7
+        level_thresholds['bok']['Áhætta 2'] = 10
+        level_thresholds['bok']['Óvissa'] = 12
+
+        return level_thresholds
+
     def _get_lesskimun_levels(self, sums):
-        level_thresholds = OrderedDict({
-            'hljod': OrderedDict({
-                'Áhætta 1': 14,
-                'Áhætta 2': 17,
-                'Óvissa': 19,
-            }),
-            'mal': OrderedDict({
-                'Áhætta 1': 14,
-                'Áhætta 2': 16,
-                'Óvissa': 17,
-            }),
-            'bok': OrderedDict({
-                'Áhætta 1': 7,
-                'Áhætta 2': 10,
-                'Óvissa': 12,
-            })
-        })
+        level_thresholds = self._get_lesskimun_level_thresholds()
         output = []
 
         for key in level_thresholds.keys():
