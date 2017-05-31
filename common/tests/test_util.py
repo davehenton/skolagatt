@@ -79,17 +79,6 @@ class UtilTests(TestCase):
         ret = common.util.is_school_manager(request, {'pk': self.school_b.id})
         self.assertFalse(ret)
 
-    @mock.patch('common.util.get_current_school')
-    def test_is_school_manager_returns_false_on_exception(self, myMock):
-        myMock.side_effect = Exception("I've excepted")
-        user = self.school_a.managers.first().user
-        request = self._generate_request(user)
-        self.assertTrue(request.user.is_authenticated)
-        kwargs = {'pk': self.school_a.id}
-        ret = common.util.is_school_manager(request, kwargs)
-        myMock.assert_called_once_with(kwargs)
-        self.assertFalse(ret)
-
     def test_is_manager_returns_false_when_user_is_unauthenticated(self):
         mock_request = mock.Mock()
         mock_request.user.is_authenticated = False
@@ -123,7 +112,7 @@ class UtilTests(TestCase):
         ret = common.util.is_school_teacher(mock_request, {'pk': self.school_a.id})
         self.assertTrue(ret)
 
-    @mock.patch('common.util.is_school_manager')
+    @mock.patch('common.util._is_school_manager')
     def test_is_school_teacher_calls_is_school_manager_and_returns_true_if_true(self, myMock):
         myMock.return_value = True
         mock_request = mock.Mock()
@@ -243,16 +232,6 @@ class UtilTests(TestCase):
     @mock.patch('common.models.GroupSurvey')
     def test_get_studentgroup_id_returns_none_if_filter_raises_objectdoesnotexist(self, myMockModel):
         myMockModel.objects.get.side_effect = ObjectDoesNotExist("I've excepted")
-        mock_request = mock.Mock()
-        mock_request.path = '/'
-        kwargs = {'survey_id': 1001}
-        ret = common.util.get_studentgroup_id(mock_request, kwargs)
-        myMockModel.objects.get.assert_called_once_with(pk=1001)
-        self.assertEqual(ret, None)
-
-    @mock.patch('common.models.GroupSurvey')
-    def test_get_studentgroup_id_returns_none_if_filter_raises_attributeerror(self, myMockModel):
-        myMockModel.objects.get.side_effect = AttributeError("I've excepted")
         mock_request = mock.Mock()
         mock_request.path = '/'
         kwargs = {'survey_id': 1001}

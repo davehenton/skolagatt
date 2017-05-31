@@ -12,6 +12,14 @@ from uuid import uuid4
 import common.models as cm_models
 
 
+class NotLoggedIn(Exception):
+    pass
+
+
+class IsSuperUser(Exception):
+    pass
+
+
 def get_current_school(path_variables):
     if 'school_id' in path_variables:
         return path_variables['school_id']
@@ -20,101 +28,143 @@ def get_current_school(path_variables):
     return None
 
 
-def is_school_manager(request, kwargs):
+def login_check(request):
     if not request.user.is_authenticated:
-        return False
-    elif request.user.is_superuser:
+        raise NotLoggedIn
+    if request.user.is_superuser:
+        raise IsSuperUser
+
+
+def _is_school_manager(request, kwargs):
+    school_id = get_current_school(kwargs)
+
+    if school_id and cm_models.School.objects.filter(
+        pk=school_id,
+        managers=cm_models.Manager.objects.filter(user=request.user)
+    ):
         return True
 
-    try:
-        school_id = get_current_school(kwargs)
-        if school_id and cm_models.School.objects.filter(
-            pk=school_id,
-            managers=cm_models.Manager.objects.filter(user=request.user)
-        ):
-            return True
-    except Exception as e:
-        pass
     return False
+
+
+def is_school_manager(request, kwargs):
+    try:
+        login_check(request)
+    except NotLoggedIn:
+        return False
+    except IsSuperUser:
+        return True
+
+    return _is_school_manager(request, kwargs)
 
 
 def is_manager(request):
-    if request.user.is_authenticated and cm_models.Manager.objects.filter(user=request.user):
+    try:
+        login_check(request)
+    except NotLoggedIn:
+        return False
+    except IsSuperUser:
         return True
-    return False
+
+    return cm_models.Manager.objects.filter(user=request.user).exists()
 
 
 def is_school_teacher(request, kwargs):
-    if not request.user.is_authenticated:
+    try:
+        login_check(request)
+    except NotLoggedIn:
         return False
-    elif request.user.is_superuser:
+    except IsSuperUser:
         return True
-    elif is_school_manager(request, kwargs):
+
+    if _is_school_manager(request, kwargs):
         return True
+
     school_id = get_current_school(kwargs)
-    teacher = cm_models.Teacher.objects.filter(user=request.user)
-    if not teacher:
-        return False
-    if school_id:
-        if cm_models.School.objects.filter(
-            pk=school_id,
-            teachers=teacher,
-        ):
-            return True
-        else:
-            return False
-    elif teacher:
+    teacher = cm_models.Teacher.objects.filter(user=request.user).first()
+    school = cm_models.School.objects.filter(pk=school_id, teachers=teacher)
+    if school.exists():
         return True
     return False
 
 
 def is_teacher(request):
-    if request.user.is_authenticated and cm_models.Teacher.objects.filter(user=request.user):
+    try:
+        login_check(request)
+    except NotLoggedIn:
+        return False
+    except IsSuperUser:
         return True
 
-    return False
+    return cm_models.Teacher.objects.filter(user=request.user).exists()
+
+
+def _find_studentgroup_id(request, kwargs):
+    if 'student_group' in kwargs:
+        return kwargs['student_group']
+    elif 'studentgroup_id' in kwargs:
+        return kwargs['studentgroup_id']
+    elif 'bekkur' in request.path and 'pk' in kwargs:
+        return kwargs['pk']
+    return None
+
+
+def _get_studentgroup_id_via_groupsurvey_id(groupsurvey_id):
+    try:
+        groupsurvey = cm_models.GroupSurvey.objects.get(pk=groupsurvey_id)
+        studentgroup = groupsurvey.studentgroup
+        if studentgroup:
+            return studentgroup.id
+    except ObjectDoesNotExist:
+        return None
+    return None
+
+
+def _find_studentgroup_id_via_groupsurvey(request, kwargs):
+    groupsurvey_id = None
+    if 'survey_id' in kwargs:
+        groupsurvey_id = kwargs['survey_id']
+    elif 'próf' in request.path and 'pk' in kwargs:
+        groupsurvey_id = kwargs['pk']
+
+    return _get_studentgroup_id_via_groupsurvey_id(groupsurvey_id)
+
+
+def _find_studentgroup_id_via_student(request, kwargs):
+    if 'nemandi' in request.path and 'pk' in kwargs:
+        studentgroup = cm_models.StudentGroup.objects.filter(students=kwargs['pk'])
+        if studentgroup.exists():
+            return studentgroup.first().id
+    return None
 
 
 def get_studentgroup_id(request, kwargs):
-    studentgroup_id = None
-    try:
-        if 'student_group' in kwargs:
-            studentgroup_id = kwargs['student_group']
-        elif 'studentgroup_id' in kwargs:
-            studentgroup_id = kwargs['studentgroup_id']
-        elif 'survey_id' in kwargs:
-            studentgroup_id = cm_models.GroupSurvey.objects.get(
-                pk=kwargs['survey_id']
-            ).studentgroup.id
-        elif 'próf' in request.path and 'pk' in kwargs:
-            studentgroup_id = cm_models.GroupSurvey.objects.get(
-                pk=kwargs['pk']
-            ).studentgroup.id
-        elif 'bekkur' in request.path and 'pk' in kwargs:
-            studentgroup_id = kwargs['pk']
-        elif 'nemandi' in request.path and 'pk' in kwargs:
-            studentgroup_id = cm_models.StudentGroup.objects.filter(students=kwargs['pk']).first().id
-    except (ObjectDoesNotExist, AttributeError):
-        return None
-    else:
+    studentgroup_id = _find_studentgroup_id(request, kwargs)
+    if studentgroup_id:
         return studentgroup_id
+    studentgroup_id = _find_studentgroup_id_via_groupsurvey(request, kwargs)
+    if studentgroup_id:
+        return studentgroup_id
+    studentgroup_id = _find_studentgroup_id_via_student(request, kwargs)
+    if studentgroup_id:
+        return studentgroup_id
+    return None
 
 
 def is_group_manager(request, kwargs):
-    if not request.user.is_authenticated:
+    try:
+        login_check(request)
+    except NotLoggedIn:
         return False
-    elif request.user.is_superuser:
+    except IsSuperUser:
         return True
 
     studentgroup_id = get_studentgroup_id(request, kwargs)
 
-    if studentgroup_id and cm_models.StudentGroup.objects.filter(
+    return cm_models.StudentGroup.objects.filter(
         pk=studentgroup_id,
         group_managers=cm_models.Teacher.objects.filter(user=request.user)
-    ):
-        return True
-    else:
-        return False
+    ).exists()
 
 
 def get_groupsurvey_id(kwargs):
@@ -131,18 +181,19 @@ def get_groupsurvey_id(kwargs):
 
 
 def groupsurvey_is_open(request, kwargs):
-    if not request.user.is_authenticated:
+    try:
+        login_check(request)
+    except NotLoggedIn:
         return False
-
-    if request.user.is_superuser:
+    except IsSuperUser:
         return True
 
     groupsurvey_id = get_groupsurvey_id(kwargs)
 
-    if groupsurvey_id:
-        groupsurvey = cm_models.GroupSurvey.objects.filter(pk=groupsurvey_id)
-        if groupsurvey:
-            return groupsurvey.first().is_open()
+    groupsurvey = cm_models.GroupSurvey.objects.filter(pk=groupsurvey_id)
+    if groupsurvey.exists():
+        return groupsurvey.first().is_open()
+
     return False
 
 
