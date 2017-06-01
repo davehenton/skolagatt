@@ -162,8 +162,8 @@ class SurveyResult(models.Model):
     survey = models.ForeignKey('GroupSurvey', null=True, blank=True, on_delete=models.CASCADE)
     created_at = models.DateField(default=timezone.now)
 
-    # class Meta:
-    #     unique_together = (("student", "survey"))
+    class Meta:
+        unique_together = (("student", "survey"))
 
     def _lesskimun_input_sums(self):
         '''
@@ -253,16 +253,20 @@ class SurveyResult(models.Model):
         except:
             return [""]
 
-    def calculated_results(self, use_transformation=True):
-        survey_type = self.survey.survey.survey_type.title
+    def _get_transformation(self):
+        if self.survey.survey.surveytransformation_set.exists():
+            return self.survey.survey.surveytransformation_set.first()
+        return None
 
+    def calculated_results(self, use_transformation=True):
+        transformation = None
+        if use_transformation:
+            transformation = self._get_transformation()
+
+        survey_type = self.survey.survey.survey_type.title
         if survey_type == 'Lesskimun':
             return self._lesskimun_results()
         elif survey_type == 'Lesfimi':
-            transformation = None
-            if use_transformation:
-                if self.survey.survey.surveytransformation_set.exists():
-                    transformation = self.survey.survey.surveytransformation_set.first()
             return self._lesfimi_results(transformation)
         else:
             return self.results['click_values']
