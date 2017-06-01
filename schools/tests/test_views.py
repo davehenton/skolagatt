@@ -258,5 +258,3 @@ class SchoolCreateViewTests(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertTrue(response.url.startswith('/denied'))
         self.assertEqual(School.objects.count(), 2)
-
-        
