@@ -145,6 +145,22 @@ class SurveyResultLesfimiCalculatedResultsTests(TestCase):
         self.assertEqual(len(calculated_results), 1)
         self.assertEqual(int(calculated_results[0]), 79)
 
+    def test_lesfimi_calculated_results_ignores_transformation_when_use_transformation_is_false(self):
+        obj = SurveyResult(
+            survey=self.groupsurvey2,
+            student=self.students1[3],
+            results={
+                'click_values': [
+                    '200,test',
+                ],
+                'input_values': [
+                ],
+            }
+        )
+        calculated_results = obj.calculated_results(use_transformation=False)
+        self.assertEqual(len(calculated_results), 1)
+        self.assertEqual(int(calculated_results[0]), 100)
+
 
 class SurveyResultLesskimunCalculatedResultsTests(TestCase):
     fixtures = ['auth', 'common']
