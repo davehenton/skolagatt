@@ -47,6 +47,7 @@ travis-test: skolagatt/production_settings.py
 	pep8 -v
 	./manage.py collectstatic --no-input
 	coverage run ./manage.py test -v 2
+	coverage xml
 	./cc-test-reporter after-build -t coverage.py
 
 genfixtures: venv skolagatt/production_settings.py
