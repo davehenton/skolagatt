@@ -118,15 +118,10 @@ class SchoolCreate(common_mixins.SuperUserMixin, CreateView):
     success_url = reverse_lazy('schools:school_listing')
 
 
-class SchoolCreateImport(common_mixins.SchoolManagerMixin, CreateView):
+class SchoolCreateImport(common_mixins.SuperUserMixin, CreateView):
     model = School
     form_class = cm_forms.SchoolForm
     template_name = "common/school_form_import.html"
-
-    def get_context_data(self, **kwargs):
-        # xxx will be available in the template as the related objects
-        context = super(SchoolCreateImport, self).get_context_data(**kwargs)
-        return context
 
     def post(self, *args, **kwargs):
         if(self.request.FILES):
