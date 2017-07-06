@@ -3,7 +3,9 @@
 {% block content %}
 <h3>Skólastjórnendur</h3>
 <div class="col-sm-12">
-	<a href="{% url 'schools:manager_create' school.id %}" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span>Bæta við skólastjórnanda</a>
+	{% if is_school_manager %}
+		<a href="{% url 'schools:manager_create' school.id %}" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span>Bæta við skólastjórnanda</a>
+	{% endif %}
 	<table id="manager_list" class="table table-hover">
 		<thead>
 			<tr>
@@ -18,6 +20,7 @@
 				<td><a href="{% url 'schools:manager_detail' school.id manager.id %}">{{manager.name}}</a></td>
 				<td>{{manager.position}}</td>
 				<td>
+				{% if is_school_manager %}
 					<div class="btn-group pull-right">
 						<a href="{% url 'schools:manager_update' school.id manager.id %}" class="btn btn-xs">
 							<span class="glyphicon glyphicon-pencil"></span>
@@ -26,6 +29,7 @@
 							<span class="glyphicon glyphicon-trash"></span>
 						</a>
 					</div>
+				{% endif %}
 				</td>
 			</tr>
 			{% endfor %}
