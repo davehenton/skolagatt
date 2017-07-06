@@ -26,3 +26,6 @@ pip-selfcheck.json
 uploads/
 celerybeat-schedule
 celerybeat.pid
+/.coverage
+/coverage.xml
+/cc-test-reporter
