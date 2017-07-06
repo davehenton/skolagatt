@@ -870,7 +870,7 @@ class StudentUpdate(common_mixins.SchoolManagerMixin, UpdateView):
             return reverse_lazy('schools:school_listing')
 
 
-class StudentDelete(common_mixins.SchoolManagerMixin, DeleteView):
+class StudentDelete(common_mixins.SuperUserMixin, DeleteView):
     model = Student
     template_name = "schools/confirm_delete.html"
 
@@ -1208,7 +1208,7 @@ class SurveyUpdate(common_mixins.SchoolEmployeeMixin, UpdateView):
             return reverse_lazy('schools:school_listing')
 
 
-class SurveyDelete(common_mixins.SchoolEmployeeMixin, DeleteView):
+class SurveyDelete(common_mixins.SuperUserMixin, DeleteView):
     model = GroupSurvey
     template_name = "schools/confirm_delete.html"
 
@@ -1381,7 +1381,7 @@ class SurveyResultUpdate(common_mixins.SchoolEmployeeMixin, UpdateView):
             return reverse_lazy('schools:school_listing')
 
 
-class SurveyResultDelete(common_mixins.SchoolEmployeeMixin, DeleteView):
+class SurveyResultDelete(common_mixins.SuperUserMixin, DeleteView):
     model = SurveyResult
     template_name = "schools/confirm_delete.html"
 

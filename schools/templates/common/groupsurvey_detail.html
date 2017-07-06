@@ -16,7 +16,9 @@
 					{% elif is_group_manager or is_school_manager %}
 						<div class="btn-group">
 							<a href="{% url 'schools:survey_update' school.id studentgroup.id groupsurvey.id %}" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span></a>
-							<a href="{% url 'schools:survey_delete' school.id studentgroup.id groupsurvey.id %}" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span></a>
+							{% if request.user.is_superuser %}
+								<a href="{% url 'schools:survey_delete' school.id studentgroup.id groupsurvey.id %}" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span></a>
+							{% endif %}
 						</div>
 					{% endif %}
 					{% if groupsurvey.survey.survey_type.title == 'Lesskimun' %}
@@ -85,7 +87,9 @@
 									{% if is_group_manager or is_school_manager %}
 										{% if groupsurvey.is_open or request.user.is_superuser %}
 										<a href="{% url 'schools:survey_result_update' school.id student.id groupsurvey.id student_result.id %}" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
-										<a href="{% url 'schools:survey_result_delete' school.id student.id groupsurvey.id student_result.id %}" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-trash"></span></a>
+											{% if request.user.is_superuser %}
+												<a href="{% url 'schools:survey_result_delete' school.id student.id groupsurvey.id student_result.id %}" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-trash"></span></a>
+											{% endif %}
 										{% endif %}
 									{% endif %}
 								</div>
