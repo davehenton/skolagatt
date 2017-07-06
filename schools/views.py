@@ -1048,7 +1048,7 @@ class StudentGroupUpdate(common_mixins.SchoolEmployeeMixin, UpdateView):
             return reverse_lazy('schools:school_listing')
 
 
-class StudentGroupDelete(common_mixins.SchoolEmployeeMixin, DeleteView):
+class StudentGroupDelete(common_mixins.SuperUserMixin, DeleteView):
     model = StudentGroup
     template_name = "schools/confirm_delete.html"
 

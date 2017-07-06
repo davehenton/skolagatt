@@ -7,7 +7,9 @@
 			{{studentgroup.name}} <small>{{studentgroup.student_year}}. árgangur</small>
 			<div class="btn-group" role="group" aria-label="...">
 				<a href="{% url 'schools:group_update' studentgroup.school.id studentgroup.id%}" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-pencil"></span></a>
-				<a href="{% url 'schools:group_delete' studentgroup.school.id studentgroup.id%}" class="btn btn-danger btn-sm"><span class="glyphicon glyphicon-trash"></span></a>
+				{% if request.user.is_superuser %}
+					<a href="{% url 'schools:group_delete' studentgroup.school.id studentgroup.id%}" class="btn btn-danger btn-sm"><span class="glyphicon glyphicon-trash"></span></a>
+				{% endif %}
 			</div>
 		</h1>
 	</div>
