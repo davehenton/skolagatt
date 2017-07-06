@@ -9,8 +9,8 @@
 			<small>({{school.ssn}})</small>
 			<div class="btn-group">
 				{% if request.user.is_superuser %}
-				<a href="{% url 'schools:school_update' school.id %}" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span></a>
-				<a href="{% url 'schools:school_delete' school.id %}" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span></a>
+					<a href="{% url 'schools:school_update' school.id %}" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span></a>
+					<a href="{% url 'schools:school_delete' school.id %}" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span></a>
 				{% endif %}
 			</div>
 		</h1>
@@ -24,7 +24,7 @@
     </div>
 </div>
 <hr/>
-{% if is_school_manager or request.user.is_superuser %}
+{% if is_school_manager %}
 <div class="row">
 	<div class="col-md-4">
 		<a href="{% url 'schools:lesfimi_excel_for_principals' school.id %}" class="btn btn-lg btn-primary pull-right">Sækja niðurstöður úr lesfimiprófi</a>
