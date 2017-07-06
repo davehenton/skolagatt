@@ -48,7 +48,7 @@ travis-test: skolagatt/production_settings.py
 	./manage.py collectstatic --no-input
 	coverage run ./manage.py test -v 2
 	coverage xml
-	./cc-test-reporter after-build -t coverage.py
+	./cc-test-reporter after-build -t coverage.py || true
 
 genfixtures: venv skolagatt/production_settings.py
 	./manage.py dumpdata auth.user --format=json --indent=4 --natural-foreign > common/fixtures/auth.json
