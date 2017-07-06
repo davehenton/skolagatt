@@ -969,7 +969,7 @@ class StudentGroupAdminListing(common_mixins.SuperUserMixin, ListView):
         return context
 
 
-class StudentGroupCreate(common_mixins.SchoolEmployeeMixin, CreateView):
+class StudentGroupCreate(common_mixins.SchoolManagerMixin, CreateView):
     model = StudentGroup
     form_class = cm_forms.StudentGroupForm
 
