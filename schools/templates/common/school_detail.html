@@ -24,7 +24,7 @@
     </div>
 </div>
 <hr/>
-{% if is_school_manager or request.user.is_superuser %}
+{% if is_school_manager %}
 <div class="row">
 	<div class="col-md-4">
 		<a href="{% url 'schools:lesfimi_excel_for_principals' school.id %}" class="btn btn-lg btn-primary pull-right">Sækja niðurstöður úr lesfimiprófi</a>
