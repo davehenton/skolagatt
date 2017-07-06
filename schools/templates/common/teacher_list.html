@@ -3,6 +3,7 @@
 {% block content %}
 <h3>
 	Kennarar
+	{% if is_school_manager %}
 	<div class="btn-group" role="group">
 		<a href="{% url 'schools:student_create' school.id %}" type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 			<span class="glyphicon glyphicon-plus"></span>
@@ -20,6 +21,7 @@
 			</li>
 		</ul>
 	</div>
+	{% endif %}
 </h3>
 <div class="row">
 	<table id="teacher_list" class="table table-hover table-striped">
@@ -46,10 +48,12 @@
 					{% endfor %}
 				</td>
 				<td>
+				{% if is_school_manager %}
 					<div class="btn-group">
 						<a href="{% url 'schools:teacher_update' school.id teacher.id %}" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
 						<a href="{% url 'schools:teacher_delete' school.id teacher.id %}" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-trash"></span></a>
 					</div>
+				{% endif %}
 				</td>
 			</tr>
 			{% endfor %}
