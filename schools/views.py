@@ -118,69 +118,6 @@ class SchoolCreate(common_mixins.SuperUserMixin, CreateView):
     success_url = reverse_lazy('schools:school_listing')
 
 
-class SchoolCreateImport(common_mixins.SuperUserMixin, CreateView):
-    model = School
-    form_class = cm_forms.SchoolForm
-    template_name = "common/school_form_import.html"
-
-    def post(self, *args, **kwargs):
-        if(self.request.FILES):
-            u_file = self.request.FILES['file'].name
-            extension = u_file.split(".")[-1]
-            ssn = self.request.POST.get('school_ssn')
-            name = self.request.POST.get('school_name')
-            title = self.request.POST.get('title')
-            if title == 'yes':
-                first = 1
-            else:
-                first = 0
-            data = []
-            errors = []
-            if extension == 'xlsx':
-                input_excel = self.request.FILES['file']
-                book = xlrd.open_workbook(file_contents=input_excel.read())
-                for sheetsnumber in range(book.nsheets):
-                    sheet = book.sheet_by_index(sheetsnumber)
-                    for row in range(first, sheet.nrows):
-                        rowerrors = []
-                        ssn_str = str(int(sheet.cell_value(row, int(ssn))))
-                        kt = Kennitala(ssn_str)
-                        if not kt.validate() or not kt.is_personal(ssn_str):
-                            rowerrors.append({
-                                'text': 'Kennitala ekki rétt slegin inn',
-                                'row': row,
-                            })
-                        data.append({
-                            'name': sheet.cell_value(row, int(name)),
-                            'ssn': ssn_str,
-                            'error': True if rowerrors else False,
-                        })
-                        if rowerrors:
-                            errors += rowerrors
-            common_util.store_import_data(self.request, 'school_create_import', data)
-
-            return render(self.request, 'excel_verify_import.html', {
-                'data': data,
-                'errors': errors,
-                'cancel_url': reverse_lazy('schools:school_listing'),
-            })
-        else:
-            school_data = common_util.get_import_data(self.request, 'school_create_import')
-
-            if school_data:
-                # iterate through students, add them if they don't exist then add to school
-                for school in school_data:
-                    try:
-                        School.objects.create(**school)
-                    except:
-                        pass  # student already exists
-
-        return HttpResponseRedirect(self.get_success_url())
-
-    def get_success_url(self):
-        return reverse_lazy('schools:school_listing')
-
-
 class SchoolUpdate(common_mixins.SuperUserMixin, UpdateView):
     model = School
     form_class = cm_forms.SchoolForm
