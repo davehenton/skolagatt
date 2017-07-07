@@ -269,7 +269,8 @@ class SchoolUpdateViewTests(TestCase):
         self.factory = RequestFactory()
         self.school = School.objects.get(name='Akureyrarskólinn')
         self.super_user = User.objects.filter(is_superuser=True).first()
-        self.client.login(username=self.super_user.username, password=self.super_user.password)
+        self.teacher = self.school.teachers.first()
+        self.manager = self.school.managers.first()
         self.data = instance_to_dict(self.school)
 
     @mock.patch('common.forms.FormWithSsnField._validate_ssn')
@@ -294,6 +295,12 @@ class SchoolUpdateViewTests(TestCase):
         self.assertTrue(updated_data[field] == value)
         self.assertTrue(update_data == updated_data)
 
+    def _test_school_update_view_get_response(self, user):
+        url = reverse('schools:school_update', kwargs={'pk': self.school.id})
+        self.client.login(username=user.username, password=user.password)
+        response = self.client.get(url)
+        return response
+
     def test_school_update_view_change_name(self):
         self._test_school_update_view_change_field('name', 'Þorpsskólinn')
 
@@ -314,3 +321,26 @@ class SchoolUpdateViewTests(TestCase):
 
     def test_school_update_view_change_school_nr(self):
         self._test_school_update_view_change_field('school_nr', 6666)
+
+    def test_school_update_view_form_returns_relevant_data(self):
+        response = self._test_school_update_view_get_response(self.super_user)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, self.school.name)
+        self.assertContains(response, self.school.ssn)
+        self.assertContains(response, self.school.address)
+        self.assertContains(response, self.school.post_code)
+        self.assertContains(response, self.school.municipality)
+        self.assertContains(response, self.school.part)
+        self.assertContains(response, self.teacher.name)
+        self.assertContains(response, self.manager.name)
+        self.assertContains(response, self.school.students.first())
+
+    def test_school_update_view_teacher_cannot_get_form(self):
+        response = self._test_school_update_view_get_response(self.teacher.user)
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(response.url.startswith('/denied'))
+
+    def test_school_update_view_manager_cannot_get_form(self):
+        response = self._test_school_update_view_get_response(self.manager.user)
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(response.url.startswith('/denied'))
