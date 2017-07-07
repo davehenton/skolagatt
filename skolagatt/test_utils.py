@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.utils import timezone
+from django.forms.models import model_to_dict
+
 from lxml import html
 import requests
 import random
@@ -22,6 +24,10 @@ def kennitala_get(year):
     random_date = datetime.date.fromordinal(random.randint(start_date, end_date))
     kt = Kennitala('')
     return kt.generate(random_date)
+
+
+def instance_to_dict(instance):
+    return model_to_dict(instance, fields=[field.name for field in instance._meta.fields])
 
 
 class FixtureGenerator(object):

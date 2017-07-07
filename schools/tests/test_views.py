@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from django.test import TestCase, Client, RequestFactory
+from django.test import TestCase, Client, RequestFactory, mock
 from django.utils import timezone
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
@@ -13,8 +13,9 @@ from ..views import (
     SchoolListing,
     SchoolDetail,
     SchoolCreate,
+    SchoolUpdate,
 )
-from skolagatt.test_utils import kennitala_get
+from skolagatt.test_utils import kennitala_get, instance_to_dict
 from common.util import slug_sort
 
 # Tests for schools.views
@@ -230,7 +231,6 @@ class SchoolCreateViewTests(TestCase):
         data = {
             'name': 'Nýi skólinn',
             'ssn': '5708150320',
-
         }
         self.assertEqual(School.objects.count(), 2)
         request = self.factory.post(reverse('schools:school_create'), data)
@@ -258,3 +258,58 @@ class SchoolCreateViewTests(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertTrue(response.url.startswith('/denied'))
         self.assertEqual(School.objects.count(), 2)
+
+
+class SchoolUpdateViewTests(TestCase):
+    fixtures = ['auth', 'common']
+
+    def setUp(self):
+        super(SchoolUpdateViewTests, self).setUp()
+        self.client = Client()
+        self.factory = RequestFactory()
+        self.school = School.objects.get(name='Akureyrarskólinn')
+        self.super_user = User.objects.filter(is_superuser=True).first()
+        self.client.login(username=self.super_user.username, password=self.super_user.password)
+        self.data = instance_to_dict(self.school)
+
+    @mock.patch('common.forms.FormWithSsnField._validate_ssn')
+    def _test_school_update_view_change_field(self, field, value, myMock):
+        myMock.return_value = True
+        update_data = instance_to_dict(self.school)
+        update_data[field] = value
+
+        self.assertEqual(School.objects.count(), 2)
+
+        url = reverse('schools:school_update', kwargs={'pk': self.school.id})
+        response = self.client.post(url, update_data)
+        myMock.assert_called_once_with('ssn')
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, reverse('schools:school_listing'))
+        self.assertEqual(School.objects.count(), 2)
+
+        updated_school = School.objects.get(pk=self.school.id)
+        updated_data = instance_to_dict(updated_school)
+        self.assertTrue(updated_data[field] == value)
+        self.assertTrue(update_data == updated_data)
+
+    def test_school_update_view_change_name(self):
+        self._test_school_update_view_change_field('name', 'Þorpsskólinn')
+
+    def test_school_update_view_change_ssn(self):
+        self._test_school_update_view_change_field('ssn', kennitala_get(1980))
+
+    def test_school_update_view_change_post_code(self):
+        self._test_school_update_view_change_field('post_code', '602')
+
+    def test_school_update_view_change_address(self):
+        self._test_school_update_view_change_field('address', 'Bjarkarstígur 121')
+
+    def test_school_update_view_change_municipality(self):
+        self._test_school_update_view_change_field('municipality', 'Reykjavíkurborg')
+
+    def test_school_update_view_change_part(self):
+        self._test_school_update_view_change_field('part', 'Reykjavík')
+
+    def test_school_update_view_change_school_nr(self):
+        self._test_school_update_view_change_field('school_nr', 6666)
+
