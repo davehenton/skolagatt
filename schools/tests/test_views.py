@@ -281,7 +281,9 @@ class SchoolUpdateViewTests(TestCase):
         self.assertEqual(School.objects.count(), 2)
 
         url = reverse('schools:school_update', kwargs={'pk': self.school.id})
-        response = self.client.post(url, update_data)
+        request = self.factory.post(url, update_data)
+        request.user = self.super_user
+        response = SchoolUpdate.as_view()(request, pk=self.school.id)
         myMock.assert_called_once_with('ssn')
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, reverse('schools:school_listing'))
