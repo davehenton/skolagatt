@@ -314,4 +314,3 @@ class SchoolUpdateViewTests(TestCase):
 
     def test_school_update_view_change_school_nr(self):
         self._test_school_update_view_change_field('school_nr', 6666)
-
